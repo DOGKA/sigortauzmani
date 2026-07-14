@@ -8,6 +8,7 @@ import {
   type Talep,
   type TalepStatus,
 } from "@/lib/types";
+import { buildTalepWhatsAppUrl } from "@/lib/whatsapp";
 
 const STATUS_STYLES: Record<TalepStatus, string> = {
   yeni: "bg-sky-100 text-sky-700",
@@ -209,6 +210,8 @@ function TalepRow({
   onToggle: () => void;
   onStatusChange: (status: TalepStatus) => void;
 }) {
+  const whatsappUrl = buildTalepWhatsAppUrl(talep);
+
   return (
     <>
       <tr
@@ -281,15 +284,24 @@ function TalepRow({
                     WhatsApp
                   </dt>
                   <dd className="mt-0.5">
-                    <a
-                      href={`https://wa.me/9${talep.phone.replace(/\D/g, "")}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-medium text-emerald-600 hover:underline"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      Mesaj gönder
-                    </a>
+                    {whatsappUrl ? (
+                      <a
+                        href={whatsappUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-emerald-600 hover:underline"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        Mesaj gönder
+                      </a>
+                    ) : (
+                      <span className="text-slate-500">{talep.phone}</span>
+                    )}
+                    <p className="mt-1 max-w-xs text-xs text-slate-400">
+                      Müşteri siteden WhatsApp ile yazmadıysa mesaj istekler
+                      klasörüne düşebilir; mümkünse önce müşterinin yazmasını
+                      bekleyin.
+                    </p>
                   </dd>
                 </div>
               )}

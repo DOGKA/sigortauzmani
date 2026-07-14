@@ -138,10 +138,16 @@ export default function QuotePage() {
   };
 
   const whatsappMessage = [
-    `Merhabalar, ${product.title} hakkında bilgi almak ve teklif istiyorum.`,
-    talepNo ? `Talep numaram: ${talepNo}` : "",
+    "Merhaba,",
+    "",
+    `Sigorta Uzmanı web sitemden ${product.title} için teklif talebi oluşturdum.`,
+    talepNo ? `Talep numaram: ${talepNo}` : null,
+    "",
+    "Beklemek istemediğim için WhatsApp üzerinden size ulaşıyorum. En uygun teklifler hakkında bilgi alabilir miyim?",
+    "",
+    "Teşekkürler.",
   ]
-    .filter(Boolean)
+    .filter((line) => line !== null)
     .join("\n");
 
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
