@@ -458,6 +458,145 @@
   text-align: right;
 }
 
+.quote__talep-no {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  max-width: 440px;
+  margin-top: 18px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  border: 1px dashed rgba(45, 126, 245, 0.45);
+  background: rgba(45, 126, 245, 0.06);
+}
+
+.quote__talep-no-label {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+
+.quote__talep-no-value {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--brand-600);
+  font-variant-numeric: tabular-nums;
+}
+
+.quote__pref {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  max-width: 440px;
+  margin-top: 18px;
+}
+
+.quote__pref-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-700);
+}
+
+.quote__pref-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  width: 100%;
+}
+
+.quote__pref-option {
+  padding: 13px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(16, 28, 48, 0.12);
+  background: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-700);
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.quote__pref-option:hover:not(:disabled) {
+  border-color: var(--brand-600);
+  color: var(--brand-600);
+}
+
+.quote__pref-option--active {
+  border-color: var(--brand-600);
+  background: rgba(45, 126, 245, 0.08);
+  color: var(--brand-600);
+}
+
+.quote__pref-option:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.quote__pref-schedule {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.quote__pref-save:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.quote__pref-saved {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 440px;
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid rgba(31, 169, 75, 0.35);
+  background: rgba(52, 199, 89, 0.08);
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a8a41;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.quote__pref-saved svg {
+  flex-shrink: 0;
+}
+
+.quote__pref-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 440px;
+  margin-top: 24px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-400);
+  white-space: nowrap;
+}
+
+.quote__pref-divider::before,
+.quote__pref-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(16, 28, 48, 0.1);
+}
+
 .quote__whatsapp {
   display: flex;
   align-items: center;

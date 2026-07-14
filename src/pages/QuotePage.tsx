@@ -12,6 +12,11 @@ import {
   isValidPlate,
   isValidTckn,
 } from "../utils/validation";
+import {
+  createTalep,
+  generateTalepNo,
+  setContactPreference,
+} from "../lib/supabase";
 import "./QuotePage.css";
 
 const TOTAL_STEPS = 2;
@@ -33,6 +38,21 @@ const INSURED_FOR_LABELS: Record<string, string> = {
   children: "Çocuğum/Çocuklarım",
 };
 
+const TIME_SLOTS = [
+  "09:00 - 11:00",
+  "11:00 - 13:00",
+  "13:00 - 15:00",
+  "15:00 - 17:00",
+  "17:00 - 19:00",
+];
+
+function getTodayIso() {
+  const now = new Date();
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${mm}-${dd}`;
+}
+
 function formatDate(isoDate: string) {
   if (!isoDate) return "";
   const [year, month, day] = isoDate.split("-");
@@ -53,6 +73,14 @@ export default function QuotePage() {
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [talepNo, setTalepNo] = useState("");
+  const [contactChoice, setContactChoice] = useState<"hemen" | "tarihli" | null>(
+    null,
+  );
+  const [contactDate, setContactDate] = useState("");
+  const [contactTime, setContactTime] = useState("");
+  const [prefSaving, setPrefSaving] = useState(false);
+  const [prefSaved, setPrefSaved] = useState(false);
 
   const clearError = (field: string) =>
     setErrors((prev) => {
@@ -135,6 +163,41 @@ export default function QuotePage() {
     whatsappMessage,
   )}`;
 
+  const completeQuote = () => {
+    const no = generateTalepNo();
+    setTalepNo(no);
+    void createTalep({
+      talep_no: no,
+      product_slug: product.slug,
+      product_title: product.title,
+      insured_for: isVehicleProduct
+        ? null
+        : (INSURED_FOR_LABELS[insuredFor] ?? insuredFor),
+      tckn: tckn || null,
+      phone: phone || null,
+      birth_date: birthDate || null,
+      plate: isVehicleProduct ? plate || null : null,
+      document_serial: isVehicleProduct ? documentSerial || null : null,
+    });
+    setCompleted(true);
+  };
+
+  const chooseImmediate = async () => {
+    setContactChoice("hemen");
+    setPrefSaving(true);
+    await setContactPreference(talepNo, "hemen");
+    setPrefSaving(false);
+    setPrefSaved(true);
+  };
+
+  const saveScheduled = async () => {
+    if (!contactDate || !contactTime) return;
+    setPrefSaving(true);
+    await setContactPreference(talepNo, "tarihli", contactDate, contactTime);
+    setPrefSaving(false);
+    setPrefSaved(true);
+  };
+
   return (
     <section className="quote">
       <div className="quote__bg" aria-hidden="true">
@@ -171,23 +234,96 @@ export default function QuotePage() {
                   </svg>
                 </div>
                 <h2 className="quote__success-title">Tebrikler, talebiniz alındı!</h2>
+
+                <div className="quote__talep-no">
+                  <span className="quote__talep-no-label">Talep Numaranız</span>
+                  <span className="quote__talep-no-value">{talepNo}</span>
+                </div>
+
                 <p className="quote__success-text">
-                  {product.title} teklifi için bilgileriniz hazır. Sigorta
-                  Uzmanınıza bağlanarak size özel teklifleri hemen alabilirsiniz.
+                  Talebiniz alınmıştır. Uzmanımız en kısa sürede sizinle
+                  iletişime geçecektir. Dilerseniz iletişim tercihinizi
+                  aşağıdan ayarlayabilirsiniz.
                 </p>
 
-                <dl className="quote__summary">
-                  <div className="quote__summary-row">
-                    <dt>Sigorta Türü</dt>
-                    <dd>{product.title}</dd>
+                {prefSaved ? (
+                  <div className="quote__pref-saved">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M20 6L9 17l-5-5"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                    {contactChoice === "hemen"
+                      ? "Tercihiniz kaydedildi. Uzmanımız en kısa sürede sizi arayacak."
+                      : `Tercihiniz kaydedildi. ${formatDate(contactDate)} tarihinde ${contactTime} saatleri arasında aranacaksınız.`}
                   </div>
-                  {summaryItems.map((item) => (
-                    <div className="quote__summary-row" key={item.label}>
-                      <dt>{item.label}</dt>
-                      <dd>{item.value}</dd>
+                ) : (
+                  <div className="quote__pref">
+                    <span className="quote__pref-title">
+                      Ne zaman aranmak istersiniz?
+                    </span>
+                    <div className="quote__pref-options">
+                      <button
+                        type="button"
+                        className={`quote__pref-option ${contactChoice === "hemen" ? "quote__pref-option--active" : ""}`}
+                        onClick={chooseImmediate}
+                        disabled={prefSaving}
+                      >
+                        Hemen
+                      </button>
+                      <button
+                        type="button"
+                        className={`quote__pref-option ${contactChoice === "tarihli" ? "quote__pref-option--active" : ""}`}
+                        onClick={() => setContactChoice("tarihli")}
+                        disabled={prefSaving}
+                      >
+                        Tarih Seç
+                      </button>
                     </div>
-                  ))}
-                </dl>
+
+                    {contactChoice === "tarihli" && (
+                      <div className="quote__pref-schedule">
+                        <input
+                          type="date"
+                          className="quote__input"
+                          value={contactDate}
+                          min={getTodayIso()}
+                          onChange={(event) => setContactDate(event.target.value)}
+                          aria-label="Aranmak istediğiniz tarih"
+                        />
+                        <select
+                          className="quote__input quote__select"
+                          value={contactTime}
+                          onChange={(event) => setContactTime(event.target.value)}
+                          aria-label="Aranmak istediğiniz saat aralığı"
+                        >
+                          <option value="">Saat aralığı seçin</option>
+                          {TIME_SLOTS.map((slot) => (
+                            <option key={slot} value={slot}>
+                              {slot}
+                            </option>
+                          ))}
+                        </select>
+                        <button
+                          type="button"
+                          className="quote__submit quote__pref-save"
+                          onClick={saveScheduled}
+                          disabled={!contactDate || !contactTime || prefSaving}
+                        >
+                          {prefSaving ? "Kaydediliyor..." : "Tercihi Kaydet"}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="quote__pref-divider">
+                  <span>Beklemek istemiyor musunuz?</span>
+                </div>
 
                 <a
                   href={whatsappUrl}
@@ -323,7 +459,7 @@ export default function QuotePage() {
                     onSubmit={(e) => {
                       e.preventDefault();
                       if (!kvkkAccepted || !privacyAccepted) return;
-                      if (validateStep2()) setCompleted(true);
+                      if (validateStep2()) completeQuote();
                     }}
                   >
                     <label className="quote__field">
