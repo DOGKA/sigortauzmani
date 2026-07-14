@@ -1,9 +1,20 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+let supabase: SupabaseClient | null = null;
+
+function getSupabase() {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error("Supabase ortam değişkenleri tanımlı değil.");
+    return null;
+  }
+  if (!supabase) {
+    supabase = createClient(supabaseUrl, supabaseAnonKey);
+  }
+  return supabase;
+}
 
 export interface TalepInsert {
   talep_no: string;
@@ -31,7 +42,10 @@ export function generateTalepNo(): string {
 }
 
 export async function createTalep(talep: TalepInsert): Promise<void> {
-  const { error } = await supabase.from("talepler").insert(talep);
+  const client = getSupabase();
+  if (!client) return;
+
+  const { error } = await client.from("talepler").insert(talep);
   if (error) {
     console.error("Talep kaydedilemedi:", error.message);
     return;
@@ -63,7 +77,10 @@ export async function setContactPreference(
   date?: string,
   time?: string,
 ): Promise<boolean> {
-  const { error } = await supabase.rpc("set_contact_pref", {
+  const client = getSupabase();
+  if (!client) return false;
+
+  const { error } = await client.rpc("set_contact_pref", {
     p_talep_no: talepNo,
     p_contact_pref: pref,
     p_contact_date: date ?? null,

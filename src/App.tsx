@@ -1,9 +1,10 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
-import QuotePage from "./pages/QuotePage";
+
+const QuotePage = lazy(() => import("./pages/QuotePage"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -20,7 +21,14 @@ export default function App() {
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/teklif/:slug" element={<QuotePage />} />
+        <Route
+          path="/teklif/:slug"
+          element={
+            <Suspense fallback={null}>
+              <QuotePage />
+            </Suspense>
+          }
+        />
       </Routes>
       <Footer />
     </BrowserRouter>
