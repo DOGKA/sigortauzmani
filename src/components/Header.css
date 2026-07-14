@@ -1,0 +1,132 @@
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border-bottom: 1px solid rgba(16, 28, 48, 0.06);
+}
+
+.header__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.header__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.header__logo {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+}
+
+.header__brand-name {
+  font-size: 20px;
+  letter-spacing: -0.02em;
+  color: var(--ink-900);
+  font-weight: 400;
+}
+
+.header__brand-name strong {
+  font-weight: 800;
+  background: linear-gradient(135deg, var(--brand-400), var(--brand-700));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header__nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 auto;
+}
+
+.header__nav-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-500);
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.header__nav-item:hover {
+  color: var(--brand-600);
+  background: var(--brand-100);
+}
+
+.header__right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.header__phone {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  line-height: 1.3;
+}
+
+.header__phone-label {
+  font-size: 11px;
+  color: var(--ink-400);
+}
+
+.header__phone-number {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink-900);
+  transition: color 0.2s;
+}
+
+.header__phone-number:hover {
+  color: var(--brand-600);
+}
+
+.header__cta {
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand-400), var(--brand-600));
+  box-shadow: 0 8px 20px -8px rgba(27, 102, 230, 0.55);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.header__cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 26px -8px rgba(27, 102, 230, 0.65);
+}
+
+@media (max-width: 980px) {
+  .header__nav {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .header__phone {
+    display: none;
+  }
+}

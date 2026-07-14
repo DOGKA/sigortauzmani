@@ -1,0 +1,55 @@
+:root {
+  --brand-700: #0b48c8;
+  --brand-600: #1155d6;
+  --brand-500: #1b66e6;
+  --brand-400: #2d7ef5;
+  --brand-300: #6fa5f8;
+  --brand-100: #e3edfd;
+  --ink-900: #101c30;
+  --ink-700: #16233a;
+  --ink-500: #4a5872;
+  --ink-400: #6b7893;
+  --surface: #f5f8fe;
+
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--ink-900);
+  background-color: var(--surface);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input {
+  font-family: inherit;
+}
