@@ -34,6 +34,26 @@ export async function createTalep(talep: TalepInsert): Promise<void> {
   const { error } = await supabase.from("talepler").insert(talep);
   if (error) {
     console.error("Talep kaydedilemedi:", error.message);
+    return;
+  }
+  void sendTalepNotificationEmail(talep);
+}
+
+async function sendTalepNotificationEmail(talep: TalepInsert) {
+  const notifyUrl = import.meta.env.VITE_NOTIFY_API_URL as string | undefined;
+  if (!notifyUrl) return;
+
+  try {
+    const response = await fetch(`${notifyUrl}/api/notify-talep`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(talep),
+    });
+    if (!response.ok) {
+      console.error("Bildirim e-postası gönderilemedi:", await response.text());
+    }
+  } catch (err) {
+    console.error("Bildirim e-postası isteği başarısız:", err);
   }
 }
 

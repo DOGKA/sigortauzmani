@@ -137,27 +137,12 @@ export default function QuotePage() {
     return Object.keys(next).length === 0;
   };
 
-  const summaryItems: { label: string; value: string }[] = [
-    !isVehicleProduct && {
-      label: "Sigortalanacak Kişi",
-      value: INSURED_FOR_LABELS[insuredFor] ?? insuredFor,
-    },
-    { label: "T.C. Kimlik No", value: tckn },
-    { label: "Cep Telefonu", value: phone },
-    { label: "Doğum Tarihi", value: formatDate(birthDate) },
-    isVehicleProduct && { label: "Plaka", value: plate },
-    isVehicleProduct && { label: "Belge Seri No", value: documentSerial },
-  ].filter(
-    (item): item is { label: string; value: string } =>
-      Boolean(item) && Boolean((item as { value: string }).value),
-  );
-
   const whatsappMessage = [
     `Merhabalar, ${product.title} hakkında bilgi almak ve teklif istiyorum.`,
-    "",
-    "Bilgilerim:",
-    ...summaryItems.map((item) => `${item.label}: ${item.value}`),
-  ].join("\n");
+    talepNo ? `Talep numaram: ${talepNo}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
     whatsappMessage,
