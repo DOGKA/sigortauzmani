@@ -12,6 +12,22 @@ export function isValidTckn(value: string): boolean {
   return check10 === d[9] && check11 === d[10];
 }
 
+// Vergi Kimlik Numarası resmi doğrulama algoritması:
+// - 10 hane
+// - Her hane için: t = (hane + 10 - sıra) mod 10; t == 9 ise katkı 9,
+//   değilse katkı (t × 2^(10-sıra)) mod 9. Katkıların toplamının
+//   10'a tamamlayanının mod 10'u son haneyi verir.
+export function isValidVkn(value: string): boolean {
+  if (!/^\d{10}$/.test(value)) return false;
+  const d = value.split("").map(Number);
+  let sum = 0;
+  for (let i = 0; i < 9; i++) {
+    const t = (d[i] + 10 - (i + 1)) % 10;
+    sum += t === 9 ? 9 : (t * 2 ** (9 - i)) % 9;
+  }
+  return (10 - (sum % 10)) % 10 === d[9];
+}
+
 // Türkiye GSM numarası: 05XX XXX XX XX
 // "+90", "90" veya "0" öneklerini kabul eder, çekirdek numara 5 ile başlayan 10 hane olmalı.
 export function isValidMobilePhone(value: string): boolean {
@@ -49,6 +65,11 @@ export function isValidPlate(value: string): boolean {
 // Araç tescil (ruhsat) belge seri no: 2 harf + 6 rakam (örn. AA999999)
 export function isValidDocumentSerial(value: string): boolean {
   return /^[A-Z]{2}\d{6}$/.test(value);
+}
+
+// Şasi (VIN) numarası: 17 karakter, I, O ve Q harfleri kullanılmaz.
+export function isValidChassisNo(value: string): boolean {
+  return /^[A-HJ-NPR-Z0-9]{17}$/.test(value);
 }
 
 // 18 yaşını doldurmuş en genç kişinin doğum tarihi (date input max değeri için).

@@ -1,0 +1,132 @@
+.mini-showcase {
+  padding: 56px 24px 112px;
+  background: var(--surface);
+}
+
+.mini-showcase__inner {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+/* Bento grid: featured kart 2x2, diğerleri 1x1 */
+.mini-showcase__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.mini-showcase__card {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  border-radius: 28px;
+  border: 1px solid rgba(45, 126, 245, 0.08);
+  box-shadow: 0 16px 36px -24px rgba(45, 126, 245, 0.25);
+  transition: transform 0.35s ease, box-shadow 0.35s ease;
+}
+
+.mini-showcase__card--featured {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+
+.mini-showcase__card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 28px 52px -22px rgba(27, 102, 230, 0.38);
+}
+
+.mini-showcase__image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.45s ease;
+}
+
+.mini-showcase__card:hover .mini-showcase__image {
+  transform: scale(1.05);
+}
+
+/* --- Big typography --- */
+.mini-showcase__text {
+  position: absolute;
+  top: 22px;
+  left: 24px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  color: var(--ink-900);
+  font-size: clamp(20px, 2vw, 27px);
+  font-weight: 900;
+  letter-spacing: -0.035em;
+  line-height: 1.12;
+  text-transform: none;
+}
+
+.mini-showcase__card--featured .mini-showcase__text {
+  top: 30px;
+  left: 32px;
+  font-size: clamp(30px, 3.4vw, 46px);
+}
+
+.mini-showcase__line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.28em;
+}
+
+.mini-showcase__word--accent {
+  background: linear-gradient(120deg, #4a98ff 0%, #1b66e6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@media (max-width: 1024px) {
+  .mini-showcase__grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .mini-showcase__text {
+    font-size: clamp(19px, 3.4vw, 24px);
+  }
+
+  .mini-showcase__card--featured .mini-showcase__text {
+    font-size: clamp(26px, 5.4vw, 38px);
+  }
+}
+
+@media (max-width: 640px) {
+  .mini-showcase {
+    padding: 40px 16px 84px;
+  }
+
+  .mini-showcase__grid {
+    gap: 12px;
+  }
+
+  .mini-showcase__card {
+    border-radius: 20px;
+  }
+
+  .mini-showcase__text {
+    top: 15px;
+    left: 16px;
+    font-size: 17px;
+  }
+
+  .mini-showcase__card--featured .mini-showcase__text {
+    top: 20px;
+    left: 20px;
+    font-size: 26px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mini-showcase__card,
+  .mini-showcase__image {
+    transition: none;
+  }
+}

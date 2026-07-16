@@ -272,11 +272,24 @@ function TalepRow({
         <tr className="border-b border-slate-100 bg-slate-50/60">
           <td colSpan={7} className="px-5 py-4">
             <dl className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:grid-cols-3 lg:grid-cols-4">
+              <DetailItem
+                label="Sigortalı Türü"
+                value={
+                  talep.entity_type === "sirket"
+                    ? "Şirket"
+                    : talep.entity_type === "sahis"
+                      ? "Şahıs"
+                      : null
+                }
+              />
               <DetailItem label="T.C. Kimlik No" value={talep.tckn} />
+              <DetailItem label="Vergi No" value={talep.vergi_no} />
               <DetailItem label="Doğum Tarihi" value={formatDate(talep.birth_date)} />
               <DetailItem label="Sigortalanacak Kişi" value={talep.insured_for} />
               <DetailItem label="Plaka" value={talep.plate} />
               <DetailItem label="Belge Seri No" value={talep.document_serial} />
+              <DetailItem label="Motor No" value={talep.motor_no} />
+              <DetailItem label="Şasi No" value={talep.sasi_no} />
               <DetailItem label="İletişim Tercihi" value={contactPrefText(talep)} />
               {talep.phone && (
                 <div>

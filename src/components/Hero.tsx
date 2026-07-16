@@ -9,12 +9,10 @@ export default function Hero() {
         <div className="hero__blob hero__blob--1" />
         <div className="hero__blob hero__blob--2" />
         <div className="hero__blob hero__blob--3" />
-        <div className="hero__grid-pattern" />
-        <div className="hero__ring" />
-        <div className="hero__ring hero__ring--2" />
-        <div className="hero__orb hero__orb--1" />
-        <div className="hero__orb hero__orb--2" />
-        <div className="hero__orb hero__orb--3" />
+        <div className="hero__floor" />
+        <div className="hero__beam hero__beam--1" />
+        <div className="hero__beam hero__beam--2" />
+        <div className="hero__vignette" />
       </div>
 
       <div className="hero__content">

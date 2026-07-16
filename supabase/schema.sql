@@ -7,11 +7,16 @@ create table if not exists public.talepler (
   product_slug text not null,
   product_title text not null,
   insured_for text,
+  entity_type text not null default 'sahis'
+    check (entity_type in ('sahis', 'sirket')),
   tckn text,
+  vergi_no text,
   phone text,
   birth_date date,
   plate text,
   document_serial text,
+  motor_no text,
+  sasi_no text,
   contact_pref text not null default 'hemen'
     check (contact_pref in ('hemen', 'tarihli')),
   contact_date date,
@@ -20,6 +25,13 @@ create table if not exists public.talepler (
     check (status in ('yeni', 'arandi', 'teklif_verildi', 'tamamlandi', 'iptal')),
   created_at timestamptz not null default now()
 );
+
+-- Mevcut (daha önce oluşturulmuş) tabloya yeni kolonları eklemek için:
+alter table public.talepler
+  add column if not exists entity_type text not null default 'sahis',
+  add column if not exists vergi_no text,
+  add column if not exists motor_no text,
+  add column if not exists sasi_no text;
 
 create index if not exists talepler_created_at_idx on public.talepler (created_at desc);
 create index if not exists talepler_status_idx on public.talepler (status);

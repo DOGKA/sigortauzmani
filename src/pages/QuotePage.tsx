@@ -7,10 +7,12 @@ import {
   formatPhoneInput,
   getMaxBirthDate,
   isAdult,
+  isValidChassisNo,
   isValidDocumentSerial,
   isValidMobilePhone,
   isValidPlate,
   isValidTckn,
+  isValidVkn,
 } from "../utils/validation";
 import {
   createTalep,
@@ -64,11 +66,18 @@ export default function QuotePage() {
   const product = slug ? getProduct(slug) : undefined;
   const [insuredFor, setInsuredFor] = useState("self");
   const [step, setStep] = useState(1);
+  const [entityType, setEntityType] = useState<"sahis" | "sirket">("sahis");
   const [tckn, setTckn] = useState("");
+  const [vkn, setVkn] = useState("");
   const [phone, setPhone] = useState("");
   const [birthDate, setBirthDate] = useState("");
+  const [hasPlate, setHasPlate] = useState(true);
   const [plate, setPlate] = useState("");
   const [documentSerial, setDocumentSerial] = useState("");
+  const [engineNo, setEngineNo] = useState("");
+  const [chassisNo, setChassisNo] = useState("");
+  const [serialHelpOpen, setSerialHelpOpen] = useState(false);
+  const [whyInfoOpen, setWhyInfoOpen] = useState(false);
   const [kvkkAccepted, setKvkkAccepted] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [completed, setCompleted] = useState(false);
@@ -104,10 +113,36 @@ export default function QuotePage() {
   const isVehicleProduct = VEHICLE_PRODUCT_SLUGS.has(product.slug);
   const nextStep = () => setStep((s) => Math.min(s + 1, TOTAL_STEPS));
 
+  const switchEntityType = (type: "sahis" | "sirket") => {
+    if (type === entityType) return;
+    setEntityType(type);
+    setTckn("");
+    setVkn("");
+    clearError("tckn");
+    clearError("vkn");
+  };
+
+  const switchHasPlate = (value: boolean) => {
+    if (value === hasPlate) return;
+    setHasPlate(value);
+    setPlate("");
+    setDocumentSerial("");
+    setEngineNo("");
+    setChassisNo("");
+    clearError("plate");
+    clearError("documentSerial");
+    clearError("engineNo");
+    clearError("chassisNo");
+  };
+
   const validateStep1 = () => {
     const next: Record<string, string> = {};
-    if (!isValidTckn(tckn)) {
-      next.tckn = "Geçerli bir T.C. Kimlik Numarası girin.";
+    if (entityType === "sahis") {
+      if (!isValidTckn(tckn)) {
+        next.tckn = "Geçerli bir T.C. Kimlik Numarası girin (11 hane).";
+      }
+    } else if (!isValidVkn(vkn)) {
+      next.vkn = "Geçerli bir Vergi Numarası girin (10 hane).";
     }
     if (isVehicleProduct && !isValidMobilePhone(phone)) {
       next.phone = "Geçerli bir cep telefonu girin (05XX XXX XX XX).";
@@ -124,11 +159,15 @@ export default function QuotePage() {
       next.birthDate = "Teklif alabilmek için 18 yaşından büyük olmalısınız.";
     }
     if (isVehicleProduct) {
-      if (!isValidPlate(plate)) {
-        next.plate = "Geçerli bir plaka girin (örn. 06 TC 001).";
-      }
-      if (!isValidDocumentSerial(documentSerial)) {
-        next.documentSerial = "Belge seri no 2 harf ve 6 rakam olmalı (örn. AA999999).";
+      if (hasPlate) {
+        if (!isValidPlate(plate)) {
+          next.plate = "Geçerli bir plaka girin (örn. 06 TC 001).";
+        }
+        if (!isValidDocumentSerial(documentSerial)) {
+          next.documentSerial = "Belge seri no 2 harf ve 6 rakam olmalı (örn. AA999999).";
+        }
+      } else if (!isValidChassisNo(chassisNo)) {
+        next.chassisNo = "Geçerli bir şasi numarası girin (17 karakter).";
       }
     } else if (!isValidMobilePhone(phone)) {
       next.phone = "Geçerli bir cep telefonu girin (05XX XXX XX XX).";
@@ -164,11 +203,16 @@ export default function QuotePage() {
       insured_for: isVehicleProduct
         ? null
         : (INSURED_FOR_LABELS[insuredFor] ?? insuredFor),
-      tckn: tckn || null,
+      entity_type: entityType,
+      tckn: entityType === "sahis" ? tckn || null : null,
+      vergi_no: entityType === "sirket" ? vkn || null : null,
       phone: phone || null,
       birth_date: birthDate || null,
-      plate: isVehicleProduct ? plate || null : null,
-      document_serial: isVehicleProduct ? documentSerial || null : null,
+      plate: isVehicleProduct && hasPlate ? plate || null : null,
+      document_serial:
+        isVehicleProduct && hasPlate ? documentSerial || null : null,
+      motor_no: isVehicleProduct && !hasPlate ? engineNo || null : null,
+      sasi_no: isVehicleProduct && !hasPlate ? chassisNo || null : null,
     });
     setCompleted(true);
   };
@@ -362,29 +406,69 @@ export default function QuotePage() {
                     }}
                     noValidate
                   >
+                    <div
+                      className="quote__toggle"
+                      role="group"
+                      aria-label="Sigortalı türü"
+                    >
+                      <button
+                        type="button"
+                        className={`quote__toggle-option ${entityType === "sahis" ? "quote__toggle-option--active" : ""}`}
+                        onClick={() => switchEntityType("sahis")}
+                      >
+                        Şahıs
+                      </button>
+                      <button
+                        type="button"
+                        className={`quote__toggle-option ${entityType === "sirket" ? "quote__toggle-option--active" : ""}`}
+                        onClick={() => switchEntityType("sirket")}
+                      >
+                        Şirket
+                      </button>
+                    </div>
+
                     {isVehicleProduct ? (
                       <>
-                        <div className="quote__field">
-                          <input
-                            type="text"
-                            className={`quote__input ${errors.tckn ? "quote__input--error" : ""}`}
-                            inputMode="numeric"
-                            placeholder="T.C. Kimlik Numarası"
-                            value={tckn}
-                            onChange={(event) => {
-                              setTckn(event.target.value.replace(/\D/g, "").slice(0, 11));
-                              clearError("tckn");
-                            }}
-                          />
-                          {errors.tckn && (
-                            <span className="quote__error">{errors.tckn}</span>
-                          )}
-                        </div>
+                        {entityType === "sahis" ? (
+                          <div className="quote__field">
+                            <input
+                              type="text"
+                              className={`quote__input ${errors.tckn ? "quote__input--error" : ""}`}
+                              inputMode="numeric"
+                              placeholder="T.C. Kimlik Numarası (XXXXXXXXXXX)"
+                              value={tckn}
+                              onChange={(event) => {
+                                setTckn(event.target.value.replace(/\D/g, "").slice(0, 11));
+                                clearError("tckn");
+                              }}
+                            />
+                            {errors.tckn && (
+                              <span className="quote__error">{errors.tckn}</span>
+                            )}
+                          </div>
+                        ) : (
+                          <div className="quote__field">
+                            <input
+                              type="text"
+                              className={`quote__input ${errors.vkn ? "quote__input--error" : ""}`}
+                              inputMode="numeric"
+                              placeholder="Vergi Numarası (XXXXXXXXXX)"
+                              value={vkn}
+                              onChange={(event) => {
+                                setVkn(event.target.value.replace(/\D/g, "").slice(0, 10));
+                                clearError("vkn");
+                              }}
+                            />
+                            {errors.vkn && (
+                              <span className="quote__error">{errors.vkn}</span>
+                            )}
+                          </div>
+                        )}
                         <div className="quote__field">
                           <input
                             type="tel"
                             className={`quote__input ${errors.phone ? "quote__input--error" : ""}`}
-                            placeholder="Cep Telefonu"
+                            placeholder="Cep Telefonu (05XX XXX XX XX)"
                             value={phone}
                             onChange={(event) => {
                               setPhone(formatPhoneInput(event.target.value));
@@ -410,33 +494,67 @@ export default function QuotePage() {
                             <option value="children">Çocuğum/Çocuklarım</option>
                           </select>
                         </label>
-                        <label className="quote__field">
-                          <span>T.C. Kimlik Numarası</span>
-                          <input
-                            type="text"
-                            className={`quote__input ${errors.tckn ? "quote__input--error" : ""}`}
-                            inputMode="numeric"
-                            placeholder="11 haneli T.C. Kimlik Numarası"
-                            value={tckn}
-                            onChange={(event) => {
-                              setTckn(event.target.value.replace(/\D/g, "").slice(0, 11));
-                              clearError("tckn");
-                            }}
-                          />
-                          {errors.tckn && (
-                            <span className="quote__error">{errors.tckn}</span>
-                          )}
-                        </label>
+                        {entityType === "sahis" ? (
+                          <label className="quote__field">
+                            <span>T.C. Kimlik Numarası</span>
+                            <input
+                              type="text"
+                              className={`quote__input ${errors.tckn ? "quote__input--error" : ""}`}
+                              inputMode="numeric"
+                              placeholder="T.C. Kimlik Numarası (XXXXXXXXXXX)"
+                              value={tckn}
+                              onChange={(event) => {
+                                setTckn(event.target.value.replace(/\D/g, "").slice(0, 11));
+                                clearError("tckn");
+                              }}
+                            />
+                            {errors.tckn && (
+                              <span className="quote__error">{errors.tckn}</span>
+                            )}
+                          </label>
+                        ) : (
+                          <label className="quote__field">
+                            <span>Vergi Numarası</span>
+                            <input
+                              type="text"
+                              className={`quote__input ${errors.vkn ? "quote__input--error" : ""}`}
+                              inputMode="numeric"
+                              placeholder="Vergi Numarası (XXXXXXXXXX)"
+                              value={vkn}
+                              onChange={(event) => {
+                                setVkn(event.target.value.replace(/\D/g, "").slice(0, 10));
+                                clearError("vkn");
+                              }}
+                            />
+                            {errors.vkn && (
+                              <span className="quote__error">{errors.vkn}</span>
+                            )}
+                          </label>
+                        )}
                       </>
                     )}
 
-                    <button type="button" className="quote__why">
+                    <button
+                      type="button"
+                      className="quote__why"
+                      onClick={() => setWhyInfoOpen((open) => !open)}
+                      aria-expanded={whyInfoOpen}
+                    >
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                         <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
                         <path d="M12 16v-4M12 8h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                       </svg>
                       Neden bu bilgilere ihtiyacımız var?
                     </button>
+                    {whyInfoOpen && (
+                      <p className="quote__why-info">
+                        Bu bilgiler yalnızca sigorta şirketlerinin sistemlerinde
+                        size özel teklif sorgulaması yapmak için kullanılır.
+                        Sistemlerimize kaydedilmez, işlem süresince geçici
+                        olarak tutulur; üçüncü kişilerle paylaşılmaz ve KVKK
+                        kapsamında güvenle işlenir.
+                      </p>
+                    )}
 
                     <button type="submit" className="quote__submit">
                       {product.title} Teklifi Al
@@ -453,98 +571,191 @@ export default function QuotePage() {
                       if (validateStep2()) completeQuote();
                     }}
                   >
-                    <label className="quote__field">
-                      <span>Doğum Tarihi</span>
-                      <input
-                        type="date"
-                        className={`quote__input ${errors.birthDate ? "quote__input--error" : ""}`}
-                        value={birthDate}
-                        max={getMaxBirthDate()}
-                        onChange={(event) => {
-                          setBirthDate(event.target.value);
-                          clearError("birthDate");
-                        }}
-                      />
-                      {errors.birthDate && (
-                        <span className="quote__error">{errors.birthDate}</span>
-                      )}
-                    </label>
-
                     {isVehicleProduct ? (
-                      <label className="quote__field">
-                        <span>Araç Bilgileri</span>
+                      <>
                         <div
-                          className={`quote__vehicle-input ${
-                            errors.plate || errors.documentSerial
-                              ? "quote__vehicle-input--error"
-                              : ""
-                          }`}
+                          className="quote__toggle"
+                          role="group"
+                          aria-label="Plaka durumu"
                         >
-                          <span className="quote__plate-country" aria-hidden="true">
-                            TR
-                          </span>
-                          <input
-                            type="text"
-                            className="quote__vehicle-field quote__plate-field"
-                            value={plate}
-                            onChange={(event) => {
-                              setPlate(
-                                event.target.value
-                                  .replace(/ı/g, "I")
-                                  .toUpperCase()
-                                  .replace(/[^0-9A-Z ]/g, ""),
-                              );
-                              clearError("plate");
-                            }}
-                            maxLength={10}
-                            autoComplete="off"
-                            aria-label="Plaka"
-                            placeholder="06 TC 001"
-                          />
-                          <span className="quote__vehicle-divider" aria-hidden="true" />
-                          <input
-                            type="text"
-                            className="quote__vehicle-field quote__serial-field"
-                            value={documentSerial}
-                            onChange={(event) => {
-                              setDocumentSerial(
-                                event.target.value
-                                  .replace(/ı/g, "I")
-                                  .toUpperCase()
-                                  .replace(/[^0-9A-Z]/g, ""),
-                              );
-                              clearError("documentSerial");
-                            }}
-                            maxLength={8}
-                            autoComplete="off"
-                            aria-label="Belge seri numarası"
-                            placeholder="AA999999"
-                          />
+                          <button
+                            type="button"
+                            className={`quote__toggle-option ${hasPlate ? "quote__toggle-option--active" : ""}`}
+                            onClick={() => switchHasPlate(true)}
+                          >
+                            Plaka Var
+                          </button>
+                          <button
+                            type="button"
+                            className={`quote__toggle-option ${!hasPlate ? "quote__toggle-option--active" : ""}`}
+                            onClick={() => switchHasPlate(false)}
+                          >
+                            Plaka Yok
+                          </button>
                         </div>
-                        {errors.plate && (
-                          <span className="quote__error">{errors.plate}</span>
+
+                        <div className="quote__field quote__field--full">
+                          <span>Araç Bilgileri</span>
+                          {hasPlate ? (
+                          <>
+                            <div
+                              className={`quote__vehicle-input ${
+                                errors.plate || errors.documentSerial
+                                  ? "quote__vehicle-input--error"
+                                  : ""
+                              }`}
+                            >
+                              <span className="quote__plate-country" aria-hidden="true">
+                                TR
+                              </span>
+                              <input
+                                type="text"
+                                className="quote__vehicle-field quote__plate-field"
+                                value={plate}
+                                onChange={(event) => {
+                                  setPlate(
+                                    event.target.value
+                                      .replace(/ı/g, "I")
+                                      .toUpperCase()
+                                      .replace(/[^0-9A-Z ]/g, ""),
+                                  );
+                                  clearError("plate");
+                                }}
+                                maxLength={10}
+                                autoComplete="off"
+                                aria-label="Plaka"
+                                placeholder="06 TC 001"
+                              />
+                              <span className="quote__vehicle-divider" aria-hidden="true" />
+                              <input
+                                type="text"
+                                className="quote__vehicle-field quote__serial-field"
+                                value={documentSerial}
+                                onChange={(event) => {
+                                  setDocumentSerial(
+                                    event.target.value
+                                      .replace(/ı/g, "I")
+                                      .toUpperCase()
+                                      .replace(/[^0-9A-Z]/g, ""),
+                                  );
+                                  clearError("documentSerial");
+                                }}
+                                maxLength={8}
+                                autoComplete="off"
+                                aria-label="Belge seri numarası"
+                                placeholder="AA999999"
+                              />
+                            </div>
+                            {errors.plate && (
+                              <span className="quote__error">{errors.plate}</span>
+                            )}
+                            {errors.documentSerial && (
+                              <span className="quote__error">{errors.documentSerial}</span>
+                            )}
+                            <button
+                              type="button"
+                              className="quote__serial-help"
+                              onClick={() => setSerialHelpOpen(true)}
+                            >
+                              Ruhsat seri numaramı bulamıyorum
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <input
+                              type="text"
+                              className="quote__input"
+                              value={engineNo}
+                              onChange={(event) => {
+                                setEngineNo(
+                                  event.target.value
+                                    .replace(/ı/g, "I")
+                                    .toUpperCase()
+                                    .replace(/[^0-9A-Z-]/g, ""),
+                                );
+                              }}
+                              maxLength={20}
+                              autoComplete="off"
+                              aria-label="Motor numarası"
+                              placeholder="Motor No"
+                            />
+                            <input
+                              type="text"
+                              className={`quote__input ${errors.chassisNo ? "quote__input--error" : ""}`}
+                              value={chassisNo}
+                              onChange={(event) => {
+                                setChassisNo(
+                                  event.target.value
+                                    .replace(/ı/g, "I")
+                                    .toUpperCase()
+                                    .replace(/[^0-9A-Z]/g, ""),
+                                );
+                                clearError("chassisNo");
+                              }}
+                              maxLength={17}
+                              autoComplete="off"
+                              aria-label="Şasi numarası"
+                              placeholder="Şasi No (17 karakter)"
+                            />
+                            {errors.chassisNo && (
+                              <span className="quote__error">{errors.chassisNo}</span>
+                            )}
+                          </>
                         )}
-                        {errors.documentSerial && (
-                          <span className="quote__error">{errors.documentSerial}</span>
-                        )}
-                      </label>
+                        </div>
+
+                        <label className="quote__field quote__field--full">
+                          <span>Doğum Tarihi</span>
+                          <input
+                            type="date"
+                            className={`quote__input ${errors.birthDate ? "quote__input--error" : ""}`}
+                            value={birthDate}
+                            max={getMaxBirthDate()}
+                            onChange={(event) => {
+                              setBirthDate(event.target.value);
+                              clearError("birthDate");
+                            }}
+                          />
+                          {errors.birthDate && (
+                            <span className="quote__error">{errors.birthDate}</span>
+                          )}
+                        </label>
+                      </>
                     ) : (
-                      <label className="quote__field">
-                        <span>Telefon Numarası</span>
-                        <input
-                          type="tel"
-                          className={`quote__input ${errors.phone ? "quote__input--error" : ""}`}
-                          placeholder="05XX XXX XX XX"
-                          value={phone}
-                          onChange={(event) => {
-                            setPhone(formatPhoneInput(event.target.value));
-                            clearError("phone");
-                          }}
-                        />
-                        {errors.phone && (
-                          <span className="quote__error">{errors.phone}</span>
-                        )}
-                      </label>
+                      <>
+                        <label className="quote__field">
+                          <span>Doğum Tarihi</span>
+                          <input
+                            type="date"
+                            className={`quote__input ${errors.birthDate ? "quote__input--error" : ""}`}
+                            value={birthDate}
+                            max={getMaxBirthDate()}
+                            onChange={(event) => {
+                              setBirthDate(event.target.value);
+                              clearError("birthDate");
+                            }}
+                          />
+                          {errors.birthDate && (
+                            <span className="quote__error">{errors.birthDate}</span>
+                          )}
+                        </label>
+                        <label className="quote__field">
+                          <span>Telefon Numarası</span>
+                          <input
+                            type="tel"
+                            className={`quote__input ${errors.phone ? "quote__input--error" : ""}`}
+                            placeholder="05XX XXX XX XX"
+                            value={phone}
+                            onChange={(event) => {
+                              setPhone(formatPhoneInput(event.target.value));
+                              clearError("phone");
+                            }}
+                          />
+                          {errors.phone && (
+                            <span className="quote__error">{errors.phone}</span>
+                          )}
+                        </label>
+                      </>
                     )}
 
                     <div className="quote__consents">
@@ -607,6 +818,45 @@ export default function QuotePage() {
           </div>
         </div>
       </div>
+
+      {serialHelpOpen && (
+        <div
+          className="quote__modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Ruhsat seri numarası nerede?"
+          onClick={() => setSerialHelpOpen(false)}
+        >
+          <div
+            className="quote__modal"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="quote__modal-close"
+              onClick={() => setSerialHelpOpen(false)}
+              aria-label="Kapat"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M18 6L6 18M6 6l12 12"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+            <h3 className="quote__modal-title">
+              Ruhsat seri numaranızı nerede bulabilirsiniz?
+            </h3>
+            <img
+              src="/ruhsat-seri.jpg"
+              alt="Araç ruhsatında seri numarasının yeri"
+              className="quote__modal-image"
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }

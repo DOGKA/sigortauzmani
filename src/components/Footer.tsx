@@ -1,4 +1,3 @@
-import { useRef } from "react";
 import { Link } from "react-router-dom";
 import "./Footer.css";
 
@@ -18,39 +17,14 @@ const columns = [
 ];
 
 export default function Footer() {
-  const sceneRef = useRef<HTMLDivElement>(null);
-
-  const handleMove = (event: React.MouseEvent<HTMLElement>) => {
-    const scene = sceneRef.current;
-    if (!scene) return;
-
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = (event.clientX - rect.left) / rect.width - 0.5;
-    const y = (event.clientY - rect.top) / rect.height - 0.5;
-    scene.style.setProperty("--tilt-x", `${x * 10}`);
-    scene.style.setProperty("--tilt-y", `${y * 10}`);
-  };
-
-  const handleLeave = () => {
-    const scene = sceneRef.current;
-    if (!scene) return;
-    scene.style.setProperty("--tilt-x", "0");
-    scene.style.setProperty("--tilt-y", "0");
-  };
-
   return (
-    <footer className="footer" onMouseMove={handleMove} onMouseLeave={handleLeave}>
+    <footer className="footer">
       <div className="footer__bg" aria-hidden="true">
         <div className="footer__blob footer__blob--1" />
         <div className="footer__blob footer__blob--2" />
-        <div className="footer__grid-pattern" />
-      </div>
-
-      <div className="footer__scene" ref={sceneRef} aria-hidden="true">
-        <span className="footer__orb footer__orb--1" />
-        <span className="footer__orb footer__orb--2" />
-        <span className="footer__orb footer__orb--3" />
-        <span className="footer__ring" />
+        <div className="footer__floor" />
+        <div className="footer__beam" />
+        <div className="footer__vignette" />
       </div>
 
       <div className="footer__inner">

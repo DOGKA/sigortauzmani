@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import MatrixBackground from "@/components/MatrixBackground";
 import SigninForm from "@/components/SigninForm";
 import JuststackLogo from "@/components/JuststackLogo";
@@ -59,22 +60,15 @@ export default function SignInPage() {
             {/* Glassmorphism kart */}
             <div className="relative rounded-3xl border border-white/10 bg-white/[0.06] p-8 shadow-2xl backdrop-blur-2xl">
               <div className="mb-8 text-center">
-                <div className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-blue-600 shadow-lg shadow-sky-500/30">
-                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path
-                      d="M12 3 5 6v5c0 4.4 3 8.4 7 9.6 4-1.2 7-5.2 7-9.6V6l-7-3Z"
-                      stroke="#fff"
-                      strokeWidth="1.8"
-                      strokeLinejoin="round"
-                    />
-                    <path
-                      d="m9 12 2 2 4-4"
-                      stroke="#fff"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-white shadow-lg shadow-sky-500/20">
+                  <Image
+                    src="/logo.svg"
+                    alt="Sigorta Uzmanı"
+                    width={44}
+                    height={44}
+                    className="h-11 w-11"
+                    priority
+                  />
                 </div>
                 <h2 className="text-2xl font-bold text-white">Hoş Geldiniz</h2>
                 <p className="mt-2 text-sm text-white/50">
@@ -87,19 +81,15 @@ export default function SignInPage() {
               {/* Kart altı footer */}
               <div className="mt-8">
                 <div className="my-4 h-px bg-white/10" />
-                <div className="flex items-center justify-center gap-2.5">
-                  <JuststackLogo
-                    className="shrink-0"
-                    width={102}
-                    height={17}
-                  />
-                  <p className="text-xs text-white">
+                <div className="flex flex-col items-center gap-2">
+                  <JuststackLogo className="shrink-0 opacity-80" width={120} height={20} />
+                  <p className="text-center text-xs text-white/80">
                     © 2026 Juststack Software & Technology
                   </p>
+                  <p className="text-center text-xs text-white/80">
+                    Tüm hakları saklıdır.
+                  </p>
                 </div>
-                <p className="mt-1 text-center text-xs text-white">
-                  Tüm hakları saklıdır.
-                </p>
               </div>
             </div>
           </div>

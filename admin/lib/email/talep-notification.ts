@@ -4,11 +4,15 @@ export interface TalepEmailPayload {
   talep_no: string;
   product_title: string;
   insured_for?: string | null;
+  entity_type?: "sahis" | "sirket" | null;
   tckn?: string | null;
+  vergi_no?: string | null;
   phone?: string | null;
   birth_date?: string | null;
   plate?: string | null;
   document_serial?: string | null;
+  motor_no?: string | null;
+  sasi_no?: string | null;
 }
 
 function formatDate(iso: string | null | undefined) {
@@ -43,11 +47,11 @@ export function buildTalepEmailHtml(talep: TalepEmailPayload) {
           ${row("Sigorta Türü", talep.product_title)}
           ${row("Talep No", talep.talep_no)}
           ${row("Sigortalanacak Kişi", talep.insured_for)}
-          ${row("T.C. Kimlik No", talep.tckn)}
+          ${row("Sigortalı Türü", talep.entity_type === "sirket" ? "Şirket" : talep.entity_type === "sahis" ? "Şahıs" : null)}
+          ${talep.entity_type === "sirket" ? row("Vergi No", talep.vergi_no) : row("T.C. Kimlik No", talep.tckn)}
           ${row("Cep Telefonu", talep.phone)}
           ${row("Doğum Tarihi", formatDate(talep.birth_date))}
-          ${row("Plaka", talep.plate)}
-          ${row("Belge Seri No", talep.document_serial)}
+          ${talep.motor_no || talep.sasi_no ? `${row("Motor No", talep.motor_no)}${row("Şasi No", talep.sasi_no)}` : `${row("Plaka", talep.plate)}${row("Belge Seri No", talep.document_serial)}`}
         </table>
         <p style="margin:20px 0 0;padding:14px 16px;background:#f8fafc;border-radius:12px;color:#475569;font-size:13px;line-height:1.6;">
           Bu talep web sitesi üzerinden oluşturuldu. Detayları admin paneldeki

@@ -170,6 +170,10 @@
   font-weight: 600;
 }
 
+.quote__field--full {
+  grid-column: 1 / -1;
+}
+
 .quote__select {
   cursor: pointer;
 }
@@ -278,6 +282,114 @@
   background: rgba(16, 28, 48, 0.12);
 }
 
+/* --- segmented toggle (şahıs/şirket, plaka var/yok) --- */
+.quote__toggle {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 14px;
+  border: 1px solid rgba(16, 28, 48, 0.12);
+  background: rgba(16, 28, 48, 0.04);
+}
+
+.quote__toggle-option {
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-500);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.quote__toggle-option:hover:not(.quote__toggle-option--active) {
+  color: var(--brand-600);
+}
+
+.quote__toggle-option--active {
+  color: var(--brand-600);
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(16, 28, 48, 0.1);
+}
+
+.quote__serial-help {
+  align-self: flex-start;
+  padding: 0;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--brand-600);
+  background: transparent;
+  cursor: pointer;
+}
+
+.quote__serial-help:hover {
+  text-decoration: underline;
+}
+
+/* --- ruhsat seri no yardım modalı --- */
+.quote__modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(9, 18, 34, 0.55);
+  backdrop-filter: blur(4px);
+}
+
+.quote__modal {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: calc(100vh - 40px);
+  overflow: auto;
+  padding: 24px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 24px 60px -18px rgba(9, 18, 34, 0.45);
+}
+
+.quote__modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--ink-500);
+  background: rgba(16, 28, 48, 0.06);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.quote__modal-close:hover {
+  color: var(--ink-900);
+  background: rgba(16, 28, 48, 0.12);
+}
+
+.quote__modal-title {
+  margin: 0 32px 16px 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.quote__modal-image {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+}
+
 .quote__why {
   display: flex;
   align-items: center;
@@ -290,6 +402,19 @@
 
 .quote__why:hover {
   text-decoration: underline;
+}
+
+.quote__why-info {
+  grid-column: 1 / -1;
+  margin: -4px 0 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(45, 126, 245, 0.07);
+  border: 1px solid rgba(45, 126, 245, 0.18);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-500);
+  line-height: 1.6;
 }
 
 .quote__submit {
