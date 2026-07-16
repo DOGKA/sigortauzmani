@@ -657,7 +657,7 @@ export default function QuotePage() {
                               className="quote__serial-help"
                               onClick={() => setSerialHelpOpen(true)}
                             >
-                              Ruhsat seri numaramı bulamıyorum
+                              Ruhsat seri numaramı bulamıyorum?
                             </button>
                           </>
                         ) : (
@@ -758,41 +758,36 @@ export default function QuotePage() {
                       </>
                     )}
 
-                    <div className="quote__consents">
-                      <label className="quote__consent">
-                        <input
-                          type="checkbox"
-                          checked={kvkkAccepted}
-                          onChange={(event) => setKvkkAccepted(event.target.checked)}
-                          required
-                        />
-                        <span>
-                          <button type="button" className="quote__consent-link">
-                            KVKK Aydınlatma Metni
-                          </button>
-                          &rsquo;ni okudum, kişisel verilerimin işlenmesini kabul
-                          ediyorum.
-                        </span>
-                      </label>
-                      <label className="quote__consent">
-                        <input
-                          type="checkbox"
-                          checked={privacyAccepted}
-                          onChange={(event) => setPrivacyAccepted(event.target.checked)}
-                          required
-                        />
-                        <span>
-                          <button type="button" className="quote__consent-link">
-                            Gizlilik Politikası
-                          </button>
-                          &rsquo;nı okudum, kabul ediyorum.
-                        </span>
-                      </label>
-                    </div>
+                    <div className="quote__form-footer">
+                      <div className="quote__consents">
+                        <label className="quote__consent">
+                          <input
+                            type="checkbox"
+                            checked={kvkkAccepted && privacyAccepted}
+                            onChange={(event) => {
+                              setKvkkAccepted(event.target.checked);
+                              setPrivacyAccepted(event.target.checked);
+                            }}
+                            required
+                          />
+                          <span>
+                            <button type="button" className="quote__consent-link">
+                              KVKK
+                            </button>
+                            {" ve "}
+                            <button type="button" className="quote__consent-link">
+                              Gizlilik Politikası
+                            </button>
+                            &rsquo;nı okudum; kişisel verilerimin işlenmesini
+                            kabul ediyorum.
+                          </span>
+                        </label>
+                      </div>
 
-                    <button type="submit" className="quote__submit">
-                      Teklifleri Gör
-                    </button>
+                      <button type="submit" className="quote__submit">
+                        Teklifleri Gör
+                      </button>
+                    </div>
                   </form>
                 )}
               </>
@@ -804,16 +799,12 @@ export default function QuotePage() {
           <img src={product.icon} alt="" className="quote__icon" />
           <div>
             <h1 className="quote__title">
-              {product.title} Fiyatları 2026 için Teklif Al
+              {product.seoTitle}
             </h1>
             <ul className="quote__bullets">
-              <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit sed do eiusmod.</li>
-              <li>Tempor incididunt ut labore et dolore magna aliqua enim ad minim.</li>
-              <li>Veniam quis nostrud exercitation ullamco laboris nisi ut aliquip.</li>
-              <li>
-                Ex ea commodo consequat duis aute irure dolor in reprehenderit in
-                voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-              </li>
+              {product.seoBullets.map((bullet) => (
+                <li key={bullet}>{bullet}</li>
+              ))}
             </ul>
           </div>
         </div>
