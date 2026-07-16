@@ -1,14 +1,57 @@
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { products } from "../data/products";
+import vehicleGroupIcon from "../assets/menu/menu-arac-3d.png";
+import healthGroupIcon from "../assets/menu/menu-saglik-konut-3d.png";
 import "./Header.css";
 
-const menuItems = [
-  { label: "Lorem Ipsum", hasCaret: true },
-  { label: "Dolor Sit", hasCaret: false },
-  { label: "Amet Consectetur", hasCaret: false },
-  { label: "Adipiscing Elit", hasCaret: true },
+const VEHICLE_SLUGS = ["trafik-sigortasi", "kasko", "imm", "yesil-kart"];
+const HEALTH_HOME_SLUGS = [
+  "tamamlayici-saglik",
+  "ozel-saglik",
+  "seyahat-saglik",
+  "dask",
+];
+
+const productGroups = [
+  {
+    title: "Araç Sigortaları",
+    icon: vehicleGroupIcon,
+    items: VEHICLE_SLUGS.map(
+      (slug) => products.find((p) => p.slug === slug)!,
+    ),
+  },
+  {
+    title: "Sağlık ve Konut Sigortaları",
+    icon: healthGroupIcon,
+    items: HEALTH_HOME_SLUGS.map(
+      (slug) => products.find((p) => p.slug === slug)!,
+    ),
+  },
 ];
 
 export default function Header() {
+  const [productsOpen, setProductsOpen] = useState(false);
+  const navRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (!productsOpen) return;
+    const onOutsideClick = (event: MouseEvent) => {
+      if (!navRef.current?.contains(event.target as Node)) {
+        setProductsOpen(false);
+      }
+    };
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setProductsOpen(false);
+    };
+    document.addEventListener("mousedown", onOutsideClick);
+    document.addEventListener("keydown", onEscape);
+    return () => {
+      document.removeEventListener("mousedown", onOutsideClick);
+      document.removeEventListener("keydown", onEscape);
+    };
+  }, [productsOpen]);
+
   return (
     <header className="header">
       <div className="header__inner">
@@ -19,17 +62,80 @@ export default function Header() {
           </span>
         </Link>
 
-        <nav className="header__nav">
-          {menuItems.map((item) => (
-            <button key={item.label} className="header__nav-item">
-              {item.label}
-              {item.hasCaret && (
-                <svg width="10" height="6" viewBox="0 0 10 6" fill="none">
-                  <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              )}
+        <nav className="header__nav" ref={navRef}>
+          <button type="button" className="header__nav-item">
+            Hakkımızda
+          </button>
+
+          <div
+            className="header__nav-dropdown-wrap"
+            onMouseEnter={() => setProductsOpen(true)}
+            onMouseLeave={() => setProductsOpen(false)}
+          >
+            <button
+              type="button"
+              className={`header__nav-item ${productsOpen ? "header__nav-item--open" : ""}`}
+              aria-expanded={productsOpen}
+              aria-haspopup="true"
+              onClick={() => setProductsOpen(true)}
+            >
+              Ürünlerimiz
+              <svg
+                width="10"
+                height="6"
+                viewBox="0 0 10 6"
+                fill="none"
+                className={`header__caret ${productsOpen ? "header__caret--open" : ""}`}
+                aria-hidden="true"
+              >
+                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </button>
-          ))}
+
+            {productsOpen && (
+              <div className="header__mega" role="menu">
+                {productGroups.map((group) => (
+                  <div key={group.title} className="header__mega-group">
+                    <div className="header__mega-head">
+                      <span className="header__mega-icon">
+                        <img src={group.icon} alt="" />
+                      </span>
+                      <span className="header__mega-title">{group.title}</span>
+                    </div>
+                    <ul className="header__mega-list">
+                      {group.items.map((product) => (
+                        <li key={product.slug}>
+                          <Link
+                            to={`/teklif/${product.slug}`}
+                            className="header__mega-link"
+                            role="menuitem"
+                            onClick={() => setProductsOpen(false)}
+                          >
+                            {product.title}
+                            {product.badge && (
+                              <span className="header__mega-badge">
+                                {product.badge}
+                              </span>
+                            )}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <button type="button" className="header__nav-item">
+            Poliçe İptal İşlemleri
+          </button>
+          <button type="button" className="header__nav-item">
+            Sıkça Sorulanlar
+          </button>
+          <button type="button" className="header__nav-item">
+            İletişim
+          </button>
         </nav>
 
         <div className="header__right">

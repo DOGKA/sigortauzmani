@@ -16,8 +16,13 @@ export default function Hero() {
       </div>
 
       <div className="hero__content">
-        <h1 className="hero__title">Lorem Ipsum Dolor Sit Amet</h1>
-        <p className="hero__subtitle">Consectetur Adipiscing. Sed Do Eiusmod. Tempor Incididunt.</p>
+        <h1 className="hero__title">
+          Teklif Al <span className="hero__title-dot">·</span> Karşılaştır{" "}
+          <span className="hero__title-dot">·</span> Güvende Kal
+        </h1>
+        <p className="hero__subtitle">
+          Doğru sigorta. Uygun Fiyat. Hızlı Destek
+        </p>
 
         <div className="hero__cards">
           {products.map((product, i) => (

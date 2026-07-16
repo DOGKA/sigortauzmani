@@ -136,6 +136,11 @@
   color: var(--ink-900);
 }
 
+.hero__title-dot {
+  color: var(--brand-500);
+  font-weight: 400;
+}
+
 .hero__subtitle {
   margin-top: 12px;
   font-size: clamp(14px, 2vw, 17px);
