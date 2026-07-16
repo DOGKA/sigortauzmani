@@ -77,6 +77,7 @@ export default function QuotePage() {
   const [engineNo, setEngineNo] = useState("");
   const [chassisNo, setChassisNo] = useState("");
   const [serialHelpOpen, setSerialHelpOpen] = useState(false);
+  const [vehicleNoHelpOpen, setVehicleNoHelpOpen] = useState(false);
   const [whyInfoOpen, setWhyInfoOpen] = useState(false);
   const [kvkkAccepted, setKvkkAccepted] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
@@ -392,6 +393,24 @@ export default function QuotePage() {
                       className={`quote__step-dot ${i + 1 <= step ? "quote__step-dot--active" : ""}`}
                     />
                   ))}
+                  {step > 1 && (
+                    <button
+                      type="button"
+                      className="quote__step-back"
+                      onClick={() => setStep((current) => Math.max(1, current - 1))}
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path
+                          d="m15 18-6-6 6-6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                      Geri
+                    </button>
+                  )}
                   <span className="quote__step-label">
                     Adım {step}/{TOTAL_STEPS}
                   </span>
@@ -700,6 +719,13 @@ export default function QuotePage() {
                             {errors.chassisNo && (
                               <span className="quote__error">{errors.chassisNo}</span>
                             )}
+                            <button
+                              type="button"
+                              className="quote__serial-help"
+                              onClick={() => setVehicleNoHelpOpen(true)}
+                            >
+                              Motor ve Şasi numaramı bulamıyorum
+                            </button>
                           </>
                         )}
                         </div>
@@ -845,6 +871,47 @@ export default function QuotePage() {
               alt="Araç ruhsatında seri numarasının yeri"
               className="quote__modal-image"
             />
+          </div>
+        </div>
+      )}
+
+      {vehicleNoHelpOpen && (
+        <div
+          className="quote__modal-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Motor ve şasi numarası nerede?"
+          onClick={() => setVehicleNoHelpOpen(false)}
+        >
+          <div
+            className="quote__modal quote__modal--compact"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="quote__modal-close"
+              onClick={() => setVehicleNoHelpOpen(false)}
+              aria-label="Kapat"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path
+                  d="M18 6L6 18M6 6l12 12"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+            <h3 className="quote__modal-title">
+              Motor ve Şasi numaranızı nerede bulabilirsiniz?
+            </h3>
+            <p className="quote__modal-text">
+              Bu bilgileri, aracınızı satın alırken bayinin düzenlediği
+              proforma faturada bulabilirsiniz.
+            </p>
+            <p className="quote__modal-text">
+              Proforma faturanızı bayinizden talep edebilirsiniz.
+            </p>
           </div>
         </div>
       )}

@@ -155,6 +155,27 @@
   color: var(--ink-400);
 }
 
+.quote__step-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-left: auto;
+  padding: 3px 6px;
+  border-radius: 7px;
+  color: var(--brand-600);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.quote__step-back:hover {
+  background: rgba(45, 126, 245, 0.08);
+}
+
+.quote__step-back + .quote__step-label {
+  margin-left: 4px;
+}
+
 .quote__form {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -388,6 +409,21 @@
   display: block;
   width: 100%;
   border-radius: 12px;
+}
+
+.quote__modal--compact {
+  width: min(460px, 100%);
+}
+
+.quote__modal-text {
+  margin: 0;
+  color: var(--ink-500);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.quote__modal-text + .quote__modal-text {
+  margin-top: 8px;
 }
 
 .quote__why {
