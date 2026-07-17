@@ -822,7 +822,9 @@ export default function QuotePage() {
         </div>
 
         <div className="quote__info">
-          <img src={product.icon} alt="" className="quote__icon" />
+          <div className="quote__icon-wrap" data-product={product.slug}>
+            <img src={product.icon} alt="" className="quote__icon" />
+          </div>
           <div>
             <h1 className="quote__title">
               {product.seoTitle}

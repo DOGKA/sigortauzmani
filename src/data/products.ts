@@ -1,11 +1,11 @@
-import trafikIcon from "../assets/icons/trafik-yeni.svg";
-import kaskoIcon from "../assets/icons/trafik.svg";
-import tamamlayiciIcon from "../assets/icons/tamamlayici-saglik.svg";
-import seyahatIcon from "../assets/icons/seyahat-saglik.svg";
-import immIcon from "../assets/icons/imm.svg";
-import ozelSaglikIcon from "../assets/icons/ozel-saglik.svg";
-import daskIcon from "../assets/icons/dask.svg";
-import yesilKartIcon from "../assets/icons/yesil-kart.svg";
+import trafikIcon from "../assets/icons/3d/trafik-sigortasi.png";
+import kaskoIcon from "../assets/icons/3d/kasko.png";
+import tamamlayiciIcon from "../assets/icons/3d/tamamlayici-saglik.png";
+import seyahatIcon from "../assets/icons/3d/seyahat-saglik.png";
+import immIcon from "../assets/icons/3d/imm.png";
+import ozelSaglikIcon from "../assets/icons/3d/ozel-saglik.png";
+import daskIcon from "../assets/icons/3d/dask.png";
+import yesilKartIcon from "../assets/icons/3d/yesil-kart.png";
 
 export interface Product {
   slug: string;
