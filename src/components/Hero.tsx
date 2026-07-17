@@ -30,7 +30,6 @@ export default function Hero() {
               key={product.slug}
               to={`/teklif/${product.slug}`}
               className="product-card"
-              data-product={product.slug}
               style={{ animationDelay: `${i * 60}ms` }}
             >
               {product.badge && <span className="product-card__badge">{product.badge}</span>}
