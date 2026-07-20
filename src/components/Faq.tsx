@@ -33,7 +33,7 @@ export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="faq" aria-labelledby="faq-title">
+    <section className="faq" id="sss" aria-labelledby="faq-title">
       <div className="faq__inner">
         <div className="faq__heading">
           <span className="faq__eyebrow">Merak edilenler</span>

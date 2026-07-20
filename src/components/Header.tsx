@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { products } from "../data/products";
 import vehicleGroupIcon from "../assets/menu/menu-arac-3d.png";
 import healthGroupIcon from "../assets/menu/menu-saglik-konut-3d.png";
@@ -33,6 +33,9 @@ const productGroups = [
 export default function Header() {
   const [productsOpen, setProductsOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
+  const { pathname } = useLocation();
+  const comparisonActive = pathname.startsWith("/karsilastirma");
+  const cancelActive = pathname.startsWith("/police-iptal");
 
   useEffect(() => {
     if (!productsOpen) return;
@@ -127,12 +130,20 @@ export default function Header() {
             )}
           </div>
 
-          <button type="button" className="header__nav-item">
+          <Link
+            to="/police-iptal"
+            className={`header__nav-item ${cancelActive ? "header__nav-item--open" : ""}`}
+            aria-current={cancelActive ? "page" : undefined}
+          >
             Poliçe İptal İşlemleri
-          </button>
-          <button type="button" className="header__nav-item">
-            Sıkça Sorulanlar
-          </button>
+          </Link>
+          <Link
+            to="/karsilastirma"
+            className={`header__nav-item ${comparisonActive ? "header__nav-item--open" : ""}`}
+            aria-current={comparisonActive ? "page" : undefined}
+          >
+            Karşılaştırma
+          </Link>
           <button type="button" className="header__nav-item">
             İletişim
           </button>

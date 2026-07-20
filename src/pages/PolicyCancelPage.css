@@ -1,0 +1,560 @@
+.iptal {
+  position: relative;
+  overflow: hidden;
+  min-height: calc(100vh - 72px);
+  padding: 28px 24px 80px;
+}
+
+.iptal__bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.iptal__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.5;
+}
+
+.iptal__blob--1 {
+  width: 480px;
+  height: 480px;
+  top: -200px;
+  right: -140px;
+  background: radial-gradient(circle, rgba(45, 126, 245, 0.26), transparent 70%);
+}
+
+.iptal__blob--2 {
+  width: 400px;
+  height: 400px;
+  bottom: -160px;
+  left: -120px;
+  background: radial-gradient(circle, rgba(111, 165, 248, 0.2), transparent 70%);
+}
+
+.iptal__shell {
+  position: relative;
+  max-width: 1040px;
+  margin: 0 auto;
+}
+
+.iptal__breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: var(--ink-400);
+}
+
+.iptal__breadcrumb a:hover {
+  color: var(--brand-600);
+}
+
+.iptal__card {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  min-height: 520px;
+  border-radius: 20px;
+  border: 1px solid rgba(16, 28, 48, 0.08);
+  background: #fff;
+  box-shadow: 0 20px 48px -28px rgba(16, 28, 48, 0.35);
+  overflow: hidden;
+}
+
+.iptal__sidebar {
+  padding: 28px 22px;
+  border-right: 1px solid rgba(16, 28, 48, 0.08);
+  background: linear-gradient(180deg, #f8fbff 0%, #fff 100%);
+}
+
+.iptal__sidebar h1 {
+  margin-bottom: 22px;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink-900);
+  line-height: 1.25;
+}
+
+.iptal__side-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 28px;
+}
+
+.iptal__side-nav button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-700);
+  transition: color 0.15s, background-color 0.15s;
+}
+
+.iptal__side-nav button:hover {
+  background: rgba(45, 126, 245, 0.06);
+  color: var(--brand-600);
+}
+
+.iptal__side-nav button.is-active {
+  color: var(--brand-600);
+  background: rgba(45, 126, 245, 0.1);
+}
+
+.iptal__side-nav button span {
+  font-size: 18px;
+  line-height: 1;
+  color: var(--brand-500);
+}
+
+.iptal__info {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-500);
+}
+
+.iptal__info a {
+  color: var(--brand-600);
+  font-weight: 650;
+}
+
+.iptal__content {
+  padding: 28px 28px 32px;
+}
+
+.iptal__steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.iptal__step {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 650;
+  color: var(--ink-400);
+  background: rgba(16, 28, 48, 0.04);
+}
+
+.iptal__step.is-active {
+  color: var(--brand-700);
+  background: var(--brand-100);
+}
+
+.iptal__step.is-done {
+  color: var(--ink-700);
+  cursor: pointer;
+}
+
+.iptal__step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 800;
+  color: #fff;
+  background: #94a3b8;
+}
+
+.iptal__step.is-active .iptal__step-num,
+.iptal__step.is-done .iptal__step-num {
+  background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
+}
+
+.iptal__panel-lead {
+  margin: 0 0 20px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--ink-500);
+}
+
+.iptal__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.iptal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.iptal__field > span {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink-700);
+}
+
+.iptal__field input,
+.iptal__field select {
+  width: 100%;
+  padding: 13px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(16, 28, 48, 0.12);
+  background: #fff;
+  font-size: 15px;
+  color: var(--ink-900);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.iptal__field select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%236b7893' stroke-width='1.6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 40px;
+}
+
+.iptal__field input:focus,
+.iptal__field select:focus {
+  border-color: rgba(45, 126, 245, 0.5);
+  box-shadow: 0 0 0 3px rgba(45, 126, 245, 0.12);
+}
+
+.iptal__field input:disabled {
+  background: #f1f5f9;
+  color: var(--ink-400);
+  cursor: not-allowed;
+}
+
+.iptal__plate {
+  display: grid;
+  grid-template-columns: 72px 1fr 1fr;
+  gap: 10px;
+}
+
+.iptal__plate input {
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.iptal__error {
+  font-style: normal;
+  font-size: 12.5px;
+  color: #c03535;
+}
+
+.iptal__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.iptal__actions--end {
+  justify-content: flex-end;
+}
+
+.iptal__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 22px;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
+  box-shadow: 0 10px 22px -14px rgba(17, 85, 214, 0.8);
+  transition: transform 0.15s, opacity 0.15s;
+}
+
+.iptal__btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.iptal__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.iptal__btn--ghost {
+  color: var(--brand-700);
+  background: #fff;
+  border: 1px solid rgba(45, 126, 245, 0.3);
+  box-shadow: none;
+}
+
+.iptal__upload input[type="file"] {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.iptal__upload-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 160px;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1.5px dashed rgba(45, 126, 245, 0.4);
+  background: rgba(227, 237, 253, 0.35);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.iptal__upload-box:hover {
+  border-color: var(--brand-500);
+  background: rgba(227, 237, 253, 0.55);
+}
+
+.iptal__upload-box strong {
+  font-size: 16px;
+  color: var(--brand-700);
+}
+
+.iptal__upload-box span {
+  font-size: 13px;
+  color: var(--ink-400);
+}
+
+.iptal__submit-error {
+  margin-top: 14px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  font-size: 14px;
+}
+
+.iptal__success {
+  text-align: center;
+  padding: 24px 8px;
+}
+
+.iptal__success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+  border-radius: 50%;
+  font-size: 28px;
+  color: #fff;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+}
+
+.iptal__success h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--ink-900);
+}
+
+.iptal__success > p {
+  max-width: 420px;
+  margin: 10px auto 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-500);
+}
+
+.iptal__success-code {
+  margin: 24px auto;
+  padding: 16px 20px;
+  max-width: 360px;
+  border-radius: 14px;
+  background: var(--brand-100);
+  border: 1px solid rgba(45, 126, 245, 0.25);
+}
+
+.iptal__success-code span {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+
+.iptal__success-code strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--brand-700);
+}
+
+.iptal__success .iptal__actions {
+  justify-content: center;
+}
+
+.iptal__takip h2 {
+  margin-bottom: 10px;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ink-900);
+}
+
+.iptal__takip > p {
+  margin-bottom: 20px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-500);
+}
+
+.iptal__takip-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 420px;
+}
+
+.iptal__takip-form .iptal__btn {
+  align-self: flex-start;
+}
+
+.iptal__takip-result {
+  margin-top: 24px;
+  padding: 20px;
+  border-radius: 16px;
+  border: 1px solid rgba(16, 28, 48, 0.08);
+  background: linear-gradient(160deg, #fff, rgba(227, 237, 253, 0.35));
+}
+
+.iptal__takip-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.iptal__takip-status > span {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-400);
+}
+
+.iptal__takip-badge {
+  display: inline-flex;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.iptal__takip-badge--islemde {
+  color: #0369a1;
+  background: #e0f2fe;
+}
+
+.iptal__takip-badge--belge_eksik {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+.iptal__takip-badge--tamamlandi {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.iptal__takip-dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+}
+
+.iptal__takip-dl div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.iptal__takip-dl dt {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-400);
+}
+
+.iptal__takip-dl dd {
+  font-size: 15px;
+  font-weight: 650;
+  color: var(--ink-900);
+  word-break: break-word;
+}
+
+.iptal__takip-note-box {
+  margin-top: 16px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid rgba(180, 83, 9, 0.25);
+  background: #fffbeb;
+}
+
+.iptal__takip-note-box strong {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 13px;
+  color: #b45309;
+}
+
+.iptal__takip-note-box p {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-700);
+}
+
+.iptal__takip-privacy {
+  margin-top: 14px !important;
+  margin-bottom: 0 !important;
+  font-size: 12.5px !important;
+  color: var(--ink-400) !important;
+}
+
+@media (max-width: 860px) {
+  .iptal__card {
+    grid-template-columns: 1fr;
+  }
+
+  .iptal__sidebar {
+    border-right: 0;
+    border-bottom: 1px solid rgba(16, 28, 48, 0.08);
+  }
+
+  .iptal__content {
+    padding: 22px 18px 28px;
+  }
+
+  .iptal__plate {
+    grid-template-columns: 64px 1fr 1fr;
+  }
+
+  .iptal__takip-dl {
+    grid-template-columns: 1fr;
+  }
+}

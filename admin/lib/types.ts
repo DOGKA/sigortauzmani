@@ -42,3 +42,46 @@ export const STATUS_ORDER: TalepStatus[] = [
   "tamamlandi",
   "iptal",
 ];
+
+export type IptalBrans =
+  | "kasko"
+  | "trafik"
+  | "imm"
+  | "kisa_sureli_trafik";
+
+export type IptalStatus = "islemde" | "belge_eksik" | "tamamlandi";
+
+export interface IptalTalep {
+  id: string;
+  iptal_no: string;
+  brans: IptalBrans;
+  ad_soyad: string;
+  phone: string;
+  tckn: string | null;
+  vergi_no: string | null;
+  plate: string;
+  belge_path: string;
+  status: IptalStatus;
+  admin_note: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export const IPTAL_BRANS_LABELS: Record<IptalBrans, string> = {
+  kasko: "Kasko Poliçesi",
+  trafik: "Trafik Poliçesi",
+  imm: "IMM Poliçesi",
+  kisa_sureli_trafik: "Kısa Süreli Trafik Poliçesi",
+};
+
+export const IPTAL_STATUS_LABELS: Record<IptalStatus, string> = {
+  islemde: "İşlemde",
+  belge_eksik: "Belge Eksik",
+  tamamlandi: "Tamamlandı",
+};
+
+export const IPTAL_STATUS_ORDER: IptalStatus[] = [
+  "islemde",
+  "belge_eksik",
+  "tamamlandi",
+];

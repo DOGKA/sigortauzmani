@@ -6,7 +6,9 @@ export async function middleware(request: NextRequest) {
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   const isAuthPage = request.nextUrl.pathname.startsWith("/auth");
-  const isPublicApi = request.nextUrl.pathname.startsWith("/api/notify-talep");
+  const isPublicApi =
+    request.nextUrl.pathname.startsWith("/api/notify-talep") ||
+    request.nextUrl.pathname.startsWith("/api/notify-iptal");
 
   // Env eksikse auth sayfalarına ve public API'ye izin ver
   if (!supabaseUrl || !supabaseAnonKey) {

@@ -37,6 +37,16 @@ const NAV_ITEMS: NavItem[] = [
     ),
   },
   {
+    href: "/iptal-talepleri",
+    label: "İptal Talepleri",
+    icon: (
+      <svg {...iconProps}>
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" />
+        <path d="M14 2v6h6M9.5 15.5 14.5 10.5M9.5 10.5l5 5" />
+      </svg>
+    ),
+  },
+  {
     href: "/policeler",
     label: "Poliçeler",
     icon: (

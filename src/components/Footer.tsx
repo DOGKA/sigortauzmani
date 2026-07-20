@@ -1,18 +1,36 @@
 import { Link } from "react-router-dom";
 import "./Footer.css";
 
-const columns = [
+const columns: {
+  title: string;
+  links: { label: string; to?: string }[];
+}[] = [
   {
-    title: "Lorem Ipsum",
-    links: ["Dolor sit amet", "Consectetur elit", "Sed do eiusmod", "Tempor incididunt"],
+    title: "Ürünler",
+    links: [
+      { label: "Trafik Sigortası", to: "/teklif/trafik-sigortasi" },
+      { label: "Kasko", to: "/teklif/kasko" },
+      { label: "Tamamlayıcı Sağlık", to: "/teklif/tamamlayici-saglik" },
+      { label: "DASK", to: "/teklif/dask" },
+    ],
   },
   {
-    title: "Ut Labore",
-    links: ["Dolore magna", "Aliqua enim", "Minim veniam", "Quis nostrud"],
+    title: "Bilgi Merkezi",
+    links: [
+      { label: "Sıkça Sorulanlar", to: "/#sss" },
+      { label: "Sigorta Sözlüğü", to: "/sigorta-sozlugu" },
+      { label: "Karşılaştırma Merkezi", to: "/karsilastirma" },
+      { label: "Risk Haritası", to: "/risk-haritasi" },
+    ],
   },
   {
-    title: "Exercitation",
-    links: ["Ullamco laboris", "Nisi ut aliquip", "Ex ea commodo", "Duis aute irure"],
+    title: "Destek",
+    links: [
+      { label: "Teklif Al", to: "/teklif/kasko" },
+      { label: "Poliçe İptal", to: "/police-iptal" },
+      { label: "0850 302 00 32" },
+      { label: "İletişim" },
+    ],
   },
 ];
 
@@ -57,8 +75,14 @@ export default function Footer() {
                 <h3>{column.title}</h3>
                 <ul>
                   {column.links.map((link) => (
-                    <li key={link}>
-                      <button type="button">{link}</button>
+                    <li key={link.label}>
+                      {link.to ? (
+                        <Link to={link.to}>{link.label}</Link>
+                      ) : link.label.includes("0850") ? (
+                        <a href="tel:+908503020032">{link.label}</a>
+                      ) : (
+                        <button type="button">{link.label}</button>
+                      )}
                     </li>
                   ))}
                 </ul>

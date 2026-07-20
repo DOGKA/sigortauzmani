@@ -5,6 +5,11 @@ import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
 
 const QuotePage = lazy(() => import("./pages/QuotePage"));
+const RiskMapPage = lazy(() => import("./pages/RiskMapPage"));
+const GlossaryPage = lazy(() => import("./pages/GlossaryPage"));
+const ComparisonHubPage = lazy(() => import("./pages/ComparisonHubPage"));
+const ComparisonPage = lazy(() => import("./pages/ComparisonPage"));
+const PolicyCancelPage = lazy(() => import("./pages/PolicyCancelPage"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -26,6 +31,46 @@ export default function App() {
           element={
             <Suspense fallback={null}>
               <QuotePage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/risk-haritasi"
+          element={
+            <Suspense fallback={null}>
+              <RiskMapPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/sigorta-sozlugu"
+          element={
+            <Suspense fallback={null}>
+              <GlossaryPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/karsilastirma"
+          element={
+            <Suspense fallback={null}>
+              <ComparisonHubPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/karsilastirma/:slug"
+          element={
+            <Suspense fallback={null}>
+              <ComparisonPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/police-iptal"
+          element={
+            <Suspense fallback={null}>
+              <PolicyCancelPage />
             </Suspense>
           }
         />
