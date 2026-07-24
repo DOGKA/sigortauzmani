@@ -153,7 +153,7 @@ export default function PolicyCancelPage() {
 
     setSubmitting(false);
 
-    if (!result.ok) {
+    if (result.ok === false) {
       setSubmitError(result.error);
       return;
     }
@@ -168,7 +168,7 @@ export default function PolicyCancelPage() {
     setTakipResult(null);
     const result = await lookupIptalTakip(code);
     setTakipLoading(false);
-    if (!result.ok) {
+    if (result.ok === false) {
       setTakipError(result.error);
       return;
     }
