@@ -286,3 +286,100 @@ $$;
 grant execute on function public.get_iptal_takip(text) to anon;
 grant execute on function public.get_iptal_takip(text) to authenticated;
 
+-- ============================================================
+-- İletişim Talepleri
+-- ============================================================
+
+create table if not exists public.iletisim_talepleri (
+  id uuid primary key default gen_random_uuid(),
+  iletisim_no text not null unique,
+  ad_soyad text not null check (char_length(ad_soyad) between 2 and 100),
+  email text not null check (char_length(email) between 5 and 160),
+  konu text not null check (char_length(konu) between 3 and 160),
+  oncelik text not null default 'normal'
+    check (oncelik in ('normal', 'oncelikli', 'acil')),
+  mesaj text not null check (char_length(mesaj) between 10 and 3000),
+  belge_path text,
+  status text not null default 'yeni'
+    check (status in ('yeni', 'inceleniyor', 'yanitlandi', 'kapatildi')),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create index if not exists iletisim_talepleri_created_at_idx
+  on public.iletisim_talepleri (created_at desc);
+create index if not exists iletisim_talepleri_status_idx
+  on public.iletisim_talepleri (status);
+create index if not exists iletisim_talepleri_oncelik_idx
+  on public.iletisim_talepleri (oncelik);
+
+alter table public.iletisim_talepleri enable row level security;
+
+-- Site ziyaretçileri yalnızca yeni mesaj oluşturabilir; kayıt okuyamaz.
+drop policy if exists "anon can insert iletisim talep" on public.iletisim_talepleri;
+create policy "anon can insert iletisim talep"
+  on public.iletisim_talepleri for insert
+  to anon
+  with check (status = 'yeni');
+
+drop policy if exists "authenticated can select iletisim talep" on public.iletisim_talepleri;
+create policy "authenticated can select iletisim talep"
+  on public.iletisim_talepleri for select
+  to authenticated
+  using (true);
+
+drop policy if exists "authenticated can update iletisim talep" on public.iletisim_talepleri;
+create policy "authenticated can update iletisim talep"
+  on public.iletisim_talepleri for update
+  to authenticated
+  using (true)
+  with check (true);
+
+create or replace function public.set_iletisim_updated_at()
+returns trigger
+language plpgsql
+as $$
+begin
+  new.updated_at = now();
+  return new;
+end;
+$$;
+
+drop trigger if exists iletisim_talepleri_set_updated_at on public.iletisim_talepleri;
+create trigger iletisim_talepleri_set_updated_at
+  before update on public.iletisim_talepleri
+  for each row
+  execute function public.set_iletisim_updated_at();
+
+-- İletişim belgeleri private saklanır.
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values (
+  'iletisim-belgeleri',
+  'iletisim-belgeleri',
+  false,
+  5242880,
+  array['application/pdf', 'image/jpeg', 'image/png', 'image/webp']
+)
+on conflict (id) do update set
+  public = false,
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
+
+drop policy if exists "anon can upload iletisim belge" on storage.objects;
+create policy "anon can upload iletisim belge"
+  on storage.objects for insert
+  to anon
+  with check (bucket_id = 'iletisim-belgeleri');
+
+drop policy if exists "authenticated can read iletisim belge" on storage.objects;
+create policy "authenticated can read iletisim belge"
+  on storage.objects for select
+  to authenticated
+  using (bucket_id = 'iletisim-belgeleri');
+
+drop policy if exists "authenticated can delete iletisim belge" on storage.objects;
+create policy "authenticated can delete iletisim belge"
+  on storage.objects for delete
+  to authenticated
+  using (bucket_id = 'iletisim-belgeleri');
+

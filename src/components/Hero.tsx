@@ -1,17 +1,13 @@
 import { Link } from "react-router-dom";
 import { products } from "../data/products";
+import HeroScene from "./HeroScene";
 import "./Hero.css";
 
 export default function Hero() {
   return (
     <section className="hero">
       <div className="hero__bg" aria-hidden="true">
-        <div className="hero__blob hero__blob--1" />
-        <div className="hero__blob hero__blob--2" />
-        <div className="hero__blob hero__blob--3" />
-        <div className="hero__floor" />
-        <div className="hero__beam hero__beam--1" />
-        <div className="hero__beam hero__beam--2" />
+        <HeroScene />
         <div className="hero__vignette" />
       </div>
 
@@ -40,8 +36,6 @@ export default function Hero() {
             </Link>
           ))}
         </div>
-
-        <button className="hero__all-link">Tüm ürünleri gör</button>
       </div>
     </section>
   );

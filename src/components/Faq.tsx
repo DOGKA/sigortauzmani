@@ -5,7 +5,7 @@ const FAQ_ITEMS = [
   {
     question: "Neden Sigorta Uzmanı'nı tercih etmeliyim, farkınız nedir?",
     answer:
-      "Sigorta Uzmanı, müşterilerini temsil eden ve onların menfaatleri doğrultusunda hareket eden bir sigorta brokeridir. Bu misyonla her zaman müşterilerimizin tarafındayız; 30'a yakın sigorta şirketinin teklifini tek bir sayfada görmenizi, hem teminatları hem de fiyatları objektif olarak karşılaştırmanızı sağlıyoruz. Böylece ihtiyacınıza en uygun sigortayı kolayca belirliyor ve online olarak satın alabiliyorsunuz. Ayrıca satış sonrası herhangi bir ihtiyacınızda tecrübeli ekibimiz 7/24 desteğe hazır.",
+      "Sigorta Uzmanı, anlaşmalı olduğu 30'a yakın sigorta şirketinin tekliflerini sizin için araştıran ve karşılaştıran deneyimli bir sigorta acentesidir. İhtiyaçlarınıza uygun seçenekleri yalnızca fiyatlarıyla değil; teminatları, kapsamları ve avantajlarıyla birlikte değerlendirerek karar vermenizi kolaylaştırırız. Amacımız sadece en ucuz poliçeyi sunmak değil, doğru teminatlarla en uygun sigortayı bulmanıza yardımcı olmaktır. Poliçe düzenlendikten sonra da yenileme, değişiklik ve hasar süreçlerinde uzman ekibimizle yanınızda olmaya devam ederiz.",
   },
   {
     question: "Poliçe satışında müşterilerden ek ücret alıyor musunuz?",
@@ -15,7 +15,7 @@ const FAQ_ITEMS = [
   {
     question: "Poliçe fiyatlarında indirim yapıyor musunuz?",
     answer:
-      "Poliçe fiyatları, sigorta şirketleri tarafından yasal düzenlemeler çerçevesinde belirlenir; bu nedenle aynı poliçe her kanalda aynı fiyattır. Bizim farkımız, 30'a yakın sigorta şirketinin teklifini aynı anda karşılaştırarak size en uygun fiyatlı ve en kapsamlı seçeneği bulmanızı sağlamamızdır.",
+      "Poliçe fiyatları, sigorta şirketleri tarafından yasal düzenlemeler çerçevesinde belirlenir. Bizim farkımız, 30'a yakın sigorta şirketinin teklifini aynı anda karşılaştırarak size en uygun fiyatlı ve en kapsamlı seçeneği bulmanızı sağlamamızdır.",
   },
   {
     question: "En iyi sigorta teklifini nasıl seçeceğim?",

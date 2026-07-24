@@ -44,6 +44,10 @@ export interface Comparison {
   seoTitle: string;
   seoDescription: string;
   summary: string;
+  /** Detay sayfası hero H1'i — SEO odaklı, ürün adlarını içeren başlık */
+  heroTitle: string;
+  /** Hero altındaki açıklayıcı paragraflar; ilki öne çıkan giriş cümlesidir */
+  heroIntro: string[];
   popular?: boolean;
   badge?: string;
   rows: ComparisonRow[];
@@ -78,6 +82,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "Trafik sigortası ile kasko arasındaki farklar: teminatlar, fiyat, cam, sel, dolu, hırsızlık ve kimler yaptırmalı. 2026 güncel karşılaştırma.",
     summary: "En popüler karşılaştırma. Zorunlu trafik sigortası karşı tarafı; kasko kendi aracınızı güvenceye alır.",
+    heroTitle: "Trafik Sigortası ile Kasko Arasındaki Farklar Nelerdir?",
+    heroIntro: [
+      "Zorunlu trafik sigortası, Karayolları Trafik Kanunu uyarınca her motorlu araç sahibinin yaptırmak zorunda olduğu ve kazada karşı tarafa verilen bedeni ve maddi zararları poliçe limitleri dahilinde karşılayan bir sorumluluk sigortasıdır. Kasko ise çarpma, çarpılma, yangın, hırsızlık ve doğal afet gibi risklere karşı aracınızın kendisini güvence altına alan isteğe bağlı bir mal sigortasıdır.",
+      "Bu rehberde iki ürünün teminat kapsamını madde madde karşılaştırıyor; cam, sel, dolu ve hırsızlık gibi kritik başlıklarda hangi poliçenin devreye girdiğini, prim farklarını ve hangi sürücü profiline hangi kombinasyonun uygun olduğunu teknik bir çerçevede açıklıyoruz.",
+    ],
     popular: true,
     badge: "En popüler",
     rows: [
@@ -147,7 +156,6 @@ export const comparisons: Comparison[] = [
     ctaSlug: "kasko",
     relatedSlugs: [
       "kasko-vs-genisletilmis-kasko",
-      "dar-kasko-vs-tam-kasko",
       "imm-vs-yuksek-teminatli-imm",
     ],
   },
@@ -161,6 +169,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "Standart kasko ile genişletilmiş kasko teminat farkları, ek hizmetler, fiyat farkı ve kimlere uygun olduğu.",
     summary: "Teminat farkları, ek hizmetler ve fiyat farkıyla hangi paketin size uygun olduğunu görün.",
+    heroTitle: "Kasko ile Genişletilmiş Kasko Arasındaki Farklar",
+    heroIntro: [
+      "Standart kasko; çarpma, çarpılma, yangın ve hırsızlık gibi temel riskleri teminat altına alırken, genişletilmiş kasko bu kapsamı sel, dolu, terör, cam kırılması ve anahtar kaybı gibi ek teminatlarla, mini onarım ve ikame araç gibi ek hizmetlerle güçlendirir.",
+      "Aşağıdaki karşılaştırmada iki paket arasındaki teminat ve prim farklarını, bulunduğunuz ilin risk profiline göre hangi seçeneğin daha verimli olduğunu ve satın alma öncesinde poliçe özel şartlarında kontrol etmeniz gereken maddeleri bulabilirsiniz.",
+    ],
     rows: [
       { label: "Teminat kapsamı", left: "Temel riskler (çarışma, yangın, hırsızlık vb.)", right: "Temel + ek riskler (sel, dolu, terör vb.)" },
       { label: "Ek hizmetler", left: "Sınırlı", right: "Mini onarım, ikame araç, cam vb. daha geniş" },
@@ -191,97 +204,7 @@ export const comparisons: Comparison[] = [
       },
     ],
     ctaSlug: "kasko",
-    relatedSlugs: ["trafik-sigortasi-vs-kasko", "dar-kasko-vs-tam-kasko"],
-  },
-  {
-    slug: "dar-kasko-vs-tam-kasko",
-    category: "arac",
-    left: { name: "Dar Kasko", productSlug: "kasko" },
-    right: { name: "Tam Kasko", productSlug: "kasko" },
-    shortTitle: "Dar Kasko vs Tam Kasko",
-    seoTitle: "Dar Kasko vs Tam Kasko Farkları 2026",
-    seoDescription:
-      "Dar kasko ve tam kasko hangi riskleri kapsar, fiyat avantajı nedir ve kimler tercih etmeli?",
-    summary: "Hangi riskler var, fiyat avantajı kimde ve kimler tercih etmeli?",
-    rows: [
-      { label: "Hangi riskler var?", left: "Sınırlı seçilmiş riskler", right: "Geniş / tam teminat paketi" },
-      { label: "Fiyat avantajı", left: "Daha uygun prim", right: "Daha kapsamlı, daha yüksek prim" },
-      { label: "Kimler tercih etmeli?", left: "Eski araç, düşük bütçe", right: "Yeni / kredili / yüksek değerli araç" },
-    ],
-    advantages: {
-      left: ["Uygun fiyat", "Seçili risklerde koruma"],
-      right: ["Maksimum güvence", "Çoğu hasar senaryosunda kapsama"],
-    },
-    disadvantages: {
-      left: ["Kapsam dışı kalan riskler yüksek olabilir"],
-      right: ["Prim yükü daha fazla"],
-    },
-    whoFor: {
-      left: "Araç değeri düşük, belirli riskleri seçmek isteyenler.",
-      right: "Aracını tam güvenceye almak isteyenler.",
-    },
-    verdict: "Dar kasko fiyat; tam kasko kapsam odaklıdır. Araç değeri yükseldikçe tam kasko daha mantıklıdır.",
-    recommendation: "depends",
-    recommendationText:
-      "Kredili veya sıfır araçlarda tam kasko; düşük değerli araçlarda dar kasko ile başlayabilirsiniz.",
-    faqs: [
-      {
-        q: "Dar kasko zorunlu mu?",
-        a: "Hayır. Kasko tamamen isteğe bağlıdır; dar veya tam paket seçimi size kalır.",
-      },
-    ],
-    ctaSlug: "kasko",
-    relatedSlugs: ["kasko-vs-genisletilmis-kasko", "trafik-sigortasi-vs-kasko"],
-  },
-  {
-    slug: "elektrikli-arac-kaskosu-vs-standart-kasko",
-    category: "arac",
-    left: { name: "Elektrikli Araç Kaskosu", productSlug: "kasko" },
-    right: { name: "Standart Kasko", productSlug: "kasko" },
-    shortTitle: "EV Kaskosu vs Standart Kasko",
-    seoTitle: "Elektrikli Araç Kaskosu vs Standart Kasko 2026",
-    seoDescription:
-      "EV kaskosunda batarya, şarj kablosu, wallbox, yazılım hasarı ve yetkili servis ağı farkları.",
-    summary: "Batarya, şarj kablosu, wallbox, yol yardım ve yazılım kaynaklı hasarlar açısından farklar.",
-    popular: true,
-    badge: "EV",
-    rows: [
-      { label: "Batarya teminatı", left: "Özel / genişletilmiş kapsama", right: "Genelde yok veya sınırlı" },
-      { label: "Şarj kablosu", left: "Pakete göre dahil", right: "Genelde kapsam dışı" },
-      { label: "Wallbox", left: "Ek teminat olarak sunulabilir", right: "Konut/ayrı poliçe gerekebilir" },
-      { label: "Yol yardım", left: "EV’ye özel çekici / şarj destekli", right: "Standart yol yardım" },
-      { label: "Yazılım kaynaklı hasarlar", left: "Bazı poliçelerde değerlendirilir", right: "Genelde kapsam dışı" },
-      { label: "Yetkili servis ağı", left: "EV yetkili servis odaklı", right: "Genel yetkili / anlaşmalı ağ" },
-    ],
-    advantages: {
-      left: ["Batarya ve şarj ekipmanı koruması", "EV’ye özel yol yardım"],
-      right: ["Daha yaygın ve bilinen ürün", "Bazı araçlar için yeterli olabilir"],
-    },
-    disadvantages: {
-      left: ["Prim daha yüksek olabilir", "Tüm şirketlerde aynı kapsam yoktur"],
-      right: ["Batarya ve wallbox için açık bırakabilir"],
-    },
-    whoFor: {
-      left: "Elektrikli veya plug-in hibrit araç sahipleri.",
-      right: "Benzinli/dizel araç sahipleri veya EV teminatı istemeyenler.",
-    },
-    verdict:
-      "Elektrikli araçlarda batarya ve şarj altyapısı pahalıdır; EV’ye özel kasko genellikle daha doğru seçimdir.",
-    recommendation: "left",
-    recommendationText:
-      "EV kullanıyorsanız batarya ve şarj ekipmanı teminatlı bir kasko paketi seçmenizi öneririz.",
-    faqs: [
-      {
-        q: "Standart kasko EV’yi kapsar mı?",
-        a: "Araç bedelini kapsayabilir; ancak batarya, kablo ve wallbox ayrı netleştirilmelidir.",
-      },
-    ],
-    ctaSlug: "kasko",
-    relatedSlugs: [
-      "wallbox-sigortasi-vs-konut-sigortasi",
-      "batarya-teminati-hangi-kaskoda-var",
-      "ev-kaskosu-vs-standart-kasko",
-    ],
+    relatedSlugs: ["trafik-sigortasi-vs-kasko"],
   },
   {
     slug: "imm-vs-yuksek-teminatli-imm",
@@ -293,6 +216,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "İMM neden gerekli, 2026 teminat limitleri ve yüksek teminatlı İMM kimler için önemli?",
     summary: "Neden gerekli, 2026 limitleri ve kimler için kritik olduğunu karşılaştırın.",
+    heroTitle: "İMM ile Yüksek Teminatlı İMM Karşılaştırması: 2026 Limitleri",
+    heroIntro: [
+      "İhtiyari Mali Mesuliyet (İMM) sigortası, zorunlu trafik sigortası limitlerinin aşıldığı kazalarda devreye girerek aradaki tazminat farkını karşılayan ek bir sorumluluk teminatıdır. Yüksek teminatlı İMM ise bu güvenceyi çok daha yüksek, bazı ürünlerde limitsize yakın tutarlara taşır.",
+      "Bu sayfada 2026 teminat limitlerini, standart ve yüksek teminatlı seçenekler arasındaki prim farkını ve ağır bedeni ya da maddi hasarlı kazalarda kişisel malvarlığınızı korumak için hangi limitin tercih edilmesi gerektiğini değerlendiriyoruz.",
+    ],
     rows: [
       { label: "Neden gerekli?", left: "Trafik limiti aşan zararlar için", right: "Ağır bedeni/maddi zarar riskine karşı" },
       { label: "2026 limitleri", left: "Standart / seçilebilir limitler", right: "Yüksek veya sınırsıza yakın limitler" },
@@ -336,6 +264,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "TSS ile OSS karşılaştırması: SGK şartı, hastane ağı, yurt dışı, ilaç, doğum, check-up, diş, bekleme süresi ve prim.",
     summary: "En çok aranan sağlık karşılaştırması. SGK, hastane ağı, teminatlar ve prim farkları.",
+    heroTitle: "Tamamlayıcı Sağlık Sigortası ile Özel Sağlık Sigortası Farkları",
+    heroIntro: [
+      "Tamamlayıcı sağlık sigortası (TSS), aktif SGK'lı bireylerin anlaşmalı özel hastanelerde ödediği fark ücretlerini karşılayan, primi görece uygun bir üründür. Özel sağlık sigortası (ÖSS) ise SGK şartı aramadan, şirketin anlaşmalı kurum ağında yatarak ve ayakta tedavi giderlerini pakete göre çok daha geniş bir çerçevede teminat altına alır.",
+      "Karşılaştırmada hastane ağı, yurt dışı geçerliliği, ilaç, doğum, check-up ve diş teminatlarını, bekleme sürelerini ve prim farklarını yan yana inceleyerek hangi profil için hangi ürünün teknik olarak daha doğru olduğunu açıklıyoruz.",
+    ],
     popular: true,
     badge: "En çok aranan",
     rows: [
@@ -392,6 +325,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "Yılda kaç kez doktora giderseniz tamamlayıcı sağlık sigortası kâra geçer? TSS ile cebinden ödeme karşılaştırması.",
     summary: "Yılda kaç kez doktora giderseniz kâra geçersiniz? Hesaplamalı karşılaştırma.",
+    heroTitle: "Tamamlayıcı Sağlık Sigortası mı, Muayene Ücreti Ödemek mi?",
+    heroIntro: [
+      "Özel hastane kullanan bir SGK'lının önünde iki seçenek vardır: her muayenede fark ücretini cebinden ödemek ya da yıllık primle tamamlayıcı sağlık sigortası yaptırmak. Doğru karar; yıllık muayene sıklığınıza, kurumların fark tarifelerine ve yatarak tedavi riskinize bağlıdır.",
+      "Aşağıdaki hesaplayıcıya kendi rakamlarınızı girerek başabaş noktanızı görebilir; ameliyat ve yatarak tedavi gibi yüksek maliyetli senaryolarda sigortanın sağladığı risk transferinin neden tek başına muayene hesabından daha belirleyici olduğunu inceleyebilirsiniz.",
+    ],
     popular: true,
     rows: [
       { label: "Ödeme şekli", left: "Yıllık prim", right: "Her muayenede nakit / kart" },
@@ -439,6 +377,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "Süre, teminat, yurt dışı, acil durum ve kimlere uygunluk açısından özel sağlık ile seyahat sağlık karşılaştırması.",
     summary: "Süre, teminat, yurt dışı kapsamı ve acil durum farkları.",
+    heroTitle: "Özel Sağlık Sigortası ile Seyahat Sağlık Sigortası Farkları",
+    heroIntro: [
+      "Özel sağlık sigortası, yıl boyunca planlı ve acil tüm tedavi ihtiyaçlarınızı kapsayan uzun dönemli bir üründür; seyahat sağlık sigortası ise yalnızca seyahat süresiyle sınırlı olarak yurt dışında karşılaşılan acil sağlık durumlarını teminat altına alır.",
+      "Bu içerikte süre, teminat kapsamı, yurt dışı geçerliliği ve acil durum organizasyonu başlıklarını karşılaştırıyor; vize başvuruları ve uzun süreli yurt dışı konaklamalarda hangi poliçenin gerekli olduğunu teknik detaylarıyla ele alıyoruz.",
+    ],
     rows: [
       { label: "Süre", left: "Yıllık / uzun dönem", right: "Seyahat süresi kadar" },
       { label: "Teminat", left: "Geniş tedavi paketi", right: "Acil / beklenmedik durumlar" },
@@ -487,6 +430,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "DASK ve konut sigortası karşılaştırması: deprem, yangın, sel, cam, eşya, elektronik, kombi, su baskını ve alternatif konaklama.",
     summary: "Muhtemelen en çok trafik çeken ev karşılaştırması. DASK zorunlu; konut kapsamı daha geniştir.",
+    heroTitle: "DASK ile Konut Sigortası Arasındaki Farklar",
+    heroIntro: [
+      "DASK (Zorunlu Deprem Sigortası), tüm konutlar için yasal zorunluluk olan ve yalnızca deprem ile deprem kaynaklı yangın, infilak ve yer kayması gibi bina hasarlarını karşılayan bir güvence sistemidir. Konut sigortası ise yangın, sel, hırsızlık, cam kırılması ve eşya hasarı gibi çok daha geniş riskleri isteğe bağlı olarak teminat altına alır.",
+      "Aşağıda iki ürünün teminat tablosunu bina ve eşya ayrımıyla karşılaştırıyor; tapu ve kredi işlemlerindeki DASK zorunluluğunu, konut paketlerinin kapsam farklarını ve iki poliçenin birlikte nasıl konumlanması gerektiğini açıklıyoruz.",
+    ],
     popular: true,
     badge: "Çok aranan",
     rows: [
@@ -525,10 +473,7 @@ export const comparisons: Comparison[] = [
       },
     ],
     ctaSlug: "dask",
-    relatedSlugs: [
-      "ev-sahibi-vs-kiraci-sigortasi",
-      "dask-vs-zorunlu-deprem-sigortasi",
-    ],
+    relatedSlugs: ["ev-sahibi-vs-kiraci-sigortasi"],
   },
   {
     slug: "ev-sahibi-vs-kiraci-sigortasi",
@@ -540,6 +485,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "Ev sahibi ve kiracı için hangi teminatlar gerekli? Eşya teminatı, bina teminatı ve sorumluluk farkları.",
     summary: "Kim ne yaptırmalı? Eşya ve bina teminatı ayrımı.",
+    heroTitle: "Ev Sahibi ve Kiracı İçin Konut Sigortası: Kim Neyi Yaptırmalı?",
+    heroIntro: [
+      "Konutta mülkiyet ve kullanım ayrımı, sigorta sorumluluklarını da ikiye böler: bina teminatı ve DASK yükümlülüğü malike aitken, kiracının önceliği kendi eşyasını ve üçüncü kişilere karşı sorumluluğunu güvence altına almaktır.",
+      "Bu rehberde bina, eşya ve sorumluluk teminatlarının hangi tarafta olması gerektiğini; kira kaybı, komşulara karşı sorumluluk ve taşınma senaryolarını da içerecek şekilde madde madde karşılaştırıyoruz.",
+    ],
     rows: [
       { label: "Kim ne yaptırmalı?", left: "Bina + isteğe bağlı eşya / sorumluluk", right: "Kendi eşyası + sorumluluk" },
       { label: "Eşya teminatı", left: "Kendi eşyası için", right: "Kiracının eşyası için kritik" },
@@ -571,48 +521,6 @@ export const comparisons: Comparison[] = [
     ctaSlug: "dask",
     relatedSlugs: ["dask-vs-konut-sigortasi"],
   },
-  {
-    slug: "dask-vs-zorunlu-deprem-sigortasi",
-    category: "ev",
-    left: { name: "DASK", productSlug: "dask" },
-    right: { name: "Zorunlu Deprem Sigortası", productSlug: "dask" },
-    shortTitle: "DASK vs Zorunlu Deprem Sigortası",
-    seoTitle: "DASK ile Zorunlu Deprem Sigortası Aynı mı?",
-    seoDescription:
-      "DASK ve Zorunlu Deprem Sigortası aynı şey midir? Kısa ve net açıklama.",
-    summary: "Aslında aynı şey. DASK, Zorunlu Deprem Sigortası’nın kısa adıdır.",
-    sameThingNote:
-      "DASK (Doğal Afet Sigortaları Kurumu) tarafından sunulan Zorunlu Deprem Sigortası’nın yaygın adıdır. İki ayrı ürün değildir; aynı zorunlu poliçedir.",
-    rows: [
-      { label: "Ürün farkı", left: "Aynı ürün", right: "Aynı ürün" },
-      { label: "Yasal durum", left: "Zorunlu", right: "Zorunlu" },
-      { label: "Kapsam", left: "Deprem ve deprem kaynaklı bina hasarı", right: "Deprem ve deprem kaynaklı bina hasarı" },
-      { label: "Eşya", left: "Kapsam dışı", right: "Kapsam dışı" },
-    ],
-    advantages: {
-      left: ["Resmi ve bilinen ad"],
-      right: ["Yasal tanıma uygun tam ad"],
-    },
-    disadvantages: {
-      left: ["İsim karışıklığı yaratabilir"],
-      right: ["Uzun ad, günlük dilde az kullanılır"],
-    },
-    whoFor: {
-      left: "Konut sahipleri",
-      right: "Konut sahipleri",
-    },
-    verdict: "Karşılaştırılacak iki farklı ürün yok: DASK = Zorunlu Deprem Sigortası.",
-    recommendation: "left",
-    recommendationText: "Konutunuz için güncel DASK teklifinizi alın; eşya için konut sigortasını ayrıca değerlendirin.",
-    faqs: [
-      {
-        q: "Neden iki isim var?",
-        a: "DASK kurumu ve ürünün kısa adı olarak yerleşmiştir; yasal metinlerde Zorunlu Deprem Sigortası geçer.",
-      },
-    ],
-    ctaSlug: "dask",
-    relatedSlugs: ["dask-vs-konut-sigortasi"],
-  },
 
   // ─── Seyahat ────────────────────────────────────────────
   {
@@ -625,6 +533,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "Yeşil kart araç için, seyahat sağlık kişi için midir? Avrupa geçerliliği, hastane, kaza ve sınır kapısı farkları.",
     summary: "Çok karıştırılıyor. Biri araç, diğeri kişi içindir.",
+    heroTitle: "Yeşil Kart ile Seyahat Sağlık Sigortası Farkları",
+    heroIntro: [
+      "Sık karıştırılan bu iki ürün tamamen farklı riskleri kapsar: Yeşil Kart, aracınızla yurt dışına çıktığınızda üye ülkelerde geçerli olan uluslararası motorlu taşıt sorumluluk belgesidir; seyahat sağlık sigortası ise yolculuk sırasında sizin başınıza gelebilecek acil sağlık giderlerini karşılar.",
+      "İçerikte Avrupa geçerliliği, hastane masrafları, kaza sorumluluğu ve sınır kapısı uygulamaları başlıklarında iki ürünü karşılaştırıyor; araçla veya uçakla seyahat senaryolarına göre hangi belgelerin gerekli olduğunu netleştiriyoruz.",
+    ],
     popular: true,
     badge: "Sık karıştırılan",
     rows: [
@@ -671,6 +584,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "Schengen vize sigortası ile seyahat sağlık aynı mı? Teminat limitleri ve hangi ülkelerde zorunlu?",
     summary: "Aynı mı? Schengen, teminat limitleri ve zorunluluklar.",
+    heroTitle: "Seyahat Sağlık Sigortası ile Vize Sigortası Aynı Ürün mü?",
+    heroIntro: [
+      "Piyasada \"vize sigortası\" adıyla satılan ürün, teknik olarak konsolosluk şartlarına — özellikle Schengen bölgesi için asgari 30.000 Euro acil sağlık teminatına — uygun düzenlenmiş bir seyahat sağlık poliçesidir; ayrı bir sigorta branşı değildir.",
+      "Bu sayfada Schengen vize başvurularında aranan teminat limitlerini, poliçe süresi ve bölge kapsamı şartlarını ve standart seyahat sağlık paketleriyle aradaki farkları karşılaştırmalı olarak inceliyoruz.",
+    ],
     rows: [
       { label: "Aynı mı?", left: "Genel ürün adı", right: "Vize şartına uygun seyahat sağlık" },
       { label: "Schengen", left: "Uygun poliçe ile evet", right: "Schengen için özel limit şartları" },
@@ -715,6 +633,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "Ölüm, sakatlık, hastalık ve kaza teminatları açısından ferdi kaza ile hayat sigortası karşılaştırması.",
     summary: "Ölüm, sakatlık, hastalık ve kaza teminatlarının ayrımı.",
+    heroTitle: "Ferdi Kaza Sigortası ile Hayat Sigortası Farkları",
+    heroIntro: [
+      "Ferdi kaza sigortası; kaza sonucu vefat ve sürekli sakatlık risklerine odaklanan, primi görece düşük bir üründür. Hayat sigortası ise hastalık dahil vefat riskini teminat altına alarak geride kalanlara uzun vadeli mali güvence sağlar.",
+      "Karşılaştırmada vefat, sakatlık, hastalık ve kaza teminatlarının iki üründe nasıl konumlandığını; prim, sağlık beyanı ve risk kabul süreçlerindeki farkları ve hangi risk profili için hangi ürünün teknik olarak doğru olduğunu ele alıyoruz.",
+    ],
     rows: [
       { label: "Ölüm", left: "Kaza sonucu", right: "Hastalık veya kaza (pakete göre)" },
       { label: "Sakatlık", left: "Kaza kaynaklı sakatlık odaklı", right: "Pakete göre sınırlı / ek" },
@@ -744,48 +667,6 @@ export const comparisons: Comparison[] = [
         a: "Zorunlu değil. Risk profilinize göre biri veya ikisi birlikte tercih edilebilir.",
       },
     ],
-    relatedSlugs: ["hayat-sigortasi-vs-konut-kredisi-hayat"],
-  },
-  {
-    slug: "hayat-sigortasi-vs-konut-kredisi-hayat",
-    category: "bireysel",
-    left: { name: "Hayat Sigortası" },
-    right: { name: "Konut Kredisi Hayat Sigortası" },
-    shortTitle: "Hayat vs Konut Kredisi Hayat",
-    seoTitle: "Bireysel Hayat vs Banka Konut Kredisi Hayat Sigortası",
-    seoDescription:
-      "Bankaların sunduğu konut kredisi hayat poliçeleri ile bireysel hayat sigortası farkları.",
-    summary: "Banka poliçeleri ile bireysel poliçelerin farkları.",
-    rows: [
-      { label: "Lehtar", left: "Sizin belirlediğiniz kişiler", right: "Genelde banka (kredi bakiyesi)" },
-      { label: "Amaç", left: "Aileye gelir / birikim", right: "Kredi borcunun kapanması" },
-      { label: "Esneklik", left: "Daha yüksek", right: "Krediye bağlı, sınırlı" },
-      { label: "Süre", left: "İhtiyaca göre", right: "Kredi vadesine bağlı" },
-    ],
-    advantages: {
-      left: ["Aileniz için doğrudan güvence", "Teminat tutarını siz belirlersiniz"],
-      right: ["Kredi onay süreçlerinde pratik", "Borç yükünü azaltır"],
-    },
-    disadvantages: {
-      left: ["Kredi şartı olarak banka ürünü istenebilir"],
-      right: ["Teminat çoğunlukla bankaya gider", "İptal / değişiklik esnekliği düşük olabilir"],
-    },
-    whoFor: {
-      left: "Ailesini güvenceye almak isteyenler.",
-      right: "Konut kredisi kullananlar (banka şartına bağlı).",
-    },
-    verdict:
-      "Banka hayat poliçesi kredi borcunu; bireysel hayat poliçesi ailenizi korur. İkisi farklı amaçlara hizmet eder.",
-    recommendation: "depends",
-    recommendationText:
-      "Kredi varsa banka şartını netleştirin; aileniz için ayrıca bireysel hayat teminatını değerlendirin.",
-    faqs: [
-      {
-        q: "Bankanın poliçesini reddedebilir miyim?",
-        a: "Kredi sözleşmesi ve banka politikasına bağlıdır. Bazı durumlarda eşdeğer poliçe kabul edilebilir.",
-      },
-    ],
-    relatedSlugs: ["ferdi-kaza-vs-hayat-sigortasi"],
   },
 
   // ─── İş ─────────────────────────────────────────────────
@@ -799,6 +680,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "İş yeri ile konut sigortası teminat ve kullanım farkları. Evden çalışanlar için dikkat edilecekler.",
     summary: "Ticari riskler ile konut riskleri aynı poliçede karşılanmaz.",
+    heroTitle: "İş Yeri Sigortası ile Konut Sigortası Farkları",
+    heroIntro: [
+      "Sigortacılıkta kullanım amacı poliçenin temelidir: konut sigortası yaşam alanınızı ve ev eşyanızı, iş yeri sigortası ise ticari faaliyetin yürütüldüğü mekânı, demirbaşı, stoku ve işletme sorumluluğunu teminat altına alır. Yanlış ürün seçimi, hasar anında tazminatın reddedilmesine yol açabilir.",
+      "Bu içerikte stok ve demirbaş teminatı, iş durması ve üçüncü şahıs sorumluluğu gibi ticari teminatları konut paketleriyle karşılaştırıyor; evden çalışanların ve ev-ofis kullanıcılarının dikkat etmesi gereken beyan yükümlülüklerini açıklıyoruz.",
+    ],
     rows: [
       { label: "Kullanım amacı", left: "Ticari faaliyet", right: "Konut / yaşam alanı" },
       { label: "Stok / demirbaş", left: "Kapsama alınabilir", right: "Genelde yok" },
@@ -827,7 +713,7 @@ export const comparisons: Comparison[] = [
         a: "Sadece ev eşyası için kısmen. Ticari ekipman ve sorumluluk için poliçe şartlarını kontrol edin.",
       },
     ],
-    relatedSlugs: ["siber-sigorta-vs-is-yeri-sigortasi", "dask-vs-konut-sigortasi"],
+    relatedSlugs: ["dask-vs-konut-sigortasi"],
   },
   {
     slug: "mesleki-sorumluluk-vs-ucuncu-sahis",
@@ -839,6 +725,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "Mesleki hata ile üçüncü şahısa verilen zarar teminatları arasındaki farklar.",
     summary: "Hizmet hatası mı, yoksa fiziksel zarar / genel sorumluluk mu?",
+    heroTitle: "Mesleki Sorumluluk ile Üçüncü Şahıs Mali Sorumluluk Farkları",
+    heroIntro: [
+      "Mesleki sorumluluk sigortası; avukat, mühendis, hekim ve mali müşavir gibi profesyonellerin hatalı hizmet veya ihmalden doğan tazminat taleplerini karşılar. Üçüncü şahıs mali sorumluluk ise işletme faaliyeti sırasında ziyaretçilere veya çevreye verilen bedeni ve maddi zararları teminat altına alır.",
+      "Aşağıda iki teminatın odak alanlarını, örnek hasar senaryolarını ve hangi meslek ya da işletme türünde hangisinin öncelikli olduğunu karşılaştırıyor; tek poliçede birleştirme seçeneklerinde kontrol edilmesi gereken özel şartlara değiniyoruz.",
+    ],
     rows: [
       { label: "Odak", left: "Mesleki hata / ihmal", right: "3. kişilere verilen zarar" },
       { label: "Örnek risk", left: "Yanlış danışmanlık, meslek hatası", right: "Müşteri yaralanması, mal hasarı" },
@@ -868,92 +759,8 @@ export const comparisons: Comparison[] = [
     ],
     relatedSlugs: ["is-yeri-sigortasi-vs-konut-sigortasi"],
   },
-  {
-    slug: "siber-sigorta-vs-is-yeri-sigortasi",
-    category: "is",
-    left: { name: "Siber Sigorta" },
-    right: { name: "İş Yeri Sigortası" },
-    shortTitle: "Siber vs İş Yeri Sigortası",
-    seoTitle: "Siber Sigorta vs İş Yeri Sigortası Farkları",
-    seoDescription:
-      "Veri ihlali ve siber saldırı teminatları ile klasik iş yeri yangın/hırsızlık teminatları karşılaştırması.",
-    summary: "Fiziksel varlıklar ile dijital riskler aynı güvencede değildir.",
-    rows: [
-      { label: "Veri ihlali", left: "Evet", right: "Genelde hayır" },
-      { label: "Ransomware / saldırı", left: "Pakete göre evet", right: "Hayır" },
-      { label: "Yangın / hırsızlık", left: "Hayır", right: "Evet" },
-      { label: "İş durması", left: "Siber kaynaklı olabilir", right: "Fiziksel hasar kaynaklı olabilir" },
-    ],
-    advantages: {
-      left: ["Dijital risklere özel", "Bildirim / kriz maliyetleri"],
-      right: ["Fiziksel varlık ve klasik riskler"],
-    },
-    disadvantages: {
-      left: ["Bina/demirbaş yangınını kapsamaz"],
-      right: ["Siber olayları genelde kapsamaz"],
-    },
-    whoFor: {
-      left: "Müşteri verisi işleyen, e-ticaret / yazılım firmaları.",
-      right: "Fiziksel işyeri olan işletmeler.",
-    },
-    verdict: "İş yeri sigortası duvarları; siber sigorta veriyi korur. Dijitalleşen işletmeler için ikisi tamamlayıcıdır.",
-    recommendation: "depends",
-    recommendationText:
-      "Fiziksel işyeriniz varsa iş yeri; online satış veya müşteri verisi varsa siber sigortayı da ekleyin.",
-    faqs: [
-      {
-        q: "Küçük işletmeler siber alır mı?",
-        a: "Evet. Küçük ölçekli veri ihlalleri de ciddi maliyet doğurabilir.",
-      },
-    ],
-    relatedSlugs: ["is-yeri-sigortasi-vs-konut-sigortasi"],
-  },
 
   // ─── Elektrikli ─────────────────────────────────────────
-  {
-    slug: "ev-kaskosu-vs-standart-kasko",
-    category: "elektrikli",
-    left: { name: "EV Kaskosu", productSlug: "kasko" },
-    right: { name: "Standart Kasko", productSlug: "kasko" },
-    shortTitle: "EV Kaskosu vs Standart Kasko",
-    seoTitle: "EV Kaskosu vs Standart Kasko | Elektrikli Araç",
-    seoDescription:
-      "Elektrikli araç kaskosu ile standart kasko farkları: batarya, şarj ve yetkili servis.",
-    summary: "Elektrikli araçlar için farklılaştırıcı karşılaştırma.",
-    popular: true,
-    rows: [
-      { label: "Batarya", left: "Özel teminat odaklı", right: "Belirsiz / sınırlı" },
-      { label: "Şarj ekipmanı", left: "Pakete göre dahil", right: "Genelde yok" },
-      { label: "Servis ağı", left: "EV yetkili ağ", right: "Genel ağ" },
-    ],
-    advantages: {
-      left: ["EV’ye özel riskler netleşir"],
-      right: ["Klasik araçlar için uygundur"],
-    },
-    disadvantages: {
-      left: ["Prim ve şartlar şirkete göre değişir"],
-      right: ["EV özel risklerde açık bırakabilir"],
-    },
-    whoFor: {
-      left: "Elektrikli araç sahipleri",
-      right: "İçten yanmalı araç sahipleri",
-    },
-    verdict: "EV sahipleri için batarya ve şarj teminatlı kasko tercih edilmelidir.",
-    recommendation: "left",
-    recommendationText: "Elektrikli aracınız için EV uyumlu kasko teklifi alın.",
-    faqs: [
-      {
-        q: "Bu sayfa diğer EV karşılaştırmasından farklı mı?",
-        a: "Aynı tema; burada EV kategorisi altında özetlenmiştir. Detaylı satırlar için kardeş sayfaya da bakın.",
-      },
-    ],
-    ctaSlug: "kasko",
-    relatedSlugs: [
-      "elektrikli-arac-kaskosu-vs-standart-kasko",
-      "wallbox-sigortasi-vs-konut-sigortasi",
-      "batarya-teminati-hangi-kaskoda-var",
-    ],
-  },
   {
     slug: "wallbox-sigortasi-vs-konut-sigortasi",
     category: "elektrikli",
@@ -964,6 +771,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "Ev tipi şarj ünitesi (wallbox) konut sigortasında kapsanır mı, ayrı teminat gerekir mi?",
     summary: "Ev tipi şarj ünitesi konut poliçesinde otomatik kapsanmayabilir.",
+    heroTitle: "Wallbox (Ev Tipi Şarj Ünitesi) Sigortası ile Konut Sigortası",
+    heroIntro: [
+      "Elektrikli araç sahiplerinin evine kurduğu wallbox şarj üniteleri, konut poliçelerinde her zaman otomatik teminat kapsamında değildir; cihazın sabit kıymet olarak beyan edilmesi veya özel teminatla güvenceye alınması gerekir.",
+      "Bu rehberde wallbox hasarı, montaj ve elektrik kaynaklı riskler ile hırsızlık senaryolarında iki yaklaşımın nasıl çalıştığını karşılaştırıyor; mevcut konut poliçenize ek beyan yaptırırken sormanız gereken teknik soruları listeliyoruz.",
+    ],
     rows: [
       { label: "Wallbox hasarı", left: "Doğrudan odaklı teminat", right: "Ek / sabit kıymet olarak eklenebilir" },
       { label: "Montaj / elektrik riski", left: "Pakete göre daha net", right: "Poliçe şartına bağlı" },
@@ -992,10 +804,7 @@ export const comparisons: Comparison[] = [
         a: "Poliçe ve montaj şekline (sabit / sökülebilir) göre değişir. Beyan şarttır.",
       },
     ],
-    relatedSlugs: [
-      "elektrikli-arac-kaskosu-vs-standart-kasko",
-      "sarj-istasyonu-vs-is-yeri-sigortasi",
-    ],
+    relatedSlugs: ["sarj-istasyonu-vs-is-yeri-sigortasi"],
   },
   {
     slug: "sarj-istasyonu-vs-is-yeri-sigortasi",
@@ -1007,6 +816,11 @@ export const comparisons: Comparison[] = [
     seoDescription:
       "Ticari şarj istasyonu riskleri ile klasik iş yeri teminatlarının karşılaştırması.",
     summary: "Ticari şarj altyapısı için özel riskler iş yeri paketinde netleştirilmelidir.",
+    heroTitle: "Şarj İstasyonu Sigortası ile İş Yeri Sigortası Farkları",
+    heroIntro: [
+      "Ticari şarj istasyonları; yüksek güçlü elektrik altyapısı, 7/24 açık alan kullanımı ve yoğun üçüncü kişi trafiği nedeniyle klasik iş yeri risklerinden ayrışan bir profil taşır. Standart iş yeri poliçesi bu ekipmanı ancak açıkça beyan edildiğinde kapsar.",
+      "İçerikte şarj ünitesi ve altyapı teminatı, işletme sorumluluğu ile yangın ve elektriksel arıza risklerini iki ürün açısından karşılaştırıyor; istasyon işletmecilerinin poliçelerine ekletmesi gereken kalemleri teknik başlıklar halinde sunuyoruz.",
+    ],
     rows: [
       { label: "Şarj ünitesi / altyapı", left: "Odak teminat", right: "Demirbaş olarak eklenebilir" },
       { label: "İşletme sorumluluğu", left: "İstasyona özel", right: "Genel işyeri sorumluluğu" },
@@ -1035,93 +849,7 @@ export const comparisons: Comparison[] = [
         a: "Genelde hayır. Elektriksel arıza, vandalizm ve sorumluluk da değerlendirilmelidir.",
       },
     ],
-    relatedSlugs: ["wallbox-sigortasi-vs-konut-sigortasi", "siber-sigorta-vs-is-yeri-sigortasi"],
-  },
-  {
-    slug: "batarya-teminati-hangi-kaskoda-var",
-    category: "elektrikli",
-    left: { name: "EV / Batarya Teminatlı Kasko", productSlug: "kasko" },
-    right: { name: "Standart Kasko", productSlug: "kasko" },
-    shortTitle: "Batarya Teminatı Hangi Kaskoda?",
-    seoTitle: "Batarya Teminatı Hangi Kaskoda Var?",
-    seoDescription:
-      "Elektrikli araç batarya teminatı standart kaskoda var mı? EV kaskosu ile karşılaştırma.",
-    summary: "Batarya, EV’nin en pahalı parçasıdır; poliçede açıkça yazılmalıdır.",
-    rows: [
-      { label: "Batarya hasarı", left: "Açık teminat / özel şart", right: "Belirsiz veya hariç" },
-      { label: "Değişim maliyeti", left: "Teminat limitine göre", right: "Risk sizde kalabilir" },
-      { label: "Garanti ilişkisi", left: "Üretici garanti + sigorta ayrımı netleşir", right: "Net olmayabilir" },
-    ],
-    advantages: {
-      left: ["Yüksek maliyetli batarya için güvence"],
-      right: ["Klasik araçlarda yeterli"],
-    },
-    disadvantages: {
-      left: ["Şartname ve muafiyetleri okumak gerekir"],
-      right: ["EV’de kritik açık bırakabilir"],
-    },
-    whoFor: {
-      left: "Elektrikli araç sahipleri",
-      right: "Bataryasız klasik araçlar",
-    },
-    verdict: "Batarya teminatı isteyenler EV uyumlu / batarya maddeli kasko seçmelidir.",
-    recommendation: "left",
-    recommendationText: "Teklif alırken batarya teminatının yazılı olduğunu doğrulayın.",
-    faqs: [
-      {
-        q: "Üretici garantisi yetmez mi?",
-        a: "Garanti üretim / arıza odaklıdır; kaza ve bazı dış etkenler sigorta konusudur.",
-      },
-    ],
-    ctaSlug: "kasko",
-    relatedSlugs: [
-      "elektrikli-arac-kaskosu-vs-standart-kasko",
-      "mobil-sarj-cihazi-sigorta-kapsaminda-mi",
-    ],
-  },
-  {
-    slug: "mobil-sarj-cihazi-sigorta-kapsaminda-mi",
-    category: "elektrikli",
-    left: { name: "Mobil Şarj Cihazı (beyanlı)", productSlug: "kasko" },
-    right: { name: "Beyansız / Varsayılan Kapsam" },
-    shortTitle: "Mobil Şarj Cihazı Kapsamda mı?",
-    seoTitle: "Mobil Şarj Cihazı Sigorta Kapsamında mı?",
-    seoDescription:
-      "Taşınabilir EV şarj kablosu / cihazı kasko veya konut sigortasında otomatik kapsanır mı?",
-    summary: "Çoğu poliçede otomatik değil; beyan ve ek teminat gerekir.",
-    rows: [
-      { label: "Otomatik kapsam", left: "Beyan + ek teminat ile", right: "Genelde hayır" },
-      { label: "Çalınma", left: "Şartlara göre ödenebilir", right: "Muhtemelen kapsam dışı" },
-      { label: "Araç içinde / evde", left: "Poliçe tipine göre değişir", right: "Belirsiz" },
-    ],
-    advantages: {
-      left: ["Net güvence", "Pahalı kablo/cihaz koruması"],
-      right: ["Ek prim yok (ama risk açık)"],
-    },
-    disadvantages: {
-      left: ["Beyan unutulursa sorun çıkar"],
-      right: ["Hasarda sürpriz red riski"],
-    },
-    whoFor: {
-      left: "Mobil şarj ekipmanı kullanan EV sahipleri",
-      right: "Riski göze alanlar (önerilmez)",
-    },
-    verdict:
-      "Mobil şarj cihazını ‘varsayılan kapsamdadır’ diye düşünmeyin. Kasko veya konut poliçenize açıkça ekletin.",
-    recommendation: "left",
-    recommendationText:
-      "Teklif / poliçe aşamasında mobil şarj cihazını beyan edin ve yazılı teminat isteyin.",
-    faqs: [
-      {
-        q: "Kablo araçta çalınırsa?",
-        a: "Kaskoda aksesuar/ekipman maddesi yoksa ödenmeyebilir. Önceden netleştirin.",
-      },
-    ],
-    ctaSlug: "kasko",
-    relatedSlugs: [
-      "batarya-teminati-hangi-kaskoda-var",
-      "wallbox-sigortasi-vs-konut-sigortasi",
-    ],
+    relatedSlugs: ["wallbox-sigortasi-vs-konut-sigortasi"],
   },
 ];
 

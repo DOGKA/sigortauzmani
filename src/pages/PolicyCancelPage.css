@@ -381,12 +381,17 @@
 }
 
 .iptal__success-code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   margin: 24px auto;
   padding: 16px 20px;
-  max-width: 360px;
+  max-width: 420px;
   border-radius: 14px;
   background: var(--brand-100);
   border: 1px solid rgba(45, 126, 245, 0.25);
+  text-align: left;
 }
 
 .iptal__success-code span {
@@ -405,6 +410,33 @@
   font-weight: 800;
   letter-spacing: 0.04em;
   color: var(--brand-700);
+}
+
+.iptal__copy-btn {
+  flex-shrink: 0;
+  padding: 9px 13px;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(45, 126, 245, 0.12);
+  color: var(--brand-700);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.iptal__copy-btn:hover {
+  background: rgba(45, 126, 245, 0.2);
+}
+
+.iptal__copy-btn:active {
+  transform: scale(0.96);
+}
+
+.iptal__copy-btn.is-copied {
+  background: rgba(34, 197, 94, 0.14);
+  color: #15803d;
 }
 
 .iptal__success .iptal__actions {

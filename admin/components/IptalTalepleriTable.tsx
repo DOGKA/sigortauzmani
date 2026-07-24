@@ -227,7 +227,13 @@ function IptalRow({
 
   return (
     <>
-      <tr className="border-b border-slate-100 hover:bg-slate-50/70">
+      <tr
+        className="cursor-pointer border-b border-slate-100 hover:bg-slate-50/70"
+        onClick={(e) => {
+          if ((e.target as HTMLElement).closest("button, a, select, input, textarea, label")) return;
+          onToggle();
+        }}
+      >
         <td className="px-5 py-3.5 font-semibold text-slate-800">
           {item.iptal_no}
         </td>

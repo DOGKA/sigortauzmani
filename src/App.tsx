@@ -4,12 +4,15 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
 
-const QuotePage = lazy(() => import("./pages/QuotePage"));
+const loadQuotePage = () => import("./pages/QuotePage");
+const QuotePage = lazy(loadQuotePage);
 const RiskMapPage = lazy(() => import("./pages/RiskMapPage"));
 const GlossaryPage = lazy(() => import("./pages/GlossaryPage"));
 const ComparisonHubPage = lazy(() => import("./pages/ComparisonHubPage"));
 const ComparisonPage = lazy(() => import("./pages/ComparisonPage"));
 const PolicyCancelPage = lazy(() => import("./pages/PolicyCancelPage"));
+const AboutPage = lazy(() => import("./pages/AboutPage"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -19,7 +22,24 @@ function ScrollToTop() {
   return null;
 }
 
+function PageLoader() {
+  return (
+    <div className="page-loader" role="status" aria-label="Sayfa yükleniyor">
+      <span className="page-loader__spinner" />
+    </div>
+  );
+}
+
 export default function App() {
+  useEffect(() => {
+    // Prefetch the most-clicked lazy page so navigation feels instant
+    // requestIdleCallback yoksa (eski Safari) kısa bir gecikmeyle yükle
+    const idle =
+      window.requestIdleCallback?.bind(window) ??
+      ((cb: () => void) => window.setTimeout(cb, 1500));
+    idle(() => loadQuotePage());
+  }, []);
+
   return (
     <BrowserRouter>
       <ScrollToTop />
@@ -29,7 +49,7 @@ export default function App() {
         <Route
           path="/teklif/:slug"
           element={
-            <Suspense fallback={null}>
+            <Suspense fallback={<PageLoader />}>
               <QuotePage />
             </Suspense>
           }
@@ -37,7 +57,7 @@ export default function App() {
         <Route
           path="/risk-haritasi"
           element={
-            <Suspense fallback={null}>
+            <Suspense fallback={<PageLoader />}>
               <RiskMapPage />
             </Suspense>
           }
@@ -45,7 +65,7 @@ export default function App() {
         <Route
           path="/sigorta-sozlugu"
           element={
-            <Suspense fallback={null}>
+            <Suspense fallback={<PageLoader />}>
               <GlossaryPage />
             </Suspense>
           }
@@ -53,7 +73,7 @@ export default function App() {
         <Route
           path="/karsilastirma"
           element={
-            <Suspense fallback={null}>
+            <Suspense fallback={<PageLoader />}>
               <ComparisonHubPage />
             </Suspense>
           }
@@ -61,7 +81,7 @@ export default function App() {
         <Route
           path="/karsilastirma/:slug"
           element={
-            <Suspense fallback={null}>
+            <Suspense fallback={<PageLoader />}>
               <ComparisonPage />
             </Suspense>
           }
@@ -69,8 +89,24 @@ export default function App() {
         <Route
           path="/police-iptal"
           element={
-            <Suspense fallback={null}>
+            <Suspense fallback={<PageLoader />}>
               <PolicyCancelPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/hakkimizda"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <AboutPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/iletisim"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <ContactPage />
             </Suspense>
           }
         />

@@ -28,6 +28,11 @@ const VEHICLE_PRODUCT_SLUGS = new Set([
   "imm",
   "yesil-kart",
 ]);
+const HEALTH_PRODUCT_SLUGS = new Set([
+  "tamamlayici-saglik",
+  "ozel-saglik",
+  "seyahat-saglik",
+]);
 const SECOND_STEP_VIDEO = "/advisor-2.mp4";
 const SECOND_STEP_TRANSCRIPT =
   "Teşekkür ederim. Son adıma geçiyoruz. Lütfen kalan iki bilgiyi de paylaşın. Ardından sizin için en uygun sigorta tekliflerini hazırlayacağım.";
@@ -37,7 +42,7 @@ const WHATSAPP_NUMBER = "908503020032";
 const INSURED_FOR_LABELS: Record<string, string> = {
   self: "Kendim",
   spouse: "Eşim",
-  children: "Çocuğum/Çocuklarım",
+  children: "Çocuğum",
 };
 
 const TIME_SLOTS = [
@@ -91,6 +96,7 @@ export default function QuotePage() {
   const [contactTime, setContactTime] = useState("");
   const [prefSaving, setPrefSaving] = useState(false);
   const [prefSaved, setPrefSaved] = useState(false);
+  const [talepCopied, setTalepCopied] = useState(false);
 
   const clearError = (field: string) =>
     setErrors((prev) => {
@@ -112,6 +118,9 @@ export default function QuotePage() {
   }
 
   const isVehicleProduct = VEHICLE_PRODUCT_SLUGS.has(product.slug);
+  const isHealthProduct = HEALTH_PRODUCT_SLUGS.has(product.slug);
+  /** Kasko tarzı adım 1: TCKN/VKN + telefon (DASK vb. dahil; sağlık hariç) */
+  const usesIdentityPhoneStep = isVehicleProduct || !isHealthProduct;
   const nextStep = () => setStep((s) => Math.min(s + 1, TOTAL_STEPS));
 
   const switchEntityType = (type: "sahis" | "sirket") => {
@@ -145,7 +154,7 @@ export default function QuotePage() {
     } else if (!isValidVkn(vkn)) {
       next.vkn = "Geçerli bir Vergi Numarası girin (10 hane).";
     }
-    if (isVehicleProduct && !isValidMobilePhone(phone)) {
+    if (usesIdentityPhoneStep && !isValidMobilePhone(phone)) {
       next.phone = "Geçerli bir cep telefonu girin (05XX XXX XX XX).";
     }
     setErrors(next);
@@ -170,7 +179,7 @@ export default function QuotePage() {
       } else if (!isValidChassisNo(chassisNo)) {
         next.chassisNo = "Geçerli bir şasi numarası girin (17 karakter).";
       }
-    } else if (!isValidMobilePhone(phone)) {
+    } else if (isHealthProduct && !isValidMobilePhone(phone)) {
       next.phone = "Geçerli bir cep telefonu girin (05XX XXX XX XX).";
     }
     setErrors(next);
@@ -178,14 +187,9 @@ export default function QuotePage() {
   };
 
   const whatsappMessage = [
-    "Merhaba,",
-    "",
-    `Sigorta Uzmanı web sitemden ${product.title} için teklif talebi oluşturdum.`,
+    `Merhaba, sigortauzmani.net üzerinden ${product.title} teklif talebi oluşturdum.`,
     talepNo ? `Talep numaram: ${talepNo}` : null,
-    "",
-    "Beklemek istemediğim için WhatsApp üzerinden size ulaşıyorum. En uygun teklifler hakkında bilgi alabilir miyim?",
-    "",
-    "Teşekkürler.",
+    "Süreci WhatsApp üzerinden devam ettirmek istiyorum. Fiyat ve teminat seçenekleri hakkında yardımcı olabilir misiniz?",
   ]
     .filter((line) => line !== null)
     .join("\n");
@@ -201,9 +205,9 @@ export default function QuotePage() {
       talep_no: no,
       product_slug: product.slug,
       product_title: product.title,
-      insured_for: isVehicleProduct
-        ? null
-        : (INSURED_FOR_LABELS[insuredFor] ?? insuredFor),
+      insured_for: isHealthProduct
+        ? (INSURED_FOR_LABELS[insuredFor] ?? insuredFor)
+        : null,
       entity_type: entityType,
       tckn: entityType === "sahis" ? tckn || null : null,
       vergi_no: entityType === "sirket" ? vkn || null : null,
@@ -234,6 +238,55 @@ export default function QuotePage() {
     setPrefSaved(true);
   };
 
+  const copyTalepNo = async () => {
+    if (!talepNo) return;
+    try {
+      await navigator.clipboard.writeText(talepNo);
+    } catch {
+      const input = document.createElement("textarea");
+      input.value = talepNo;
+      input.setAttribute("readonly", "");
+      input.style.position = "absolute";
+      input.style.left = "-9999px";
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+    }
+    setTalepCopied(true);
+    window.setTimeout(() => setTalepCopied(false), 2000);
+  };
+
+  const startNewQuote = () => {
+    setInsuredFor("self");
+    setStep(1);
+    setEntityType("sahis");
+    setTckn("");
+    setVkn("");
+    setPhone("");
+    setBirthDate("");
+    setHasPlate(true);
+    setPlate("");
+    setDocumentSerial("");
+    setEngineNo("");
+    setChassisNo("");
+    setSerialHelpOpen(false);
+    setVehicleNoHelpOpen(false);
+    setWhyInfoOpen(false);
+    setKvkkAccepted(false);
+    setPrivacyAccepted(false);
+    setCompleted(false);
+    setErrors({});
+    setTalepNo("");
+    setContactChoice(null);
+    setContactDate("");
+    setContactTime("");
+    setPrefSaving(false);
+    setPrefSaved(false);
+    setTalepCopied(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <section className="quote">
       <div className="quote__bg" aria-hidden="true">
@@ -255,32 +308,102 @@ export default function QuotePage() {
                 <div className="quote__success-confetti" aria-hidden="true">
                   <DotLottieReact src="/confetti.lottie" autoplay />
                 </div>
-                <div className="quote__success-cat" aria-hidden="true">
-                  <DotLottieReact src="/cat.lottie" autoplay loop />
-                </div>
-                <div className="quote__success-icon" aria-hidden="true">
-                  <svg width="34" height="34" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M20 6L9 17l-5-5"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-                <h2 className="quote__success-title">Tebrikler, talebiniz alındı!</h2>
 
-                <div className="quote__talep-no">
-                  <span className="quote__talep-no-label">Talep Numaranız</span>
-                  <span className="quote__talep-no-value">{talepNo}</span>
+                <div className="quote__success-hero">
+                  <div className="quote__success-cat" aria-hidden="true">
+                    <DotLottieReact src="/cat.lottie" autoplay loop />
+                  </div>
+                  <span className="quote__success-badge">
+                    <span className="quote__success-badge-check" aria-hidden="true">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none">
+                        <path
+                          d="M20 6L9 17l-5-5"
+                          stroke="currentColor"
+                          strokeWidth="3.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </span>
+                    Talebiniz başarıyla oluşturuldu
+                  </span>
+                  <h2 className="quote__success-title">
+                    {product.title} teklif talebiniz alındı
+                  </h2>
+                  <p className="quote__success-sub">
+                    Uzmanımız en kısa sürede sizinle iletişime geçecek.
+                    Dilerseniz aşağıdan iletişim tercihinizi belirleyin.
+                  </p>
                 </div>
 
-                <p className="quote__success-text">
-                  Talebiniz alınmıştır. Uzmanımız en kısa sürede sizinle
-                  iletişime geçecektir. Dilerseniz iletişim tercihinizi
-                  aşağıdan ayarlayabilirsiniz.
-                </p>
+                <div className="quote__ticket">
+                  <div className="quote__ticket-info">
+                    <span className="quote__ticket-label">Talep Numaranız</span>
+                    <span className="quote__ticket-value">{talepNo}</span>
+                  </div>
+                  <button
+                    type="button"
+                    className={`quote__ticket-copy ${talepCopied ? "quote__ticket-copy--done" : ""}`}
+                    onClick={copyTalepNo}
+                    aria-label={talepCopied ? "Talep numarası kopyalandı" : "Talep numarasını kopyala"}
+                  >
+                    {talepCopied ? (
+                      <>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path
+                            d="M20 6L9 17l-5-5"
+                            stroke="currentColor"
+                            strokeWidth="2.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                        Kopyalandı
+                      </>
+                    ) : (
+                      <>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <rect
+                            x="9"
+                            y="9"
+                            width="13"
+                            height="13"
+                            rx="2"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                          />
+                          <path
+                            d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        Kopyala
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="quote__success-grid">
+                  <section className="quote__panel">
+                    <div className="quote__panel-head">
+                      <span className="quote__panel-icon quote__panel-icon--call" aria-hidden="true">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none">
+                          <path
+                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
+                      <div>
+                        <h3 className="quote__panel-title">Sizi Arayalım</h3>
+                        <p className="quote__panel-sub">Ne zaman aranmak istersiniz?</p>
+                      </div>
+                    </div>
 
                 {prefSaved ? (
                   <div className="quote__pref-saved">
@@ -299,9 +422,6 @@ export default function QuotePage() {
                   </div>
                 ) : (
                   <div className="quote__pref">
-                    <span className="quote__pref-title">
-                      Ne zaman aranmak istersiniz?
-                    </span>
                     <div className="quote__pref-options">
                       <button
                         type="button"
@@ -357,26 +477,81 @@ export default function QuotePage() {
                   </div>
                 )}
 
-                <div className="quote__pref-divider">
-                  <span>Beklemek istemiyor musunuz?</span>
-                </div>
+                  </section>
 
-                <a
-                  href={whatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="quote__whatsapp"
-                >
+                  <section className="quote__panel quote__panel--wa">
+                    <div className="quote__panel-head">
+                      <span className="quote__panel-icon quote__panel-icon--wa" aria-hidden="true">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                          <path
+                            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5Z"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
+                      <div>
+                        <h3 className="quote__panel-title">Beklemeden Bağlanın</h3>
+                        <p className="quote__panel-sub">
+                          Süreci WhatsApp üzerinden hemen sürdürün.
+                        </p>
+                      </div>
+                    </div>
+
+                    <a
+                      href={whatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="quote__whatsapp"
+                    >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d="M12.04 2c-5.46 0-9.9 4.44-9.9 9.9 0 1.75.46 3.45 1.32 4.95L2.05 22l5.3-1.39a9.87 9.87 0 0 0 4.69 1.19h.01c5.46 0 9.9-4.44 9.9-9.9 0-2.65-1.03-5.14-2.9-7.01A9.83 9.83 0 0 0 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.24-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.23 8.23Zm4.52-6.16c-.25-.13-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.14.16-.29.18-.54.06-.25-.13-1.05-.39-2-1.23-.73-.66-1.23-1.47-1.38-1.72-.14-.24-.01-.38.11-.5.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.17.04-.31-.02-.43-.06-.13-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.48c-.16 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.6.19 1.14.16 1.57.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.17-.47-.3Z" />
                   </svg>
-                  Sigorta Uzmanına Bağlan
-                </a>
-                <p className="quote__success-note">
-                  WhatsApp üzerinden +90 850 302 00 32 numaralı hattımıza
-                  yönlendirileceksiniz. Mesajınız hazır olacak, yalnızca
-                  göndermeniz yeterli.
-                </p>
+                      Sigorta Uzmanına Bağlan
+                    </a>
+                    <p className="quote__panel-note">
+                      +90 850 302 00 32 numaralı hattımıza yönlendirileceksiniz.
+                      Mesajınız hazır olacak, yalnızca göndermeniz yeterli.
+                    </p>
+                  </section>
+                </div>
+
+                <div className="quote__success-footer">
+                  <span className="quote__success-footer-text">
+                    Başka bir ihtiyacınız mı var?
+                  </span>
+                  <div className="quote__success-footer-actions">
+                    <button
+                      type="button"
+                      className="quote__again"
+                      onClick={startNewQuote}
+                    >
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path
+                          d="M12 5v14M5 12h14"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      Yeni teklif oluştur
+                    </button>
+                    <Link to="/" className="quote__browse">
+                      Tüm ürünleri incele
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path
+                          d="M5 12h14M13 6l6 6-6 6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </Link>
+                  </div>
+                </div>
               </div>
             ) : (
               <>
@@ -446,7 +621,7 @@ export default function QuotePage() {
                       </button>
                     </div>
 
-                    {isVehicleProduct ? (
+                    {usesIdentityPhoneStep ? (
                       <>
                         {entityType === "sahis" ? (
                           <div className="quote__field">
@@ -510,7 +685,7 @@ export default function QuotePage() {
                           >
                             <option value="self">Kendim</option>
                             <option value="spouse">Eşim</option>
-                            <option value="children">Çocuğum/Çocuklarım</option>
+                            <option value="children">Çocuğum</option>
                           </select>
                         </label>
                         {entityType === "sahis" ? (
@@ -747,7 +922,7 @@ export default function QuotePage() {
                           )}
                         </label>
                       </>
-                    ) : (
+                    ) : isHealthProduct ? (
                       <>
                         <label className="quote__field">
                           <span>Doğum Tarihi</span>
@@ -782,6 +957,23 @@ export default function QuotePage() {
                           )}
                         </label>
                       </>
+                    ) : (
+                      <label className="quote__field quote__field--full">
+                        <span>Doğum Tarihi</span>
+                        <input
+                          type="date"
+                          className={`quote__input ${errors.birthDate ? "quote__input--error" : ""}`}
+                          value={birthDate}
+                          max={getMaxBirthDate()}
+                          onChange={(event) => {
+                            setBirthDate(event.target.value);
+                            clearError("birthDate");
+                          }}
+                        />
+                        {errors.birthDate && (
+                          <span className="quote__error">{errors.birthDate}</span>
+                        )}
+                      </label>
                     )}
 
                     <div className="quote__form-footer">

@@ -28,7 +28,6 @@ Sigorta teklif sitesi (Vite + React) ve yönetim paneli (Next.js) tek repoda.
 | Değişken | Açıklama |
 | --- | --- |
 | `RESEND_API_KEY` | Resend API anahtarı (sadece admin `.env.local`) |
-| `NOTIFY_TO_EMAIL` | Talep bildirimlerinin gideceği adres (`sigorta@sigortauzmani.com`) |
 | `RESEND_FROM_EMAIL` | Doğrulanmış domain'den gönderen (örn. `Sigorta Uzmanı <noreply@sigortauzmani.net>`) |
 | `ALLOWED_ORIGIN` | Site adresi (CORS, örn. `http://localhost:5173`) |
 | `VITE_NOTIFY_API_URL` | Admin API adresi (site `.env`, örn. `http://localhost:3001`) |
@@ -51,7 +50,7 @@ npm run dev
 ## Akış
 
 1. Kullanıcı sitede teklif formunu doldurur; talep Supabase `talepler` tablosuna kaydedilir ve kullanıcıya yalnızca **talep numarası** gösterilir (kişisel bilgiler ekranda gösterilmez).
-2. Talep kaydı sonrası **Resend** ile `sigorta@sigortauzmani.com` adresine talep no ve tüm form bilgileri e-posta olarak gönderilir (admin panele giremeseniz bile bildirim alırsınız).
+2. Talep kaydı sonrası **Resend** ile `sigorta@sigortauzmani.net` adresine talep no ve tüm form bilgileri e-posta olarak gönderilir (admin panele giremeseniz bile bildirim alırsınız).
 3. Kullanıcı iletişim tercihini seçebilir: **Hemen** veya **Tarih Seç** (tarih + saat aralığı).
 4. Beklemek istemeyen kullanıcı, hazır mesajlı **WhatsApp** bağlantısıyla doğrudan sigorta uzmanına bağlanır (mesajda yalnızca talep numarası yer alır).
 5. Admin panelindeki **Talepler** sayfasından talepler görüntülenir, filtrelenir ve durumları güncellenir (Yeni → Arandı → Teklif Verildi → Tamamlandı / İptal).

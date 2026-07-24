@@ -8,7 +8,8 @@ export async function middleware(request: NextRequest) {
   const isAuthPage = request.nextUrl.pathname.startsWith("/auth");
   const isPublicApi =
     request.nextUrl.pathname.startsWith("/api/notify-talep") ||
-    request.nextUrl.pathname.startsWith("/api/notify-iptal");
+    request.nextUrl.pathname.startsWith("/api/notify-iptal") ||
+    request.nextUrl.pathname.startsWith("/api/notify-iletisim");
 
   // Env eksikse auth sayfalarına ve public API'ye izin ver
   if (!supabaseUrl || !supabaseAnonKey) {

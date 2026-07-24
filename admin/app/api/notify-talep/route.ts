@@ -1,19 +1,9 @@
 import { NextResponse } from "next/server";
+import { corsHeaders } from "@/lib/cors";
 import {
   sendTalepNotificationEmail,
   type TalepEmailPayload,
 } from "@/lib/email/talep-notification";
-
-const ALLOWED_ORIGIN =
-  process.env.ALLOWED_ORIGIN ?? "http://localhost:5173";
-
-function corsHeaders() {
-  return {
-    "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
-  };
-}
 
 function isValidPayload(body: unknown): body is TalepEmailPayload {
   if (!body || typeof body !== "object") return false;
@@ -26,8 +16,8 @@ function isValidPayload(body: unknown): body is TalepEmailPayload {
   );
 }
 
-export async function OPTIONS() {
-  return new NextResponse(null, { status: 204, headers: corsHeaders() });
+export async function OPTIONS(request: Request) {
+  return new NextResponse(null, { status: 204, headers: corsHeaders(request) });
 }
 
 export async function POST(request: Request) {
@@ -37,7 +27,7 @@ export async function POST(request: Request) {
     if (!isValidPayload(body)) {
       return NextResponse.json(
         { error: "Geçersiz talep verisi" },
-        { status: 400, headers: corsHeaders() },
+        { status: 400, headers: corsHeaders(request) },
       );
     }
 
@@ -45,13 +35,13 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       { ok: true },
-      { status: 200, headers: corsHeaders() },
+      { status: 200, headers: corsHeaders(request) },
     );
   } catch (error) {
     console.error("Talep bildirim e-postası gönderilemedi:", error);
     return NextResponse.json(
       { error: "E-posta gönderilemedi" },
-      { status: 500, headers: corsHeaders() },
+      { status: 500, headers: corsHeaders(request) },
     );
   }
 }

@@ -66,7 +66,7 @@ export function buildTalepEmailHtml(talep: TalepEmailPayload) {
 
 export async function sendTalepNotificationEmail(talep: TalepEmailPayload) {
   const apiKey = process.env.RESEND_API_KEY;
-  const to = process.env.NOTIFY_TO_EMAIL ?? "sigorta@sigortauzmani.com";
+  const to = "sigorta@sigortauzmani.net";
   const from =
     process.env.RESEND_FROM_EMAIL ??
     "Sigorta Uzmanı <onboarding@resend.dev>";

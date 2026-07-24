@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./AdvisorVideo.css";
 
 const DEFAULT_TRANSCRIPT =
@@ -17,8 +17,7 @@ export default function AdvisorVideo({
   transcript = DEFAULT_TRANSCRIPT,
 }: AdvisorVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [muted, setMuted] = useState(false);
-  const words = transcript.split(" ");
+  const [muted, setMuted] = useState(true);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -26,36 +25,13 @@ export default function AdvisorVideo({
 
     video.load();
     video.currentTime = 0;
-    video.muted = false;
-    video.defaultMuted = false;
-    video.volume = 1;
+    video.muted = true;
+    video.defaultMuted = true;
+    setMuted(true);
 
-    const playWithSound = () => {
-      video.muted = false;
-      video.volume = 1;
-      setMuted(false);
-      void video.play().catch(() => {});
-    };
-
-    video
-      .play()
-      .then(() => setMuted(false))
-      .catch(() => {
-        // Tarayıcı sesli autoplay'i engellerse video sessiz başlar;
-        // buton durumu da gerçek durumu (sessiz) gösterir.
-        video.muted = true;
-        setMuted(true);
-        void video.play().catch(() => {});
-
-        // İlk kullanıcı etkileşiminde sesi otomatik aç.
-        window.addEventListener("pointerdown", playWithSound, { once: true });
-        window.addEventListener("keydown", playWithSound, { once: true });
-      });
+    void video.play().catch(() => {});
 
     return () => {
-      window.removeEventListener("pointerdown", playWithSound);
-      window.removeEventListener("keydown", playWithSound);
-      // Sayfadan/bileşenden çıkarken sesi ve videoyu durdur.
       video.pause();
       video.muted = true;
     };
@@ -64,76 +40,40 @@ export default function AdvisorVideo({
   const toggleMute = () => {
     const video = videoRef.current;
     if (!video) return;
-    video.muted = muted ? false : true;
-    if (muted) {
-      video.play().catch(() => {});
+    const nextMuted = !muted;
+    video.muted = nextMuted;
+    if (!nextMuted) {
+      void video.play().catch(() => {});
     }
-    setMuted(!muted);
+    setMuted(nextMuted);
   };
 
   return (
     <div className="advisor">
-      <div className="advisor__video-wrap">
-        <video
-          ref={videoRef}
-          src={videoSrc}
-          className="advisor__video"
-          muted={muted}
-          playsInline
-          autoPlay
-        />
+      <div className="advisor__media">
+        <div className="advisor__video-wrap">
+          <video
+            ref={videoRef}
+            src={videoSrc}
+            className="advisor__video"
+            muted={muted}
+            playsInline
+            autoPlay
+          />
+        </div>
         <button
           type="button"
           className="advisor__sound"
           onClick={toggleMute}
-          aria-label={muted ? "Sesi aç" : "Sesi kapat"}
+          aria-pressed={!muted}
         >
-          {muted ? (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor" />
-              <path d="M23 9l-6 6M17 9l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-          ) : (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-              <path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor" />
-              <path
-                d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 0 1 0 14.14"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          )}
+          {muted ? "Sesli dinle" : "Sesi kapat"}
         </button>
       </div>
 
       <div className="advisor__bubble">
-        <p className="advisor__bubble-text" aria-label={transcript} key={replayKey}>
-          <span aria-hidden="true">
-            {words.map((word, wordIndex) => {
-              const previousCharacterCount = words
-                .slice(0, wordIndex)
-                .reduce((total, previousWord) => total + previousWord.length, 0);
-
-              return (
-                <span className="advisor__word" key={`${word}-${wordIndex}`}>
-                  {Array.from(word).map((character, characterIndex) => (
-                    <span
-                      className="advisor__character"
-                      key={`${character}-${characterIndex}`}
-                      style={
-                        {
-                          "--character-index": previousCharacterCount + characterIndex,
-                        } as CSSProperties
-                      }
-                    >
-                      {character}
-                    </span>
-                  ))}
-                </span>
-              );
-            })}
-          </span>
+        <p className="advisor__bubble-text" key={replayKey}>
+          {transcript}
         </p>
       </div>
     </div>

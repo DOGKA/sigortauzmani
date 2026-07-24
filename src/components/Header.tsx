@@ -36,6 +36,8 @@ export default function Header() {
   const { pathname } = useLocation();
   const comparisonActive = pathname.startsWith("/karsilastirma");
   const cancelActive = pathname.startsWith("/police-iptal");
+  const aboutActive = pathname.startsWith("/hakkimizda");
+  const contactActive = pathname.startsWith("/iletisim");
 
   useEffect(() => {
     if (!productsOpen) return;
@@ -66,9 +68,13 @@ export default function Header() {
         </Link>
 
         <nav className="header__nav" ref={navRef}>
-          <button type="button" className="header__nav-item">
+          <Link
+            to="/hakkimizda"
+            className={`header__nav-item ${aboutActive ? "header__nav-item--open" : ""}`}
+            aria-current={aboutActive ? "page" : undefined}
+          >
             Hakkımızda
-          </button>
+          </Link>
 
           <div
             className="header__nav-dropdown-wrap"
@@ -144,9 +150,13 @@ export default function Header() {
           >
             Karşılaştırma
           </Link>
-          <button type="button" className="header__nav-item">
+          <Link
+            to="/iletisim"
+            className={`header__nav-item ${contactActive ? "header__nav-item--open" : ""}`}
+            aria-current={contactActive ? "page" : undefined}
+          >
             İletişim
-          </button>
+          </Link>
         </nav>
 
         <div className="header__right">

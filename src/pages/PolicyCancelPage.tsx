@@ -55,6 +55,7 @@ export default function PolicyCancelPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [iptalNo, setIptalNo] = useState<string | null>(null);
+  const [iptalNoCopied, setIptalNoCopied] = useState(false);
   const [takipCode, setTakipCode] = useState("");
   const [takipLoading, setTakipLoading] = useState(false);
   const [takipError, setTakipError] = useState<string | null>(null);
@@ -185,6 +186,25 @@ export default function PolicyCancelPage() {
     }
   };
 
+  const copyIptalNo = async () => {
+    if (!iptalNo) return;
+    try {
+      await navigator.clipboard.writeText(iptalNo);
+    } catch {
+      const input = document.createElement("textarea");
+      input.value = iptalNo;
+      input.setAttribute("readonly", "");
+      input.style.position = "absolute";
+      input.style.left = "-9999px";
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+    }
+    setIptalNoCopied(true);
+    window.setTimeout(() => setIptalNoCopied(false), 2000);
+  };
+
   const resetForm = () => {
     setStep(1);
     setBrans("");
@@ -198,6 +218,7 @@ export default function PolicyCancelPage() {
     setErrors({});
     setSubmitError(null);
     setIptalNo(null);
+    setIptalNoCopied(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -237,7 +258,7 @@ export default function PolicyCancelPage() {
               </button>
             </nav>
             <p className="iptal__info">
-              Web sitemizden sadece araç satış nedeniyle poliçe iptal talepleri
+              Web sitemizden yalnızca araç satışı nedeniyle poliçe iptal talepleri
               alınmaktadır. Diğer iptaller için{" "}
               <a href="tel:+908503020032">0850 302 00 32</a> numarasını
               arayabilirsiniz. İptal sürecini poliçe iptal takip bölümünden
@@ -348,8 +369,22 @@ export default function PolicyCancelPage() {
                   edin; süreç tamamlandığında sizinle iletişime geçilecektir.
                 </p>
                 <div className="iptal__success-code">
-                  <span>İptal Takip Numaranız</span>
-                  <strong>{iptalNo}</strong>
+                  <div>
+                    <span>İptal Takip Numaranız</span>
+                    <strong>{iptalNo}</strong>
+                  </div>
+                  <button
+                    type="button"
+                    className={`iptal__copy-btn ${iptalNoCopied ? "is-copied" : ""}`}
+                    onClick={() => void copyIptalNo()}
+                    aria-label={
+                      iptalNoCopied
+                        ? "İptal takip numarası kopyalandı"
+                        : "İptal takip numarasını kopyala"
+                    }
+                  >
+                    {iptalNoCopied ? "Kopyalandı" : "Kopyala"}
+                  </button>
                 </div>
                 <div className="iptal__actions">
                   <button
@@ -586,7 +621,7 @@ export default function PolicyCancelPage() {
                         type="button"
                         className="iptal__btn"
                         onClick={() => void onSubmit()}
-                        disabled={submitting}
+                        disabled={submitting || !file}
                       >
                         {submitting ? "Gönderiliyor…" : "Başvuruyu Gönder"}
                       </button>

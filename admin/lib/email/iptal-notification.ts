@@ -57,10 +57,7 @@ export function buildIptalEmailHtml(iptal: IptalEmailPayload) {
 
 export async function sendIptalNotificationEmail(iptal: IptalEmailPayload) {
   const apiKey = process.env.RESEND_API_KEY;
-  const to =
-    process.env.NOTIFY_IPTAL_TO_EMAIL ??
-    process.env.NOTIFY_TO_EMAIL ??
-    "sigorta@sigortauzmani.com";
+  const to = "sigorta@sigortauzmani.net";
   const from =
     process.env.RESEND_FROM_EMAIL ??
     "Sigorta Uzmanı <onboarding@resend.dev>";

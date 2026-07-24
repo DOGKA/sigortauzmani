@@ -75,6 +75,18 @@ export interface IptalTalepInsert {
   belge_path: string;
 }
 
+export type IletisimOncelik = "normal" | "oncelikli" | "acil";
+
+export interface IletisimTalepInsert {
+  iletisim_no: string;
+  ad_soyad: string;
+  email: string;
+  konu: string;
+  oncelik: IletisimOncelik;
+  mesaj: string;
+  belge_path: string | null;
+}
+
 export function generateTalepNo(): string {
   const now = new Date();
   const yy = String(now.getFullYear()).slice(-2);
@@ -99,6 +111,19 @@ export function generateIptalNo(): string {
     suffix += chars[Math.floor(Math.random() * chars.length)];
   }
   return `IP-${yy}${mm}${dd}-${suffix}`;
+}
+
+export function generateIletisimNo(): string {
+  const now = new Date();
+  const yy = String(now.getFullYear()).slice(-2);
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let suffix = "";
+  for (let i = 0; i < 5; i++) {
+    suffix += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return `IL-${yy}${mm}${dd}-${suffix}`;
 }
 
 export async function createTalep(talep: TalepInsert): Promise<void> {
@@ -270,6 +295,98 @@ async function sendIptalNotificationEmail(iptal: IptalTalepInsert) {
     }
   } catch (err) {
     console.error("İptal bildirim e-postası isteği başarısız:", err);
+  }
+}
+
+const ILETISIM_BUCKET = "iletisim-belgeleri";
+const MAX_ILETISIM_BELGE_BYTES = 5 * 1024 * 1024;
+
+export async function uploadIletisimBelge(
+  iletisimNo: string,
+  file: File,
+): Promise<{ path: string } | { error: string }> {
+  const client = getSupabase();
+  if (!client) return { error: "Bağlantı kurulamadı. Lütfen tekrar deneyin." };
+
+  if (!ALLOWED_BELGE_TYPES.includes(file.type)) {
+    return { error: "Yalnızca PDF, JPG, PNG veya WebP yükleyebilirsiniz." };
+  }
+  if (file.size > MAX_ILETISIM_BELGE_BYTES) {
+    return { error: "Belge boyutu en fazla 5 MB olabilir." };
+  }
+
+  const ext =
+    file.type === "application/pdf"
+      ? "pdf"
+      : file.type === "image/png"
+        ? "png"
+        : file.type === "image/webp"
+          ? "webp"
+          : "jpg";
+  const path = `${iletisimNo}/${Date.now()}.${ext}`;
+  const { error } = await client.storage
+    .from(ILETISIM_BUCKET)
+    .upload(path, file, {
+      cacheControl: "3600",
+      upsert: false,
+      contentType: file.type,
+    });
+
+  if (error) {
+    console.error("İletişim belgesi yüklenemedi:", error.message);
+    return { error: "Belge yüklenemedi. Lütfen tekrar deneyin." };
+  }
+  return { path };
+}
+
+export async function createIletisimTalep(
+  iletisim: IletisimTalepInsert,
+  file?: File | null,
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const client = getSupabase();
+  if (!client) {
+    return { ok: false, error: "Bağlantı kurulamadı. Lütfen tekrar deneyin." };
+  }
+
+  const { error } = await client.from("iletisim_talepleri").insert({
+    ...iletisim,
+    status: "yeni",
+  });
+  if (error) {
+    console.error("İletişim talebi kaydedilemedi:", error.message);
+    return { ok: false, error: "Mesajınız kaydedilemedi. Lütfen tekrar deneyin." };
+  }
+
+  void sendIletisimNotificationEmail(iletisim, file);
+  return { ok: true };
+}
+
+async function sendIletisimNotificationEmail(
+  iletisim: IletisimTalepInsert,
+  file?: File | null,
+) {
+  const notifyUrl = import.meta.env.VITE_NOTIFY_API_URL as string | undefined;
+  if (!notifyUrl) return;
+
+  const formData = new FormData();
+  Object.entries(iletisim).forEach(([key, value]) => {
+    if (value !== null) formData.append(key, value);
+  });
+  if (file) formData.append("belge", file, file.name);
+
+  try {
+    const response = await fetch(`${notifyUrl}/api/notify-iletisim`, {
+      method: "POST",
+      body: formData,
+    });
+    if (!response.ok) {
+      console.error(
+        "İletişim bildirim e-postası gönderilemedi:",
+        await response.text(),
+      );
+    }
+  } catch (err) {
+    console.error("İletişim bildirim isteği başarısız:", err);
   }
 }
 

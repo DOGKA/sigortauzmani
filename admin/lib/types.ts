@@ -85,3 +85,44 @@ export const IPTAL_STATUS_ORDER: IptalStatus[] = [
   "belge_eksik",
   "tamamlandi",
 ];
+
+export type IletisimOncelik = "normal" | "oncelikli" | "acil";
+export type IletisimStatus =
+  | "yeni"
+  | "inceleniyor"
+  | "yanitlandi"
+  | "kapatildi";
+
+export interface IletisimTalep {
+  id: string;
+  iletisim_no: string;
+  ad_soyad: string;
+  email: string;
+  konu: string;
+  oncelik: IletisimOncelik;
+  mesaj: string;
+  belge_path: string | null;
+  status: IletisimStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export const ILETISIM_ONCELIK_LABELS: Record<IletisimOncelik, string> = {
+  normal: "Normal",
+  oncelikli: "Öncelikli",
+  acil: "Acil",
+};
+
+export const ILETISIM_STATUS_LABELS: Record<IletisimStatus, string> = {
+  yeni: "Yeni",
+  inceleniyor: "İnceleniyor",
+  yanitlandi: "Yanıtlandı",
+  kapatildi: "Kapatıldı",
+};
+
+export const ILETISIM_STATUS_ORDER: IletisimStatus[] = [
+  "yeni",
+  "inceleniyor",
+  "yanitlandi",
+  "kapatildi",
+];

@@ -1,14 +1,12 @@
-import { useEffect, useMemo, useState } from "react";
-import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, Navigate, useParams } from "react-router-dom";
 import {
   CATEGORY_LABELS,
   type Comparison,
   comparisons,
-  findComparisonBySides,
-  getAllComparisonSides,
   getComparison,
-  getComparisonPartners,
 } from "../data/comparisons";
+import ComparisonDuelCard from "../components/ComparisonDuelCard";
 import "./ComparisonPage.css";
 
 function usePageMeta(comparison: Comparison | undefined) {
@@ -56,6 +54,43 @@ function usePageMeta(comparison: Comparison | undefined) {
   }, [comparison]);
 }
 
+/** Salt görsel katman: hücre metnini değiştirmeden ton (✓ / ✕ / ~) belirler. */
+type CellTone = "yes" | "no" | "partial" | "neutral";
+
+function classifyCell(text: string): CellTone {
+  const t = text.toLocaleLowerCase("tr-TR").trim();
+  if (/^(hayır|yok|kapsam dışı)/.test(t)) return "no";
+  if (/^(evet|var|zorunlu)/.test(t)) return "yes";
+  if (
+    /(pakete göre|ek teminat|ek hizmet|ek paket|eklenebilir|sunulabilir|genelde dahil|sınırlı|isteğe bağlı|alınabilir|deprem kaynaklı)/.test(
+      t,
+    )
+  ) {
+    return "partial";
+  }
+  return "neutral";
+}
+
+function CellBadge({ tone }: { tone: CellTone }) {
+  if (tone === "neutral") return null;
+  const symbol = tone === "yes" ? "✓" : tone === "no" ? "✕" : "~";
+  return (
+    <span className={`cmp__cell-badge cmp__cell-badge--${tone}`} aria-hidden="true">
+      {symbol}
+    </span>
+  );
+}
+
+function ComparisonCell({ text }: { text: string }) {
+  const tone = classifyCell(text);
+  return (
+    <span className={`cmp__cell cmp__cell--${tone}`}>
+      <CellBadge tone={tone} />
+      <span>{text}</span>
+    </span>
+  );
+}
+
 function TssCalculator({
   examFeeHint,
   visitsBreakEvenHint,
@@ -63,9 +98,15 @@ function TssCalculator({
   examFeeHint: number;
   visitsBreakEvenHint: number;
 }) {
-  const [annualPremium, setAnnualPremium] = useState(examFeeHint * visitsBreakEvenHint);
-  const [examFee, setExamFee] = useState(examFeeHint);
+  // Girdi ham string tutulur; sayıya çevirip state'e yazmak "01000" gibi kalıntılar bırakıyordu.
+  const [premiumInput, setPremiumInput] = useState(
+    String(examFeeHint * visitsBreakEvenHint),
+  );
+  const [feeInput, setFeeInput] = useState(String(examFeeHint));
+  const annualPremium = Math.max(0, Number(premiumInput) || 0);
+  const examFee = Math.max(0, Number(feeInput) || 0);
   const visits = examFee > 0 ? annualPremium / examFee : 0;
+  const visitsLabel = (Math.round(visits * 10) / 10).toLocaleString("tr-TR");
   const sampleVisits = [2, 4, 6, 8, 12];
 
   return (
@@ -85,8 +126,8 @@ function TssCalculator({
             type="number"
             min={0}
             step={100}
-            value={annualPremium}
-            onChange={(e) => setAnnualPremium(Number(e.target.value) || 0)}
+            value={premiumInput}
+            onChange={(e) => setPremiumInput(e.target.value)}
           />
         </label>
         <label>
@@ -95,17 +136,26 @@ function TssCalculator({
             type="number"
             min={0}
             step={50}
-            value={examFee}
-            onChange={(e) => setExamFee(Number(e.target.value) || 0)}
+            value={feeInput}
+            onChange={(e) => setFeeInput(e.target.value)}
           />
         </label>
       </div>
 
       <div className="cmp__calc-result">
-        <p>
-          Yaklaşık <strong>{visits.toFixed(1)}</strong> özel muayene / yılda
-          priminizi amorti edersiniz.
-        </p>
+        {annualPremium <= 0 || examFee <= 0 ? (
+          <p>Hesaplamak için yıllık prim ve muayene farkı girin.</p>
+        ) : visits < 1 ? (
+          <p>
+            Yıllık priminiz tek bir muayene farkından bile düşük;{" "}
+            <strong>daha ilk muayenede</strong> kâra geçersiniz.
+          </p>
+        ) : (
+          <p>
+            Yılda yaklaşık <strong>{visitsLabel} kez</strong> özel muayeneye
+            giderseniz priminizi amorti edersiniz.
+          </p>
+        )}
         <p className="cmp__calc-note">
           Bu hesap yalnızca ayakta muayene farkını baz alır. Ameliyat ve yatarak
           tedavi riski TSS’nin asıl değeridir.
@@ -148,67 +198,39 @@ function TssCalculator({
 export default function ComparisonPage() {
   const { slug } = useParams<{ slug: string }>();
   const comparison = slug ? getComparison(slug) : undefined;
-  const navigate = useNavigate();
-  const sides = useMemo(() => getAllComparisonSides(), []);
-  const [leftPick, setLeftPick] = useState(comparison?.left.name ?? "");
-  const [rightPick, setRightPick] = useState(comparison?.right.name ?? "");
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-
-  const rightOptions = useMemo(
-    () => getComparisonPartners(leftPick),
-    [leftPick],
-  );
+  const relatedTrackRef = useRef<HTMLUListElement>(null);
 
   usePageMeta(comparison);
 
   useEffect(() => {
     if (!comparison) return;
-    setLeftPick(comparison.left.name);
-    setRightPick(comparison.right.name);
     setOpenFaq(0);
   }, [comparison]);
-
-  useEffect(() => {
-    if (rightOptions.length === 0) return;
-    if (!rightOptions.includes(rightPick)) {
-      setRightPick(rightOptions[0]);
-    }
-  }, [leftPick, rightPick, rightOptions]);
 
   if (!comparison) {
     return <Navigate to="/karsilastirma" replace />;
   }
 
-  const related = (comparison.relatedSlugs ?? [])
-    .map((s) => getComparison(s))
-    .filter(Boolean) as Comparison[];
+  // Aynı kategorideki diğer karşılaştırmalar carousel'de gösterilir.
+  const related = comparisons.filter(
+    (c) => c.category === comparison.category && c.slug !== comparison.slug,
+  );
 
+  const scrollRelated = (dir: 1 | -1) => {
+    const track = relatedTrackRef.current;
+    if (!track) return;
+    track.scrollBy({ left: dir * track.clientWidth, behavior: "smooth" });
+  };
+
+  // Teklif Al her zaman karşılaştırmanın 1. ürününe gider; slug yoksa zincir sağa düşer.
+  const ctaSide = comparison.left.productSlug
+    ? comparison.left
+    : comparison.right.productSlug
+      ? comparison.right
+      : undefined;
   const ctaSlug =
-    comparison.ctaSlug ||
-    comparison.left.productSlug ||
-    comparison.right.productSlug ||
-    "kasko";
-
-  const interactiveMatch = findComparisonBySides(leftPick, rightPick);
-
-  const onLeftChange = (value: string) => {
-    setLeftPick(value);
-    const partners = getComparisonPartners(value);
-    if (partners.length && !partners.includes(rightPick)) {
-      setRightPick(partners[0]);
-    }
-  };
-
-  const onInteractiveCompare = () => {
-    if (!interactiveMatch) return;
-    if (interactiveMatch.slug === comparison.slug) {
-      document
-        .getElementById("table-title")
-        ?.scrollIntoView({ behavior: "smooth", block: "start" });
-      return;
-    }
-    navigate(`/karsilastirma/${interactiveMatch.slug}`);
-  };
+    ctaSide?.productSlug || comparison.ctaSlug || "kasko";
 
   return (
     <main className="cmp">
@@ -230,60 +252,15 @@ export default function ComparisonPage() {
           <span className="cmp__eyebrow">
             {CATEGORY_LABELS[comparison.category]}
           </span>
-          <h1>
-            {comparison.left.name}{" "}
-            <span className="cmp__hero-vs">vs</span> {comparison.right.name}
-          </h1>
-          <p>{comparison.summary}</p>
-        </header>
 
-        <section className="cmp__switcher" aria-label="Karşılaştırmayı değiştir">
-          <div className="cmp__switcher-row">
-            <label className="cmp__select-wrap">
-              <span>Karşılaştır</span>
-              <select
-                value={leftPick}
-                onChange={(e) => onLeftChange(e.target.value)}
-              >
-                {sides.map((name) => (
-                  <option key={`l-${name}`} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <span className="cmp__vs-badge" aria-hidden="true">
-              VS
-            </span>
-            <label className="cmp__select-wrap">
-              <span className="cmp__select-spacer" aria-hidden="true">
-                &nbsp;
-              </span>
-              <select
-                value={
-                  rightOptions.includes(rightPick)
-                    ? rightPick
-                    : rightOptions[0] ?? ""
-                }
-                onChange={(e) => setRightPick(e.target.value)}
-              >
-                {rightOptions.map((name) => (
-                  <option key={`r-${name}`} value={name}>
-                    {name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <button
-              type="button"
-              className="cmp__switcher-btn"
-              onClick={onInteractiveCompare}
-              disabled={!interactiveMatch}
-            >
-              Göster
-            </button>
+          <h1 className="cmp__hero-title">{comparison.heroTitle}</h1>
+
+          <div className="cmp__hero-intro">
+            {comparison.heroIntro.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
           </div>
-        </section>
+        </header>
 
         {comparison.sameThingNote && (
           <aside className="cmp__same" role="note">
@@ -295,6 +272,9 @@ export default function ComparisonPage() {
           <div className="cmp__section-head">
             <h2 id="table-title">Teminatlar</h2>
             <p>Yan yana temel farklar.</p>
+            <span className="cmp__table-mobile-hint" aria-hidden="true">
+              Tabloyu yana kaydırarak tüm farkları inceleyin
+            </span>
           </div>
           <div className="cmp__table-wrap">
             <table className="cmp__table">
@@ -309,8 +289,12 @@ export default function ComparisonPage() {
                 {comparison.rows.map((row) => (
                   <tr key={row.label}>
                     <th scope="row">{row.label}</th>
-                    <td>{row.left}</td>
-                    <td>{row.right}</td>
+                    <td>
+                      <ComparisonCell text={row.left} />
+                    </td>
+                    <td>
+                      <ComparisonCell text={row.right} />
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -323,36 +307,44 @@ export default function ComparisonPage() {
             <h2 id="pros-title">Avantajlar & dezavantajlar</h2>
           </div>
           <div className="cmp__proscons-grid">
-            <div className="cmp__col">
-              <h3>{comparison.left.name}</h3>
-              <p className="cmp__col-label">Avantajlar</p>
-              <ul>
-                {comparison.advantages.left.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-              <p className="cmp__col-label cmp__col-label--con">Dezavantajlar</p>
-              <ul className="cmp__cons">
-                {comparison.disadvantages.left.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="cmp__col">
-              <h3>{comparison.right.name}</h3>
-              <p className="cmp__col-label">Avantajlar</p>
-              <ul>
-                {comparison.advantages.right.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-              <p className="cmp__col-label cmp__col-label--con">Dezavantajlar</p>
-              <ul className="cmp__cons">
-                {comparison.disadvantages.right.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </div>
+            {(
+              [
+                {
+                  name: comparison.left.name,
+                  pros: comparison.advantages.left,
+                  cons: comparison.disadvantages.left,
+                },
+                {
+                  name: comparison.right.name,
+                  pros: comparison.advantages.right,
+                  cons: comparison.disadvantages.right,
+                },
+              ] as const
+            ).map((side) => (
+              <div className="cmp__col" key={side.name}>
+                <h3>{side.name}</h3>
+                <ul className="cmp__pros-list">
+                  {side.pros.map((item) => (
+                    <li key={item}>
+                      <span className="cmp__li-icon cmp__li-icon--pro" aria-hidden="true">
+                        +
+                      </span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                <ul className="cmp__cons-list">
+                  {side.cons.map((item) => (
+                    <li key={item}>
+                      <span className="cmp__li-icon cmp__li-icon--con" aria-hidden="true">
+                        −
+                      </span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
         </section>
 
@@ -381,9 +373,6 @@ export default function ComparisonPage() {
 
         <section className="cmp__verdict" aria-labelledby="verdict-title">
           <div className="cmp__verdict-card">
-            <div className="cmp__verdict-stars" aria-hidden="true">
-              ★★★★★
-            </div>
             <h2 id="verdict-title">Tavsiyemiz</h2>
             <p className="cmp__verdict-text">{comparison.verdict}</p>
             <p className="cmp__verdict-rec">{comparison.recommendationText}</p>
@@ -431,15 +420,61 @@ export default function ComparisonPage() {
 
         {related.length > 0 && (
           <section className="cmp__related" aria-labelledby="related-title">
-            <div className="cmp__section-head">
-              <h2 id="related-title">İlgili karşılaştırmalar</h2>
+            <div className="cmp__section-head cmp__section-head--row">
+              <div>
+                <h2 id="related-title">İlgili karşılaştırmalar</h2>
+                <p>
+                  {CATEGORY_LABELS[comparison.category]} kategorisindeki diğer
+                  içerikler.
+                </p>
+              </div>
+              {related.length > 3 && (
+                <div className="cmp__related-nav">
+                  <button
+                    type="button"
+                    onClick={() => scrollRelated(-1)}
+                    aria-label="Önceki karşılaştırmalar"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M15 5l-7 7 7 7"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => scrollRelated(1)}
+                    aria-label="Sonraki karşılaştırmalar"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <path
+                        d="M9 5l7 7-7 7"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              )}
             </div>
-            <ul className="cmp__related-list">
+            <ul
+              className="cmp__related-carousel"
+              ref={relatedTrackRef}
+              style={
+                {
+                  "--cols": Math.min(related.length, 3),
+                } as React.CSSProperties
+              }
+            >
               {related.map((item) => (
                 <li key={item.slug}>
-                  <Link to={`/karsilastirma/${item.slug}`}>
-                    {item.left.name} <span>vs</span> {item.right.name}
-                  </Link>
+                  <ComparisonDuelCard comparison={item} />
                 </li>
               ))}
             </ul>

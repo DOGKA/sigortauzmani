@@ -1,39 +1,128 @@
-import { useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import carSlider from "../assets/sliders/car-slider.svg";
-import familySlider from "../assets/sliders/famil-slider.svg";
-import houseSlider from "../assets/sliders/house-slider.svg";
+import trafikSlider from "../assets/sliders/trafik-sigortasi.png";
+import kaskoSlider from "../assets/sliders/kasko.png";
+import tamamlayiciSaglikSlider from "../assets/sliders/tamamlayici-saglik.png";
+import ozelSaglikSlider from "../assets/sliders/ozel-saglik.png";
+import immSlider from "../assets/sliders/ihtiyari-mali-mesuliyet.png";
+import daskSlider from "../assets/sliders/dask.png";
+import konutSlider from "../assets/sliders/konut-sigortasi.png";
+import seyahatSaglikSlider from "../assets/sliders/seyahat-saglik.png";
+import yesilKartSlider from "../assets/sliders/yesil-kart.png";
 import "./InsuranceSlider.css";
+
+const INITIAL_LOADED = 3;
+const LOAD_AHEAD = 2;
 
 const slides = [
   {
-    title: "Aracınız İçin Güvenli Yolculuklar",
-    subtitle: "Kasko ve trafik sigortasında size özel avantajlı teklifleri keşfedin.",
-    image: carSlider,
-    alt: "Şehir yolunda ilerleyen mavi otomobil",
+    eyebrow: "Trafik Sigortası",
+    titleLine1: "Yola çıkarken.",
+    titleLine2: "Güvenceniz hazır.",
+    subtitle: "Zorunlu trafik sigortası tekliflerini kolayca değerlendirin.",
+    image: trafikSlider,
+    alt: "Dağ yolunda virajı dönen beyaz otomobil",
     cta: "Trafik Sigortası Teklifi Al",
     to: "/teklif/trafik-sigortasi",
   },
   {
-    title: "Sevdiklerinizin Sağlığı Güvende",
-    subtitle: "Ailenize uygun sağlık sigortası seçeneklerini kolayca karşılaştırın.",
-    image: familySlider,
-    alt: "Birlikte vakit geçiren mutlu aile",
+    eyebrow: "Kasko",
+    titleLine1: "Beklenmeyene karşı.",
+    titleLine2: "Aracınız güvende.",
+    subtitle: "Aracınızı farklı risklere karşı kapsamlı güvenceyle koruyun.",
+    image: kaskoSlider,
+    alt: "Arkadan çarpma sonucu hasar görmüş otomobil",
+    cta: "Kasko Teklifi Al",
+    to: "/teklif/kasko",
+  },
+  {
+    eyebrow: "Tamamlayıcı Sağlık Sigortası",
+    titleLine1: "Sağlığınız için.",
+    titleLine2: "Bütçenizi yormadan.",
+    subtitle: "SGK anlaşmalı özel hastanelerde avantajlı sağlık güvencesi.",
+    image: tamamlayiciSaglikSlider,
+    alt: "Birbirine destek olan kenetlenmiş eller",
     cta: "Tamamlayıcı Sağlık Teklifi Al",
     to: "/teklif/tamamlayici-saglik",
   },
   {
-    title: "Eviniz İçin Güçlü Bir Güvence",
-    subtitle: "DASK ile evinizi beklenmedik risklere karşı bugünden koruyun.",
-    image: houseSlider,
-    alt: "Bahçeli modern aile evi",
+    eyebrow: "Özel Sağlık Sigortası",
+    titleLine1: "Sağlığınız için.",
+    titleLine2: "Daha geniş güvence.",
+    subtitle: "İhtiyacınıza uygun kapsam ve sağlık ağı seçeneklerini değerlendirin.",
+    image: ozelSaglikSlider,
+    alt: "Masada duran stetoskop",
+    cta: "Özel Sağlık Teklifi Al",
+    to: "/teklif/ozel-saglik",
+  },
+  {
+    eyebrow: "İhtiyari Mali Mesuliyet (İMM)",
+    titleLine1: "Limitler yetmediğinde.",
+    titleLine2: "Ek güvence yanınızda.",
+    subtitle: "Trafik sigortası limitlerini aşan sorumluluklara karşı korunun.",
+    image: immSlider,
+    alt: "Trafik kazasında hasar gören iki otomobil",
+    cta: "İMM Teklifi Al",
+    to: "/teklif/imm",
+  },
+  {
+    eyebrow: "DASK",
+    titleLine1: "Deprem beklenmez.",
+    titleLine2: "Eviniz güvende.",
+    subtitle: "Zorunlu deprem sigortanızı kolayca oluşturun.",
+    image: daskSlider,
+    alt: "Gün batımında modern konut siluetleri",
     cta: "DASK Teklifi Al",
     to: "/teklif/dask",
+  },
+  {
+    eyebrow: "Konut Sigortası",
+    titleLine1: "Eviniz değerli.",
+    titleLine2: "Güvencesi hazır.",
+    subtitle: "Evinizi ve eşyalarınızı beklenmedik risklere karşı koruyun.",
+    image: konutSlider,
+    alt: "Akşam ışıkları yanan bahçeli müstakil ev",
+    cta: "Teklif Al",
+    to: "/teklif/dask",
+  },
+  {
+    eyebrow: "Seyahat Sağlık Sigortası",
+    titleLine1: "Yola çıkmadan.",
+    titleLine2: "Güvenceniz hazır.",
+    subtitle: "Seyahatiniz boyunca sağlık risklerine karşı koruma sağlayın.",
+    image: seyahatSaglikSlider,
+    alt: "Havalimanında bekleyen seyahat valizi",
+    cta: "Seyahat Sağlık Teklifi Al",
+    to: "/teklif/seyahat-saglik",
+  },
+  {
+    eyebrow: "Yeşil Kart Sigortası",
+    titleLine1: "Sınırlar değişir.",
+    titleLine2: "Güvenceniz sürer.",
+    subtitle: "Yurt dışı araç kullanımınız için gerekli sigortayı hazırlayın.",
+    image: yesilKartSlider,
+    alt: "Dağ manzaralı yolda ilerleyen beyaz otomobil",
+    cta: "Yeşil Kart Teklifi Al",
+    to: "/teklif/yesil-kart",
   },
 ];
 
 export default function InsuranceSlider() {
   const trackRef = useRef<HTMLDivElement>(null);
+  const [loadedCount, setLoadedCount] = useState(INITIAL_LOADED);
+
+  const revealFromScroll = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
+
+    const card = track.querySelector<HTMLElement>(".insurance-slider__card");
+    const step = (card?.offsetWidth ?? track.clientWidth) + 18;
+    const activeIndex = Math.round(track.scrollLeft / step);
+
+    setLoadedCount((count) =>
+      Math.min(slides.length, Math.max(count, activeIndex + 1 + LOAD_AHEAD)),
+    );
+  }, []);
 
   const move = (direction: -1 | 1) => {
     const track = trackRef.current;
@@ -79,13 +168,23 @@ export default function InsuranceSlider() {
           </div>
         </div>
 
-        <div className="insurance-slider__track" ref={trackRef}>
-          {slides.map((slide) => (
-            <Link className="insurance-slider__card" to={slide.to} key={slide.title}>
-              <img src={slide.image} alt={slide.alt} />
-              <span className="insurance-slider__shade" aria-hidden="true" />
+        <div className="insurance-slider__track" ref={trackRef} onScroll={revealFromScroll}>
+          {slides.map((slide, index) => (
+            <Link className="insurance-slider__card" to={slide.to} key={slide.eyebrow}>
+              {index < loadedCount && (
+                <img
+                  src={slide.image}
+                  alt={slide.alt}
+                  fetchPriority={index === 0 ? "high" : "auto"}
+                  decoding="async"
+                />
+              )}
               <span className="insurance-slider__content">
-                <strong>{slide.title}</strong>
+                <span className="insurance-slider__badge">{slide.eyebrow}</span>
+                <strong>
+                  {slide.titleLine1}
+                  <em>{slide.titleLine2}</em>
+                </strong>
                 <span>{slide.subtitle}</span>
                 <span className="insurance-slider__cta">
                   {slide.cta}

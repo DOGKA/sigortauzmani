@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import HeroScene from "./HeroScene";
 import "./Footer.css";
 
 const columns: {
@@ -26,10 +27,11 @@ const columns: {
   {
     title: "Destek",
     links: [
+      { label: "Hakkımızda", to: "/hakkimizda" },
       { label: "Teklif Al", to: "/teklif/kasko" },
       { label: "Poliçe İptal", to: "/police-iptal" },
       { label: "0850 302 00 32" },
-      { label: "İletişim" },
+      { label: "İletişim", to: "/iletisim" },
     ],
   },
 ];
@@ -38,10 +40,7 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer__bg" aria-hidden="true">
-        <div className="footer__blob footer__blob--1" />
-        <div className="footer__blob footer__blob--2" />
-        <div className="footer__floor" />
-        <div className="footer__beam" />
+        <HeroScene flip />
         <div className="footer__vignette" />
       </div>
 
@@ -55,8 +54,9 @@ export default function Footer() {
               </span>
             </Link>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              30&apos;a yakın sigorta şirketinin tekliflerini sizin için
+              karşılaştıran, poliçe öncesi ve sonrası her adımda yanınızda olan
+              deneyimli sigorta acentesi.
             </p>
             <a href="tel:+908503020032" className="footer__phone">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
