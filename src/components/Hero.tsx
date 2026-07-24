@@ -1,13 +1,13 @@
 import { Link } from "react-router-dom";
 import { products } from "../data/products";
-import HeroScene from "./HeroScene";
+import AmbientBackdrop from "./AmbientBackdrop";
 import "./Hero.css";
 
 export default function Hero() {
   return (
     <section className="hero">
       <div className="hero__bg" aria-hidden="true">
-        <HeroScene />
+        <AmbientBackdrop />
         <div className="hero__vignette" />
       </div>
 

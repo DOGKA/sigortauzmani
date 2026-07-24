@@ -15,6 +15,9 @@ import "./RiskMapPage.css";
 const GEOJSON_URL = "/data/turkey-provinces.geojson";
 
 const RISK_KEYS: RiskKey[] = ["earthquake", "flood", "hail", "theft"];
+const TOOLTIP_WIDTH = 216;
+const TOOLTIP_HEIGHT = 158;
+const TOOLTIP_GAP = 12;
 
 interface TooltipState {
   x: number;
@@ -157,11 +160,21 @@ export default function RiskMapPage() {
           return;
         }
 
-        setTooltip({
-          x: e.point.x,
-          y: e.point.y,
-          province,
-        });
+        const container = containerRef.current;
+        const width = container?.clientWidth ?? TOOLTIP_WIDTH + TOOLTIP_GAP * 2;
+        const height = container?.clientHeight ?? TOOLTIP_HEIGHT + TOOLTIP_GAP * 2;
+        const preferredX = e.point.x + TOOLTIP_GAP;
+        const preferredY = e.point.y + TOOLTIP_GAP;
+        const x = Math.max(
+          TOOLTIP_GAP,
+          Math.min(preferredX, width - TOOLTIP_WIDTH - TOOLTIP_GAP),
+        );
+        const y = Math.max(
+          TOOLTIP_GAP,
+          Math.min(preferredY, height - TOOLTIP_HEIGHT - TOOLTIP_GAP),
+        );
+
+        setTooltip({ x, y, province });
       };
 
       const onLeave = () => {
@@ -174,6 +187,13 @@ export default function RiskMapPage() {
       };
 
       map.on("mousemove", "provinces-fill", onMove);
+      map.on("click", "provinces-fill", onMove);
+      map.on("click", (e) => {
+        const features = map.queryRenderedFeatures(e.point, {
+          layers: ["provinces-fill"],
+        });
+        if (features.length === 0) onLeave();
+      });
       map.on("mouseleave", "provinces-fill", onLeave);
       fitTurkey();
       setReady(true);

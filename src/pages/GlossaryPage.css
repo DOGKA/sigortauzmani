@@ -217,6 +217,15 @@
   gap: 8px;
 }
 
+.glossary__filters-pin {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.glossary__filters-scroll {
+  display: contents;
+}
+
 .glossary__filters button {
   display: inline-flex;
   align-items: center;
@@ -263,7 +272,8 @@
   gap: 4px;
 }
 
-.glossary__alpha a {
+.glossary__alpha a,
+.glossary__alpha span {
   min-width: 30px;
   height: 30px;
   display: inline-flex;
@@ -279,6 +289,11 @@
 .glossary__alpha a:hover {
   color: var(--brand-600);
   background: var(--brand-100);
+}
+
+.glossary__alpha .is-disabled {
+  color: var(--ink-300);
+  cursor: default;
 }
 
 .glossary__list-wrap {
@@ -513,6 +528,36 @@
 
   .glossary__tools {
     top: 64px;
+  }
+
+  .glossary__filters {
+    flex-wrap: nowrap;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .glossary__filters button {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .glossary__filters-pin {
+    position: relative;
+    z-index: 1;
+  }
+
+  .glossary__filters-scroll {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .glossary__filters-scroll::-webkit-scrollbar {
+    display: none;
   }
 
   .glossary__cta {

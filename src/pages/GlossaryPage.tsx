@@ -46,7 +46,7 @@ function buildJsonLd(terms: GlossaryTerm[]) {
 
 export default function GlossaryPage() {
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState<CategoryFilter>("all");
+  const [category, setCategory] = useState<CategoryFilter>("genel");
   const [openSlug, setOpenSlug] = useState<string | null>(null);
 
   useEffect(() => {
@@ -100,7 +100,8 @@ export default function GlossaryPage() {
     });
   }, [sorted, query, category]);
 
-  const letters = useMemo(() => getAlphabetLetters(filtered), [filtered]);
+  const letters = useMemo(() => getAlphabetLetters(sorted), [sorted]);
+  const availableLetters = useMemo(() => getAlphabetLetters(filtered), [filtered]);
 
   const categories = useMemo(
     () =>
@@ -183,38 +184,48 @@ export default function GlossaryPage() {
           </label>
 
           <div className="glossary__filters" role="tablist" aria-label="Kategori">
-            <button
-              type="button"
-              role="tab"
-              aria-selected={category === "all"}
-              className={category === "all" ? "is-active" : ""}
-              onClick={() => setCategory("all")}
-            >
-              Tümü
-              <em>{glossaryTerms.length}</em>
-            </button>
-            {categories.map((cat) => (
+            <span className="glossary__filters-pin">
               <button
-                key={cat.key}
                 type="button"
                 role="tab"
-                aria-selected={category === cat.key}
-                className={category === cat.key ? "is-active" : ""}
-                onClick={() => setCategory(cat.key)}
+                aria-selected={category === "all"}
+                className={category === "all" ? "is-active" : ""}
+                onClick={() => setCategory("all")}
               >
-                {cat.label}
-                <em>{cat.count}</em>
+                Tümü
+                <em>{glossaryTerms.length}</em>
               </button>
-            ))}
+            </span>
+            <span className="glossary__filters-scroll">
+              {categories.map((cat) => (
+                <button
+                  key={cat.key}
+                  type="button"
+                  role="tab"
+                  aria-selected={category === cat.key}
+                  className={category === cat.key ? "is-active" : ""}
+                  onClick={() => setCategory(cat.key)}
+                >
+                  {cat.label}
+                  <em>{cat.count}</em>
+                </button>
+              ))}
+            </span>
           </div>
 
           {letters.length > 0 && (
             <div className="glossary__alpha" aria-label="Harfe göre atla">
-              {letters.map((letter) => (
-                <a key={letter} href={`#letter-${letter}`}>
-                  {letter}
-                </a>
-              ))}
+              {letters.map((letter) =>
+                availableLetters.includes(letter) ? (
+                  <a key={letter} href={`#letter-${letter}`}>
+                    {letter}
+                  </a>
+                ) : (
+                  <span key={letter} className="is-disabled" aria-disabled="true">
+                    {letter}
+                  </span>
+                ),
+              )}
             </div>
           )}
         </section>
@@ -243,7 +254,7 @@ export default function GlossaryPage() {
             </div>
           ) : (
             <div className="glossary__list">
-              {letters.map((letter) => {
+              {availableLetters.map((letter) => {
                 const group = filtered.filter(
                   (t) => t.term.charAt(0).toLocaleUpperCase("tr-TR") === letter,
                 );

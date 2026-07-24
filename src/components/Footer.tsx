@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import HeroScene from "./HeroScene";
+import AmbientBackdrop from "./AmbientBackdrop";
 import "./Footer.css";
 
 const columns: {
@@ -40,7 +40,7 @@ export default function Footer() {
   return (
     <footer className="footer">
       <div className="footer__bg" aria-hidden="true">
-        <HeroScene flip />
+        <AmbientBackdrop variant="footer" />
         <div className="footer__vignette" />
       </div>
 

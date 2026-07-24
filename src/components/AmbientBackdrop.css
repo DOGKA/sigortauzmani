@@ -1,0 +1,131 @@
+.ambient {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint style;
+}
+
+/* Footer'da ışık aşağıdan yükselsin diye sahne dikeyde aynalanır. */
+.ambient--footer {
+  transform: scaleY(-1);
+}
+
+/* --- yumuşak marka ışık havuzları --- */
+.ambient__pool {
+  position: absolute;
+  display: block;
+  will-change: transform;
+}
+
+/* Boyutlar kapsayıcıya göre yüzdeli: hero mobilde uzun-dar, masaüstünde geniş olsa da
+   ışık aynı oranda yayılır. */
+.ambient__pool--1 {
+  top: -14%;
+  left: -28%;
+  width: 96%;
+  height: 54%;
+  background: radial-gradient(
+    ellipse closest-side,
+    rgba(45, 126, 245, 0.42),
+    rgba(45, 126, 245, 0) 100%
+  );
+  animation: ambient-drift-a 28s ease-in-out infinite alternate;
+}
+
+.ambient__pool--2 {
+  top: -10%;
+  right: -30%;
+  width: 92%;
+  height: 48%;
+  background: radial-gradient(
+    ellipse closest-side,
+    rgba(111, 165, 248, 0.46),
+    rgba(111, 165, 248, 0) 100%
+  );
+  animation: ambient-drift-b 34s ease-in-out infinite alternate;
+}
+
+.ambient__pool--3 {
+  bottom: -20%;
+  left: 10%;
+  width: 104%;
+  height: 50%;
+  background: radial-gradient(
+    ellipse closest-side,
+    rgba(11, 72, 200, 0.26),
+    rgba(11, 72, 200, 0) 100%
+  );
+  animation: ambient-drift-c 31s ease-in-out infinite alternate;
+}
+
+@keyframes ambient-drift-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(7%, 5%, 0) scale(1.12);
+  }
+}
+
+@keyframes ambient-drift-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.08);
+  }
+  to {
+    transform: translate3d(-6%, 7%, 0) scale(0.96);
+  }
+}
+
+@keyframes ambient-drift-c {
+  from {
+    transform: translate3d(-4%, 0, 0) scale(0.98);
+  }
+  to {
+    transform: translate3d(5%, -6%, 0) scale(1.1);
+  }
+}
+
+/* --- ölçek hissi veren, kenarlara doğru eriyen ızgara --- */
+.ambient__grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(16, 60, 140, 0.085) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(16, 60, 140, 0.085) 1px, transparent 1px);
+  background-size: 64px 64px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 76% 62% at 50% 34%,
+    #000 10%,
+    transparent 72%
+  );
+  mask-image: radial-gradient(
+    ellipse 76% 62% at 50% 34%,
+    #000 10%,
+    transparent 72%
+  );
+}
+
+/* --- üstten gelen ışık yıkaması: içeriğin arkasını temizler --- */
+.ambient__wash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.5) 0%,
+    rgba(255, 255, 255, 0.12) 26%,
+    rgba(255, 255, 255, 0) 52%
+  );
+}
+
+@media (max-width: 640px) {
+  .ambient__grid {
+    background-size: 44px 44px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient__pool {
+    animation: none;
+  }
+}

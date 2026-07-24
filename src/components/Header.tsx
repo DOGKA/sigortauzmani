@@ -1,38 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { products } from "../data/products";
-import vehicleGroupIcon from "../assets/menu/menu-arac-3d.png";
-import healthGroupIcon from "../assets/menu/menu-saglik-konut-3d.png";
+import { productGroups } from "../data/navigation";
+import MobileMenu from "./MobileMenu";
 import "./Header.css";
-
-const VEHICLE_SLUGS = ["trafik-sigortasi", "kasko", "imm", "yesil-kart"];
-const HEALTH_HOME_SLUGS = [
-  "tamamlayici-saglik",
-  "ozel-saglik",
-  "seyahat-saglik",
-  "dask",
-];
-
-const productGroups = [
-  {
-    title: "Araç Sigortaları",
-    icon: vehicleGroupIcon,
-    items: VEHICLE_SLUGS.map(
-      (slug) => products.find((p) => p.slug === slug)!,
-    ),
-  },
-  {
-    title: "Sağlık ve Konut Sigortaları",
-    icon: healthGroupIcon,
-    items: HEALTH_HOME_SLUGS.map(
-      (slug) => products.find((p) => p.slug === slug)!,
-    ),
-  },
-];
 
 export default function Header() {
   const [productsOpen, setProductsOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navRef = useRef<HTMLElement>(null);
+  const menuId = useId();
   const { pathname } = useLocation();
   const comparisonActive = pathname.startsWith("/karsilastirma");
   const cancelActive = pathname.startsWith("/police-iptal");
@@ -56,6 +32,20 @@ export default function Header() {
       document.removeEventListener("keydown", onEscape);
     };
   }, [productsOpen]);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  // Masaüstü genişliğine geçildiğinde drawer açık kalmasın
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 981px)");
+    const onChange = () => {
+      if (desktop.matches) setMenuOpen(false);
+    };
+    desktop.addEventListener("change", onChange);
+    return () => desktop.removeEventListener("change", onChange);
+  }, []);
 
   return (
     <header className="header">
@@ -172,8 +162,29 @@ export default function Header() {
               +90 850 302 00 32
             </a>
           </div>
+
+          <button
+            type="button"
+            className={`header__menu-btn ${menuOpen ? "is-open" : ""}`}
+            aria-expanded={menuOpen}
+            aria-controls={menuId}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            <span className="header__burger" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
+            Menü
+          </button>
         </div>
       </div>
+
+      <MobileMenu
+        id={menuId}
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+      />
     </header>
   );
 }

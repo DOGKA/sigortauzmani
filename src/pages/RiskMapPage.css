@@ -126,8 +126,8 @@
 .risk-map__tooltip {
   position: absolute;
   z-index: 5;
-  transform: translate(16px, 16px);
-  min-width: 196px;
+  width: 216px;
+  max-width: calc(100% - 24px);
   padding: 14px 16px;
   border-radius: 16px;
   pointer-events: none;
@@ -238,6 +238,20 @@
 }
 
 @media (max-width: 860px) {
+  .risk-map__toolbar {
+    flex-wrap: nowrap;
+    gap: 4px;
+  }
+
+  .risk-map__tab {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 9px 7px;
+    font-size: 11.5px;
+    white-space: nowrap;
+    text-align: center;
+  }
+
   .risk-map__stage {
     grid-template-columns: 1fr;
   }
