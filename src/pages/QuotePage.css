@@ -131,9 +131,28 @@
 
 .quote__steps {
   display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.quote__steps-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.quote__step-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-900);
+  letter-spacing: -0.01em;
+}
+
+.quote__steps-dots {
+  display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 18px;
 }
 
 .quote__step-dot {
@@ -146,13 +165,6 @@
 
 .quote__step-dot--active {
   background: linear-gradient(135deg, var(--brand-400), var(--brand-600));
-}
-
-.quote__step-label {
-  margin-left: auto;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--ink-400);
 }
 
 .quote__step-back {
@@ -170,10 +182,6 @@
 
 .quote__step-back:hover {
   background: rgba(45, 126, 245, 0.08);
-}
-
-.quote__step-back + .quote__step-label {
-  margin-left: 4px;
 }
 
 .quote__form {
