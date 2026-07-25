@@ -85,7 +85,7 @@ const REASONS = [
   },
   {
     num: "04",
-    title: "Poliçe sonrası hizmet",
+    title: "Poliçe Sonrası",
     text: "Yenileme ve hasar süreçlerinde destek almaya devam edin.",
     icon: (
       <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">

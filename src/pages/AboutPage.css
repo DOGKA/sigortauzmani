@@ -58,7 +58,7 @@
 
 .about__inner {
   position: relative;
-  max-width: 1160px;
+  max-width: 1280px;
   margin: 0 auto;
 }
 
@@ -289,13 +289,13 @@
   list-style: none;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
+  gap: 14px;
 }
 
 .about__why-card {
   position: relative;
   overflow: hidden;
-  padding: 26px 22px 24px;
+  padding: 24px 18px;
   border-radius: 20px;
   border: 1px solid rgba(16, 28, 48, 0.08);
   background: rgba(255, 255, 255, 0.9);
@@ -328,7 +328,7 @@
   position: absolute;
   top: 8px;
   right: 14px;
-  font-size: 56px;
+  font-size: 48px;
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1;
