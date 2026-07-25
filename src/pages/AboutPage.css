@@ -58,7 +58,7 @@
 
 .about__inner {
   position: relative;
-  max-width: 1040px;
+  max-width: 1160px;
   margin: 0 auto;
 }
 
@@ -341,13 +341,23 @@
   -webkit-text-stroke-color: rgba(45, 126, 245, 0.5);
 }
 
+.about__why-card-head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 44px;
+  margin-bottom: 10px;
+}
+
 .about__why-icon {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   color: var(--brand-600);
-  margin-bottom: 16px;
+  margin-bottom: 0;
 }
 
 .about__why-icon svg {
@@ -361,7 +371,7 @@
   font-size: 16.5px;
   font-weight: 750;
   letter-spacing: -0.015em;
-  margin-bottom: 8px;
+  margin-bottom: 0;
 }
 
 .about__why-card p {
@@ -559,10 +569,15 @@
 
   .about__motto {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
     margin-top: 44px;
-    padding: 24px 22px;
+    padding: 28px 22px;
+  }
+
+  .about__motto-item {
+    font-size: 22px;
   }
 
   .about__motto-divider {
@@ -581,6 +596,33 @@
   .about__why-grid {
     grid-template-columns: 1fr;
     gap: 14px;
+  }
+
+  .about__why-card {
+    padding: 20px 18px;
+  }
+
+  .about__why-card-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-right: 48px;
+    margin-bottom: 8px;
+  }
+
+  .about__why-icon {
+    flex-shrink: 0;
+    margin-bottom: 0;
+  }
+
+  .about__why-card h3 {
+    margin-bottom: 0;
+  }
+
+  .about__why-num {
+    top: 12px;
+    right: 16px;
+    font-size: 34px;
   }
 
   .about__cta {

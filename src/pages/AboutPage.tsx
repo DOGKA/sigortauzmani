@@ -229,10 +229,12 @@ export default function AboutPage() {
                 <span className="about__why-num" aria-hidden="true">
                   {reason.num}
                 </span>
-                <span className="about__why-icon" aria-hidden="true">
-                  {reason.icon}
-                </span>
-                <h3>{reason.title}</h3>
+                <div className="about__why-card-head">
+                  <span className="about__why-icon" aria-hidden="true">
+                    {reason.icon}
+                  </span>
+                  <h3>{reason.title}</h3>
+                </div>
                 <p>{reason.text}</p>
               </li>
             ))}

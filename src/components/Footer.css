@@ -107,8 +107,8 @@
 
 .footer__columns {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 28px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
 }
 
 .footer__column h3 {
@@ -152,20 +152,21 @@
   color: var(--ink-400);
 }
 
-.footer__legal {
+.footer__credits {
   display: flex;
-  gap: 20px;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
 }
 
-.footer__legal button {
-  padding: 0;
-  font-size: 13px;
-  color: var(--ink-400);
+.footer__credits a {
+  color: var(--brand-600);
+  font-weight: 650;
   transition: color 0.2s ease;
 }
 
-.footer__legal button:hover {
-  color: var(--brand-600);
+.footer__credits a:hover {
+  color: var(--brand-700);
 }
 
 @media (max-width: 860px) {
@@ -182,27 +183,21 @@
   /* tablet: alt bar tek sütun, ortalanmış */
   .footer__bottom {
     flex-direction: column;
-    align-items: center;
-    gap: 12px;
+    align-items: stretch;
+    gap: 16px;
     margin-top: 24px;
-    padding: 20px 8px 0;
+    padding: 20px 0 0;
     border-top: 1px solid rgba(16, 28, 48, 0.08);
     text-align: center;
   }
 
-  .footer__legal {
+  .footer__credits {
+    flex-direction: column;
     justify-content: center;
-    flex-wrap: wrap;
-    gap: 8px 0;
+    gap: 5px;
+    line-height: 1.45;
   }
 
-  .footer__legal button {
-    padding: 4px 12px;
-  }
-
-  .footer__legal button + button {
-    border-left: 1px solid rgba(16, 28, 48, 0.14);
-  }
 }
 
 @media (max-width: 560px) {

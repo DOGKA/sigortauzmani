@@ -34,6 +34,14 @@ const columns: {
       { label: "İletişim", to: "/iletisim" },
     ],
   },
+  {
+    title: "Yasal",
+    links: [
+      { label: "KVKK  Metni" },
+      { label: "Gizlilik Politikası" },
+      { label: "Çerez Politikası" },
+    ],
+  },
 ];
 
 export default function Footer() {
@@ -92,11 +100,18 @@ export default function Footer() {
         </div>
 
         <div className="footer__bottom">
-          <span>© 2026 Sigorta Uzmanı. Powered by Juststack Software and Tech.</span>
-          <div className="footer__legal">
-            <button type="button">KVKK Aydınlatma Metni</button>
-            <button type="button">Gizlilik Politikası</button>
-            <button type="button">Çerez Politikası</button>
+          <div className="footer__credits">
+            <span>© 2026 Sigorta Uzmanı.</span>
+            <span>
+              Powered by{" "}
+              <a
+                href="https://juststack.co/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Juststack Software &amp; Tech
+              </a>
+            </span>
           </div>
         </div>
       </div>

@@ -560,6 +560,10 @@
     display: none;
   }
 
+  .glossary__alpha {
+    display: none;
+  }
+
   .glossary__cta {
     flex-direction: column;
     align-items: flex-start;
