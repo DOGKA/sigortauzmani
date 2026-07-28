@@ -1,18 +1,19 @@
-/**
- * Ürün kataloğu. Varlık (asset) import'u içermez; ikonlar için
- * `productIcons.ts` kullanılır. Böylece bu modül Edge fonksiyonlarından
- * (api/prerender) da import edilebilir.
- */
+import trafikIcon from "../assets/icons/trafik-yeni.svg";
+import kaskoIcon from "../assets/icons/trafik.svg";
+import tamamlayiciIcon from "../assets/icons/tamamlayici-saglik.svg";
+import seyahatIcon from "../assets/icons/seyahat-saglik.svg";
+import immIcon from "../assets/icons/imm.svg";
+import ozelSaglikIcon from "../assets/icons/ozel-saglik.svg";
+import daskIcon from "../assets/icons/dask.svg";
+import yesilKartIcon from "../assets/icons/yesil-kart.svg";
+import konutIcon from "../assets/icons/saglik-konut-menu.svg";
 
 export interface Product {
   slug: string;
   title: string;
+  icon: string;
   badge?: string;
   seoTitle: string;
-  /** Arama sonucu açıklaması — 150-160 karakter hedefli. */
-  metaDescription: string;
-  /** schema.org Service.serviceType değeri. */
-  serviceType: string;
   seoBullets: string[];
 }
 
@@ -20,10 +21,8 @@ export const products: Product[] = [
   {
     slug: "trafik-sigortasi",
     title: "Trafik Sigortası",
+    icon: trafikIcon,
     seoTitle: "Trafik Sigortası Fiyatları 2026 için Teklif Al",
-    metaDescription:
-      "2026 zorunlu trafik sigortası fiyatlarını 30'a yakın şirket arasında karşılaştırın. Plaka ve ruhsat bilgisiyle dakikalar içinde ücretsiz teklif alın.",
-    serviceType: "Zorunlu Trafik Sigortası",
     seoBullets: [
       "2026 trafik sigortası fiyatlarını farklı sigorta şirketleri arasında karşılaştırın.",
       "Prim; aracın türü, kayıtlı olduğu il ve hasarsızlık basamağına göre hesaplanır.",
@@ -34,10 +33,8 @@ export const products: Product[] = [
   {
     slug: "kasko",
     title: "Kasko",
+    icon: kaskoIcon,
     seoTitle: "Kasko Fiyatları 2026 için Teklif Al",
-    metaDescription:
-      "2026 kasko fiyatlarını ve teminat kapsamlarını karşılaştırın. Dar, genişletilmiş ve tam kasko tekliflerini tek formla ücretsiz alın.",
-    serviceType: "Kasko Sigortası",
     seoBullets: [
       "2026 kasko fiyatlarını ve farklı şirketlerin teminat seçeneklerini karşılaştırın.",
       "Kasko primi; araç değeri, model yılı, kullanım ili ve hasar geçmişine göre belirlenir.",
@@ -48,10 +45,8 @@ export const products: Product[] = [
   {
     slug: "tamamlayici-saglik",
     title: "Tamamlayıcı Sağlık",
+    icon: tamamlayiciIcon,
     seoTitle: "Tamamlayıcı Sağlık Sigortası Fiyatları 2026 için Teklif Al",
-    metaDescription:
-      "2026 tamamlayıcı sağlık sigortası (TSS) fiyatlarını ve anlaşmalı hastane ağlarını karşılaştırın. SGK fark ücretlerine karşı ücretsiz teklif alın.",
-    serviceType: "Tamamlayıcı Sağlık Sigortası",
     seoBullets: [
       "2026 tamamlayıcı sağlık sigortası fiyatlarını ve anlaşmalı hastane ağlarını karşılaştırın.",
       "SGK ile anlaşmalı özel hastanelerde oluşan fark ücretlerine karşı güvence sağlayın.",
@@ -62,10 +57,8 @@ export const products: Product[] = [
   {
     slug: "seyahat-saglik",
     title: "Seyahat Sağlık",
+    icon: seyahatIcon,
     seoTitle: "Seyahat Sağlık Sigortası Fiyatları 2026 için Teklif Al",
-    metaDescription:
-      "2026 seyahat sağlık sigortası fiyatlarını ülke ve süreye göre karşılaştırın. Schengen vizesine uygun teminatlı poliçeler için ücretsiz teklif alın.",
-    serviceType: "Seyahat Sağlık Sigortası",
     seoBullets: [
       "2026 seyahat sağlık sigortası fiyatlarını gideceğiniz ülke ve seyahat süresine göre karşılaştırın.",
       "Yurt dışında acil tedavi, hastane, ambulans ve tıbbi nakil giderlerine karşı korunun.",
@@ -76,10 +69,8 @@ export const products: Product[] = [
   {
     slug: "imm",
     title: "İMM",
+    icon: immIcon,
     seoTitle: "İMM Sigortası Fiyatları 2026 için Teklif Al",
-    metaDescription:
-      "2026 İMM (İhtiyari Mali Mesuliyet) sigortası fiyatlarını karşılaştırın. Trafik sigortası limitini aşan zararlar için ücretsiz teklif alın.",
-    serviceType: "İhtiyari Mali Mesuliyet Sigortası",
     seoBullets: [
       "2026 İMM sigortası fiyatlarını ve yüksek teminat limitlerini karşılaştırın.",
       "Trafik sigortası limitini aşan maddi ve bedeni zararlar için ek güvence sağlayın.",
@@ -90,10 +81,8 @@ export const products: Product[] = [
   {
     slug: "ozel-saglik",
     title: "Özel Sağlık",
+    icon: ozelSaglikIcon,
     seoTitle: "Özel Sağlık Sigortası Fiyatları 2026 için Teklif Al",
-    metaDescription:
-      "2026 özel sağlık sigortası fiyatlarını, hastane ağlarını ve poliçe kapsamlarını karşılaştırın. Yatarak ve ayakta tedavi için ücretsiz teklif alın.",
-    serviceType: "Özel Sağlık Sigortası",
     seoBullets: [
       "2026 özel sağlık sigortası fiyatlarını, hastane ağlarını ve poliçe kapsamlarını karşılaştırın.",
       "SGK şartı olmadan yatarak ve ayakta tedavi seçeneklerinden yararlanın.",
@@ -104,10 +93,8 @@ export const products: Product[] = [
   {
     slug: "dask",
     title: "DASK",
+    icon: daskIcon,
     seoTitle: "DASK Fiyatları 2026 için Teklif Al",
-    metaDescription:
-      "2026 DASK fiyatını adres, brüt metrekare ve yapı tarzına göre hesaplatın. Zorunlu Deprem Sigortası poliçenizi ücretsiz teklifle oluşturun veya yenileyin.",
-    serviceType: "Zorunlu Deprem Sigortası (DASK)",
     seoBullets: [
       "2026 DASK fiyatını adres, brüt metrekare, yapı tarzı ve deprem riskine göre hesaplatın.",
       "Zorunlu Deprem Sigortası ile deprem ve deprem kaynaklı bina hasarlarını güvenceye alın.",
@@ -118,11 +105,9 @@ export const products: Product[] = [
   {
     slug: "yesil-kart",
     title: "Yeşil Kart",
+    icon: yesilKartIcon,
     badge: "Yeni",
     seoTitle: "Yeşil Kart Sigortası Fiyatları 2026 için Teklif Al",
-    metaDescription:
-      "2026 Yeşil Kart Sigortası fiyatlarını araç türü ve süreye göre öğrenin. Aracınızla yurt dışına çıkmadan önce 15 gün-1 yıl arası poliçe teklifi alın.",
-    serviceType: "Yeşil Kart Sigortası",
     seoBullets: [
       "2026 Yeşil Kart Sigortası fiyatlarını araç türü ve poliçe süresine göre öğrenin.",
       "Aracınızla yurt dışına çıkarken geçerli uluslararası trafik sigortanızı hazırlayın.",
@@ -133,10 +118,8 @@ export const products: Product[] = [
   {
     slug: "konut",
     title: "Konut Sigortası",
+    icon: konutIcon,
     seoTitle: "Konut Sigortası Fiyatları 2026 için Teklif Al",
-    metaDescription:
-      "2026 konut sigortası fiyatlarını karşılaştırın. Yangın, su basması, hırsızlık ve doğal afet teminatlarıyla eviniz için ücretsiz teklif alın.",
-    serviceType: "Konut Sigortası",
     seoBullets: [
       "2026 konut sigortası fiyatlarını farklı sigorta şirketleri arasında karşılaştırın.",
       "Yangın, su basması, hırsızlık ve doğal afetlere karşı binanızı ve eşyalarınızı güvenceye alın.",
