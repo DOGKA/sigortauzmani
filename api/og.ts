@@ -9,12 +9,31 @@
  * kullandığından bu fonksiyon Edge değil Node.js runtime'ında çalışır.
  */
 
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import { Resvg } from "@resvg/resvg-js";
 
 const WIDTH = 1200;
 const HEIGHT = 630;
 const SITE_DOMAIN = "sigortauzmani.net";
 const ACCENT_HUE = 215;
+const FONT_FAMILY = "Inter";
+
+// Vercel'in Node.js fonksiyonları sistem fontu içermez; resvg-js metinleri
+// sessizce boş bırakır. Bu yüzden fontlar repodan (api/fonts) doğrudan
+// yükleniyor. vercel.json'daki `includeFiles` bu dosyaları bundle'a dahil eder.
+function resolveFontFiles(): string[] {
+  const candidates = [
+    join(process.cwd(), "api/fonts"),
+    join(__dirname, "fonts"),
+  ];
+  for (const dir of candidates) {
+    const regular = join(dir, "Inter-Regular.ttf");
+    const bold = join(dir, "Inter-Bold.ttf");
+    if (existsSync(regular) && existsSync(bold)) return [regular, bold];
+  }
+  return [];
+}
 
 interface BlogCardRow {
   title: string;
@@ -139,24 +158,29 @@ export async function GET(request: Request): Promise<Response> {
   <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#g1)" />
   <rect width="${WIDTH}" height="${HEIGHT}" fill="url(#g2)" />
 
-  <text x="88" y="110" fill="#ffffff" font-size="22" font-family="Arial, Helvetica, sans-serif" font-weight="700" letter-spacing="2">${escapeXml(
+  <text x="88" y="110" fill="#ffffff" font-size="22" font-family="${FONT_FAMILY}" font-weight="700" letter-spacing="2">${escapeXml(
     category.toUpperCase(),
   )}</text>
 
-  <text fill="#ffffff" font-size="${titleSize}" font-family="Arial, Helvetica, sans-serif" font-weight="700" letter-spacing="-1.2">
+  <text fill="#ffffff" font-size="${titleSize}" font-family="${FONT_FAMILY}" font-weight="700" letter-spacing="-1.2">
     ${titleTspans}
   </text>
 
   <line x1="72" y1="560" x2="1128" y2="560" stroke="rgba(255,255,255,0.16)" />
-  <text x="72" y="602" fill="#ffffff" font-size="26" font-family="Arial, Helvetica, sans-serif" font-weight="600">${SITE_DOMAIN}</text>
-  <text x="1128" y="602" text-anchor="end" fill="rgba(255,255,255,0.68)" font-size="24" font-family="Arial, Helvetica, sans-serif">${escapeXml(
+  <text x="72" y="602" fill="#ffffff" font-size="26" font-family="${FONT_FAMILY}" font-weight="700">${SITE_DOMAIN}</text>
+  <text x="1128" y="602" text-anchor="end" fill="rgba(255,255,255,0.68)" font-size="24" font-family="${FONT_FAMILY}" font-weight="400">${escapeXml(
     footerRight,
   )}</text>
 </svg>`.trim();
 
+  const fontFiles = resolveFontFiles();
   const resvg = new Resvg(svg, {
     fitTo: { mode: "width", value: WIDTH },
-    font: { loadSystemFonts: true },
+    font: {
+      loadSystemFonts: false,
+      fontFiles,
+      defaultFontFamily: FONT_FAMILY,
+    },
   });
   const pngBuffer = resvg.render().asPng();
 
