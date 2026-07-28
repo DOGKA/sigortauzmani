@@ -1,0 +1,95 @@
+/* =============================================================================
+   Blog modülü token'ları — Sigorta Uzmanı markasına uyarlanmış hâli.
+   blog.css'ten SONRA import edilir; --blog-sticky-top gibi değerleri ezer.
+============================================================================= */
+
+:root {
+  --fusion-primary: #1155d6;
+  --fusion-primary-light: #2d7ef5;
+  --fusion-primary-dark: #0b48c8;
+  --fusion-primary-rgb: 17, 85, 214;
+  --fusion-success: #16a34a;
+  --fusion-warning: #f59e0b;
+  --fusion-info: #2d7ef5;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  --background: var(--surface);
+  --background-secondary: #ffffff;
+  --background-tertiary: #eaf1fd;
+  --foreground: var(--ink-900);
+  --foreground-secondary: rgba(16, 28, 48, 0.78);
+  --foreground-tertiary: rgba(16, 28, 48, 0.56);
+  --foreground-muted: rgba(16, 28, 48, 0.4);
+
+  --border-hover: rgba(16, 28, 48, 0.3);
+  --glass-border: rgba(17, 85, 214, 0.16);
+  --glass-border-hover: rgba(17, 85, 214, 0.28);
+  --shadow-xs: 0 1px 2px rgba(8, 43, 117, 0.06);
+  --input-focus-ring: rgba(var(--fusion-primary-rgb), 0.28);
+
+  --font-geist-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
+
+  /* Site header'ı 72px sticky; yapışkan filtreler bunun altına oturur. */
+  --blog-sticky-top: 72px;
+  --cat-accent: var(--brand-600);
+  --cat-soft: rgba(17, 85, 214, 0.1);
+}
+
+@media (min-width: 1024px) {
+  :root {
+    --blog-sticky-top: 72px;
+  }
+}
+
+.blog-shell {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-10) clamp(1rem, 4vw, 2rem) var(--space-16);
+}
+
+/* Modül bu ikonları Tailwind boyut sınıflarıyla ölçekliyordu. */
+.blog-share__button svg,
+.blog-pagination__arrow svg {
+  width: 16px;
+  height: 16px;
+}
+
+.blog-share__button.is-copied {
+  color: var(--fusion-success);
+}
+
+.blog-content__empty {
+  color: var(--foreground-tertiary);
+  font-style: italic;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

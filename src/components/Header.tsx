@@ -13,7 +13,7 @@ export default function Header() {
   const comparisonActive = pathname.startsWith("/karsilastirma");
   const cancelActive = pathname.startsWith("/police-iptal");
   const aboutActive = pathname.startsWith("/hakkimizda");
-  const contactActive = pathname.startsWith("/iletisim");
+  const blogActive = pathname.startsWith("/blog");
 
   useEffect(() => {
     if (!productsOpen) return;
@@ -65,7 +65,6 @@ export default function Header() {
           >
             Hakkımızda
           </Link>
-
           <div
             className="header__nav-dropdown-wrap"
             onMouseEnter={() => setProductsOpen(true)}
@@ -138,14 +137,14 @@ export default function Header() {
             className={`header__nav-item ${comparisonActive ? "header__nav-item--open" : ""}`}
             aria-current={comparisonActive ? "page" : undefined}
           >
-            Karşılaştırma
+            Sigorta Türlerini Karşılaştır
           </Link>
           <Link
-            to="/iletisim"
-            className={`header__nav-item ${contactActive ? "header__nav-item--open" : ""}`}
-            aria-current={contactActive ? "page" : undefined}
+            to="/blog"
+            className={`header__nav-item ${blogActive ? "header__nav-item--open" : ""}`}
+            aria-current={blogActive ? "page" : undefined}
           >
-            İletişim
+            Blog
           </Link>
         </nav>
 

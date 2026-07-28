@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { products } from "../data/products";
+import { heroProducts } from "../data/products";
 import AmbientBackdrop from "./AmbientBackdrop";
 import "./Hero.css";
 
@@ -20,8 +20,8 @@ export default function Hero() {
           Doğru sigorta. Uygun Fiyat. Hızlı Destek
         </p>
 
-        <div className="hero__cards">
-          {products.map((product, i) => (
+        <div className="hero__cards" id="urunler">
+          {heroProducts.map((product, i) => (
             <Link
               key={product.slug}
               to={`/teklif/${product.slug}`}

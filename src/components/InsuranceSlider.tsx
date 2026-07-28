@@ -82,8 +82,8 @@ const slides = [
     subtitle: "Evinizi ve eşyalarınızı beklenmedik risklere karşı koruyun.",
     image: konutSlider,
     alt: "Akşam ışıkları yanan bahçeli müstakil ev",
-    cta: "Teklif Al",
-    to: "/teklif/dask",
+    cta: "Konut Sigortası Teklifi Al",
+    to: "/teklif/konut",
   },
   {
     eyebrow: "Seyahat Sağlık Sigortası",

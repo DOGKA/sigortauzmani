@@ -5,7 +5,7 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undef
 
 let supabase: SupabaseClient | null = null;
 
-function getSupabase() {
+export function getSupabase() {
   if (!supabaseUrl || !supabaseAnonKey) {
     console.error("Supabase ortam değişkenleri tanımlı değil.");
     return null;

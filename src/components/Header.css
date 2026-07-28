@@ -61,6 +61,7 @@
   border-radius: 10px;
   font-size: 14px;
   font-weight: 500;
+  white-space: nowrap;
   color: var(--ink-500);
   transition: color 0.2s, background-color 0.2s;
 }
@@ -294,6 +295,26 @@
 
 .header__menu-btn.is-open .header__burger span:nth-child(3) {
   transform: translateY(-5px) rotate(-45deg);
+}
+
+/* Uzun menü etiketleri dar masaüstü genişliklerinde taşmasın */
+@media (min-width: 981px) and (max-width: 1140px) {
+  .header__inner {
+    gap: 18px;
+  }
+
+  .header__nav {
+    gap: 2px;
+  }
+
+  .header__nav-item {
+    padding: 8px 9px;
+    font-size: 13px;
+  }
+
+  .header__phone-label {
+    display: none;
+  }
 }
 
 @media (max-width: 980px) {

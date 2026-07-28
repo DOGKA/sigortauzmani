@@ -6,6 +6,7 @@ import immIcon from "../assets/icons/imm.svg";
 import ozelSaglikIcon from "../assets/icons/ozel-saglik.svg";
 import daskIcon from "../assets/icons/dask.svg";
 import yesilKartIcon from "../assets/icons/yesil-kart.svg";
+import konutIcon from "../assets/icons/saglik-konut-menu.svg";
 
 export interface Product {
   slug: string;
@@ -114,7 +115,24 @@ export const products: Product[] = [
       "15 günden 1 yıla kadar süre seçenekleriyle seyahatinize uygun teklif alın.",
     ],
   },
+  {
+    slug: "konut",
+    title: "Konut Sigortası",
+    icon: konutIcon,
+    seoTitle: "Konut Sigortası Fiyatları 2026 için Teklif Al",
+    seoBullets: [
+      "2026 konut sigortası fiyatlarını farklı sigorta şirketleri arasında karşılaştırın.",
+      "Yangın, su basması, hırsızlık ve doğal afetlere karşı binanızı ve eşyalarınızı güvenceye alın.",
+      "Prim; konutun adresi, brüt metrekaresi, yapı tarzı ve seçilen teminat limitlerine göre hesaplanır.",
+      "Cam kırılması, izolasyon ve hukuksal koruma gibi ek teminatlarla poliçenizi ihtiyacınıza göre şekillendirin.",
+    ],
+  },
 ];
+
+// Ana sayfadaki ikon grid'i dört sütunlu olduğu için sekiz üründe tutuluyor
+export const heroProducts: Product[] = products.filter(
+  (p) => p.slug !== "konut",
+);
 
 export function getProduct(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);

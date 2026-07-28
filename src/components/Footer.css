@@ -35,8 +35,8 @@
 
 .footer__top {
   display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 2fr);
-  gap: 56px;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.6fr);
+  gap: 44px;
   padding: 40px;
   border-radius: 28px;
 
@@ -105,10 +105,14 @@
   transform: translateY(-2px);
 }
 
+/* Ürün adları uzun olduğu için ilk sütuna daha fazla genişlik veriliyor */
 .footer__columns {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns:
+    minmax(0, 1.45fr) minmax(0, 1.1fr) minmax(0, 1fr)
+    minmax(0, 0.95fr);
   gap: 20px;
+  align-items: start;
 }
 
 .footer__column h3 {

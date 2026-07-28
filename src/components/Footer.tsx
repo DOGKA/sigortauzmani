@@ -7,30 +7,35 @@ const columns: {
   links: { label: string; to?: string }[];
 }[] = [
   {
-    title: "Ürünler",
+    title: "Ürünlerimiz",
     links: [
       { label: "Trafik Sigortası", to: "/teklif/trafik-sigortasi" },
-      { label: "Kasko", to: "/teklif/kasko" },
-      { label: "Tamamlayıcı Sağlık", to: "/teklif/tamamlayici-saglik" },
+      { label: "Kasko Sigortası", to: "/teklif/kasko" },
+      { label: "İMM Sigortası", to: "/teklif/imm" },
+      { label: "Yeşil Kart Sigortası", to: "/teklif/yesil-kart" },
+      { label: "Tamamlayıcı Sağlık Sigortası", to: "/teklif/tamamlayici-saglik" },
+      { label: "Özel Sağlık Sigortası", to: "/teklif/ozel-saglik" },
+      { label: "Seyahat Sağlık Sigortası", to: "/teklif/seyahat-saglik" },
+      { label: "Konut Sigortası", to: "/teklif/konut" },
       { label: "DASK", to: "/teklif/dask" },
     ],
   },
   {
     title: "Bilgi Merkezi",
     links: [
-      { label: "Sıkça Sorulanlar", to: "/#sss" },
+      { label: "Blog", to: "/blog" },
+      { label: "Sıkça Sorulan Sorular", to: "/#sss" },
       { label: "Sigorta Sözlüğü", to: "/sigorta-sozlugu" },
       { label: "Karşılaştırma Merkezi", to: "/karsilastirma" },
       { label: "Risk Haritası", to: "/risk-haritasi" },
     ],
   },
   {
-    title: "Destek",
+    title: "Hızlı Bağlantılar",
     links: [
       { label: "Hakkımızda", to: "/hakkimizda" },
-      { label: "Teklif Al", to: "/teklif/kasko" },
+      { label: "Teklif Al", to: "/#urunler" },
       { label: "Poliçe İptal", to: "/police-iptal" },
-      { label: "0850 302 00 32" },
       { label: "İletişim", to: "/iletisim" },
     ],
   },
@@ -62,9 +67,9 @@ export default function Footer() {
               </span>
             </Link>
             <p>
-              30&apos;a yakın sigorta şirketinin tekliflerini sizin için
-              karşılaştıran, poliçe öncesi ve sonrası her adımda yanınızda olan
-              deneyimli sigorta acentesi.
+              30&apos;a yakın sigorta şirketinden teklifleri karşılaştırıyor,
+              ihtiyacınıza uygun teminat ve fiyat seçeneklerini sunuyoruz. Poliçe
+              öncesinde ve sonrasında yanınızdayız.
             </p>
             <a href="tel:+908503020032" className="footer__phone">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -86,8 +91,6 @@ export default function Footer() {
                     <li key={link.label}>
                       {link.to ? (
                         <Link to={link.to}>{link.label}</Link>
-                      ) : link.label.includes("0850") ? (
-                        <a href="tel:+908503020032">{link.label}</a>
                       ) : (
                         <button type="button">{link.label}</button>
                       )}

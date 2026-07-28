@@ -13,12 +13,31 @@ const ComparisonPage = lazy(() => import("./pages/ComparisonPage"));
 const PolicyCancelPage = lazy(() => import("./pages/PolicyCancelPage"));
 const AboutPage = lazy(() => import("./pages/AboutPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
+const BlogPage = lazy(() => import("./pages/BlogPage"));
+const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (!hash) {
+      window.scrollTo(0, 0);
+      return;
+    }
+    // Lazy sayfalardan gelindiğinde hedef henüz DOM'da olmayabilir
+    const id = hash.slice(1);
+    let tries = 0;
+    let frame = 0;
+    const tick = () => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else if (tries++ < 30) {
+        frame = requestAnimationFrame(tick);
+      }
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [pathname, hash]);
   return null;
 }
 
@@ -107,6 +126,22 @@ export default function App() {
           element={
             <Suspense fallback={<PageLoader />}>
               <ContactPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/blog"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <BlogPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/blog/:slug"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <BlogPostPage />
             </Suspense>
           }
         />

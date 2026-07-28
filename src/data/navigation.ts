@@ -7,6 +7,7 @@ const HEALTH_HOME_SLUGS = [
   "tamamlayici-saglik",
   "ozel-saglik",
   "seyahat-saglik",
+  "konut",
   "dask",
 ];
 

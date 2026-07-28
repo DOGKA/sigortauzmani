@@ -17,14 +17,21 @@ export default function AdvisorVideo({
   transcript = DEFAULT_TRANSCRIPT,
 }: AdvisorVideoProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const isFirstRunRef = useRef(true);
   const [muted, setMuted] = useState(true);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    video.load();
-    video.currentTime = 0;
+    // İlk mount'ta autoPlay yüklemeyi çoktan başlatıyor; load() bunu iptal edip
+    // yeniden başlattığı için mobilde kare bir an boşalıp yerine oturuyordu
+    if (isFirstRunRef.current) {
+      isFirstRunRef.current = false;
+    } else {
+      video.load();
+      video.currentTime = 0;
+    }
     video.muted = true;
     video.defaultMuted = true;
     setMuted(true);
