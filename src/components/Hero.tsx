@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { heroProducts } from "../data/products";
+import { productIcons } from "../data/productIcons";
 import AmbientBackdrop from "./AmbientBackdrop";
 import "./Hero.css";
 
@@ -30,7 +31,7 @@ export default function Hero() {
             >
               {product.badge && <span className="product-card__badge">{product.badge}</span>}
               <div className="product-card__icon">
-                <img src={product.icon} alt="" />
+                <img src={productIcons[product.slug]} alt="" />
               </div>
               <span className="product-card__title">{product.title}</span>
             </Link>

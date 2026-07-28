@@ -10,7 +10,8 @@
  */
 
 import { existsSync } from "node:fs";
-import { join } from "node:path";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { Resvg } from "@resvg/resvg-js";
 
 const WIDTH = 1200;
@@ -23,9 +24,12 @@ const FONT_FAMILY = "Inter";
 // sessizce boş bırakır. Bu yüzden fontlar repodan (api/fonts) doğrudan
 // yükleniyor. vercel.json'daki `includeFiles` bu dosyaları bundle'a dahil eder.
 function resolveFontFiles(): string[] {
+  // package.json "type": "module" olduğundan bu dosya ESM olarak derlenir;
+  // `__dirname` yok, bu yüzden `import.meta.url` kullanılıyor.
+  const moduleDir = dirname(fileURLToPath(import.meta.url));
   const candidates = [
     join(process.cwd(), "api/fonts"),
-    join(__dirname, "fonts"),
+    join(moduleDir, "fonts"),
   ];
   for (const dir of candidates) {
     const regular = join(dir, "Inter-Regular.ttf");
