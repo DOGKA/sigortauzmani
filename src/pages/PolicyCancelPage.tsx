@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   IPTAL_BRANS_LABELS,
@@ -17,6 +17,7 @@ import {
   isValidTckn,
   isValidVkn,
 } from "../utils/validation";
+import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
 import "./PolicyCancelPage.css";
 
 type Tab = "basvuru" | "takip";
@@ -25,10 +26,6 @@ type Step = 1 | 2 | "success";
 const BRANS_OPTIONS = (
   Object.keys(IPTAL_BRANS_LABELS) as IptalBrans[]
 ).map((value) => ({ value, label: IPTAL_BRANS_LABELS[value] }));
-
-const PAGE_TITLE = "Poliçe İptal İşlemleri | Sigorta Uzmanı";
-const PAGE_DESCRIPTION =
-  "Araç satışı nedeniyle poliçe iptal başvurusu yapın veya iptal talebinizi takip edin.";
 
 function formatTakipDate(iso: string) {
   return new Date(iso).toLocaleString("tr-TR", {
@@ -63,22 +60,7 @@ export default function PolicyCancelPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileInputId = useId();
 
-  useEffect(() => {
-    const prevTitle = document.title;
-    document.title = PAGE_TITLE;
-    let meta = document.querySelector('meta[name="description"]');
-    const prevDescription = meta?.getAttribute("content") ?? "";
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", PAGE_DESCRIPTION);
-    return () => {
-      document.title = prevTitle;
-      meta?.setAttribute("content", prevDescription);
-    };
-  }, []);
+  useStaticPageSeo("/police-iptal");
 
   const plate = `${plateCity}${plateLetters}${plateNumbers}`.toUpperCase();
 

@@ -10,6 +10,8 @@ import {
   provinceRiskByName,
   stars,
 } from "../data/provinceRisks";
+import { ROUTES } from "../lib/seo/routes";
+import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
 import "./RiskMapPage.css";
 
 const GEOJSON_URL = "/data/turkey-provinces.geojson";
@@ -42,6 +44,8 @@ export default function RiskMapPage() {
   const [ready, setReady] = useState(false);
   const activeRiskRef = useRef(activeRisk);
   activeRiskRef.current = activeRisk;
+
+  useStaticPageSeo(ROUTES.riskMap);
 
   const legendLevels = useMemo(
     () => ([1, 2, 3, 4, 5] as RiskLevel[]).map((level) => ({

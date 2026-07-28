@@ -1,0 +1,20 @@
+{
+  "name": "Sigorta Uzmanı",
+  "short_name": "Sigorta Uzmanı",
+  "description": "Trafik, kasko, İMM, DASK, konut ve sağlık sigortası tekliflerini karşılaştırın.",
+  "lang": "tr",
+  "dir": "ltr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0a1428",
+  "icons": [
+    {
+      "src": "/sigortauzmani-logo.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ]
+}

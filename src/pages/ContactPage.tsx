@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
 import type { FormEvent } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -7,11 +7,9 @@ import {
   uploadIletisimBelge,
   type IletisimOncelik,
 } from "../lib/supabase";
+import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
 import "./ContactPage.css";
 
-const PAGE_TITLE = "İletişim | Sigorta Uzmanı";
-const PAGE_DESCRIPTION =
-  "Sigorta hakkındaki sorularınızı Sigorta Uzmanı ekibine iletin.";
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
 const ALLOWED_FILE_TYPES = [
   "application/pdf",
@@ -40,23 +38,7 @@ export default function ContactPage() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [referenceNo, setReferenceNo] = useState<string | null>(null);
 
-  useEffect(() => {
-    const previousTitle = document.title;
-    document.title = PAGE_TITLE;
-    let meta = document.querySelector('meta[name="description"]');
-    const previousDescription = meta?.getAttribute("content") ?? "";
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", PAGE_DESCRIPTION);
-
-    return () => {
-      document.title = previousTitle;
-      meta?.setAttribute("content", previousDescription);
-    };
-  }, []);
+  useStaticPageSeo("/iletisim");
 
   const clearError = (key: keyof FormErrors) => {
     setErrors((current) => {
@@ -127,7 +109,7 @@ export default function ContactPage() {
     );
     setSubmitting(false);
 
-    if (!result.ok) {
+    if (result.ok === false) {
       setSubmitError(result.error);
       return;
     }

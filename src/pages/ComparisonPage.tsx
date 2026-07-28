@@ -7,51 +7,44 @@ import {
   getComparison,
 } from "../data/comparisons";
 import ComparisonDuelCard from "../components/ComparisonDuelCard";
+import { pageOgImageUrl } from "../lib/seo/config";
+import { comparisonNodes } from "../lib/seo/nodes/comparison";
+import { ROUTES } from "../lib/seo/routes";
+import { pageGraph } from "../lib/seo/schema";
+import { useJsonLd } from "../lib/seo/useJsonLd";
+import { useSeo } from "../lib/seo/useSeo";
 import "./ComparisonPage.css";
 
 function usePageMeta(comparison: Comparison | undefined) {
-  useEffect(() => {
-    if (!comparison) return;
-    const prevTitle = document.title;
-    document.title = `${comparison.seoTitle} | Sigorta Uzmanı`;
+  const path = comparison ? ROUTES.comparison(comparison.slug) : "";
 
-    let meta = document.querySelector('meta[name="description"]');
-    const prevDescription = meta?.getAttribute("content") ?? "";
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", comparison.seoDescription);
+  useSeo(
+    comparison
+      ? {
+          title: comparison.seoTitle,
+          description: comparison.seoDescription,
+          path,
+          type: "article",
+          image: pageOgImageUrl(comparison.shortTitle, "Karşılaştırma"),
+        }
+      : null,
+  );
 
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.id = "comparison-jsonld";
-    script.text = JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Article",
-      headline: comparison.shortTitle,
-      description: comparison.seoDescription,
-      url: `https://sigortauzmani.com/karsilastirma/${comparison.slug}`,
-      inLanguage: "tr",
-      about: [comparison.left.name, comparison.right.name],
-      mainEntity: {
-        "@type": "FAQPage",
-        mainEntity: comparison.faqs.map((f) => ({
-          "@type": "Question",
-          name: f.q,
-          acceptedAnswer: { "@type": "Answer", text: f.a },
-        })),
-      },
-    });
-    document.head.appendChild(script);
-
-    return () => {
-      document.title = prevTitle;
-      meta?.setAttribute("content", prevDescription);
-      document.getElementById("comparison-jsonld")?.remove();
-    };
-  }, [comparison]);
+  useJsonLd(
+    comparison
+      ? pageGraph({
+          path,
+          name: comparison.seoTitle,
+          description: comparison.seoDescription,
+          breadcrumb: [
+            { name: "Ana Sayfa", path: ROUTES.home },
+            { name: "Karşılaştırma Merkezi", path: ROUTES.comparisonHub },
+            { name: comparison.shortTitle },
+          ],
+          extra: comparisonNodes(comparison),
+        })
+      : null,
+  );
 }
 
 /** Salt görsel katman: hücre metnini değiştirmeden ton (✓ / ✕ / ~) belirler. */

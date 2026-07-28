@@ -2,7 +2,14 @@ import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { DotLottieReact } from "@lottiefiles/dotlottie-react";
 import { getProduct } from "../data/products";
+import { productIcons } from "../data/productIcons";
 import AdvisorVideo from "../components/AdvisorVideo";
+import { ROBOTS_NOINDEX, pageOgImageUrl } from "../lib/seo/config";
+import { productServiceNode } from "../lib/seo/nodes/product";
+import { ROUTES } from "../lib/seo/routes";
+import { pageGraph } from "../lib/seo/schema";
+import { useJsonLd } from "../lib/seo/useJsonLd";
+import { useSeo } from "../lib/seo/useSeo";
 import {
   formatPhoneInput,
   isValidChassisNo,
@@ -104,6 +111,34 @@ export default function QuotePage() {
       delete next[field];
       return next;
     });
+
+  const productPath = product ? ROUTES.quote(product.slug) : "";
+
+  useSeo(
+    product
+      ? {
+          title: product.seoTitle,
+          description: product.metaDescription,
+          path: productPath,
+          image: pageOgImageUrl(product.seoTitle, product.title),
+        }
+      : { title: "Ürün bulunamadı", description: "", path: "/", robots: ROBOTS_NOINDEX },
+  );
+
+  useJsonLd(
+    product
+      ? pageGraph({
+          path: productPath,
+          name: product.seoTitle,
+          description: product.metaDescription,
+          breadcrumb: [
+            { name: "Ana Sayfa", path: ROUTES.home },
+            { name: product.title },
+          ],
+          extra: [productServiceNode(product)],
+        })
+      : null,
+  );
 
   if (!product) {
     return (
@@ -1010,7 +1045,7 @@ export default function QuotePage() {
         </div>
 
         <div className="quote__info">
-          <img src={product.icon} alt="" className="quote__icon" />
+          <img src={productIcons[product.slug]} alt="" className="quote__icon" />
           <div>
             <h1 className="quote__title">
               {product.seoTitle}

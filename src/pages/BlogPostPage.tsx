@@ -20,7 +20,11 @@ import {
   createExcerpt,
   prepareBlogContent,
 } from "../lib/blog/content";
-import { applyDocumentMeta, blogOgImageUrl } from "../lib/blog/meta";
+import { ROBOTS_NOINDEX, absoluteUrl, ogImageUrl } from "../lib/seo/config";
+import { ROUTES } from "../lib/seo/routes";
+import { articleSchema, pageGraph } from "../lib/seo/schema";
+import { useJsonLd } from "../lib/seo/useJsonLd";
+import { useSeo } from "../lib/seo/useSeo";
 import "../styles/blog.css";
 import "../styles/blog-tokens.css";
 
@@ -54,18 +58,71 @@ export default function BlogPostPage() {
     void trackBlogView(post.slug);
   }, [post]);
 
-  useEffect(() => {
-    if (!post) return;
-    return applyDocumentMeta({
-      title: `${post.title} | Sigorta Uzmanı`,
-      description: post.excerpt ?? createExcerpt(post.content, 155),
-      url: `${window.location.origin}/blog/${post.slug}`,
-      image: blogOgImageUrl(post.slug),
-      type: "article",
-      publishedTime: post.publishedAt,
-      modifiedTime: post.updatedAt,
-    });
+  const seo = useMemo(() => {
+    if (!post) return null;
+    return {
+      path: ROUTES.blogPost(post.slug),
+      title: post.metaTitle ?? post.title,
+      description:
+        post.metaDescription ?? post.excerpt ?? createExcerpt(post.content, 155),
+      image: ogImageUrl(post.slug),
+      readingMinutes: calculateReadingTime(post.content),
+    };
   }, [post]);
+
+  useSeo(
+    seo && post
+      ? {
+          title: seo.title,
+          description: seo.description,
+          path: seo.path,
+          image: seo.image,
+          imageAlt: post.title,
+          type: "article",
+          keywords: post.tags,
+          tags: post.tags,
+          section: post.category,
+          publishedTime: post.publishedAt,
+          modifiedTime: post.updatedAt,
+        }
+      : loading
+        ? null
+        : { title: "Yazı bulunamadı", description: "", path: ROUTES.blog, robots: ROBOTS_NOINDEX },
+  );
+
+  useJsonLd(
+    seo && post
+      ? pageGraph({
+          path: seo.path,
+          name: seo.title,
+          description: seo.description,
+          type: "WebPage",
+          datePublished: post.publishedAt,
+          dateModified: post.updatedAt,
+          primaryImage: seo.image,
+          speakableSelectors: [".blog-header__title", ".blog-content p"],
+          breadcrumb: [
+            { name: "Ana Sayfa", path: ROUTES.home },
+            { name: "Blog", path: ROUTES.blog },
+            { name: post.title },
+          ],
+          extra: [
+            articleSchema({
+              path: seo.path,
+              headline: post.title,
+              description: seo.description,
+              image: seo.image,
+              datePublished: post.publishedAt,
+              dateModified: post.updatedAt,
+              authorName: post.authorName,
+              section: post.category,
+              keywords: post.tags,
+              readingMinutes: seo.readingMinutes,
+            }),
+          ],
+        })
+      : null,
+  );
 
   const prepared = useMemo(
     () =>
@@ -128,10 +185,8 @@ export default function BlogPostPage() {
 
   const publishedAt = post.publishedAt ?? new Date().toISOString();
   const readingTime = calculateReadingTime(post.content);
-  const pageUrl = `${window.location.origin}/blog/${post.slug}`;
-  const shareUrl = `${window.location.origin}/api/share?slug=${encodeURIComponent(
-    post.slug,
-  )}`;
+  const pageUrl = absoluteUrl(ROUTES.blogPost(post.slug));
+  const shareUrl = absoluteUrl(`/api/share?slug=${encodeURIComponent(post.slug)}`);
 
   return (
     <>

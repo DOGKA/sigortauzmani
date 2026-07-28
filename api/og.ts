@@ -121,12 +121,22 @@ function wrapLines(text: string, maxChars = 34, maxLines = 4): string[] {
   return lines.length ? lines : ["Sigorta Uzmanı Blog"];
 }
 
+const DEFAULT_TITLE = "Doğru sigorta. Uygun fiyat. Hızlı destek.";
+const TITLE_MAX = 120;
+const LABEL_MAX = 40;
+
 export async function GET(request: Request): Promise<Response> {
-  const slug = new URL(request.url).searchParams.get("slug");
+  const params = new URL(request.url).searchParams;
+  const slug = params.get("slug");
   const post = slug ? await fetchPost(slug) : null;
 
-  const title = post?.title ?? "Sigorta Uzmanı Blog";
-  const category = post?.category ?? "Blog";
+  // Blog dışı sayfalar başlığını doğrudan geçer; uzunluk sınırı, üretilen
+  // kartın kötüye kullanılarak serbest metin taşımasını engeller.
+  const customTitle = params.get("title")?.slice(0, TITLE_MAX).trim();
+  const customLabel = params.get("label")?.slice(0, LABEL_MAX).trim();
+
+  const title = post?.title ?? customTitle ?? DEFAULT_TITLE;
+  const category = post?.category ?? customLabel ?? "Sigorta Uzmanı";
   const readingTime = post?.reading_time ?? 0;
   const publishedAt = formatDate(post?.published_at ?? null);
   const footerRight = [publishedAt, readingTime ? `${readingTime} dk okuma` : ""]

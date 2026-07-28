@@ -1,10 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
 import "./AboutPage.css";
-
-const PAGE_TITLE = "Hakkımızda | Sigorta Uzmanı";
-const PAGE_DESCRIPTION =
-  "sigortauzmani.net, farklı sigorta şirketlerinin tekliflerini tek noktada değerlendirmenize ve ihtiyacınıza uygun poliçeyi kolayca seçmenize yardımcı olur.";
 
 const BRANCHES = [
   "Trafik",
@@ -111,22 +108,7 @@ const REASONS = [
 export default function AboutPage() {
   const rootRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    const prevTitle = document.title;
-    document.title = PAGE_TITLE;
-    let meta = document.querySelector('meta[name="description"]');
-    const prevDescription = meta?.getAttribute("content") ?? "";
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", PAGE_DESCRIPTION);
-    return () => {
-      document.title = prevTitle;
-      meta?.setAttribute("content", prevDescription);
-    };
-  }, []);
+  useStaticPageSeo("/hakkimizda");
 
   useEffect(() => {
     const root = rootRef.current;

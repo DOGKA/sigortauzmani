@@ -1,5 +1,104 @@
 {
-  "rewrites": [{ "source": "/((?!api/).*)", "destination": "/index.html" }],
+  "redirects": [
+    {
+      "source": "/kasko",
+      "destination": "/teklif/kasko",
+      "permanent": true
+    },
+    {
+      "source": "/trafik-sigortasi",
+      "destination": "/teklif/trafik-sigortasi",
+      "permanent": true
+    },
+    {
+      "source": "/imm",
+      "destination": "/teklif/imm",
+      "permanent": true
+    },
+    {
+      "source": "/dask",
+      "destination": "/teklif/dask",
+      "permanent": true
+    },
+    {
+      "source": "/yesil-kart",
+      "destination": "/teklif/yesil-kart",
+      "permanent": true
+    },
+    {
+      "source": "/konut-sigortasi",
+      "destination": "/teklif/konut",
+      "permanent": true
+    },
+    {
+      "source": "/tamamlayici-saglik-sigortasi",
+      "destination": "/teklif/tamamlayici-saglik",
+      "permanent": true
+    },
+    {
+      "source": "/ozel-saglik-sigortasi",
+      "destination": "/teklif/ozel-saglik",
+      "permanent": true
+    },
+    {
+      "source": "/seyahat-saglik-sigortasi",
+      "destination": "/teklif/seyahat-saglik",
+      "permanent": true
+    },
+    {
+      "source": "/seyahat-saglik",
+      "destination": "/teklif/seyahat-saglik",
+      "permanent": true
+    },
+    {
+      "source": "/sigorta-turlerini-karsilastir",
+      "destination": "/karsilastirma",
+      "permanent": true
+    },
+    {
+      "source": "/police-iptal-islemleri",
+      "destination": "/police-iptal",
+      "permanent": true
+    },
+    {
+      "source": "/bilgi-merkezi",
+      "destination": "/blog",
+      "permanent": true
+    },
+    {
+      "source": "/sikca-sorulan-sorular",
+      "destination": "/#sss",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/llms.txt", "destination": "/api/llms" },
+    { "source": "/llms-full.txt", "destination": "/api/llms?full=1" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        {
+          "key": "cache-control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "x-content-type-options", "value": "nosniff" },
+        { "key": "referrer-policy", "value": "strict-origin-when-cross-origin" },
+        {
+          "key": "strict-transport-security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        }
+      ]
+    }
+  ],
   "functions": {
     "api/og.ts": {
       "includeFiles": "api/fonts/**"

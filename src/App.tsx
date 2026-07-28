@@ -15,6 +15,7 @@ const AboutPage = lazy(() => import("./pages/AboutPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const BlogPage = lazy(() => import("./pages/BlogPage"));
 const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
+const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -142,6 +143,14 @@ export default function App() {
           element={
             <Suspense fallback={<PageLoader />}>
               <BlogPostPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="*"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <NotFoundPage />
             </Suspense>
           }
         />

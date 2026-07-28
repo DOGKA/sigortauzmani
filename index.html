@@ -2,16 +2,71 @@
 <html lang="tr">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/sigortauzmani-logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Sigorta Uzmanı - Doğru Ürün. İyi Fiyat. 7/24 Hizmet." />
+
+    <!--
+      data-seo taşıyan etiketler yalnızca varsayılandır. React tarafında
+      src/lib/seo/useSeo.ts her rotada bu kümeyi topluca değiştirir.
+      JavaScript çalıştırmayan botlar api/prerender üzerinden sunucuda
+      üretilmiş, rotaya özel <head> alır (bkz. middleware.ts).
+    -->
+    <title>Sigorta Uzmanı | Trafik, Kasko, DASK ve Sağlık Sigortası Teklifi</title>
+    <meta
+      name="description"
+      data-seo
+      content="30'a yakın sigorta şirketinin trafik, kasko, İMM, DASK, konut ve sağlık sigortası tekliflerini karşılaştırın. Ücretsiz danışmanlık, hızlı teklif, poliçe sonrası destek."
+    />
+    <meta
+      name="robots"
+      data-seo
+      content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1"
+    />
+    <link rel="canonical" data-seo href="https://sigortauzmani.net/" />
+
+    <meta property="og:type" data-seo content="website" />
+    <meta property="og:site_name" data-seo content="Sigorta Uzmanı" />
+    <meta property="og:locale" data-seo content="tr_TR" />
+    <meta
+      property="og:title"
+      data-seo
+      content="Sigorta Uzmanı | Trafik, Kasko, DASK ve Sağlık Sigortası Teklifi"
+    />
+    <meta
+      property="og:description"
+      data-seo
+      content="30'a yakın sigorta şirketinin trafik, kasko, İMM, DASK, konut ve sağlık sigortası tekliflerini karşılaştırın. Ücretsiz danışmanlık, hızlı teklif, poliçe sonrası destek."
+    />
+    <meta property="og:url" data-seo content="https://sigortauzmani.net/" />
+    <meta property="og:image" data-seo content="https://sigortauzmani.net/api/og" />
+    <meta property="og:image:width" data-seo content="1200" />
+    <meta property="og:image:height" data-seo content="630" />
+    <meta property="og:image:alt" data-seo content="Sigorta Uzmanı" />
+
+    <meta name="twitter:card" data-seo content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      data-seo
+      content="Sigorta Uzmanı | Trafik, Kasko, DASK ve Sağlık Sigortası Teklifi"
+    />
+    <meta
+      name="twitter:description"
+      data-seo
+      content="30'a yakın sigorta şirketinin trafik, kasko, İMM, DASK, konut ve sağlık sigortası tekliflerini karşılaştırın. Ücretsiz danışmanlık, hızlı teklif, poliçe sonrası destek."
+    />
+    <meta name="twitter:image" data-seo content="https://sigortauzmani.net/api/og" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/sigortauzmani-logo.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#0a1428" />
+    <meta name="format-detection" content="telephone=no" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <title>Sigorta Uzmanı | Sigortada Güvenin Adresi</title>
   </head>
   <body>
     <div id="root"></div>

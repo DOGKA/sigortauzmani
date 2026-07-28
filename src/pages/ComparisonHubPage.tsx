@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   CATEGORY_LABELS,
@@ -7,12 +7,10 @@ import {
   comparisons,
 } from "../data/comparisons";
 import ComparisonDuelCard from "../components/ComparisonDuelCard";
+import { comparisonListNode } from "../lib/seo/nodes/comparison";
+import { ROUTES } from "../lib/seo/routes";
+import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
 import "./ComparisonHubPage.css";
-
-const PAGE_TITLE =
-  "Sigorta Karşılaştırma Merkezi 2026 | Sigorta Uzmanı";
-const PAGE_DESCRIPTION =
-  "Trafik vs Kasko, TSS vs Özel Sağlık, DASK vs Konut ve daha fazlası. Sigorta ürünlerini teminat, fiyat ve kimler için uygunluk açısından karşılaştırın.";
 
 type CategoryFilter = ComparisonCategory | "all";
 
@@ -38,44 +36,7 @@ export default function ComparisonHubPage() {
     return map;
   }, []);
 
-  useEffect(() => {
-    const prevTitle = document.title;
-    document.title = PAGE_TITLE;
-
-    let meta = document.querySelector('meta[name="description"]');
-    const prevDescription = meta?.getAttribute("content") ?? "";
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", PAGE_DESCRIPTION);
-
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.id = "comparison-hub-jsonld";
-    script.text = JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "CollectionPage",
-      name: "Sigorta Karşılaştırma Merkezi",
-      description: PAGE_DESCRIPTION,
-      url: "https://sigortauzmani.com/karsilastirma",
-      inLanguage: "tr",
-      hasPart: comparisons.map((c) => ({
-        "@type": "WebPage",
-        name: c.shortTitle,
-        url: `https://sigortauzmani.com/karsilastirma/${c.slug}`,
-        description: c.seoDescription,
-      })),
-    });
-    document.head.appendChild(script);
-
-    return () => {
-      document.title = prevTitle;
-      meta?.setAttribute("content", prevDescription);
-      document.getElementById("comparison-hub-jsonld")?.remove();
-    };
-  }, []);
+  useStaticPageSeo(ROUTES.comparisonHub, { extra: [comparisonListNode()] });
 
   return (
     <main className="cmp-hub">

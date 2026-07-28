@@ -3,29 +3,22 @@ import { useSearchParams } from "react-router-dom";
 import BlogPageClient from "../components/blog/BlogPageClient";
 import type { BlogSort } from "../components/blog/BlogFilterBar";
 import { fetchBlogCards, type BlogCard } from "../lib/blog/api";
-import { applyDocumentMeta } from "../lib/blog/meta";
+import { blogListNode } from "../lib/seo/nodes/blog";
+import { ROUTES } from "../lib/seo/routes";
+import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
 import "../styles/blog.css";
 import "../styles/blog-tokens.css";
-
-const PAGE_TITLE = "Blog | Sigorta Uzmanı";
-const PAGE_DESCRIPTION =
-  "Sigorta ürünleri, teminatlar ve poliçe süreçleri üzerine uygulamaya dönük yazılar.";
 
 export default function BlogPage() {
   const [searchParams] = useSearchParams();
   const [posts, setPosts] = useState<BlogCard[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(
-    () =>
-      applyDocumentMeta({
-        title: PAGE_TITLE,
-        description: PAGE_DESCRIPTION,
-        url: `${window.location.origin}/blog`,
-        image: `${window.location.origin}/api/og`,
-      }),
-    [],
-  );
+  // Liste yüklendikçe ItemList düğümü de güncellenir; yazılar gelmeden
+  // yalnızca temel sayfa grafiği yayınlanır.
+  useStaticPageSeo(ROUTES.blog, {
+    extra: posts.length ? [blogListNode(posts)] : undefined,
+  });
 
   useEffect(() => {
     let active = true;

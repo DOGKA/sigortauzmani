@@ -3,19 +3,16 @@ import { Link } from "react-router-dom";
 import {
   CATEGORY_LABELS,
   type GlossaryCategory,
-  type GlossaryTerm,
   getAlphabetLetters,
   getRelatedTerms,
   glossaryTerms,
   popularTerms,
   sortTermsAz,
 } from "../data/glossary";
+import { glossaryTermSetNode } from "../lib/seo/nodes/glossary";
+import { ROUTES } from "../lib/seo/routes";
+import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
 import "./GlossaryPage.css";
-
-const PAGE_TITLE =
-  "Sigorta Sözlüğü | Sigorta Terimleri ve Anlamları | Sigorta Uzmanı";
-const PAGE_DESCRIPTION =
-  "Muafiyet, İMM, pert, sovtaj, rayiç bedel, zeyilname ve daha fazlası. Sigorta terimlerini sade Türkçe açıklamalarla öğrenin. Sigorta Uzmanı sözlüğü.";
 
 type CategoryFilter = "all" | GlossaryCategory;
 
@@ -26,54 +23,12 @@ function normalizeSearch(value: string): string {
     .replace(/[\u0300-\u036f]/g, "");
 }
 
-function buildJsonLd(terms: GlossaryTerm[]) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "DefinedTermSet",
-    name: "Sigorta Sözlüğü",
-    description: PAGE_DESCRIPTION,
-    url: "https://sigortauzmani.com/sigorta-sozlugu",
-    inLanguage: "tr",
-    hasDefinedTerm: terms.map((term) => ({
-      "@type": "DefinedTerm",
-      name: term.term,
-      description: term.definition,
-      url: `https://sigortauzmani.com/sigorta-sozlugu#${term.slug}`,
-      inDefinedTermSet: "https://sigortauzmani.com/sigorta-sozlugu",
-    })),
-  };
-}
-
 export default function GlossaryPage() {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<CategoryFilter>("genel");
   const [openSlug, setOpenSlug] = useState<string | null>(null);
 
-  useEffect(() => {
-    const prevTitle = document.title;
-    document.title = PAGE_TITLE;
-
-    let meta = document.querySelector('meta[name="description"]');
-    const prevDescription = meta?.getAttribute("content") ?? "";
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.setAttribute("name", "description");
-      document.head.appendChild(meta);
-    }
-    meta.setAttribute("content", PAGE_DESCRIPTION);
-
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.id = "glossary-jsonld";
-    script.text = JSON.stringify(buildJsonLd(glossaryTerms));
-    document.head.appendChild(script);
-
-    return () => {
-      document.title = prevTitle;
-      meta?.setAttribute("content", prevDescription);
-      document.getElementById("glossary-jsonld")?.remove();
-    };
-  }, []);
+  useStaticPageSeo(ROUTES.glossary, { extra: [glossaryTermSetNode()] });
 
   useEffect(() => {
     const hash = window.location.hash.replace("#", "");

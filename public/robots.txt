@@ -1,0 +1,126 @@
+# https://sigortauzmani.net/robots.txt
+# Yapılandırılmış site özeti: https://sigortauzmani.net/llms.txt
+# Tam metin derlemesi:        https://sigortauzmani.net/llms-full.txt
+
+# ── Arama motorları ────────────────────────────────────────────────
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+# ── Yapay zekâ / LLM crawler'ları ──────────────────────────────────
+# İçeriğin yanıtlarda kaynak gösterilerek kullanılmasını istiyoruz;
+# bu botlara açık izin verilir. Kapatmak isterseniz ilgili bloğun
+# Allow satırını "Disallow: /" ile değiştirmek yeterlidir.
+
+# OpenAI — eğitim tarayıcısı, arama tarayıcısı ve kullanıcı isteği
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+# Google — Gemini / AI Overviews için ayrı izin
+User-agent: Google-Extended
+Allow: /
+
+# Anthropic
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# Perplexity
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+# Apple Intelligence / Siri
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Meta AI
+User-agent: meta-externalagent
+Allow: /
+
+User-agent: FacebookBot
+Allow: /
+
+# Diğer yanıt motorları
+User-agent: Amazonbot
+Allow: /
+
+User-agent: DuckAssistBot
+Allow: /
+
+User-agent: MistralAI-User
+Allow: /
+
+User-agent: YouBot
+Allow: /
+
+User-agent: cohere-ai
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# ── Sosyal paylaşım önizleme botları ───────────────────────────────
+# /api/share ve /api/og bu botlar için gereklidir.
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+User-agent: TelegramBot
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+# ── Genel kural ────────────────────────────────────────────────────
+User-agent: *
+Allow: /
+# Paylaşım kartı ve önizleme köprüsü dışındaki uç noktalar taranmaz.
+# api/prerender çıktısı botlara middleware üzerinden gerçek adreste
+# sunulur; doğrudan adresinin dizine alınması istenmez.
+Allow: /api/og
+Allow: /api/share
+Disallow: /api/
+
+Sitemap: https://sigortauzmani.net/sitemap.xml

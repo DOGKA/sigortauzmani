@@ -23,6 +23,11 @@ export interface BlogPostDetail {
   publishedAt: string | null;
   updatedAt: string | null;
   authorName: string | null;
+  /** İçerik üretiminde yazılan SEO başlığı; yoksa `title` kullanılır. */
+  metaTitle: string | null;
+  /** SEO açıklaması; yoksa `excerpt`e düşülür. */
+  metaDescription: string | null;
+  tags: string[];
 }
 
 interface BlogCardRow {
@@ -47,6 +52,9 @@ interface BlogPostRowData {
   published_at: string | null;
   updated_at: string | null;
   author_name: string | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  tags: string[] | null;
 }
 
 function toCard(row: BlogCardRow): BlogCard {
@@ -85,7 +93,7 @@ export async function fetchBlogPost(slug: string): Promise<BlogPostDetail | null
   const { data, error } = await client
     .from("blog_posts")
     .select(
-      "id, slug, title, content, excerpt, category, view_count, published_at, updated_at, author_name",
+      "id, slug, title, content, excerpt, category, view_count, published_at, updated_at, author_name, meta_title, meta_description, tags",
     )
     .eq("slug", slug)
     .eq("status", "PUBLISHED")
@@ -109,6 +117,9 @@ export async function fetchBlogPost(slug: string): Promise<BlogPostDetail | null
     publishedAt: row.published_at,
     updatedAt: row.updated_at,
     authorName: row.author_name,
+    metaTitle: row.meta_title,
+    metaDescription: row.meta_description,
+    tags: row.tags ?? [],
   };
 }
 
