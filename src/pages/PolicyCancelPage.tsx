@@ -422,6 +422,20 @@ export default function PolicyCancelPage() {
                   </button>
                 </div>
 
+                <div className="iptal__progress">
+                  <p className="iptal__progress-line">
+                    <span className="iptal__progress-count">Adım {step}/2</span>
+                    <span aria-hidden="true">·</span>
+                    <strong>
+                      {step === 1 ? "Temel Bilgiler" : "Noter Satış Sözleşmesi"}
+                    </strong>
+                  </p>
+                  <span className="iptal__progress-bar" aria-hidden="true">
+                    <i className="is-done" />
+                    <i className={step === 2 ? "is-done" : ""} />
+                  </span>
+                </div>
+
                 {step === 1 && (
                   <section className="iptal__panel" aria-label="Temel Bilgiler">
                     <div className="iptal__fields">

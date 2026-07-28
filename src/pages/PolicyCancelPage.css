@@ -179,6 +179,49 @@
   background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
 }
 
+/* Dar ekranda adım pill'lerinin yerini alan kompakt gösterge */
+.iptal__progress {
+  display: none;
+}
+
+.iptal__progress-line {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ink-400);
+}
+
+.iptal__progress-count {
+  font-weight: 700;
+  color: var(--brand-600);
+}
+
+.iptal__progress-line strong {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--ink-900);
+}
+
+.iptal__progress-bar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+
+.iptal__progress-bar i {
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(16, 28, 48, 0.12);
+  transition: background 0.3s ease;
+}
+
+.iptal__progress-bar i.is-done {
+  background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
+}
+
 .iptal__panel-lead {
   margin: 0 0 20px;
   font-size: 14.5px;
@@ -570,7 +613,8 @@
 
 @media (max-width: 860px) {
   .iptal__card {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
   }
 
   .iptal__sidebar {
@@ -583,10 +627,198 @@
   }
 
   .iptal__plate {
-    grid-template-columns: 64px 1fr 1fr;
+    grid-template-columns: 64px minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .iptal__field input,
+  .iptal__field select {
+    min-width: 0;
   }
 
   .iptal__takip-dl {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .iptal {
+    padding: 20px 16px 56px;
+  }
+
+  .iptal__breadcrumb {
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    font-size: 12.5px;
+  }
+
+  .iptal__card {
+    border-radius: 16px;
+  }
+
+  /* Kenar çubuğu mobilde forma yer açmak için sekme şeridine dönüşür */
+  .iptal__sidebar {
+    padding: 16px;
+  }
+
+  .iptal__sidebar h1 {
+    margin-bottom: 14px;
+    font-size: 18px;
+  }
+
+  .iptal__side-nav {
+    flex-direction: row;
+    gap: 4px;
+    margin-bottom: 14px;
+    padding: 4px;
+    border-radius: 12px;
+    background: rgba(16, 28, 48, 0.05);
+  }
+
+  .iptal__side-nav button {
+    justify-content: center;
+    min-width: 0;
+    padding: 10px 6px;
+    border-radius: 9px;
+    font-size: 13px;
+    text-align: center;
+  }
+
+  .iptal__side-nav button.is-active {
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(16, 28, 48, 0.1);
+  }
+
+  .iptal__side-nav button span {
+    display: none;
+  }
+
+  .iptal__info {
+    font-size: 12.5px;
+  }
+
+  .iptal__content {
+    padding: 18px 16px 24px;
+  }
+
+  .iptal__steps {
+    display: none;
+  }
+
+  .iptal__progress {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-bottom: 18px;
+  }
+
+  .iptal__panel-lead {
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+
+  .iptal__fields {
+    gap: 14px;
+  }
+
+  /* 16px altı yazı boyutu iOS Safari'de odaklanınca sayfayı yakınlaştırıyor */
+  .iptal__field input,
+  .iptal__field select {
+    padding: 12px 13px;
+    font-size: 16px;
+  }
+
+  .iptal__field select {
+    padding-right: 38px;
+  }
+
+  .iptal__plate {
+    grid-template-columns: 54px minmax(0, 1fr) minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .iptal__plate input {
+    padding-right: 8px;
+    padding-left: 8px;
+  }
+
+  .iptal__actions {
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .iptal__actions--end {
+    justify-content: flex-start;
+  }
+
+  .iptal__actions .iptal__btn {
+    width: 100%;
+  }
+
+  /* Birincil eylem dar ekranda üstte kalsın */
+  .iptal__actions .iptal__btn--ghost {
+    order: 2;
+  }
+
+  .iptal__upload-box {
+    min-height: 140px;
+    padding: 20px 16px;
+  }
+
+  .iptal__upload-box strong {
+    max-width: 100%;
+    font-size: 15px;
+    overflow-wrap: anywhere;
+  }
+
+  .iptal__success {
+    padding: 16px 0;
+  }
+
+  .iptal__success h2 {
+    font-size: 21px;
+  }
+
+  .iptal__success > p {
+    font-size: 14.5px;
+  }
+
+  .iptal__success-code {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin: 20px auto;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .iptal__success-code strong {
+    font-size: 20px;
+  }
+
+  .iptal__copy-btn {
+    width: 100%;
+    padding: 11px 13px;
+  }
+
+  .iptal__takip h2 {
+    font-size: 19px;
+  }
+
+  .iptal__takip > p {
+    margin-bottom: 16px;
+    font-size: 14.5px;
+  }
+
+  .iptal__takip-form .iptal__btn {
+    align-self: stretch;
+  }
+
+  .iptal__takip-result {
+    padding: 16px;
+  }
+
+  .iptal__takip-status {
+    margin-bottom: 14px;
   }
 }

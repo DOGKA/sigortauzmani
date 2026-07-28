@@ -4,11 +4,13 @@ import { Check, Copy, Share2 } from "lucide-react";
 interface BlogShareProps {
   title: string;
   url: string;
+  shareUrl?: string;
 }
 
-export default function BlogShare({ title, url }: BlogShareProps) {
+export default function BlogShare({ title, url, shareUrl }: BlogShareProps) {
   const [copied, setCopied] = useState(false);
   const [canUseNativeShare, setCanUseNativeShare] = useState(false);
+  const targetUrl = shareUrl ?? url;
 
   useEffect(() => {
     setCanUseNativeShare(typeof navigator !== "undefined" && !!navigator.share);
@@ -22,7 +24,7 @@ export default function BlogShare({ title, url }: BlogShareProps) {
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(targetUrl);
       setCopied(true);
     } catch (err) {
       console.error("Link kopyalanamadı:", err);
@@ -31,14 +33,14 @@ export default function BlogShare({ title, url }: BlogShareProps) {
 
   const handleNativeShare = async () => {
     try {
-      await navigator.share({ title, url });
+      await navigator.share({ title, url: targetUrl });
     } catch {
       // Kullanıcı paylaşım sayfasını kapattıysa sessizce geç.
     }
   };
 
   const encodedTitle = encodeURIComponent(title);
-  const encodedUrl = encodeURIComponent(url);
+  const encodedUrl = encodeURIComponent(targetUrl);
 
   const shareLinks = {
     twitter: `https://twitter.com/intent/tweet?text=${encodedTitle}&url=${encodedUrl}`,

@@ -129,6 +129,9 @@ export default function BlogPostPage() {
   const publishedAt = post.publishedAt ?? new Date().toISOString();
   const readingTime = calculateReadingTime(post.content);
   const pageUrl = `${window.location.origin}/blog/${post.slug}`;
+  const shareUrl = `${window.location.origin}/api/share?slug=${encodeURIComponent(
+    post.slug,
+  )}`;
 
   return (
     <>
@@ -150,7 +153,7 @@ export default function BlogPostPage() {
             <div className="blog-article__layout">
               <div className="blog-article__body">
                 <BlogContent html={prepared.html} />
-                <BlogShare title={post.title} url={pageUrl} />
+                <BlogShare title={post.title} url={pageUrl} shareUrl={shareUrl} />
               </div>
 
               <aside className="blog-article__rail">
