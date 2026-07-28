@@ -56,17 +56,31 @@
     <meta name="twitter:image" data-seo content="https://sigortauzmani.net/api/og" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/sigortauzmani-logo.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
     <meta name="theme-color" content="#0a1428" />
     <meta name="format-detection" content="telephone=no" />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!--
+      Inter self-host (Vite karşılığı next/font). Google Fonts CDN yok.
+      Kritik body weight preload; @font-face stylesheet JS bundle'dan bağımsız.
+      crossorigin şart — preload ile @font-face aynı cache'i paylaşır.
+    -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/fonts/inter-latin-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
+    <link
+      rel="preload"
+      href="/fonts/inter-latin-ext-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/fonts.css" />
   </head>
   <body>
     <div id="root"></div>
