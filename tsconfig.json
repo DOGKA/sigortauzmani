@@ -1,4 +1,24 @@
 {
+  /**
+   * Bu dosya yalnızca alt projeleri toplar; `files: []` olduğu için buradaki
+   * compilerOptions ile hiçbir şey derlenmez.
+   *
+   * Yine de compilerOptions verilmesi gerekir: Vercel, api/* fonksiyonlarını ve
+   * middleware.ts'i derlerken giriş noktasından yukarı doğru ilk tsconfig.json'ı
+   * bulur ve `module` tanımsızsa nodenext'e düşer. Bu durumda göreli import'lar
+   * açık `.js` uzantısı ister (TS2835). Aşağıdaki ayarlar Vercel'in derleyicisini
+   * uygulamanın geri kalanıyla aynı çözümleme moduna sabitler.
+   */
+  "compilerOptions": {
+    "target": "es2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "skipLibCheck": true,
+    // Vercel derlemeye sabit bir outDir verir; rootDir olmadan TypeScript 6
+    // ortak kaynak dizinini giriş noktasına göre tahmin eder ve TS5011 üretir.
+    "rootDir": "."
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },

@@ -14,11 +14,15 @@
 
 import { next, rewrite } from "@vercel/edge";
 
+/**
+ * API yolları, Vercel iç yolları ve uzantılı dosyalar (robots.txt, sitemap.xml,
+ * görseller, bundle'lar) hariç tüm sayfa istekleri.
+ *
+ * Vercel bu nesneyi derlemeden önce AST üzerinden okur; okuyucusu özellik
+ * atamalarına bağlanan JSDoc bloklarını çözemediği için nesnenin içine blok
+ * yorum yazılmamalıdır (yalnızca satır yorumu güvenlidir).
+ */
 export const config = {
-  /**
-   * API yolları, Vercel iç yolları ve uzantılı dosyalar (robots.txt,
-   * sitemap.xml, görseller, bundle'lar) hariç tüm sayfa istekleri.
-   */
   matcher: ["/((?!api/|_vercel/|.*\\.[a-zA-Z0-9]+$).*)"],
 };
 
