@@ -232,7 +232,7 @@ export default function AboutPage() {
             geçsin.
           </p>
           <div className="about__cta-actions">
-            <Link to="/teklif/kasko" className="about__cta-btn">
+            <Link to="/#urunler" className="about__cta-btn">
               Hemen Teklif Al
             </Link>
             <a href="tel:+908503020032" className="about__cta-btn about__cta-btn--ghost">
