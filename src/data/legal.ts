@@ -40,20 +40,12 @@ export const legalDocuments: LegalDocument[] = [
     updatedAt: LAST_UPDATED,
     eyebrow: "Kişisel verilerin korunması",
     intro: [
-      `6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca, veri sorumlusu sıfatıyla ${SITE_NAME} olarak kişisel verilerinizin işlenmesine ilişkin sizi bilgilendirmek isteriz.`,
+      "6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca kişisel verilerinizin işlenmesine ilişkin sizi bilgilendirmek isteriz.",
       `Bu metin; ${SITE_URL} üzerinden sunulan teklif, iletişim, poliçe iptal ve bilgilendirme hizmetleri kapsamında geçerlidir.`,
     ],
     sections: [
       {
-        heading: "1. Veri sorumlusu",
-        paragraphs: [
-          `Veri sorumlusu: ${SITE_NAME}`,
-          `E-posta: ${CONTACT_EMAIL}`,
-          `Telefon: ${CONTACT_PHONE_DISPLAY}`,
-        ],
-      },
-      {
-        heading: "2. İşlenen kişisel veriler",
+        heading: "1. İşlenen kişisel veriler",
         paragraphs: [
           "Hizmetin niteliğine göre aşağıdaki veri kategorileri işlenebilir:",
         ],
@@ -66,7 +58,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "3. İşleme amaçları",
+        heading: "2. İşleme amaçları",
         items: [
           "Sigorta teklifi hazırlamak ve sigorta şirketlerinden fiyat/teminat seçenekleri almak",
           "Poliçe düzenleme, yenileme ve poliçe iptal süreçlerini yürütmek",
@@ -76,13 +68,13 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "4. Hukuki sebepler",
+        heading: "3. Hukuki sebepler",
         paragraphs: [
           "Kişisel verileriniz; KVKK m.5/2 kapsamında sözleşmenin kurulması veya ifası, hukuki yükümlülüğün yerine getirilmesi, meşru menfaatimiz ve açık rızanız (gerektiğinde) hukuki sebeplerine dayanılarak işlenir.",
         ],
       },
       {
-        heading: "5. Aktarım",
+        heading: "4. Aktarım",
         paragraphs: [
           "Teklif ve poliçe süreçlerinin yürütülebilmesi için verileriniz, yalnızca gerekli ölçüde ve ilgili mevzuata uygun olarak şu taraflarla paylaşılabilir:",
         ],
@@ -93,27 +85,27 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "6. Saklama süresi",
+        heading: "5. Saklama süresi",
         paragraphs: [
           "Verileriniz, işleme amacının gerektirdiği süre ve ilgili mevzuatta öngörülen zamanaşımı / saklama süreleri boyunca muhafaza edilir. Süre sonunda silinir, yok edilir veya anonim hâle getirilir.",
         ],
       },
       {
-        heading: "7. Haklarınız",
+        heading: "6. Haklarınız",
         paragraphs: [
           "KVKK m.11 uyarınca; verilerinizin işlenip işlenmediğini öğrenme, işlenmişse bilgi talep etme, amacına uygun kullanılıp kullanılmadığını öğrenme, yurt içi/yurt dışı aktarıldığı üçüncü kişileri bilme, düzeltilmesini veya silinmesini isteme, otomatik sistemler vasıtasıyla analiz edilmesine itiraz etme ve kanuna aykırı işleme nedeniyle zararın giderilmesini talep etme haklarına sahipsiniz.",
           `Başvurularınızı ${CONTACT_EMAIL} adresine iletebilir veya sitedeki İletişim formunu kullanabilirsiniz. Talepleriniz en kısa sürede ve en geç 30 gün içinde yanıtlanır.`,
         ],
       },
       {
-        heading: "8. Güncelleme",
+        heading: "7. Güncelleme",
         paragraphs: [
           `Bu aydınlatma metni ${LAST_UPDATED} tarihinde güncellenmiştir. Önemli değişikliklerde sayfa üzerinde yeni sürüm yayımlanır.`,
         ],
       },
     ],
     summary:
-      "KVKK aydınlatma metni: veri sorumlusu, işlenen veri kategorileri, amaçlar, aktarım ve başvuru hakları.",
+      "KVKK aydınlatma metni: işlenen veri kategorileri, amaçlar, aktarım ve başvuru hakları.",
   },
   {
     path: ROUTES.privacy,
@@ -130,7 +122,7 @@ export const legalDocuments: LegalDocument[] = [
       {
         heading: "1. Kimiz?",
         paragraphs: [
-          `${SITE_NAME}, ${SITE_URL} üzerinden yaklaşık 30 sigorta şirketinin trafik, kasko, İMM, DASK, konut ve sağlık sigortası tekliflerini karşılaştırmanıza yardımcı olur.`,
+          `${SITE_NAME} bir sigorta şirketidir.`,
           `İletişim: ${CONTACT_EMAIL} · ${CONTACT_PHONE_DISPLAY}`,
         ],
       },
