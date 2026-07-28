@@ -1,13 +1,10 @@
 /**
- * Yasal metinler. Bilinen firma bilgileri SEO config ile aynı kaynaktan gelir;
- * ticari sicil / MERSİS / açık adres gibi henüz paylaşılmayan alanlar metinde
- * belirtilmez.
+ * Yasal metinler. İletişim bilgileri SEO config ile aynı kaynaktan gelir.
  */
 
 import {
   CONTACT_EMAIL,
   CONTACT_PHONE_DISPLAY,
-  SITE_LEGAL_NAME,
   SITE_NAME,
   SITE_URL,
 } from "../lib/seo/config";
@@ -31,8 +28,6 @@ export interface LegalDocument {
   summary: string;
 }
 
-const CONTROLLER = SITE_LEGAL_NAME;
-const BRAND = SITE_NAME;
 const LAST_UPDATED = "28 Temmuz 2026";
 
 export const legalDocuments: LegalDocument[] = [
@@ -45,18 +40,16 @@ export const legalDocuments: LegalDocument[] = [
     updatedAt: LAST_UPDATED,
     eyebrow: "Kişisel verilerin korunması",
     intro: [
-      `6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca, veri sorumlusu sıfatıyla ${CONTROLLER} (“${BRAND}”, “biz”) olarak kişisel verilerinizin işlenmesine ilişkin sizi bilgilendirmek isteriz.`,
+      `6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca, veri sorumlusu sıfatıyla ${SITE_NAME} olarak kişisel verilerinizin işlenmesine ilişkin sizi bilgilendirmek isteriz.`,
       `Bu metin; ${SITE_URL} üzerinden sunulan teklif, iletişim, poliçe iptal ve bilgilendirme hizmetleri kapsamında geçerlidir.`,
     ],
     sections: [
       {
         heading: "1. Veri sorumlusu",
         paragraphs: [
-          `Veri sorumlusu: ${CONTROLLER}`,
-          `Marka / web sitesi: ${BRAND} — ${SITE_URL}`,
+          `Veri sorumlusu: ${SITE_NAME}`,
           `E-posta: ${CONTACT_EMAIL}`,
           `Telefon: ${CONTACT_PHONE_DISPLAY}`,
-          "Fiziksel adres paylaşılmamaktadır; başvurularınızı öncelikle e-posta veya iletişim formu üzerinden iletebilirsiniz.",
         ],
       },
       {
@@ -131,14 +124,13 @@ export const legalDocuments: LegalDocument[] = [
     updatedAt: LAST_UPDATED,
     eyebrow: "Gizlilik",
     intro: [
-      `${BRAND} olarak gizliliğinize saygı duyuyoruz. Bu politika; ${SITE_URL} üzerinde hangi bilgileri topladığımızı, nasıl kullandığımızı ve nasıl koruduğumuzu açıklar.`,
-      `Politika, ${CONTROLLER} tarafından işletilen çevrim içi hizmetler için geçerlidir.`,
+      `${SITE_NAME} olarak gizliliğinize saygı duyuyoruz. Bu politika; ${SITE_URL} üzerinde hangi bilgileri topladığımızı, nasıl kullandığımızı ve nasıl koruduğumuzu açıklar.`,
     ],
     sections: [
       {
         heading: "1. Kimiz?",
         paragraphs: [
-          `${CONTROLLER}, ${SITE_URL} üzerinden yaklaşık 30 sigorta şirketinin trafik, kasko, İMM, DASK, konut ve sağlık sigortası tekliflerini karşılaştırmanıza yardımcı olan bir sigorta aracılık hizmetidir.`,
+          `${SITE_NAME}, ${SITE_URL} üzerinden yaklaşık 30 sigorta şirketinin trafik, kasko, İMM, DASK, konut ve sağlık sigortası tekliflerini karşılaştırmanıza yardımcı olur.`,
           `İletişim: ${CONTACT_EMAIL} · ${CONTACT_PHONE_DISPLAY}`,
         ],
       },
@@ -204,7 +196,7 @@ export const legalDocuments: LegalDocument[] = [
     updatedAt: LAST_UPDATED,
     eyebrow: "Çerezler",
     intro: [
-      `Bu Çerez Politikası, ${SITE_URL} adresinde ${CONTROLLER} tarafından kullanılan çerezler ve benzeri teknolojiler hakkında bilgilendirme amaçlıdır.`,
+      `Bu Çerez Politikası, ${SITE_URL} adresinde kullanılan çerezler ve benzeri teknolojiler hakkında bilgilendirme amaçlıdır.`,
       "Çerez; ziyaret ettiğiniz site tarafından tarayıcınıza yerleştirilen küçük bir metin dosyasıdır. Siteyi düzgün çalıştırmak, güvenliği sağlamak ve (izin verdiğiniz ölçüde) deneyimi iyileştirmek için kullanılır.",
     ],
     sections: [
