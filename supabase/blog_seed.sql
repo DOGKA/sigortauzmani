@@ -761,7 +761,7 @@ values
 <h2>Sonuç</h2>
 <p>Seyahat sağlık sigortasıyla ani hastalık ve kazalara bağlı tedavi giderleri, tıbbi nakil, ikamet adresine dönüş ve vefat hâlinde nakil gibi temel riskler güvence altına alınabilir. Ancak mevcut hastalıklar, tehlikeli aktiviteler ve ek hizmetler her poliçede aynı kapsamda değerlendirilmez. Bu nedenle seyahat planına uygun ülke, süre, limit ve ek teminat seçimi yapılmalı; yalnızca prim tutarına göre karar verilmemelidir.</p>$q0$,
   $q0$Seyahat sırasında ortaya çıkabilecek ani hastalık ve kazalarda hangi giderlerin karşılanabileceği, temel teminatlar ve önemli istisnalar üzerinden açıklanmıştır.$q0$,
-  $q0$Seyahat ve Yurt Dışı$q0$,
+  $q0$Seyahat Sigortaları$q0$,
   ARRAY[$q0$seyahat sağlık sigortası neleri kapsar$q0$, $q0$seyahat sağlık sigortası kapsamı$q0$, $q0$yurt dışı sağlık sigortası$q0$, $q0$seyahat sigortası teminatları$q0$, $q0$seyahat sağlık sigortası hangi durumları karşılar$q0$]::text[],
   $q0$Seyahat Sağlık Sigortası Neleri Kapsar?$q0$,
   $q0$Seyahat sağlık sigortasının tedavi, tıbbi nakil ve cenaze nakli teminatları ile kapsam dışı durumları anlaşılır biçimde açıklanmıştır.$q0$,
@@ -797,7 +797,7 @@ values
 <h2>Sonuç</h2>
 <p>Seyahat sağlık sigortası her yolculuk için genel ve tek tip bir yasal zorunluluk değildir. Ancak vize başvurularında veya ülke giriş koşullarında zorunlu tutulabilir. Zorunlu olmadığı durumlarda da yüksek tedavi ve nakil giderlerine karşı koruma sağlanması için yaptırılması faydalı görülür. Karar verilmeden önce gidilecek ülkenin güncel kuralları ve poliçenin gerçek kapsamı birlikte kontrol edilmelidir.</p>$q0$,
   $q0$Seyahat sağlık sigortasının her ülke için genel bir zorunluluk olup olmadığı; vize, giriş koşulları ve yolculuk riski üzerinden değerlendirilmiştir.$q0$,
-  $q0$Seyahat ve Yurt Dışı$q0$,
+  $q0$Seyahat Sigortaları$q0$,
   ARRAY[$q0$seyahat sağlık sigortası zorunlu mu$q0$, $q0$yurt dışı seyahat sigortası zorunlu mu$q0$, $q0$vize için seyahat sağlık sigortası$q0$, $q0$seyahat sigortası gerekli mi$q0$, $q0$vizesiz ülkelerde seyahat sigortası$q0$]::text[],
   $q0$Seyahat Sağlık Sigortası Zorunlu mu?$q0$,
   $q0$Seyahat sağlık sigortasının hangi yolculuklarda zorunlu tutulabildiği, vize başvuruları ve vizesiz seyahatler açısından açıklanmıştır.$q0$,
@@ -836,7 +836,7 @@ values
 <h2>Sonuç</h2>
 <p>Schengen vizesi için düzenlenecek seyahat sağlık sigortasında en az 30.000 avro teminat, bütün Schengen bölgesinde geçerlilik ve seyahat süresinin tamamını kapsayan tarih aralığı aranmalıdır. Poliçe bilgileri başvuru evrakıyla aynı olmalı ve temel tıbbi riskler açıkça teminat altına alınmalıdır. Başvuru öncesinde temsilciliğin güncel belge listesi kontrol edilerek son karar verilmelidir.</p>$q0$,
   $q0$Schengen vizesi başvurusunda sunulacak seyahat sağlık sigortasının teminat tutarı, coğrafi kapsamı, tarih aralığı ve belge bilgileri açıklanmıştır.$q0$,
-  $q0$Seyahat ve Yurt Dışı$q0$,
+  $q0$Seyahat Sigortaları$q0$,
   ARRAY[$q0$Schengen vizesi için seyahat sağlık sigortası$q0$, $q0$Schengen seyahat sağlık sigortası$q0$, $q0$vize sigortası 30000 euro$q0$, $q0$Schengen sigortası kaç günlük olmalı$q0$, $q0$vize için sağlık sigortası$q0$]::text[],
   $q0$Schengen Vizesi İçin Seyahat Sağlık Sigortası$q0$,
   $q0$Schengen vizesi için seyahat sağlık sigortasında 30.000 avro teminat, bölgesel geçerlilik ve seyahat süresi koşulları açıklanmıştır.$q0$,
@@ -876,7 +876,7 @@ values
 <h2>Sonuç</h2>
 <p>Seyahat sağlık sigortası fiyatları; süre, ülke, yaş, kişi sayısı, teminat limiti ve ek güvencelere göre belirlenir. En düşük primin her zaman en uygun korumayı sağlamadığı kabul edilmelidir. Seyahat planını tam olarak kapsayan, vize veya giriş koşullarını karşılayan ve ihtiyaç duyulan sağlık hizmetlerini yeterli limitlerle güvence altına alan teklif seçilmelidir.</p>$q0$,
   $q0$Seyahat sağlık sigortası priminin hangi bilgilere göre hesaplandığı ve farklı tekliflerin neden yalnızca fiyat üzerinden karşılaştırılmaması gerektiği açıklanmıştır.$q0$,
-  $q0$Seyahat ve Yurt Dışı$q0$,
+  $q0$Seyahat Sigortaları$q0$,
   ARRAY[$q0$seyahat sağlık sigortası fiyatları$q0$, $q0$seyahat sigortası fiyat hesaplama$q0$, $q0$yurt dışı sağlık sigortası fiyatları$q0$, $q0$vize sigortası fiyatı$q0$, $q0$seyahat sağlık sigortası teklifi$q0$]::text[],
   $q0$Seyahat Sağlık Sigortası Fiyatları Nasıl Belirlenir?$q0$,
   $q0$Seyahat sağlık sigortası fiyatlarını etkileyen süre, ülke, yaş, teminat limiti ve ek güvence gibi temel unsurlar açıklanmıştır.$q0$,
@@ -1084,7 +1084,7 @@ values
 <h2>Sonuç</h2>
 <p>Noterde araç satışı; ön kontrol, güvenli ödeme, kimlik ve yetki doğrulaması, sözleşmenin imzalanması ve tescilin tamamlanması aşamalarından oluşur. Satışa engel kayıtlar ile ödeme bilgileri önceden kontrol edildiğinde noter işleminin gecikme riski azaltılır. Alıcı açısından ekspertiz ve geçmiş kayıtların, satıcı açısından ise ödeme referansı ve hesap bilgilerinin doğrulanması temel güvenlik adımı olarak kabul edilmelidir.</p>$q0$,
   $q0$İkinci el araç satışında noter öncesinde yapılması gereken kontroller, gerekli belgeler, güvenli ödeme süreci ve devir sonrasındaki işlemler ele alınmıştır.$q0$,
-  $q0$Araç İşlemleri ve Mevzuat$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$noterde araç alım satım işlemleri$q0$, $q0$noterde araç satışı nasıl yapılır$q0$, $q0$araç devir işlemleri$q0$, $q0$ikinci el araç satış işlemleri$q0$, $q0$noter araç satışında gerekli belgeler$q0$]::text[],
   $q0$Noterde Araç Alım Satım İşlemleri Nasıl Yapılır?$q0$,
   $q0$Noterde araç alım satım işlemlerinin hangi sırayla tamamlandığı, gerekli kontroller, güvenli ödeme ve devir sonrası yapılacaklar açıklanmıştır.$q0$,
@@ -1136,7 +1136,7 @@ values
 <h2>Sonuç</h2>
 <p>Güvenli Ödeme Sistemiyle araç bedeli satış öncesinde güvenli hesaba alınır, noter devri tamamlandığında satıcıya aktarılır ve satış gerçekleşmezse alıcıya iade edilir. İşlemin güvenli yürütülebilmesi için satıcının doğru kayıt oluşturması, alıcının araç ve bedel bilgilerini doğrulaması ve ödemenin yalnızca sistemin gösterdiği hesaba yapılması gerekir.</p>$q0$,
   $q0$Satıcının kayıt oluşturmasından alıcının bedeli güvenli hesaba yatırmasına ve noter satışından sonra paranın aktarılmasına kadar bütün aşamalar açıklanmıştır.$q0$,
-  $q0$Araç İşlemleri ve Mevzuat$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$araç satışında güvenli ödeme sistemi$q0$, $q0$güvenli ödeme nasıl yapılır$q0$, $q0$noter güvenli ödeme$q0$, $q0$ikinci el araç güvenli ödeme$q0$, $q0$araç satış bedeli güvenli hesap$q0$]::text[],
   $q0$Araç Satışında Güvenli Ödeme Sistemi Nasıl Kullanılır?$q0$,
   $q0$İkinci el araç satışında Güvenli Ödeme Sisteminin satıcı ve alıcı tarafından nasıl kullanıldığı, para transferi ve iade süreci açıklanmıştır.$q0$,
@@ -1182,7 +1182,7 @@ values
 <h2>Sonuç</h2>
 <p>Bir araçta iki plakadan yalnızca biri kaybolduğunda aynı plakanın yeniden bastırılması, iki plakanın da kaybolması veya tek plakalı araçta plakanın kaybolması hâlinde ise yeni plaka numarası alınması gerekir. Kayıp bildirimi kolluğa yapılmalı, noter belgesi alınmalı ve plaka yalnızca TŞOF tarafından yetkilendirilmiş noktada bastırılmalıdır.</p>$q0$,
   $q0$Plakanın kayıp veya çalıntı olması, tek ya da iki plakanın kaybolması ve yeniden basım veya plaka değişikliği gereken durumlar açıklanmıştır.$q0$,
-  $q0$Araç İşlemleri ve Mevzuat$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$araç plakası kaybolursa ne yapılmalı$q0$, $q0$kayıp plaka işlemleri$q0$, $q0$plaka yeniden çıkarma$q0$, $q0$tek plaka kayboldu$q0$, $q0$iki plaka kayboldu$q0$]::text[],
   $q0$Araç Plakası Kaybolursa Ne Yapılmalıdır?$q0$,
   $q0$Tek veya iki araç plakasının kaybolması durumunda kolluk, noter ve yetkili plaka basım noktalarında izlenecek yol açıklanmıştır.$q0$,
@@ -1230,7 +1230,7 @@ values
 <h2>Sonuç</h2>
 <p>2026 yılında sağlık sigortalarında yenileme ve geçiş düzeni, motorlu araç hasarlarında eksper ataması ve rapor standardı, asistans hizmeti sağlayıcılarının şartları ve merkezi hasar ihbar sistemi öne çıktı. Sigortalılar açısından en önemli sonuç; poliçe satın alınırken yalnızca fiyatın değil, yenileme hakkı, hasar yönetimi, eksper raporu ve destek hizmeti altyapısının birlikte değerlendirilmesi gerekliliğidir.</p>$q0$,
   $q0$27 Temmuz 2026 itibarıyla sigortalıları doğrudan etkileyen özel sağlık, motorlu araç hasarları, eksper raporları, asistans hizmetleri ve Alo 193 düzenlemeleri ele alınmıştır.$q0$,
-  $q0$Araç İşlemleri ve Mevzuat$q0$,
+  $q0$Sigorta Rehberi$q0$,
   ARRAY[$q0$2026 sigortacılık mevzuatı değişiklikleri$q0$, $q0$2026 sigorta düzenlemeleri$q0$, $q0$2026 sigorta mevzuatı$q0$, $q0$özel sağlık sigortası 2026 değişiklikleri$q0$, $q0$Alo 193 sigorta hasar ihbar$q0$]::text[],
   $q0$2026 Sigortacılık Mevzuatı Değişiklikleri$q0$,
   $q0$2026 yılında özel sağlık sigortası, eksper raporları, destek hizmetleri ve Alo 193 hasar ihbar sistemi alanlarında yapılan değişiklikler özetlenmiştir.$q0$,
@@ -1283,7 +1283,7 @@ values
 <h2>Sonuç</h2>
 <p>Hayat sigortasında vergi avantajından yararlanılabilmesi için poliçenin türü, sigortalı kişi, şirketin yerleşim yeri, ödeme dönemi ve belge şartları birlikte değerlendirilmelidir. Birikim primli hayat sigortasında primin yüzde 50'si, diğer uygun şahıs sigortalarında primin yüzde 100'ü hesaplamaya alınır; ancak yüzde 15'lik gelir sınırı ve yıllık asgari ücret sınırı aşılamaz.</p>$q0$,
   $q0$Hayat ve şahıs sigortası primlerinde vergi matrahı indiriminin nasıl uygulandığı, çalışanlar ve yıllık beyanname verenler açısından ele alınmıştır.$q0$,
-  $q0$Sigorta ve Vergi Rehberi$q0$,
+  $q0$Sigorta Rehberi$q0$,
   ARRAY[$q0$hayat sigortasında vergi avantajı$q0$, $q0$hayat sigortası vergi indirimi$q0$, $q0$hayat sigortası primi gelir vergisi$q0$, $q0$hayat sigortası matrah indirimi$q0$, $q0$şahıs sigortası vergi avantajı$q0$]::text[],
   $q0$Hayat Sigortasında Vergi Avantajı Nasıl Uygulanır?$q0$,
   $q0$Hayat sigortası primlerinin gelir vergisi matrahından hangi oranlarda indirilebildiği, sınırlar, şartlar ve örnek hesaplama açıklanmıştır.$q0$,
@@ -1339,7 +1339,7 @@ values
 <h2>Sonuç</h2>
 <p>Pert sürecinde önce hasar ihbarı yapılır, eksper tarafından onarım tutarı ve piyasa rayiç değeri belirlenir, ardından aracın tam hasar, ağır hasar veya onarım statüsü tespit edilir. Ödeme tutarı rayiç değer, sovtaj ve poliçe şartlarına göre hesaplanır. Araç sahibi tarafından eksper raporu, rayiç değer araştırması, sovtaj koşulu ve tescil belgeleri imzadan önce ayrıntılı biçimde kontrol edilmelidir.</p>$q0$,
   $q0$Günlük dilde pert olarak adlandırılan araç hasarlarında tam hasar ve ağır hasar ayrımı ile tazminat süreci ele alınmıştır.$q0$,
-  $q0$Kasko ve Hasar Süreçleri$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$aracım pert oldu süreç nasıl işler$q0$, $q0$pert araç süreci$q0$, $q0$tam hasar işlemleri$q0$, $q0$ağır hasarlı araç$q0$, $q0$kasko pert ödemesi$q0$]::text[],
   $q0$Aracım Pert Olduğunda Süreç Nasıl İşler?$q0$,
   $q0$Pert olarak bilinen tam ve ağır hasar sürecinde ihbar, eksper incelemesi, rayiç değer, sovtaj, tescil belgesi ve ödeme aşamaları açıklanmıştır.$q0$,
@@ -1399,7 +1399,7 @@ values
 <h2>Sonuç</h2>
 <p>Ön cam değişimi, cam hasarının poliçe kapsamında bulunması hâlinde kaskodan yapılabilir. İşlemden önce anlaşmalı servis, kullanılacak camın niteliği, muafiyet, kalibrasyon ve hasarsızlık indirimi şartları netleştirilmelidir. Camın doğrudan değiştirilmesi yerine güvenli onarım mümkünse bu seçenek de değerlendirilmelidir.</p>$q0$,
   $q0$Kasko poliçesindeki cam teminatı, anlaşmalı servis kullanımı, onarım veya değişim kararı ve hasarsızlık indirimi üzerindeki olası etkiler ele alınmıştır.$q0$,
-  $q0$Kasko ve Hasar Süreçleri$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$kaskodan ön cam değişimi$q0$, $q0$kasko cam değişimi$q0$, $q0$ön cam kırılması kasko$q0$, $q0$kasko cam hasarı$q0$, $q0$kaskodan cam değişimi hasarsızlığı bozar mı$q0$]::text[],
   $q0$Kasko Sigortasından Ön Cam Değişimi Yapılabilir mi?$q0$,
   $q0$Ön cam kırılması veya çatlamasında kaskonun ne zaman kullanılabildiği, servis, cam türü, muafiyet ve hasarsızlık indirimi ayrıntıları açıklanmıştır.$q0$,
@@ -1449,7 +1449,7 @@ values
 <h2>Sonuç</h2>
 <p>Trafik sigortası limiti zararı tamamen karşılamadığında, limit üzerindeki tutar sorumlu kişilerin kişisel malvarlığından talep edilebilir. Dava, icra, faiz ve yargılama giderleriyle karşılaşılması mümkündür. Bu riskin azaltılması için trafik sigortasına ek olarak, ihtiyaçla uyumlu yüksek limitli İMM ve gerekiyorsa manevi tazminat teminatı değerlendirilmelidir.</p>$q0$,
   $q0$Trafik sigortası limitinin üzerinde kalan maddi ve bedeni zararların kimden talep edilebileceği ve İMM teminatının rolü ele alınmıştır.$q0$,
-  $q0$Trafik ve İMM Rehberi$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$trafik sigortası limiti yetersiz kalırsa$q0$, $q0$trafik sigortası mali sorumluluk limiti$q0$, $q0$trafik sigortası hasarı karşılamazsa$q0$, $q0$trafik sigortası limit aşımı$q0$, $q0$İMM sigortası neden gerekli$q0$]::text[],
   $q0$Trafik Sigortası Limiti Yetersiz Kalırsa Ne Olur?$q0$,
   $q0$Trafik sigortası teminat limiti zararı karşılamadığında araç sahibinin karşılaşabileceği kişisel sorumluluk, dava ve icra riskleri açıklanmıştır.$q0$,
@@ -1503,7 +1503,7 @@ values
 <h2>Sonuç</h2>
 <p>Kaza tespit tutanağında tarih, konum, sürücü, araç ve poliçe bilgileri doğru yazılmalı; fotoğraflar çekilmeli, ilk darbe noktası işaretlenmeli, anlaşılır bir kroki çizilmeli ve bütün sürücüler tarafından imza atılmalıdır. Kusur oranının tutanak üzerinde sürücülerce belirlenmediği, değerlendirmenin sigorta şirketleri ve gerektiğinde ilgili komisyon tarafından yapıldığı bilinmelidir.</p>$q0$,
   $q0$Yalnız maddi hasarlı kazalarda kaza tespit tutanağının hangi sırayla ve hangi bilgilerle düzenlenmesi gerektiği ele alınmıştır.$q0$,
-  $q0$Kaza ve Kusur Rehberi$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$kaza tespit tutanağı nasıl doldurulur$q0$, $q0$maddi hasarlı kaza tespit tutanağı$q0$, $q0$mobil kaza tutanağı$q0$, $q0$kaza tutanağı doldurma$q0$, $q0$trafik kazası tutanak örneği$q0$]::text[],
   $q0$Kaza Tespit Tutanağı Nasıl Doldurulur?$q0$,
   $q0$Kaza tespit tutanağında tarih, sürücü, araç, poliçe, kroki ve imza alanlarının nasıl doldurulacağı adım adım açıklanmıştır.$q0$,
@@ -1552,7 +1552,7 @@ values
 <h2>Sonuç</h2>
 <p>Kaza tespit tutanağı yalnız maddi hasarlı, en az iki aracın karıştığı, geçerli poliçelerin bulunduğu ve sürücülerin anlaşabildiği kazalarda kullanılmalıdır. Yaralanma, ölüm, tek taraflı kaza, ehliyetsizlik, alkol şüphesi, sigortasız araç, kamu malı zararı veya anlaşmazlık varsa 112 üzerinden kolluk çağrılmalıdır.</p>$q0$,
   $q0$Tarafların kendi aralarında tutanak düzenleyemeyeceği ve kolluk çağrılması gereken trafik kazaları sıralanmıştır.$q0$,
-  $q0$Kaza ve Kusur Rehberi$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$hangi durumlarda kaza tespit tutanağı tutulmaz$q0$, $q0$kaza tutanağı tutulmayan durumlar$q0$, $q0$trafik polisi çağrılması gereken kazalar$q0$, $q0$yaralanmalı kazada tutanak$q0$, $q0$sigortasız araçla kazada tutanak$q0$]::text[],
   $q0$Hangi Durumlarda Kaza Tespit Tutanağı Tutulmaz?$q0$,
   $q0$Kaza tespit tutanağının kullanılamadığı yaralanma, sigortasız araç, ehliyetsiz sürücü ve tek taraflı kaza gibi durumlar açıklanmıştır.$q0$,
@@ -1604,7 +1604,7 @@ values
 <h2>Sonuç</h2>
 <p>Kusur oranına itiraz, kararın bildirilmesinden itibaren beş iş günü içinde ve değerlendirmeyi etkileyebilecek yeni belgelerle yapılmalıdır. İtirazın doğru kuruma yöneltilmesi, kamera kayıtlarının gecikmeden temin edilmesi ve tutanaktaki somut hataların açık biçimde gösterilmesi gerekir. Uyuşmazlık çözülemezse tahkim veya yargı yolları ayrıca değerlendirilmelidir.</p>$q0$,
   $q0$Maddi hasarlı kazada bildirilen kusur oranının yeniden değerlendirilmesi için izlenecek süreç ve süreler ele alınmıştır.$q0$,
-  $q0$Kaza ve Kusur Rehberi$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$trafik kazasında kusur oranına itiraz$q0$, $q0$kaza kusur oranına itiraz$q0$, $q0$SBM kusur itirazı$q0$, $q0$kaza tespit tutanağı itiraz süresi$q0$, $q0$kusur oranı yanlış çıktı$q0$]::text[],
   $q0$Trafik Kazasında Kusur Oranına Nasıl İtiraz Edilir?$q0$,
   $q0$SBM üzerinden belirlenen kusur oranına 5 iş günü içinde hangi belgelerle ve hangi kanallardan itiraz edilebileceği açıklanmıştır.$q0$,
@@ -1655,7 +1655,7 @@ values
 <h2>Sonuç</h2>
 <p>Park hâlindeki araca çarpıp kaçılması durumunda hasar onarılmadan önce fotoğraf ve kamera kayıtları toplanmalı, tanıklar belirlenmeli ve olay kolluğa bildirilmelidir. Kasko varsa gecikmeden hasar ihbarı yapılmalı; çarpan araç tespit edilirse trafik sigortasına veya sorumlu kişilere başvurulmalıdır. Güvence Hesabının bilinmeyen araç kaynaklı maddi araç hasarını genel olarak karşılamadığı göz önünde bulundurulmalıdır.</p>$q0$,
   $q0$Çarpan aracın olay yerinden ayrıldığı park hasarlarında delillerin nasıl korunacağı ve zararın hangi yollarla talep edilebileceği ele alınmıştır.$q0$,
-  $q0$Kaza ve Kusur Rehberi$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$park hâlindeki aracıma çarpıp kaçtılar$q0$, $q0$park halinde araca çarpıp kaçma$q0$, $q0$plakası bilinmeyen araç hasarı$q0$, $q0$çarpıp kaçan araç kasko$q0$, $q0$otoparkta araca çarptılar$q0$]::text[],
   $q0$Park Hâlindeki Aracıma Çarpıp Kaçtılar, Ne Yapmalıyım?$q0$,
   $q0$Park hâlindeki araca çarpıp kaçılması durumunda fotoğraf, kamera kaydı, kolluk başvurusu, kasko ve tazminat süreci açıklanmıştır.$q0$,
@@ -1704,7 +1704,7 @@ values
 <h2>Sonuç</h2>
 <p>Trafik sigortası olmayan aracın verdiği maddi araç zararı, genel olarak Güvence Hesabından değil kusurlu aracın sürücüsü, işleteni veya sahibinden talep edilir. Kasko varsa hasar poliçe şartlarına göre kaskodan karşılanabilir. Ölüm ve sürekli sakatlık gibi bedeni zararlarda ise Güvence Hesabına başvuru imkânı bulunabilir.</p>$q0$,
   $q0$Sigortasız araç kazasında araç hasarı, kasko, sorumlu kişilere başvuru ve Güvence Hesabının bedeni zarar kapsamı ele alınmıştır.$q0$,
-  $q0$Hasar ve Tazminat Hakları$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$trafik sigortası olmayan araç çarparsa$q0$, $q0$sigortasız araç kazası$q0$, $q0$Güvence Hesabı sigortasız araç$q0$, $q0$trafik sigortası yoksa hasar$q0$, $q0$sigortasız araç maddi zarar$q0$]::text[],
   $q0$Trafik Sigortası Olmayan Araç Çarparsa Ne Olur?$q0$,
   $q0$Trafik sigortası olmayan aracın neden olduğu maddi ve bedeni zararların kimden ve hangi yollarla talep edilebileceği açıklanmıştır.$q0$,
@@ -1761,7 +1761,7 @@ values
 <h2>Sonuç</h2>
 <p>Araç değer kaybı talebi, kusurlu aracın trafik sigortasına yazılı başvuru ve teknik hesaplama yoluyla yapılır. Kusur oranı, onarım belgeleri, eksper raporu, fotoğraflar ve araç geçmişi doğru sunulmalıdır. Yapılan ödeme raporla karşılaştırılmalı; eksik veya gerekçesiz ret hâlinde itiraz ve tahkim seçenekleri değerlendirilmelidir.</p>$q0$,
   $q0$Kaza sonrası onarılan araçta oluşan piyasa değeri azalması için izlenecek başvuru süreci ele alınmıştır.$q0$,
-  $q0$Hasar ve Tazminat Hakları$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$araç değer kaybı başvurusu$q0$, $q0$araç değer kaybı nasıl alınır$q0$, $q0$değer kaybı eksper atama$q0$, $q0$trafik sigortası değer kaybı$q0$, $q0$araç değer kaybı belgeleri$q0$]::text[],
   $q0$Araç Değer Kaybı Başvurusu Nasıl Yapılır?$q0$,
   $q0$Araç değer kaybının kimden talep edildiği, gerekli belgeler, eksper ataması ve sigorta şirketine başvuru adımları açıklanmıştır.$q0$,
@@ -1815,7 +1815,7 @@ values
 <h2>Sonuç</h2>
 <p>Hasar reddinde önce yazılı gerekçe ve poliçe dayanağı alınmalı, eksik belgeler tamamlanmalı ve teknik değerlendirme kontrol edilmelidir. Sigorta şirketine kayıtlı bir itiraz yapılmalı; sonuç alınamazsa uyuşmazlığın türüne göre SEDDK şikâyeti, Sigorta Tahkim Komisyonu veya yargı yolu değerlendirilmelidir.</p>$q0$,
   $q0$Sigorta şirketinden alınan hasar ret kararına karşı izlenecek yazılı itiraz, şikâyet ve uyuşmazlık çözüm yolları ele alınmıştır.$q0$,
-  $q0$Hasar ve Tazminat Hakları$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$sigorta şirketi hasarı reddederse$q0$, $q0$sigorta hasar reddi$q0$, $q0$kasko hasarı reddedildi$q0$, $q0$sigorta şirketine itiraz dilekçesi$q0$, $q0$sigorta tazminatı ödenmiyor$q0$]::text[],
   $q0$Sigorta Şirketi Hasarı Reddederse Ne Yapılmalıdır?$q0$,
   $q0$Hasar talebi reddedildiğinde ret gerekçesinin incelenmesi, eksik belgelerin tamamlanması ve tahkim başvurusu adımları açıklanmıştır.$q0$,
@@ -1875,7 +1875,7 @@ values
 <h2>Sonuç</h2>
 <p>Sigorta Tahkim Komisyonuna başvurulmadan önce sigorta şirketine yazılı müracaat yapılmalı, olumsuz cevap veya yasal sürenin dolması beklenmelidir. Başvuru formu, şirket yazışmaları, poliçe, hasar belgeleri ve talep hesabı eksiksiz hazırlanmalıdır. Dosyanın başarısı yalnızca haklı olunduğunun söylenmesine değil, talebin belge ve hesapla ortaya konulmasına bağlıdır.</p>$q0$,
   $q0$Sigorta şirketi veya Güvence Hesabıyla yaşanan uyuşmazlıklarda tahkim yoluna başvurmak için gereken aşamalar ele alınmıştır.$q0$,
-  $q0$Hasar ve Tazminat Hakları$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$Sigorta Tahkim Komisyonuna başvuru$q0$, $q0$sigorta tahkim başvurusu nasıl yapılır$q0$, $q0$sigorta tahkim gerekli belgeler$q0$, $q0$sigorta tahkim online başvuru$q0$, $q0$sigorta şirketi uyuşmazlığı$q0$]::text[],
   $q0$Sigorta Tahkim Komisyonuna Nasıl Başvurulur?$q0$,
   $q0$Sigorta Tahkim Komisyonuna başvuru öncesi şirket müracaatı, gerekli belgeler, online başvuru ve dosya takip süreci açıklanmıştır.$q0$,
@@ -1926,7 +1926,7 @@ values
 <h2>Sonuç</h2>
 <p>İkame araç hakkının doğması için hasarın kasko kapsamına girmesi ve poliçede belirtilen servis, onarım süresi ve kullanım şartlarının sağlanması gerekir. Kaç gün araç verileceği, segment, kullanım adedi ve ek masraflar poliçeden poliçeye değişir. Teklif alınırken yalnızca “ikame araç var” ifadesi değil, gün, adet ve sınıf limitleri birlikte karşılaştırılmalıdır.</p>$q0$,
   $q0$İkame aracın standart bir zorunlu teminat olmadığı ve poliçe özel şartlarına göre nasıl uygulandığı ele alınmıştır.$q0$,
-  $q0$Kaskoda En Çok Merak Edilenler$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$kasko ikame araç$q0$, $q0$ikame araç kaç gün verilir$q0$, $q0$kasko yedek araç şartları$q0$, $q0$ikame araç ne zaman verilir$q0$, $q0$kasko araçsız kalma teminatı$q0$]::text[],
   $q0$Kasko İkame Araç Ne Zaman Verir ve Kaç Gün Kullanılır?$q0$,
   $q0$Kaskoda ikame aracın hangi hasarlarda, hangi süre ve şartlarla verildiği; sınıf, bekleme ve kullanım koşulları açıklanmıştır.$q0$,
@@ -1983,7 +1983,7 @@ values
 <h2>Sonuç</h2>
 <p>Mini onarım; küçük göçük, çizik, plastik, cam ve döşeme hasarlarında hızlı çözüm sağlayabilir. Ancak hizmetin kapsamı, ölçü sınırı, yıllık kullanım adedi ve hasarsızlığa etkisi poliçeden poliçeye değişir. İşlem yaptırılmadan önce hasarın mini onarıma uygunluğu ve hizmetin kayıt şekli sigorta şirketinden doğrulanmalıdır.</p>$q0$,
   $q0$Mini onarımın standart kasko teminatı değil, poliçe ve hizmet sağlayıcı limitlerine bağlı bir ek hizmet olduğu ele alınmıştır.$q0$,
-  $q0$Kaskoda En Çok Merak Edilenler$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$kasko mini onarım$q0$, $q0$mini onarım neleri karşılar$q0$, $q0$kasko çizik onarımı$q0$, $q0$boyasız göçük düzeltme$q0$, $q0$mini onarım hasarsızlığı bozar mı$q0$]::text[],
   $q0$Kasko Mini Onarım Neleri Kapsar?$q0$,
   $q0$Kasko mini onarım hizmetinin çizik, göçük, döşeme ve plastik hasarlarında hangi sınırlarla kullanılabildiği açıklanmıştır.$q0$,
@@ -2047,7 +2047,7 @@ values
 <h2>Sonuç</h2>
 <p>Araç çalındığında kolluğa derhal başvurulmalı, kasko ihbarı beş iş günü içinde yapılmalı ve bütün anahtarlar ile resmî belgeler sunulmalıdır. Araç 30 gün içinde bulunmazsa rayiç değer üzerinden tazminat süreci yürütülür. Anahtarın ele geçirilme şekli ve poliçe özel şartları ödeme açısından özellikle kontrol edilmelidir.</p>$q0$,
   $q0$Kasko kapsamında araç çalınması sonrasında sigortalının ve sigorta şirketinin yerine getirmesi gereken işlemler ele alınmıştır.$q0$,
-  $q0$Kaskoda En Çok Merak Edilenler$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$araç çalınırsa kasko süreci$q0$, $q0$çalınan araç kasko ödemesi$q0$, $q0$araç hırsızlığı hasar ihbarı$q0$, $q0$kasko çalınan araç kaç günde öder$q0$, $q0$çalınan araç bulunduğunda ne olur$q0$]::text[],
   $q0$Araç Çalınırsa Kasko Süreci Nasıl İşler?$q0$,
   $q0$Araç hırsızlığında kolluk bildirimi, kasko ihbarı, 30 günlük araştırma, rayiç değer ve aracın sonradan bulunması süreci açıklanmıştır.$q0$,
@@ -2097,7 +2097,7 @@ values
 <h2>Sonuç</h2>
 <p>Sel ve su baskını hasarı, poliçeye bu ek teminatın dâhil edilmiş olması hâlinde kaskodan karşılanabilir. Suya giren araç yeniden çalıştırılmamalı, çekici çağrılmalı, hasar fotoğraflanmalı ve ihbar geciktirilmemelidir. Poliçe satın alınırken sel teminatı, muafiyet, çekici ve hasarsızlık koruma şartları birlikte değerlendirilmelidir.</p>$q0$,
   $q0$Su altında kalan veya su çeken araçlarda kasko kapsamı, ek teminat, koruma yükümlülüğü ve doğru ihbar adımları ele alınmıştır.$q0$,
-  $q0$Kaskoda En Çok Merak Edilenler$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$sel ve su baskını kasko$q0$, $q0$kasko sel hasarı$q0$, $q0$su basan aracı kasko karşılar mı$q0$, $q0$motor su çekti kasko$q0$, $q0$selde araç hasarı$q0$]::text[],
   $q0$Sel ve Su Baskını Hasarını Kasko Karşılar mı?$q0$,
   $q0$Sel ve su baskını hasarının kaskoda hangi poliçe türlerinde karşılandığı, sürücünün yükümlülükleri ve hasar süreci açıklanmıştır.$q0$,
@@ -2144,7 +2144,7 @@ values
 <h2>Sonuç</h2>
 <p>Tamamlayıcı sağlık sigortasından yararlanmak için SGK nezdinde genel sağlık sigortalısı olunması ve sağlık hizmeti tarihinde SGK provizyon hakkının aktif bulunması gerekir. SGK güvencesi bulunmayan kişiler, ihtiyaçlarına göre özel sağlık sigortasını değerlendirmelidir. Poliçe öncesinde SGK müstahaklığı, hastane ağı ve teminat şartları birlikte kontrol edilmelidir.</p>$q0$,
   $q0$TSS ürününün SGK ile birlikte çalışma yapısı ve SGK güvencesi olmayan kişilerin değerlendirebileceği alternatifler ele alınmıştır.$q0$,
-  $q0$Sağlık ve Konut Sigortası Soruları$q0$,
+  $q0$Sağlık Sigortaları$q0$,
   ARRAY[$q0$SGK olmadan tamamlayıcı sağlık sigortası$q0$, $q0$tamamlayıcı sağlık sigortası SGK şartı$q0$, $q0$TSS için SGK gerekli mi$q0$, $q0$SGK pasifse tamamlayıcı sağlık$q0$, $q0$genel sağlık sigortası ve TSS$q0$]::text[],
   $q0$SGK Olmadan Tamamlayıcı Sağlık Sigortası Yapılabilir mi?$q0$,
   $q0$Tamamlayıcı sağlık sigortasında SGK genel sağlık sigortası şartı, provizyon ve SGK hakkı pasif olduğunda oluşabilecek durumlar açıklanmıştır.$q0$,
@@ -2196,7 +2196,7 @@ values
 <h2>Sonuç</h2>
 <p>TSS bekleme süresi poliçede açıkça belirtilen teminatların kullanılabilmesi için geçen dönemdir. 2026 kurallarında doğum için en fazla 12 ay, diğer teminatlar için en fazla 6 ay sınırı bulunur. Aynı planla zamanında yenilemede ve mevzuata uygun şirket geçişinde kazanılmış süreler korunmalıdır.</p>$q0$,
   $q0$Sağlık poliçesinde belirli hastalık ve teminatların ne zaman kullanılabildiğini belirleyen bekleme süresi kuralları ele alınmıştır.$q0$,
-  $q0$Sağlık ve Konut Sigortası Soruları$q0$,
+  $q0$Sağlık Sigortaları$q0$,
   ARRAY[$q0$tamamlayıcı sağlık sigortasında bekleme süresi$q0$, $q0$TSS bekleme süresi$q0$, $q0$sağlık sigortası bekleme süresi kaç ay$q0$, $q0$doğum teminatı bekleme süresi$q0$, $q0$sağlık sigortası şirket değişikliği bekleme$q0$]::text[],
   $q0$Tamamlayıcı Sağlık Sigortasında Bekleme Süresi Nedir?$q0$,
   $q0$TSS bekleme süresinin anlamı, 2026 üst sınırları, yenileme ve şirket değişikliğinde kazanılmış sürelerin korunması açıklanmıştır.$q0$,
@@ -2254,7 +2254,7 @@ values
 <h2>Sonuç</h2>
 <p>Kronik hastalıkların TSS kapsamı, hastalığın poliçe öncesinde mevcut olup olmadığı ve şirketin risk kabul kararına göre belirlenir. İstisna, ek prim, limit veya ret uygulanabilir. Sağlık beyanı eksiksiz verilmeli, hastalığa ilişkin kararın poliçede açıkça yazıldığı doğrulanmalı ve ÖBYG şartları uzun vadeli koruma açısından değerlendirilmelidir.</p>$q0$,
   $q0$Diyabet, hipertansiyon ve benzeri mevcut hastalıklarda sigorta şirketinin risk değerlendirmesi ve poliçe şartları ele alınmıştır.$q0$,
-  $q0$Sağlık ve Konut Sigortası Soruları$q0$,
+  $q0$Sağlık Sigortaları$q0$,
   ARRAY[$q0$tamamlayıcı sağlık sigortası kronik hastalıklar$q0$, $q0$TSS mevcut hastalıklar$q0$, $q0$sağlık sigortası önceden var olan hastalık$q0$, $q0$kronik hastalık sağlık sigortası$q0$, $q0$hastalık ek primi$q0$]::text[],
   $q0$Tamamlayıcı Sağlık Sigortası Kronik Hastalıkları Karşılar mı?$q0$,
   $q0$Kronik ve poliçe öncesinde mevcut hastalıkların TSS kapsamında nasıl değerlendirildiği, istisna, ek prim ve ÖBYG etkisi açıklanmıştır.$q0$,
@@ -2311,7 +2311,7 @@ values
 <h2>Sonuç</h2>
 <p>Konut sigortası, poliçede dahili su teminatı varsa ani boru patlaması, sızma, tıkanma ve donma nedeniyle bina ve eşyalarda oluşan doğrudan zararları karşılayabilir. Borunun kendi onarımı, yavaş sızıntı, rutubet ve bakım eksikliği her zaman kapsamda değildir. Komşu zararları için mali sorumluluk teminatı ayrıca kontrol edilmelidir.</p>$q0$,
   $q0$Ev içi tesisat kaçağında bina, eşya, tesisatın kendisi ve üçüncü kişi zararlarının nasıl değerlendirildiği ele alınmıştır.$q0$,
-  $q0$Sağlık ve Konut Sigortası Soruları$q0$,
+  $q0$Konut ve DASK$q0$,
   ARRAY[$q0$konut sigortası su kaçağı$q0$, $q0$dahili su teminatı$q0$, $q0$evde su borusu patladı sigorta$q0$, $q0$komşuya su sızması sigorta$q0$, $q0$konut sigortası tesisat hasarı$q0$]::text[],
   $q0$Konut Sigortası Su Kaçağını Karşılar mı?$q0$,
   $q0$Konut sigortasında dahili su teminatının boru patlaması, sızma, tıkanma ve komşuya verilen zararları hangi şartlarla karşıladığı açıklanmıştır.$q0$,
@@ -2358,7 +2358,7 @@ values
 <h2>Sonuç</h2>
 <p>Elektrikli araç bataryası, poliçe kapsamındaki ani ve dış bir olay sonucunda zarar gördüğünde kasko tarafından karşılanabilir. Kapasite kaybı, kullanım kaynaklı yıpranma ve garanti kapsamındaki arızalar ise çoğunlukla kasko hasarı sayılmaz. En doğru karar için batarya limiti, yetkili servis şartı, sel ve yangın kapsamı ile muafiyetler poliçe düzenlenmeden önce kontrol edilmelidir.</p>$q0$,
   $q0$Elektrikli araçların en yüksek maliyetli parçalarından biri olan çekiş bataryasının kasko kapsamı, hasarın nedeni ve poliçe özel şartları üzerinden ele alınmıştır.$q0$,
-  $q0$Elektrikli Araç Sigortaları$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$elektrikli araç kaskosu bataryayı karşılar mı$q0$, $q0$elektrikli araç batarya sigortası$q0$, $q0$kasko batarya hasarı$q0$, $q0$elektrikli araç kasko teminatı$q0$, $q0$batarya hasarı kasko$q0$]::text[],
   $q0$Elektrikli Araç Kaskosu Bataryayı Karşılar mı?$q0$,
   $q0$Elektrikli araç bataryasının hangi kazalarda kasko kapsamında değerlendirilebileceği, kapsam dışı durumlar ve poliçede kontrol edilmesi gerekenler açıklanmıştır.$q0$,
@@ -2405,7 +2405,7 @@ values
 <h2>Sonuç</h2>
 <p>Taşınabilir şarj kablosu, araç aksesuarı olarak poliçeye dâhil edilmişse kasko kapsamında korunabilir. Wallbox ise çoğunlukla taşınmaza bağlı bir cihaz olarak ayrı teminat gerektirir. Cihaz bedeli, kurulum şekli, hırsızlık şartı, elektrik hasarı ve üçüncü kişi sorumluluğu poliçe düzenlenmeden önce açıkça yazdırılmalıdır.</p>$q0$,
   $q0$Araçla taşınan şarj kablosu ile binaya sabitlenen wallbox cihazının farklı sigorta konusu olarak değerlendirilmesi ele alınmıştır.$q0$,
-  $q0$Elektrikli Araç Sigortaları$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$şarj kablosu wallbox kasko kapsamında mı$q0$, $q0$elektrikli araç şarj kablosu sigortası$q0$, $q0$wallbox sigortası$q0$, $q0$kasko şarj ekipmanı$q0$, $q0$elektrikli araç aksesuar teminatı$q0$]::text[],
   $q0$Şarj Kablosu ve Wallbox Kasko Kapsamında mı?$q0$,
   $q0$Elektrikli araç şarj kablosu ile ev tipi wallbox cihazının kasko veya konut sigortasında hangi şartlarla güvence altına alınabileceği açıklanmıştır.$q0$,
@@ -2450,7 +2450,7 @@ values
 <h2>Sonuç</h2>
 <p>Elektrikli araç kaskosu; batarya bedeli, yüksek voltaj güvenliği, elektronik parça yoğunluğu, servis ve kalibrasyon giderleri nedeniyle bazı modellerde daha yüksek fiyatlanabilir. En düşük prim yerine batarya, servis, parça ve yol yardım kapsamı birlikte değerlendirilmelidir. Aynı araç için farklı şirketlerden teklif alınması, fiyat ve teminat dengesinin görülmesini sağlar.</p>$q0$,
   $q0$Elektrikli otomobillerde kasko fiyatının neden bazı araçlara göre yüksek çıkabildiği, risk ve maliyet unsurlarıyla birlikte ele alınmıştır.$q0$,
-  $q0$Elektrikli Araç Sigortaları$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$elektrikli araçlarda kasko neden daha pahalı$q0$, $q0$elektrikli araç kasko fiyatları$q0$, $q0$elektrikli otomobil sigorta maliyeti$q0$, $q0$elektrikli araç kasko primi$q0$, $q0$elektrikli araç onarım maliyeti$q0$]::text[],
   $q0$Elektrikli Araçlarda Kasko Neden Daha Pahalı Olabilir?$q0$,
   $q0$Elektrikli araç kasko primini etkileyen batarya, parça, servis, teknoloji ve hasar maliyeti unsurları açıklanmıştır.$q0$,
@@ -2496,7 +2496,7 @@ values
 <h2>Sonuç</h2>
 <p>Elektrikli aracın şarjsız kalması hâlinde yol yardım ancak poliçede açıkça tanımlanmışsa devreye girer. Çekici mesafesi, mobil şarj, hizmet adedi ve bölgesel erişim önceden kontrol edilmelidir. Elektrikli araç sahibi için yalnızca hasar teminatı değil, araca uygun platform çekici ve enerji desteği sağlayan asistans hizmeti de önemli bir seçim ölçütüdür.</p>$q0$,
   $q0$Elektrikli aracın enerji yetersizliği nedeniyle yolda kalması durumunda uygulanabilecek yol yardım seçenekleri ve poliçe kontrolleri ele alınmıştır.$q0$,
-  $q0$Elektrikli Araç Sigortaları$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$elektrikli araç şarjsız kalırsa yol yardım$q0$, $q0$elektrikli araç kasko yol yardım$q0$, $q0$şarjı biten araç çekici$q0$, $q0$mobil şarj hizmeti$q0$, $q0$elektrikli araç asistans$q0$]::text[],
   $q0$Elektrikli Araç Şarjsız Kalırsa Yol Yardım Devreye Girer mi?$q0$,
   $q0$Elektrikli araç yolda şarjsız kaldığında çekici, mobil şarj ve en yakın istasyona taşıma hizmetlerinin kasko kapsamında olup olmadığı açıklanmıştır.$q0$,
@@ -2541,7 +2541,7 @@ values
 <h2>Sonuç</h2>
 <p>Ömür boyu yenileme garantisi, sağlık durumunun ilerleyen yıllarda değişmesi hâlinde teminat sürekliliği açısından önemli bir haktır. Ancak taahhüt dönemi ile kazanılmış hak birbirinden ayrılmalıdır. Poliçede süre, tazminat/prim oranı, aynı plan şartı ve geçiş kuralları açıkça kontrol edilmelidir.</p>$q0$,
   $q0$Özel sağlık sigortasında ömür boyu yenileme garantisinin ne sağladığı, taahhüt ile kazanılmış hak arasındaki fark ve 2026 kuralları ele alınmıştır.$q0$,
-  $q0$Sağlık Sigortalarında Önemli Kararlar$q0$,
+  $q0$Sağlık Sigortaları$q0$,
   ARRAY[$q0$ömür boyu yenileme garantisi nedir$q0$, $q0$ÖBYG nasıl kazanılır$q0$, $q0$sağlık sigortası yenileme garantisi$q0$, $q0$ömür boyu yenileme garantisi şartları$q0$, $q0$özel sağlık sigortası ÖBYG$q0$]::text[],
   $q0$Ömür Boyu Yenileme Garantisi Nedir, Nasıl Kazanılır?$q0$,
   $q0$Ömür boyu yenileme garantisinin kapsamı, kazanma şartları, yaş sınırı, üç yıllık süre ve tazminat/prim oranı açıklanmıştır.$q0$,
@@ -2585,7 +2585,7 @@ values
 <h2>Sonuç</h2>
 <p>Tamamlayıcı sağlık sigortasında doğum giderlerinin karşılanabilmesi için doğum teminatı ayrıca seçilmeli ve bekleme süresi tamamlanmalıdır. Hamilelik başladıktan sonra mevcut gebeliğin kapsam dışında kalabileceği unutulmamalıdır. Hastane ağı, kontrol adedi, doğum limiti ve yeni doğan giderleri poliçe düzenlenmeden önce yazılı olarak kontrol edilmelidir.</p>$q0$,
   $q0$Doğum giderlerinin TSS kapsamında hangi şartlarla karşılanabildiği, gebelik takibi ve bekleme süresiyle birlikte ele alınmıştır.$q0$,
-  $q0$Sağlık Sigortalarında Önemli Kararlar$q0$,
+  $q0$Sağlık Sigortaları$q0$,
   ARRAY[$q0$tamamlayıcı sağlık sigortası doğumu karşılar mı$q0$, $q0$doğum teminatlı tamamlayıcı sağlık sigortası$q0$, $q0$TSS doğum paketi$q0$, $q0$hamileyken tamamlayıcı sağlık sigortası$q0$, $q0$doğum bekleme süresi$q0$]::text[],
   $q0$Tamamlayıcı Sağlık Sigortası Doğumu Karşılar mı?$q0$,
   $q0$Tamamlayıcı sağlık sigortasında doğum teminatı, bekleme süresi, hamilelik öncesi başvuru ve hastane ağı şartları açıklanmıştır.$q0$,
@@ -2629,7 +2629,7 @@ values
 <h2>Sonuç</h2>
 <p>Yeni doğan bebeğin sağlık sigortasına eklenmesi için kimlik ve sağlık belgeleri tamamlanmalı, poliçede belirtilen süre kaçırılmadan başvuru yapılmalıdır. Doğuştan hastalık, prematüre bakım, yoğun bakım ve rutin kontrollerin otomatik kapsamda olduğu varsayılmamalıdır. Teminat başlangıcı ve istisnalar yazılı olarak doğrulanmalıdır.</p>$q0$,
   $q0$Doğum sonrası bebeğin sağlık poliçesine eklenmesinde izlenecek adımlar ve poliçede kontrol edilmesi gereken şartlar ele alınmıştır.$q0$,
-  $q0$Sağlık Sigortalarında Önemli Kararlar$q0$,
+  $q0$Sağlık Sigortaları$q0$,
   ARRAY[$q0$yeni doğan bebek sağlık sigortasına nasıl eklenir$q0$, $q0$yeni doğan bebek sigortası$q0$, $q0$bebeği sağlık poliçesine ekleme$q0$, $q0$yeni doğan teminatı$q0$, $q0$bebek tamamlayıcı sağlık sigortası$q0$]::text[],
   $q0$Yeni Doğan Bebek Sağlık Sigortasına Nasıl Eklenir?$q0$,
   $q0$Yeni doğan bebeğin özel veya tamamlayıcı sağlık sigortasına eklenmesi, başvuru süresi, SGK aktivasyonu ve teminat başlangıcı açıklanmıştır.$q0$,
@@ -2674,7 +2674,7 @@ values
 <h2>Sonuç</h2>
 <p>Provizyon reddinde sözlü açıklamayla yetinilmemeli, ret nedeni ve poliçe maddesi yazılı olarak istenmelidir. Eksik belge, işlem kodu veya hastane ağı sorunu düzeltilebiliyorsa yeniden değerlendirme yapılabilir. Tıbbi kayıtlar ve başvuru yazışmaları korunmalı; uyuşmazlık sürerse resmî itiraz yolları kullanılmalıdır.</p>$q0$,
   $q0$Hastanede provizyon reddi alınması durumunda izlenecek belge, şirket ve itiraz süreci adım adım ele alınmıştır.$q0$,
-  $q0$Sağlık Sigortalarında Önemli Kararlar$q0$,
+  $q0$Sağlık Sigortaları$q0$,
   ARRAY[$q0$sağlık sigortasında provizyon reddedilirse$q0$, $q0$provizyon reddi$q0$, $q0$özel sağlık sigortası ödeme yapmadı$q0$, $q0$TSS provizyon onayı$q0$, $q0$sağlık sigortası itiraz$q0$]::text[],
   $q0$Sağlık Sigortasında Provizyon Reddedilirse Ne Yapılmalı?$q0$,
   $q0$Sağlık sigortası provizyonunun reddedilme nedenleri, belge kontrolü, yeniden değerlendirme ve itiraz yolları açıklanmıştır.$q0$,
@@ -2718,7 +2718,7 @@ values
 <h2>Sonuç</h2>
 <p>Kiracı tarafından kendi eşyaları ve üçüncü kişilere karşı sorumluluğu için konut sigortası yaptırılabilir. Bina teminatında ev sahibinin menfaati doğru gösterilmeli, DASK ise ev sahibi adına düzenlenmelidir. Eşya bedeli, hırsızlık şartları, kiracı ve komşuluk sorumluluğu poliçede açıkça kontrol edilmelidir.</p>$q0$,
   $q0$Kiracıların ev sahibine ait bina ile kendi eşyaları ve sorumlulukları için hangi sigortaları yaptırabileceği ele alınmıştır.$q0$,
-  $q0$Kiracı, Konut ve Deprem Rehberi$q0$,
+  $q0$Konut ve DASK$q0$,
   ARRAY[$q0$kiracı konut sigortası yaptırabilir mi$q0$, $q0$kiracı ev sigortası$q0$, $q0$kiracı eşya sigortası$q0$, $q0$kiracı mali sorumluluk sigortası$q0$, $q0$kiracı DASK yaptırabilir mi$q0$]::text[],
   $q0$Kiracı Konut Sigortası Yaptırabilir mi?$q0$,
   $q0$Kiracının eşya, hırsızlık ve üçüncü kişi sorumluluğu için konut sigortası yaptırması ile DASK'taki konumu açıklanmıştır.$q0$,
@@ -2763,7 +2763,7 @@ values
 <h2>Sonuç</h2>
 <p>Komşuya su sızması hâlinde ödeme, kaçağın kaynağı, kusur ve poliçedeki dahili su ile mali sorumluluk teminatlarına göre belirlenir. Ortak tesisat hasarında yönetim, daire tesisatında ev sahibi veya kullanım kusurunda kiracı sorumlu olabilir. Teknik rapor ve hasar görüntüleri alınmadan onarıma başlanmaması önemlidir.</p>$q0$,
   $q0$Üst kattan veya ortak tesisattan kaynaklanan su hasarında kusurun ve sigorta teminatının nasıl belirlendiği ele alınmıştır.$q0$,
-  $q0$Kiracı, Konut ve Deprem Rehberi$q0$,
+  $q0$Konut ve DASK$q0$,
   ARRAY[$q0$evden komşuya su sızarsa zararı kim karşılar$q0$, $q0$komşuya su sızıntısı sigorta$q0$, $q0$dahili su teminatı$q0$, $q0$konut sigortası komşu hasarı$q0$, $q0$kiracı su kaçağı sorumluluğu$q0$]::text[],
   $q0$Evden Komşuya Su Sızarsa Zararı Kim Karşılar?$q0$,
   $q0$Su kaçağında ev sahibi, kiracı, apartman yönetimi ve konut sigortasının sorumluluğu ile hasar bildirim süreci açıklanmıştır.$q0$,
@@ -2807,7 +2807,7 @@ values
 <h2>Sonuç</h2>
 <p>DASK, zorunlu ve temel bir deprem güvencesidir; ancak her konutun gerçek yeniden yapım maliyetini tamamen karşılamayabilir. Aradaki fark, ihtiyari deprem teminatı içeren konut sigortasıyla kapatılmalıdır. Metrekare, yapı tarzı, eşya bedeli ve deprem muafiyeti doğru belirlenmelidir.</p>$q0$,
   $q0$Zorunlu Deprem Sigortasının teminat sınırı ile gerçek bina maliyeti arasındaki farkın nasıl güvence altına alınabileceği ele alınmıştır.$q0$,
-  $q0$Kiracı, Konut ve Deprem Rehberi$q0$,
+  $q0$Konut ve DASK$q0$,
   ARRAY[$q0$DASK teminatı yetersiz kalırsa$q0$, $q0$DASK teminatı evin değerine yetmezse$q0$, $q0$ihtiyari deprem sigortası$q0$, $q0$DASK üstü konut sigortası$q0$, $q0$deprem teminat farkı$q0$]::text[],
   $q0$DASK Teminatı Yetersiz Kalırsa Ne Olur?$q0$,
   $q0$DASK teminatının yeniden yapım maliyetini karşılamadığı durumda ihtiyari deprem ve konut sigortasıyla ek güvence alınması açıklanmıştır.$q0$,
@@ -2854,7 +2854,7 @@ values
 <h2>Sonuç</h2>
 <p>Deprem sonrası DASK başvurusunda güvenlik öncelikli tutulmalı, hasar gecikmeden bildirilmelidir. Eksper incelemesine imkân tanınmalı ve zorunlu onarımlara ilişkin belgeler saklanmalıdır. DASK yalnızca bina zararlarını karşılayacağı için eşya ve geçici konaklama gibi ihtiyaçlar konut sigortası üzerinden ayrıca değerlendirilmelidir.</p>$q0$,
   $q0$Depremden sonra DASK dosyası açılırken izlenecek adımlar ve yanlış işlem yapılmaması için dikkat edilmesi gerekenler ele alınmıştır.$q0$,
-  $q0$Kiracı, Konut ve Deprem Rehberi$q0$,
+  $q0$Konut ve DASK$q0$,
   ARRAY[$q0$DASK hasar başvurusu nasıl yapılır$q0$, $q0$deprem sonrası DASK ihbarı$q0$, $q0$DASK hasar dosyası$q0$, $q0$DASK için gerekli belgeler$q0$, $q0$DASK tazminat başvurusu$q0$]::text[],
   $q0$Deprem Sonrası DASK Hasar Başvurusu Nasıl Yapılır?$q0$,
   $q0$Deprem sonrasında DASK hasar ihbarı, güvenlik önlemleri, gerekli bilgiler, eksper incelemesi ve ödeme süreci açıklanmıştır.$q0$,
@@ -2898,7 +2898,7 @@ values
 <h2>Sonuç</h2>
 <p>Yurt dışında sağlık sorunu yaşandığında asistans hattıyla iletişim kurulması, hastane yönlendirmesinin takip edilmesi ve bütün belgelerin saklanması gerekir. Acil durumlarda tedavi geciktirilmemeli, bildirim sonradan yapılmalıdır. Poliçedeki muafiyet, mevcut hastalık ve tıbbi nakil koşulları seyahatten önce okunmalıdır.</p>$q0$,
   $q0$Seyahat sırasında sağlık sorunu yaşandığında poliçenin hangi sırayla kullanılacağı ve hangi belgelerin saklanması gerektiği ele alınmıştır.$q0$,
-  $q0$Seyahat Sırasında Sigorta Kullanımı$q0$,
+  $q0$Seyahat Sigortaları$q0$,
   ARRAY[$q0$yurt dışında hastalanırsam seyahat sağlık sigortası$q0$, $q0$yurt dışında sağlık sigortası kullanımı$q0$, $q0$seyahat sigortası asistans$q0$, $q0$yurt dışında hastane masrafı$q0$, $q0$seyahat sağlık sigortası acil durum$q0$]::text[],
   $q0$Yurt Dışında Hastalanırsam Seyahat Sigortası Nasıl Kullanılır?$q0$,
   $q0$Yurt dışında hastalanma durumunda asistans hattı, hastane yönlendirmesi, ödeme, belge ve geri ödeme adımları açıklanmıştır.$q0$,
@@ -2941,7 +2941,7 @@ values
 <h2>Sonuç</h2>
 <p>Vize reddinde seyahat sağlık sigortası otomatik olarak iptal olmaz. Ret belgesiyle, teminat başlangıcından önce ve poliçe kullanılmadan başvuru yapılmalıdır. Prim iadesi ve kesintiler ürün özel şartlarına göre belirlenir. Seyahat ertelendiyse iptal yerine tarih değişikliği de değerlendirilmelidir.</p>$q0$,
   $q0$Vize başvurusu reddedildiğinde seyahat poliçesinin iptal edilip edilemeyeceği ve iade için izlenecek yol ele alınmıştır.$q0$,
-  $q0$Seyahat Sırasında Sigorta Kullanımı$q0$,
+  $q0$Seyahat Sigortaları$q0$,
   ARRAY[$q0$vize reddedilirse seyahat sağlık sigortası iptal edilir mi$q0$, $q0$vize reddi sigorta iadesi$q0$, $q0$seyahat sağlık sigortası iptali$q0$, $q0$vize çıkmazsa sigorta parası$q0$, $q0$seyahat poliçesi prim iadesi$q0$]::text[],
   $q0$Vize Reddedilirse Seyahat Sağlık Sigortası İptal Edilir mi?$q0$,
   $q0$Vize reddinde seyahat sağlık sigortasının iptal ve prim iadesi şartları, gerekli belgeler ve başlangıç tarihi kontrolü açıklanmıştır.$q0$,
@@ -2985,7 +2985,7 @@ values
 <h2>Sonuç</h2>
 <p>Kayıp veya geciken bagajın karşılanması için poliçede bagaj teminatı bulunmalıdır. Havaalanından ayrılmadan PIR belgesi alınmalı, bagaj etiketi ve alışveriş faturaları saklanmalıdır. Önce havayolu sorumluluğu işletilmeli, kalan zarar poliçe şartlarına göre sigortadan talep edilmelidir.</p>$q0$,
   $q0$Bagajın kaybolması, hasarlanması veya gecikmesi durumunda havayolu ve sigorta şirketine yapılacak başvurular ele alınmıştır.$q0$,
-  $q0$Seyahat Sırasında Sigorta Kullanımı$q0$,
+  $q0$Seyahat Sigortaları$q0$,
   ARRAY[$q0$bagaj kaybolursa seyahat sigortası karşılar mı$q0$, $q0$geciken bagaj sigortası$q0$, $q0$kayıp bagaj tazminatı$q0$, $q0$seyahat sigortası bagaj teminatı$q0$, $q0$bagaj gecikmesi masrafları$q0$]::text[],
   $q0$Bagaj Kaybolur veya Gecikirse Seyahat Sigortası Karşılar mı?$q0$,
   $q0$Kayıp ve geciken bagajda havayolu başvurusu, PIR belgesi, zorunlu alışveriş giderleri ve seyahat sigortası teminatı açıklanmıştır.$q0$,
@@ -3029,7 +3029,7 @@ values
 <h2>Sonuç</h2>
 <p>Uçuş iptali ve rötar, standart sağlık teminatına otomatik olarak dâhil değildir. Önce havayoluna başvurulmalı, gecikme yazısı ve gider belgeleri alınmalıdır. Poliçede seyahat iptali, uçuş gecikmesi ve bağlantı kaçırma teminatları varsa kalan zarar limitler içinde sigortadan talep edilebilir.</p>$q0$,
   $q0$Rötar veya iptal durumunda havayoluna yapılacak başvuru ile sigortadan talep edilebilecek ek giderler ele alınmıştır.$q0$,
-  $q0$Seyahat Sırasında Sigorta Kullanımı$q0$,
+  $q0$Seyahat Sigortaları$q0$,
   ARRAY[$q0$uçuş iptali rötar seyahat sigortası kapsamında mı$q0$, $q0$rötar sigortası$q0$, $q0$uçuş iptali tazminatı$q0$, $q0$seyahat iptal teminatı$q0$, $q0$geciken uçuş masrafları$q0$]::text[],
   $q0$Uçuş İptali ve Rötar Seyahat Sigortası Kapsamında mı?$q0$,
   $q0$Uçuş iptali ve rötarda havayolu hakları ile seyahat sigortasındaki gecikme ve iptal teminatlarının farkı açıklanmıştır.$q0$,
@@ -3072,7 +3072,7 @@ values
 <h2>Sonuç</h2>
 <p>Araç satıldığında eski trafik poliçesi yeni alıcıya geçmez; kasko da kural olarak menfaat değişikliğiyle sona erer. Eski malik satış belgesiyle iptal ve prim iadesi talep etmeli, yeni malik tescil tarihi itibarıyla kendi adına trafik sigortası düzenletmelidir.</p>$q0$,
   $q0$Noter satışıyla birlikte eski malik ve yeni alıcı açısından trafik ve kasko poliçelerinde yapılması gereken işlemler ele alınmıştır.$q0$,
-  $q0$Araç Satışı ve Poliçe Yenileme$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$araç satılınca trafik sigortası ve kasko ne olur$q0$, $q0$araç satışında sigorta iptali$q0$, $q0$satılan aracın kaskosu$q0$, $q0$trafik sigortası yeni alıcıya geçer mi$q0$, $q0$araç satışında prim iadesi$q0$]::text[],
   $q0$Araç Satılınca Trafik Sigortası ve Kasko Ne Olur?$q0$,
   $q0$Araç satışı sonrasında trafik sigortası ve kaskonun sona ermesi, yeni alıcının poliçesi ve kullanılmayan prim iadesi açıklanmıştır.$q0$,
@@ -3115,7 +3115,7 @@ values
 <h2>Sonuç</h2>
 <p>Kasko hasarsızlık geçmişi yeni araç teklifinde dikkate alınabilir; ancak aktarım oranı ve prim etkisi şirkete göre değişir. Yeni aracın değeri ve risk özellikleri nedeniyle prim artabilir. Tekliflerde hasarsızlık kademesi, koruma klozu ve nihai fiyat birlikte kontrol edilmelidir.</p>$q0$,
   $q0$Eski araçtaki kasko geçmişinin yeni araç teklifine nasıl yansıtılabileceği ve hangi durumlarda indirimin değişebileceği ele alınmıştır.$q0$,
-  $q0$Araç Satışı ve Poliçe Yenileme$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$kasko hasarsızlık indirimi yeni araca aktarılır mı$q0$, $q0$kasko hasarsızlık transferi$q0$, $q0$yeni araçta hasarsızlık indirimi$q0$, $q0$araç değişikliğinde kasko indirimi$q0$, $q0$hasarsızlık belgesi$q0$]::text[],
   $q0$Kasko Hasarsızlık İndirimi Yeni Araca Aktarılır mı?$q0$,
   $q0$Kasko hasarsızlık indiriminin araç değişikliğinde nasıl değerlendirildiği, belge, süre ve şirket uygulaması açıklanmıştır.$q0$,
@@ -3158,7 +3158,7 @@ values
 <h2>Sonuç</h2>
 <p>Trafik sigortasının geç yenilenmesi teminatsız dönem, gecikme zammı, denetim yaptırımı ve kazada kişisel mali sorumluluk yaratır. Yenileme son güne bırakılmamalı ve yeni poliçenin başlangıcı eski poliçenin bitişiyle kesintisiz eşleştirilmelidir.</p>$q0$,
   $q0$Trafik poliçesi sona erdikten sonra yenilemenin geciktirilmesi hâlinde karşılaşılabilecek mali ve hukuki sonuçlar ele alınmıştır.$q0$,
-  $q0$Araç Satışı ve Poliçe Yenileme$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$trafik sigortası yenilemesi gecikirse ne olur$q0$, $q0$trafik sigortası gecikme zammı$q0$, $q0$sigortasız araç cezası$q0$, $q0$trafik poliçesi bitti$q0$, $q0$trafik sigortası geç yenileme$q0$]::text[],
   $q0$Trafik Sigortası Yenilemesi Gecikirse Ne Olur?$q0$,
   $q0$Trafik sigortasının geç yenilenmesinde teminatsız dönem, gecikme zammı, denetim ve kaza riskleri açıklanmıştır.$q0$,
@@ -3202,7 +3202,7 @@ values
 <h2>Sonuç</h2>
 <p>Muafiyetli kasko, daha düşük prim karşılığında hasarın belirli bölümünün sigortalı tarafından ödenmesini sağlar. Avantajlı olup olmadığı yalnızca prim farkıyla değil, muafiyet tutarı ve kişinin hasar riskini karşılama gücüyle değerlendirilmelidir. Küçük hasar sıklığı yüksekse muafiyetsiz seçenek daha uygun olabilir.</p>$q0$,
   $q0$Daha düşük prim karşılığında hasarın bir bölümünün araç sahibi tarafından karşılandığı muafiyetli kasko yapısı ele alınmıştır.$q0$,
-  $q0$Araç Satışı ve Poliçe Yenileme$q0$,
+  $q0$Araç Sigortaları$q0$,
   ARRAY[$q0$muafiyetli kasko nedir$q0$, $q0$kasko muafiyeti$q0$, $q0$yüzde muafiyetli kasko$q0$, $q0$kasko hasarında sigortalının ödeyeceği tutar$q0$, $q0$ucuz kasko muafiyet$q0$]::text[],
   $q0$Muafiyetli Kasko Nedir, Avantajlı mı?$q0$,
   $q0$Muafiyetli kaskoda hasarın belirli kısmının sigortalıda kalması, tutar ve oran muafiyeti ile avantaj ve riskler açıklanmıştır.$q0$,
