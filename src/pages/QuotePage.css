@@ -548,6 +548,10 @@
   font-weight: 600;
   font-size: inherit;
   padding: 0;
+  border: 0;
+  background: none;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .quote__consent-link:hover {

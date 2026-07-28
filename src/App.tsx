@@ -15,6 +15,7 @@ const AboutPage = lazy(() => import("./pages/AboutPage"));
 const ContactPage = lazy(() => import("./pages/ContactPage"));
 const BlogPage = lazy(() => import("./pages/BlogPage"));
 const BlogPostPage = lazy(() => import("./pages/BlogPostPage"));
+const LegalPage = lazy(() => import("./pages/LegalPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage"));
 
 function ScrollToTop() {
@@ -143,6 +144,30 @@ export default function App() {
           element={
             <Suspense fallback={<PageLoader />}>
               <BlogPostPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/kvkk"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <LegalPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/gizlilik-politikasi"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <LegalPage />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/cerez-politikasi"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <LegalPage />
             </Suspense>
           }
         />

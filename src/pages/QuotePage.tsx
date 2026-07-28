@@ -1020,13 +1020,16 @@ export default function QuotePage() {
                             required
                           />
                           <span>
-                            <button type="button" className="quote__consent-link">
+                            <Link to={ROUTES.kvkk} className="quote__consent-link">
                               KVKK
-                            </button>
+                            </Link>
                             {" ve "}
-                            <button type="button" className="quote__consent-link">
+                            <Link
+                              to={ROUTES.privacy}
+                              className="quote__consent-link"
+                            >
                               Gizlilik Politikası
-                            </button>
+                            </Link>
                             &rsquo;nı okudum; kişisel verilerimin işlenmesini
                             kabul ediyorum.
                           </span>

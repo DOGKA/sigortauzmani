@@ -12,6 +12,7 @@
 
 import type { BreadcrumbItem } from "./schema";
 import { SITE_DESCRIPTION } from "./config";
+import { legalDocuments } from "../../data/legal";
 
 export interface SeoSection {
   heading: string;
@@ -41,6 +42,24 @@ export interface StaticPageSeo {
 }
 
 const HOME_CRUMB: BreadcrumbItem = { name: "Ana Sayfa", path: "/" };
+
+const legalStaticPages: StaticPageSeo[] = legalDocuments.map((doc) => ({
+  path: doc.path,
+  title: doc.title,
+  description: doc.description,
+  h1: doc.h1,
+  intro: doc.intro,
+  sections: doc.sections.map((section) => ({
+    heading: section.heading,
+    paragraphs: section.paragraphs,
+    items: section.items,
+  })),
+  schemaType: "WebPage",
+  breadcrumb: [HOME_CRUMB, { name: doc.h1 }],
+  priority: 0.3,
+  changefreq: "yearly" as const,
+  summary: doc.summary,
+}));
 
 export const staticPages: StaticPageSeo[] = [
   {
@@ -223,6 +242,7 @@ export const staticPages: StaticPageSeo[] = [
     summary:
       "İletişim formu: konu, öncelik ve belge ekiyle talep gönderme; telefon ve e-posta kanalları.",
   },
+  ...legalStaticPages,
 ];
 
 export function getStaticPage(path: string): StaticPageSeo | undefined {

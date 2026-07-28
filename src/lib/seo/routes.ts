@@ -10,6 +10,9 @@ export const ROUTES = {
   policyCancel: "/police-iptal",
   about: "/hakkimizda",
   contact: "/iletisim",
+  kvkk: "/kvkk",
+  privacy: "/gizlilik-politikasi",
+  cookies: "/cerez-politikasi",
   blog: "/blog",
   blogPost: (slug: string) => `/blog/${slug}`,
 } as const;

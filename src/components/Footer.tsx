@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import AmbientBackdrop from "./AmbientBackdrop";
+import { ROUTES } from "../lib/seo/routes";
 import "./Footer.css";
 
 const columns: {
@@ -42,9 +43,9 @@ const columns: {
   {
     title: "Yasal",
     links: [
-      { label: "KVKK  Metni" },
-      { label: "Gizlilik Politikası" },
-      { label: "Çerez Politikası" },
+      { label: "KVKK Metni", to: ROUTES.kvkk },
+      { label: "Gizlilik Politikası", to: ROUTES.privacy },
+      { label: "Çerez Politikası", to: ROUTES.cookies },
     ],
   },
 ];
