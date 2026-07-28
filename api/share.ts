@@ -87,7 +87,7 @@ export default async function handler(request: Request): Promise<Response> {
     <meta property="og:description" content="${escapeHtml(description)}" />
     <meta property="og:url" content="${escapeHtml(blogUrl)}" />
     <meta property="og:image" content="${escapeHtml(ogImage)}" />
-    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />

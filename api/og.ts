@@ -1,10 +1,15 @@
 /**
- * Blog Open Graph görsel üreteci (SVG, bağımsız Edge Function)
+ * Blog Open Graph görsel üreteci (PNG, Node.js Serverless Function)
  *
  * Kullanım: /api/og?slug=yazi-adresi
+ *
+ * WhatsApp, X ve LinkedIn gibi platformlar og:image için SVG kabul etmiyor
+ * (yalnızca JPEG/PNG/WebP); bu yüzden SVG önce oluşturulup ardından
+ * @resvg/resvg-js ile PNG'e dönüştürülür. resvg-js native bir binary
+ * kullandığından bu fonksiyon Edge değil Node.js runtime'ında çalışır.
  */
 
-export const config = { runtime: "edge" };
+import { Resvg } from "@resvg/resvg-js";
 
 const WIDTH = 1200;
 const HEIGHT = 630;
@@ -93,7 +98,7 @@ function wrapLines(text: string, maxChars = 34, maxLines = 4): string[] {
   return lines.length ? lines : ["Sigorta Uzmanı Blog"];
 }
 
-export default async function handler(request: Request): Promise<Response> {
+export async function GET(request: Request): Promise<Response> {
   const slug = new URL(request.url).searchParams.get("slug");
   const post = slug ? await fetchPost(slug) : null;
 
@@ -149,9 +154,15 @@ export default async function handler(request: Request): Promise<Response> {
   )}</text>
 </svg>`.trim();
 
-  return new Response(svg, {
+  const resvg = new Resvg(svg, {
+    fitTo: { mode: "width", value: WIDTH },
+    font: { loadSystemFonts: true },
+  });
+  const pngBuffer = resvg.render().asPng();
+
+  return new Response(new Uint8Array(pngBuffer), {
     headers: {
-      "content-type": "image/svg+xml; charset=utf-8",
+      "content-type": "image/png",
       "cache-control":
         "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800",
     },
