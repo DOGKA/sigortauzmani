@@ -4,15 +4,15 @@
  * (asset) import'u içermemelidir.
  */
 
-import trafikIcon from "../assets/icons/trafik-yeni.svg";
-import kaskoIcon from "../assets/icons/trafik.svg";
+import trafikIcon from "../assets/icons/trafik.svg";
+import kaskoIcon from "../assets/icons/kasko.svg";
 import tamamlayiciIcon from "../assets/icons/tamamlayici-saglik.svg";
 import seyahatIcon from "../assets/icons/seyahat-saglik.svg";
 import immIcon from "../assets/icons/imm.svg";
 import ozelSaglikIcon from "../assets/icons/ozel-saglik.svg";
 import daskIcon from "../assets/icons/dask.svg";
 import yesilKartIcon from "../assets/icons/yesil-kart.svg";
-import konutIcon from "../assets/icons/saglik-konut-menu.svg";
+import konutIcon from "../assets/icons/konut.svg";
 
 export const productIcons: Record<string, string> = {
   "trafik-sigortasi": trafikIcon,

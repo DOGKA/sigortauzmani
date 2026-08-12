@@ -1,6 +1,10 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
+import kolayKarsilastirmaIcon from "../assets/icons/kolay-karsilastirma.svg";
+import uzmanDestekIcon from "../assets/icons/uzman-destek.svg";
+import hizliSurecIcon from "../assets/icons/hizli-surec.svg";
+import policeSonrasiIcon from "../assets/icons/police-sonrasi.svg";
 import "./AboutPage.css";
 
 const BRANCHES = [
@@ -18,90 +22,25 @@ const REASONS = [
     num: "01",
     title: "Kolay karşılaştırma",
     text: "Farklı şirketlerin seçeneklerini tek noktada değerlendirin.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path
-          d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2V9M9 21H5a2 2 0 0 1-2-2V9"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M14 12.5l1.8 1.8 3.2-3.6"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
+    icon: kolayKarsilastirmaIcon,
   },
   {
     num: "02",
     title: "Uzman destek",
     text: "İhtiyacınıza uygun sigortayı danışman desteğiyle seçin.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path
-          d="M4 13a8 8 0 1 1 16 0"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-        <path
-          d="M3 15.5A1.5 1.5 0 0 1 4.5 14H6v5H4.5A1.5 1.5 0 0 1 3 17.5v-2zm18 0a1.5 1.5 0 0 0-1.5-1.5H18v5h1.5a1.5 1.5 0 0 0 1.5-1.5v-2z"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M18 19a3 3 0 0 1-3 3h-2"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
+    icon: uzmanDestekIcon,
   },
   {
     num: "03",
     title: "Hızlı süreç",
     text: "Talebinizi iletin, teklifinizi kısa sürede alın.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path
-          d="M13 2 4.5 13.5H11L10 22l8.5-11.5H12L13 2z"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
+    icon: hizliSurecIcon,
   },
   {
     num: "04",
     title: "Poliçe Sonrası",
     text: "Yenileme ve hasar süreçlerinde destek almaya devam edin.",
-    icon: (
-      <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-        <path
-          d="M12 3l7 3v5c0 4.6-3 8.4-7 10-4-1.6-7-5.4-7-10V6l7-3z"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M9.2 12l2 2 3.8-4"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
+    icon: policeSonrasiIcon,
   },
 ];
 
@@ -213,7 +152,7 @@ export default function AboutPage() {
                 </span>
                 <div className="about__why-card-head">
                   <span className="about__why-icon" aria-hidden="true">
-                    {reason.icon}
+                    <img src={reason.icon} alt="" />
                   </span>
                   <h3>{reason.title}</h3>
                 </div>

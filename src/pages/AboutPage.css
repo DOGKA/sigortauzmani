@@ -360,9 +360,10 @@
   margin-bottom: 0;
 }
 
-.about__why-icon svg {
-  width: 28px;
-  height: 28px;
+.about__why-icon img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
 }
 
 .about__why-card h3 {

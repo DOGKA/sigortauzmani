@@ -1,5 +1,5 @@
-import vehicleGroupIcon from "../assets/menu/menu-arac-3d.png";
-import healthGroupIcon from "../assets/menu/menu-saglik-konut-3d.png";
+import vehicleGroupIcon from "../assets/icons/arac-sigortalari.svg";
+import healthGroupIcon from "../assets/icons/saglik-sigortalari.svg";
 import { products, type Product } from "./products";
 
 const VEHICLE_SLUGS = ["trafik-sigortasi", "kasko", "imm", "yesil-kart"];
