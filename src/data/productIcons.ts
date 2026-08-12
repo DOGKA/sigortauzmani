@@ -4,7 +4,7 @@
  * (asset) import'u içermemelidir.
  */
 
-import trafikIcon from "../assets/icons/trafik.svg";
+import trafikIcon from "../assets/icons/arac-sigortalari.svg";
 import kaskoIcon from "../assets/icons/kasko.svg";
 import tamamlayiciIcon from "../assets/icons/tamamlayici-saglik.svg";
 import seyahatIcon from "../assets/icons/seyahat-saglik.svg";
