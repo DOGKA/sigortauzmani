@@ -58,6 +58,9 @@ export default function LegalPage() {
                     ))}
                   </ul>
                 )}
+                {section.closing?.map((paragraph) => (
+                  <p key={`c-${paragraph.slice(0, 64)}`}>{paragraph}</p>
+                ))}
               </section>
             ))}
           </article>

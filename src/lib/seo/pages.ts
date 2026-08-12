@@ -18,6 +18,7 @@ export interface SeoSection {
   heading: string;
   paragraphs?: string[];
   items?: string[];
+  closing?: string[];
 }
 
 export type ChangeFreq = "daily" | "weekly" | "monthly" | "yearly";
@@ -53,6 +54,7 @@ const legalStaticPages: StaticPageSeo[] = legalDocuments.map((doc) => ({
     heading: section.heading,
     paragraphs: section.paragraphs,
     items: section.items,
+    closing: section.closing,
   })),
   schemaType: "WebPage",
   breadcrumb: [HOME_CRUMB, { name: doc.h1 }],

@@ -146,6 +146,7 @@ function staticSectionsHtml(page: StaticPageSeo): string {
       const body = [
         section.paragraphs ? paragraphs(section.paragraphs) : "",
         section.items ? bulletList(section.items) : "",
+        section.closing ? paragraphs(section.closing) : "",
       ]
         .filter(Boolean)
         .join("\n");
