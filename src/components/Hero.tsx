@@ -18,7 +18,7 @@ export default function Hero() {
           <span className="hero__title-dot">·</span> Güvende Kal
         </h1>
         <p className="hero__subtitle">
-          Doğru sigorta. Uygun Fiyat. Hızlı Destek
+          Doğru sigorta. Uygun fiyat. Hızlı destek
         </p>
 
         <div className="hero__cards" id="urunler">
