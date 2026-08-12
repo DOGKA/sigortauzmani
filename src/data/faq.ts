@@ -10,28 +10,28 @@ export interface FaqItem {
 
 export const HOME_FAQ_ITEMS: FaqItem[] = [
   {
-    question: "Neden Sigorta Uzmanı'nı tercih etmeliyim, farkınız nedir?",
+    question: "Teklif alma süreci nasıl ilerliyor?",
     answer:
-      "Sigorta Uzmanı, anlaşmalı olduğu 30'a yakın sigorta şirketinin tekliflerini sizin için araştıran ve karşılaştıran deneyimli bir sigorta acentesidir. İhtiyaçlarınıza uygun seçenekleri yalnızca fiyatlarıyla değil; teminatları, kapsamları ve avantajlarıyla birlikte değerlendirerek karar vermenizi kolaylaştırırız. Amacımız sadece en ucuz poliçeyi sunmak değil, doğru teminatlarla en uygun sigortayı bulmanıza yardımcı olmaktır. Poliçe düzenlendikten sonra da yenileme, değişiklik ve hasar süreçlerinde uzman ekibimizle yanınızda olmaya devam ederiz.",
+      "İhtiyacınıza ve paylaştığınız bilgilere göre anlaşmalı sigorta şirketlerinin teklifleri araştırılır. Fiyat, teminat ve kapsamlar karşılaştırılarak uygun seçenekler size sunulur. Seçiminizin ardından poliçe işlemleriniz için destek sağlanır.",
   },
   {
-    question: "Poliçe satışında müşterilerden ek ücret alıyor musunuz?",
+    question: "Sigorta Uzmanı'nı neden tercih etmeliyim?",
     answer:
-      "Hayır, hizmetlerimiz için sizden hiçbir ek ücret talep etmiyoruz. Ödediğiniz tutar, sigorta şirketinin belirlediği poliçe primiyle aynıdır. Karşılaştırma, danışmanlık ve satış sonrası destek hizmetlerimizin tamamı ücretsizdir.",
+      "Sigorta Uzmanı, farklı sigorta şirketlerinin ürün ve tekliflerine ulaşmayı kolaylaştıran bir sigorta hizmet platformudur. Seçenekler yalnızca fiyat açısından değil; teminat, kapsam ve ihtiyaçlarınıza uygunluk bakımından da değerlendirilir. Poliçeleştirme, yenileme, değişiklik ve hasar süreçlerinde destek sunulur.",
   },
   {
-    question: "Poliçe fiyatlarında indirim yapıyor musunuz?",
+    question: "Teklif almak için ek ücret öder miyim?",
     answer:
-      "Poliçe fiyatları, sigorta şirketleri tarafından yasal düzenlemeler çerçevesinde belirlenir. Bizim farkımız, 30'a yakın sigorta şirketinin teklifini aynı anda karşılaştırarak size en uygun fiyatlı ve en kapsamlı seçeneği bulmanızı sağlamamızdır.",
+      "Tekliflerin araştırılması ve karşılaştırılması için sizden ayrıca hizmet bedeli talep edilmez. Poliçe primi, seçilen sigorta şirketinin sunduğu teklif, teminatlar ve ödeme koşullarına göre belirlenir.",
   },
   {
-    question: "En iyi sigorta teklifini nasıl seçeceğim?",
+    question: "Sigorta tekliflerini karşılaştırırken nelere dikkat etmeliyim?",
     answer:
-      "En iyi teklif yalnızca en düşük fiyatlı olan değil, ihtiyacınızı en iyi karşılayandır. Karşılaştırma ekranımızda fiyatların yanı sıra teminat kapsamlarını, muafiyetleri ve ek hizmetleri de net biçimde görebilirsiniz. Kararsız kaldığınızda uzman ekibimiz size en uygun seçeneği bulmanız için ücretsiz danışmanlık sunar.",
+      "Fiyatın yanı sıra teminat limitleri, muafiyetler, istisnalar, ek hizmetler ve ödeme koşulları birlikte değerlendirilmelidir. Ekibimiz, seçenekler arasındaki farkları açıklayarak ihtiyacınıza uygun poliçeyi seçmenize yardımcı olur.",
   },
   {
-    question: "Sigorta Uzmanı'nda kişisel bilgilerim güvende mi?",
+    question: "Kişisel verilerim nasıl kullanılıyor ve korunuyor?",
     answer:
-      "Evet. Kişisel verileriniz 6698 sayılı KVKK kapsamında işlenir ve korunur. Bilgileriniz SSL sertifikası ile şifrelenerek iletilir, yalnızca teklif oluşturma ve poliçeleştirme amacıyla kullanılır; üçüncü kişilerle izniniz olmadan asla paylaşılmaz.",
+      "Paylaştığınız kişisel veriler, teklif ve poliçe süreçlerinin yürütülmesi amacıyla KVKK ve ilgili mevzuat kapsamında işlenir. Gerekli bilgiler, süreçle sınırlı olarak ilgili sigorta şirketleri, yetkili hizmet sağlayıcılar ve yasal zorunluluk hâlinde yetkili kurumlarla paylaşılabilir. Ayrıntılı bilgi için KVKK Aydınlatma Metni'ni inceleyebilirsiniz.",
   },
 ];
