@@ -65,6 +65,21 @@ interface RequestBody {
   };
 }
 
+/**
+ * TeklifId gelmediğinde IO gerçek sebebi HTTP 200 gövdesindeki `Hata`
+ * nesnesinde döndürüyor — örneğin DASK yenilemede poliçe numarası
+ * bulunamadığında HataKodu 11 ve "Aradığınız kriterlere uygun kayıt
+ * bulunamadı." Genel bir mesaj göstermek kullanıcıyı neyi düzelteceği
+ * konusunda kör bırakıyordu.
+ */
+function ioHataMesaji(payload: unknown): string | null {
+  if (!payload || typeof payload !== "object") return null;
+  const hata = (payload as Record<string, unknown>).Hata;
+  if (!hata || typeof hata !== "object") return null;
+  const mesaj = (hata as Record<string, unknown>).Mesaj;
+  return typeof mesaj === "string" && mesaj.trim() ? mesaj.trim() : null;
+}
+
 /** Yanıt alan adı uca göre TeklifId / Id olarak değişebiliyor. */
 function readTeklifId(payload: unknown): number | null {
   if (!payload || typeof payload !== "object") return null;
@@ -179,7 +194,7 @@ export default async function handler(request: Request): Promise<Response> {
     if (teklifId === null) {
       hatalar.push({
         bransNo: talep.bransNo,
-        message: "Teklif numarası alınamadı.",
+        message: ioHataMesaji(result.data) ?? "Teklif numarası alınamadı.",
       });
       continue;
     }

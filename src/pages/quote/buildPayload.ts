@@ -146,28 +146,27 @@ export function daskTeklifPayload(
   kimlik: KimlikDurumu,
   dask: DaskDurumu,
 ): TeklifPayload {
+  // Bina bilgileri iki yolda da gidiyor: yenilemede yalnızca poliçe numarası
+  // göndermek IO'da teklif oluşturmuyor ("Aradığınız kriterlere uygun kayıt
+  // bulunamadı"), primi belirleyen girdi adres ve bina bilgileri.
   const payload: TeklifPayload = {
     SigortaEttirenAyniMi: true,
     Sigortali: sigortaliDigerBrans(kimlik),
-    // Yenilemede yalnızca poliçe numarası gidiyor; bina bilgilerini IO
-    // mevcut poliçeden okuyor.
-    Dask: dask.policemYok
-      ? {
-          PolicemYok: true,
-          AdresKodu: dask.adresKodu,
-          SigortaEttirenSifati: dask.sigortaEttirenSifati,
-          YapiTarzi: dask.yapiTarzi,
-          InsaaYili: dask.insaaYili,
-          ToplamKatSayisi: dask.toplamKatSayisi,
-          KullanimSekli: dask.kullanimSekli,
-          BinaHasarDurumu: dask.binaHasarDurumu,
-          BrutM2: dask.brutM2,
-          BinadakiKonumu: dask.binadakiKonumu,
-        }
-      : {
-          PolicemYok: false,
-          DaskPoliceNo: dask.daskPoliceNo.trim(),
-        },
+    Dask: {
+      PolicemYok: dask.policemYok,
+      AdresKodu: dask.adresKodu,
+      SigortaEttirenSifati: dask.sigortaEttirenSifati,
+      YapiTarzi: dask.yapiTarzi,
+      InsaaYili: dask.insaaYili,
+      ToplamKatSayisi: dask.toplamKatSayisi,
+      KullanimSekli: dask.kullanimSekli,
+      BinaHasarDurumu: dask.binaHasarDurumu,
+      BrutM2: dask.brutM2,
+      BinadakiKonumu: dask.binadakiKonumu,
+      ...(dask.policemYok
+        ? {}
+        : { DaskPoliceNo: dask.daskPoliceNo.trim() }),
+    },
   };
   if (kimlik.sigortaliStr) payload.SigortaliStr = kimlik.sigortaliStr;
   return payload;
