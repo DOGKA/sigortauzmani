@@ -1,11 +1,20 @@
-import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { Suspense, lazy, useEffect } from "react";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
+import { isOtomatikUrun } from "./lib/io/constants";
 
 const loadQuotePage = () => import("./pages/QuotePage");
 const QuotePage = lazy(loadQuotePage);
+const QuoteFlowPage = lazy(() => import("./pages/QuoteFlowPage"));
 const RiskMapPage = lazy(() => import("./pages/RiskMapPage"));
 const GlossaryPage = lazy(() => import("./pages/GlossaryPage"));
 const ComparisonHubPage = lazy(() => import("./pages/ComparisonHubPage"));
@@ -51,6 +60,26 @@ function PageLoader() {
   );
 }
 
+/**
+ * Tam otomasyona açılan ürünler self servis teklif akışına, kalanlar mevcut
+ * lead formuna gider. Tek rota altında ayrıldı ki /teklif/:slug adresleri ve
+ * vercel.json'daki eski SEO yönlendirmeleri değişmesin.
+ *
+ * `?form=manuel` self servisi atlayıp lead formunu açar: sigorta servisi
+ * kapalıyken ya da kapasite dolduğunda akış kullanıcıyı buraya düşürüyor,
+ * böylece talep kaybedilmiyor.
+ */
+function QuoteRoute() {
+  const { slug } = useParams<{ slug: string }>();
+  const [searchParams] = useSearchParams();
+  const manuel = searchParams.get("form") === "manuel";
+  return slug && isOtomatikUrun(slug) && !manuel ? (
+    <QuoteFlowPage />
+  ) : (
+    <QuotePage />
+  );
+}
+
 export default function App() {
   useEffect(() => {
     // Prefetch the most-clicked lazy page so navigation feels instant
@@ -71,7 +100,7 @@ export default function App() {
           path="/teklif/:slug"
           element={
             <Suspense fallback={<PageLoader />}>
-              <QuotePage />
+              <QuoteRoute />
             </Suspense>
           }
         />

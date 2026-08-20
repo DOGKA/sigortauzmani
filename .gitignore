@@ -17,6 +17,13 @@ dist-ssr
 .env.*
 !.env.example
 
+# Panodan yapıştırılan geçici notlar; API token'ları buraya düşebiliyor
+metin-*.txt
+
+# Entegrasyon kaynak dökümanları; repoda ikili dosya biriktirmemek için dışarıda
+IO_API_Dokumani.pdf
+Sigorta_Uzmani_CRM_Teklif_Calisma_Sistemi.docx
+
 # Next.js (admin)
 admin/.next
 admin/out

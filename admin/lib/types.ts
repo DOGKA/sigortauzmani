@@ -86,6 +86,118 @@ export const IPTAL_STATUS_ORDER: IptalStatus[] = [
   "tamamlandi",
 ];
 
+// ============================================================
+// Self servis teklif akışı (IO API)
+// ============================================================
+
+export type OturumStatus =
+  | "baslatildi"
+  | "sorgu_tamam"
+  | "teklif_calisti"
+  | "secildi"
+  | "satin_alindi"
+  | "hata";
+
+export interface TeklifOturumu {
+  id: string;
+  oturum_no: string;
+  session_id: string;
+  ip_hash: string | null;
+  product_slug: string;
+  brans_no: number;
+  entity_type: "sahis" | "yabanci" | "sirket";
+  tckn: string | null;
+  vergi_no: string | null;
+  ad_soyad: string | null;
+  phone: string | null;
+  birth_date: string | null;
+  plate: string | null;
+  adres_kodu: string | null;
+  form_data: Record<string, unknown>;
+  io_teklif_id: number | null;
+  status: OturumStatus;
+  hata_mesaji: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TeklifFiyati {
+  id: string;
+  oturum_id: string;
+  brans_no: number;
+  sirket_kodu: string;
+  sirket_adi: string | null;
+  io_teklif_satir_id: number | null;
+  teklif_no: string | null;
+  prim: number | null;
+  taksit: string | null;
+  taksit_kodu: string | null;
+  created_at: string;
+}
+
+export interface SatinAlma {
+  id: string;
+  oturum_id: string;
+  brans_no: number;
+  sirket_kodu: string;
+  sirket_adi: string | null;
+  teklif_no: string | null;
+  police_no: string | null;
+  prim: number | null;
+  taksit: string | null;
+  taksit_kodu: string | null;
+  kart_sahibi: string | null;
+  kart_son4: string | null;
+  uc_d_secure: boolean;
+  police_pdf_url: string | null;
+  makbuz_pdf_url: string | null;
+  status: "basarili" | "basarisiz";
+  hata_mesaji: string | null;
+  created_at: string;
+}
+
+/** Satın alma listesinde sigortalı bilgisi oturumdan geliyor. */
+export interface SatinAlmaKaydi extends SatinAlma {
+  teklif_oturumlari: Pick<
+    TeklifOturumu,
+    | "oturum_no"
+    | "product_slug"
+    | "entity_type"
+    | "tckn"
+    | "vergi_no"
+    | "ad_soyad"
+    | "phone"
+    | "plate"
+  > | null;
+}
+
+export const OTURUM_STATUS_LABELS: Record<OturumStatus, string> = {
+  baslatildi: "Başlatıldı",
+  sorgu_tamam: "Sorgu Tamam",
+  teklif_calisti: "Teklif Çalıştı",
+  secildi: "Teklif Seçildi",
+  satin_alindi: "Satın Alındı",
+  hata: "Hata",
+};
+
+export const OTURUM_STATUS_ORDER: OturumStatus[] = [
+  "baslatildi",
+  "sorgu_tamam",
+  "teklif_calisti",
+  "secildi",
+  "satin_alindi",
+  "hata",
+];
+
+/** IO branş kodları. */
+export const BRANS_LABELS: Record<number, string> = {
+  0: "Trafik",
+  1: "Kasko",
+  2: "DASK",
+  6: "Seyahat Sağlık",
+  22: "İMM",
+};
+
 export type IletisimOncelik = "normal" | "oncelikli" | "acil";
 export type IletisimStatus =
   | "yeni"

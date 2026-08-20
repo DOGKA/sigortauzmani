@@ -12,6 +12,13 @@ export function isValidTckn(value: string): boolean {
   return check10 === d[9] && check11 === d[10];
 }
 
+// Yabancı Kimlik Numarası: 11 hane, 99 ile başlar. T.C. Kimlik Numarası'nın
+// hane doğrulama algoritmasını sağlamaz, bu yüzden yalnızca biçim kontrolü
+// yapılabiliyor; gerçek doğrulamayı MERNİS sorgusu üstleniyor.
+export function isValidForeignId(value: string): boolean {
+  return /^99\d{9}$/.test(value);
+}
+
 // Vergi Kimlik Numarası resmi doğrulama algoritması:
 // - 10 hane
 // - Her hane için: t = (hane + 10 - sıra) mod 10; t == 9 ise katkı 9,
