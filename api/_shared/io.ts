@@ -75,6 +75,38 @@ interface IoFetchInit {
 }
 
 /**
+ * IO'nun SMS onay kodu yolunu her istekte kapatır.
+ *
+ * `KodGonder` gönderilmediğinde sunucu varsayılan olarak kod gönderme moduna
+ * geçiyor: müşterinin telefonuna "Kayıt İşlemi Onay kodunuz" SMS'i düşüyor ve
+ * sorgu kaydı hiç döndürmüyor. Canlıda bu şekilde onlarca kod gitti.
+ *
+ * Bizim akışımızda kod doğrulama adımı yok; kimliği sigorta şirketi kendi
+ * tarafında doğruluyor. Onay kodu yalnızca partnerin Sigorta Gross paneline
+ * girişinde olmalı, bizim sistemimizden hiç kod gitmemeli. Bu yüzden bayrak
+ * tek tek uçlarda değil tüm IO çağrılarının geçtiği bu noktada kapatılıyor —
+ * ileride yeni bir uç eklendiğinde gözden kaçmasın.
+ */
+function kodGondermeyiKapat(body: unknown): unknown {
+  if (!body || typeof body !== "object" || Array.isArray(body)) return body;
+
+  const govde: Record<string, unknown> = {
+    ...(body as Record<string, unknown>),
+    KodGonder: false,
+  };
+
+  // Alan hem kökte hem sigortalı bloğunda okunabiliyor.
+  const sigortali = govde.Sigortali;
+  if (sigortali && typeof sigortali === "object" && !Array.isArray(sigortali)) {
+    govde.Sigortali = {
+      ...(sigortali as Record<string, unknown>),
+      KodGonder: false,
+    };
+  }
+  return govde;
+}
+
+/**
  * `HataKodu` taşıyan yanıtlarda hata mesajını çıkarır.
  * Alan adı yanıtlar arasında `Mesaj` / `Message` / `Hata` olarak değişebiliyor.
  */
@@ -118,7 +150,10 @@ export async function ioFetch<T>(
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: init.body === undefined ? undefined : JSON.stringify(init.body),
+      body:
+        init.body === undefined
+          ? undefined
+          : JSON.stringify(kodGondermeyiKapat(init.body)),
       signal: controller.signal,
     });
 
