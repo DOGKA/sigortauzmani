@@ -65,9 +65,9 @@ export interface AracDurumu {
   /** TRAMER'den araç bilgisi geldi mi */
   tramerTamam: boolean;
   /**
-   * TRAMER'in döndürdüğü ruhsat sahibi adı. Sorgulanan kimlikten farklı
-   * olabiliyor, bu yüzden sigortalı adı olarak değil doğrulama amaçlı
-   * gösteriliyor.
+   * TRAMER'in döndürdüğü ruhsat sahibi adı, soyadı maskeli. Sorgulanan
+   * kimlikten farklı olabiliyor, bu yüzden sigortalı adı olarak değil
+   * doğrulama amaçlı gösteriliyor.
    */
   aracSahibi: string;
 }

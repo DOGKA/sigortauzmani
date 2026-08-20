@@ -39,6 +39,22 @@ export function okuAdSoyad(payload: Record<string, unknown>): string {
 }
 
 /**
+ * Soyadı maskeler: "DİYAEDDİN TEMEL" → "DİYAEDDİN T***".
+ *
+ * TRAMER ruhsat sahibinin adını açık döndürüyor. Kullanıcıya doğru aracı
+ * sorguladığını göstermek için ad yeterli; açık soyadı basmak siteyi plaka ve
+ * ruhsat seri numarasını bilen herkes için isim sorgulama aracına çevirirdi.
+ */
+export function maskeleSoyad(adSoyad: string): string {
+  const parcalar = adSoyad.trim().split(/\s+/).filter(Boolean);
+  if (!parcalar.length) return "";
+  if (parcalar.length === 1) return `${parcalar[0].slice(0, 1)}***`;
+
+  const soyad = parcalar[parcalar.length - 1];
+  return [...parcalar.slice(0, -1), `${soyad.slice(0, 1)}***`].join(" ");
+}
+
+/**
  * Doğum tarihini okur. Alan çoğu zaman gerçek tarihi taşımıyor:
  * gönderdiğimiz değer yankılanıyor, göndermediğimizde de .NET varsayılanı
  * `0001-01-01` dönüyor. Bu yüzden yalnızca makul bir doğum yılı kabul

@@ -34,7 +34,7 @@ import {
   isValidPlate,
   normalizeMobilePhone,
 } from "../../utils/validation";
-import { okuAdSoyad } from "../../lib/io/okuma";
+import { maskeleSoyad, okuAdSoyad } from "../../lib/io/okuma";
 import { kimlikNoOf, type AracDurumu, type KimlikDurumu, type UrunGereksinimi } from "./flowState";
 
 interface Props {
@@ -163,7 +163,10 @@ export default function AracAdimi({
       // döndürüyor: farklı kişilerle denendiğinde yanıt plakanın sahibini
       // veriyor. Bu yüzden "sigortalı" olarak değil araç sahibi olarak
       // gösteriliyor; kullanıcı yanlış plaka girdiyse buradan görüyor.
-      onDegis({ tramerTamam: true, aracSahibi: okuAdSoyad(yanit) });
+      onDegis({
+        tramerTamam: true,
+        aracSahibi: maskeleSoyad(okuAdSoyad(yanit)),
+      });
     } catch (error) {
       // Dokümantasyon HataKodu 14/17'de araç bilgisinin gelmediğini ve
       // YK gibi elle girişe düşülmesi gerektiğini söylüyor.
