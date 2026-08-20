@@ -13,7 +13,13 @@
  * tuttukları için ayrı dosyalarda.
  */
 
-import { errorResponse, ioFetch, ioKanal, jsonResponse } from "../_shared/io";
+import {
+  errorResponse,
+  ioFetch,
+  ioKanal,
+  ioMernisEnabled,
+  jsonResponse,
+} from "../_shared/io";
 import { rateCheck } from "../_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
 
@@ -129,6 +135,13 @@ export default async function handler(request: Request): Promise<Response> {
 
   const session = await resolveSession(request);
   const ipHash = await hashIp(clientIp(request));
+
+  // MERNİS sorgusu müşteriye SMS onay kodu yollattığı için kapatılabiliyor.
+  // İstek IO'ya hiç gitmiyor; arayüz `atlandi` görünce doğrulamayı atlayıp
+  // kullanıcının girdiği bilgilerle devam ediyor.
+  if (actionName === "mernis" && !ioMernisEnabled()) {
+    return withCookie(jsonResponse({ atlandi: true }), session);
+  }
 
   if (action.rateLimit) {
     const allowed = await rateCheck(

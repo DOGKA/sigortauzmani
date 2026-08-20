@@ -1,11 +1,13 @@
 /**
  * Adım 1 — Kimlik ve MERNİS.
  *
- * MERNİS üç kimlik tipini de (T.C., yabancı, vergi no) otomatik çekiyor ve
- * SMS doğrulama istemiyor — proxy `KodGonder: false` gönderdiği için sorgu
- * onay kodu yoluna hiç girmiyor. Doğum tarihi her zaman gerekmiyor: kayıt
- * yoksa ya da bazı kişilerde sorgu doğum tarihi istiyor. Bu yüzden alan
- * baştan zorunlu tutulmuyor, ancak sorgu tutmazsa isteniyor.
+ * MERNİS sorgusu şu anda kapalı (`IO_MERNIS_ENABLED`), çünkü sorgulanan
+ * kişinin telefonuna onay kodu SMS'i yolluyor ve bu istemciden kapatılamıyor.
+ * Kapalıyken proxy `atlandi` döndürüyor; adım kullanıcının girdiği bilgilerle
+ * sessizce devam ediyor. Bu yüzden doğum tarihi artık zorunlu — sorgu açıkken
+ * bile yanıt gerçek doğum tarihini vermiyordu.
+ *
+ * Aşağıdaki okuma mantığı sorgu geri açıldığında geçerli olacak.
  *
  * Yanıttaki `isMernis` başarı bayrağı DEĞİL: canlı sorgularda kaydı olmayan
  * kimliklerde `true`, kaydı bulunanlarda `false` dönüyor. Anlaşılan "MERNİS'e
@@ -151,9 +153,9 @@ interface Props {
   bransNo: number;
   durum: KimlikDurumu;
   /**
-   * Seyahat ve DASK gövdeleri doğum tarihini her zaman taşıyor; seyahatte
-   * prim doğrudan yaşa bağlı olduğu için boş geçilemez. Araç branşlarında
-   * bilgi TRAMER'den geldiği için isteğe bağlı kalıyor.
+   * Doğum tarihi her branşta zorunlu; bu bayrak yalnızca ipucu metnini
+   * değiştiriyor. Seyahatte prim doğrudan yaşa bağlı olduğu için kullanıcıya
+   * bunun neden istendiği söyleniyor.
    */
   dogumZorunlu?: boolean;
   onDegis: (patch: Partial<KimlikDurumu>) => void;
@@ -170,8 +172,6 @@ export default function KimlikAdimi({
   const [hatalar, setHatalar] = useState<Record<string, string>>({});
   const [sorguluyor, setSorguluyor] = useState(false);
   const [uyari, setUyari] = useState("");
-  // Sorgu doğum tarihi olmadan tutmadığında alan açılıyor.
-  const [dogumTarihiIstendi, setDogumTarihiIstendi] = useState(false);
 
   const dogrula = () => {
     const next: Record<string, string> = {};
@@ -187,10 +187,10 @@ export default function KimlikAdimi({
       next.phone = "Geçerli bir cep telefonu girin (05XX XXX XX XX).";
     }
     // Şirketlerde alan zaten gizli; zorunlu tutmak görünmeyen bir hataya
-    // yol açardı.
-    const dogumGerekli =
-      durum.entityType !== "sirket" && (dogumTarihiIstendi || dogumZorunlu);
-    if (dogumGerekli && !durum.birthDate) {
+    // yol açardı. Şahıslarda ise her zaman isteniyor: MERNİS kapalı olduğu
+    // için doğum tarihini başka hiçbir kaynaktan alamıyoruz ve teklif
+    // gövdesi bu alanı taşıyor.
+    if (durum.entityType !== "sirket" && !durum.birthDate) {
       next.birthDate = "Doğum tarihinizi girin.";
     }
     setHatalar(next);
@@ -212,6 +212,14 @@ export default function KimlikAdimi({
           Cep: normalizeMobilePhone(durum.phone),
         },
       });
+
+      // Sorgu kapalıysa (müşteriye SMS kodu gönderdiği için) doğrulama adımı
+      // yok sayılıp kullanıcının girdiği bilgilerle devam ediliyor.
+      if (yanit.atlandi === true) {
+        onDegis({ mernisTamam: false });
+        onDevam();
+        return;
+      }
 
       // Başarısız sorgu da HTTP 200 ve HataKodu'suz dönüyor, `isMernis` ise
       // ters yönde çalışıyor. Bu yüzden kaydın bulunup bulunmadığı dönen
@@ -237,18 +245,9 @@ export default function KimlikAdimi({
         return;
       }
 
-      // Kayıt bulunamadığında doğum tarihi sorgunun sonucunu değiştirmiyor;
-      // teklif gövdesi için gerektiği için isteniyor.
-      if (!durum.birthDate) {
-        setDogumTarihiIstendi(true);
-        setUyari(
-          "Kaydınız bulunamadı. Devam etmek için doğum tarihinizi girin.",
-        );
-      } else {
-        setUyari(
-          "Kaydınız bulunamadı. Kimlik numaranızı kontrol edin veya bilgilerinizi kendiniz girerek devam edin.",
-        );
-      }
+      setUyari(
+        "Kaydınız bulunamadı. Kimlik numaranızı kontrol edin veya bilgilerinizi kendiniz girerek devam edin.",
+      );
     } catch (error) {
       setUyari(
         `${
@@ -277,7 +276,6 @@ export default function KimlikAdimi({
     });
     setHatalar({});
     setUyari("");
-    setDogumTarihiIstendi(false);
   };
 
   const kimlikDegeri =
@@ -353,10 +351,7 @@ export default function KimlikAdimi({
 
         {dogumTarihiGoster ? (
           <label className="flow__field">
-            <span className="flow__label">
-              Doğum tarihi
-              {dogumTarihiIstendi || dogumZorunlu ? "" : " (isteğe bağlı)"}
-            </span>
+            <span className="flow__label">Doğum tarihi</span>
             <input
               type="date"
               className={`flow__input${hatalar.birthDate ? " flow__input--error" : ""}`}
@@ -369,7 +364,7 @@ export default function KimlikAdimi({
               <span className="flow__hint">
                 {dogumZorunlu
                   ? "Primin hesaplanması için gerekli."
-                  : "Kaydınız bulunamazsa gerekebilir."}
+                  : "Sigorta şirketleri teklif için istiyor."}
               </span>
             )}
           </label>

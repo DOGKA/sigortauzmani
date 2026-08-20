@@ -68,6 +68,24 @@ export function io3dsEnabled(): boolean {
   return readEnv("IO_3DS_ENABLED") === "true";
 }
 
+/**
+ * MERNİS sorgusu varsayılan olarak kapalı.
+ *
+ * Sorgu, sorgulanan kişinin telefonuna "Kayıt İşlemi Onay kodunuz" SMS'i
+ * yolluyor ve bu istemciden kapatılamıyor: `KodGonder: false` göndermek
+ * (kökte ve sigortalı bloğunda), `Cep` alanını hiç göndermemek — hiçbiri
+ * engellemiyor, numara IO'nun kendi kaydından çözülüyor. Canlıda her deneme
+ * müşteriye kod gönderdiği için sorgu devre dışı.
+ *
+ * Sorgunun tek kazancı maskeli ad soyad doğrulaması ve DASK için UAVT adres
+ * kodunun hazır gelmesiydi; teklif oluşturma buna bağlı değil. Sigorta Gross
+ * partner token'ımız için onay kodunu kapattığında bu değişken `true`
+ * yapılarak sorgu geri açılabilir.
+ */
+export function ioMernisEnabled(): boolean {
+  return readEnv("IO_MERNIS_ENABLED") === "true";
+}
+
 interface IoFetchInit {
   method?: "GET" | "POST";
   body?: unknown;
