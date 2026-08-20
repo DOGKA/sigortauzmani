@@ -64,6 +64,12 @@ export interface AracDurumu {
   yakitTipi: string;
   /** TRAMER'den araç bilgisi geldi mi */
   tramerTamam: boolean;
+  /**
+   * TRAMER'in döndürdüğü ruhsat sahibi adı. Sorgulanan kimlikten farklı
+   * olabiliyor, bu yüzden sigortalı adı olarak değil doğrulama amaçlı
+   * gösteriliyor.
+   */
+  aracSahibi: string;
 }
 
 export interface SeyahatDurumu {
@@ -214,6 +220,7 @@ export const bosArac: AracDurumu = {
   sasiNo: "",
   yakitTipi: "",
   tramerTamam: false,
+  aracSahibi: "",
 };
 
 export const bosSeyahat: SeyahatDurumu = {

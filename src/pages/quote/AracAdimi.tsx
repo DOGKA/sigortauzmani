@@ -34,6 +34,7 @@ import {
   isValidPlate,
   normalizeMobilePhone,
 } from "../../utils/validation";
+import { okuAdSoyad } from "../../lib/io/okuma";
 import { kimlikNoOf, type AracDurumu, type KimlikDurumu, type UrunGereksinimi } from "./flowState";
 
 interface Props {
@@ -144,7 +145,7 @@ export default function AracAdimi({
     setTramerDurumu("sorguluyor");
     setTramerNotu("");
     try {
-      await sorguTramer({
+      const yanit = await sorguTramer({
         BransNo: gereksinim.bransNo,
         SigortaEttirenAyniMi: true,
         Sigortali: {
@@ -158,7 +159,11 @@ export default function AracAdimi({
         },
       });
       setTramerDurumu("geldi");
-      onDegis({ tramerTamam: true });
+      // TRAMER, sorguladığımız kimliğin değil ruhsat sahibinin adını
+      // döndürüyor: farklı kişilerle denendiğinde yanıt plakanın sahibini
+      // veriyor. Bu yüzden "sigortalı" olarak değil araç sahibi olarak
+      // gösteriliyor; kullanıcı yanlış plaka girdiyse buradan görüyor.
+      onDegis({ tramerTamam: true, aracSahibi: okuAdSoyad(yanit) });
     } catch (error) {
       // Dokümantasyon HataKodu 14/17'de araç bilgisinin gelmediğini ve
       // YK gibi elle girişe düşülmesi gerektiğini söylüyor.
@@ -168,7 +173,7 @@ export default function AracAdimi({
           ? error.message
           : "Araç bilgileri getirilemedi.",
       );
-      onDegis({ tramerTamam: false });
+      onDegis({ tramerTamam: false, aracSahibi: "" });
     }
   };
 
@@ -337,7 +342,11 @@ export default function AracAdimi({
                 : "Araç bilgilerini getir"}
             </button>
             {tramerDurumu === "geldi" ? (
-              <span className="flow__ok">Araç bilgileri alındı.</span>
+              <span className="flow__ok">
+                {durum.aracSahibi
+                  ? `Araç bilgileri alındı. Ruhsat sahibi: ${durum.aracSahibi}`
+                  : "Araç bilgileri alındı."}
+              </span>
             ) : null}
           </div>
 
