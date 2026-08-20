@@ -37,11 +37,22 @@ export function isValidVkn(value: string): boolean {
 
 // Türkiye GSM numarası: 05XX XXX XX XX
 // "+90", "90" veya "0" öneklerini kabul eder, çekirdek numara 5 ile başlayan 10 hane olmalı.
-export function isValidMobilePhone(value: string): boolean {
+/**
+ * Telefonu IO API'nin beklediği on haneli "5XXXXXXXXX" biçmine indirger.
+ * Baştaki sıfır ya da +90 ile gönderilen numarayı IO geçersiz sayıyor:
+ * MERNİS sorgusu numarayı hiç ayrıştırmıyor ve kayıt dönmüyor. Giriş maskesi
+ * "05XX XXX XX XX" olduğu için kullanıcıların çoğu sıfırla yazıyor, bu yüzden
+ * numara gönderilmeden önce her zaman buradan geçmeli.
+ */
+export function normalizeMobilePhone(value: string): string {
   let digits = value.replace(/\D/g, "");
   if (digits.length === 12 && digits.startsWith("90")) digits = digits.slice(2);
   if (digits.length === 11 && digits.startsWith("0")) digits = digits.slice(1);
-  return /^5\d{9}$/.test(digits);
+  return digits;
+}
+
+export function isValidMobilePhone(value: string): boolean {
+  return /^5\d{9}$/.test(normalizeMobilePhone(value));
 }
 
 // Telefon girişini "05XX XXX XX XX" biçiminde maskeler.

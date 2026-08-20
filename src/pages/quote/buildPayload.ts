@@ -7,6 +7,7 @@
 
 import { kullanimSekilleri, ykPlaka } from "../../lib/io/constants";
 import type { Arac, TeklifPayload } from "../../lib/io/types";
+import { normalizeMobilePhone } from "../../utils/validation";
 import {
   aracKodu,
   kimlikNoOf,
@@ -25,7 +26,7 @@ function sigortaliAracBransi(kimlik: KimlikDurumu) {
   return {
     KimlikNo: kimlikNoOf(kimlik),
     Dogumtarihi: kimlik.birthDate,
-    Cep: kimlik.phone.replace(/\D/g, ""),
+    Cep: normalizeMobilePhone(kimlik.phone),
   };
 }
 
@@ -34,7 +35,7 @@ function sigortaliDigerBrans(kimlik: KimlikDurumu) {
   return {
     KimlikNo: kimlikNoOf(kimlik),
     DogumTarihi: kimlik.birthDate,
-    Cep: kimlik.phone.replace(/\D/g, ""),
+    Cep: normalizeMobilePhone(kimlik.phone),
   };
 }
 

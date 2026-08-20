@@ -32,6 +32,7 @@ import {
   isValidChassisNo,
   isValidDocumentSerial,
   isValidPlate,
+  normalizeMobilePhone,
 } from "../../utils/validation";
 import { kimlikNoOf, type AracDurumu, type KimlikDurumu, type UrunGereksinimi } from "./flowState";
 
@@ -149,7 +150,7 @@ export default function AracAdimi({
         Sigortali: {
           KimlikNo: kimlikNoOf(kimlik),
           Dogumtarihi: kimlik.birthDate,
-          Cep: kimlik.phone.replace(/\D/g, ""),
+          Cep: normalizeMobilePhone(kimlik.phone),
         },
         Arac: {
           Plaka: durum.plaka.replace(/\s/g, "").toUpperCase(),

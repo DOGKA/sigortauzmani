@@ -2,9 +2,20 @@
  * Adım 1 — Kimlik ve MERNİS.
  *
  * MERNİS üç kimlik tipini de (T.C., yabancı, vergi no) otomatik çekiyor ve
- * SMS doğrulama istemiyor. Doğum tarihi her zaman gerekmiyor: kayıt yoksa
- * ya da bazı kişilerde sorgu doğum tarihi istiyor. Bu yüzden alan baştan
- * zorunlu tutulmuyor, ancak sorgu tutmazsa isteniyor.
+ * SMS doğrulama istemiyor — proxy `KodGonder: false` gönderdiği için sorgu
+ * onay kodu yoluna hiç girmiyor. Doğum tarihi her zaman gerekmiyor: kayıt
+ * yoksa ya da bazı kişilerde sorgu doğum tarihi istiyor. Bu yüzden alan
+ * baştan zorunlu tutulmuyor, ancak sorgu tutmazsa isteniyor.
+ *
+ * Yanıttaki `isMernis` başarı bayrağı DEĞİL: canlı sorgularda kaydı olmayan
+ * kimliklerde `true`, kaydı bulunanlarda `false` dönüyor. Anlaşılan "MERNİS'e
+ * gitmek gerekiyor mu" sorusunu yanıtlıyor. Bu yüzden başarı, dönen verinin
+ * kendisinden okunuyor: kayıt bulunduğunda maskeli ad soyad ve UAVT adres
+ * kodu geliyor, bulunmadığında tüm alanlar null kalıyor.
+ *
+ * Ad soyad yalnızca maskeli geliyor ("DO*** AK***"); açık ad ancak SMS onayı
+ * ile açılıyor. Kullanıcıya doğrulama olarak bu maskeli hâli gösteriyoruz,
+ * sigorta şirketine kimlik `SigortaliStr` ile taşınıyor.
  *
  * Sorgu tutmasa da akış durmuyor; teklif araç bilgisiyle de çalışabiliyor
  * ve kimliği sigorta şirketi ayrıca doğruluyor.
@@ -18,6 +29,7 @@ import {
   isValidMobilePhone,
   isValidTckn,
   isValidVkn,
+  normalizeMobilePhone,
 } from "../../utils/validation";
 import type { KimlikDurumu, KisiTipi } from "./flowState";
 import { kimlikNoOf } from "./flowState";
@@ -34,7 +46,11 @@ const ALAN_ETIKETLERI: Record<KisiTipi, string> = {
   sirket: "Vergi Kimlik Numarası",
 };
 
-/** MERNİS yanıtındaki ad soyad alan adı yanıta göre değişebiliyor. */
+/**
+ * MERNİS yanıtındaki ad soyad alan adı yanıta göre değişebiliyor. Açık ad
+ * (`Adi` + `Soyadi`) SMS onayı olmadan gelmediği için maskeli alanlara da
+ * düşülüyor; kullanıcı kendini maskeli hâlden de tanıyabiliyor.
+ */
 function okuAdSoyad(payload: Record<string, unknown>): string {
   const sigortali = payload.Sigortali;
   const kaynak =
@@ -42,12 +58,19 @@ function okuAdSoyad(payload: Record<string, unknown>): string {
       ? (sigortali as Record<string, unknown>)
       : payload;
 
-  const ad = kaynak.Adi ?? kaynak.Ad ?? kaynak.AdSoyad ?? kaynak.Unvan;
-  const soyad = kaynak.Soyadi ?? kaynak.Soyad;
-  return [ad, soyad]
-    .filter((parca) => typeof parca === "string" && parca.trim())
-    .join(" ")
-    .trim();
+  const metin = (deger: unknown): string =>
+    typeof deger === "string" ? deger.replace(/\s+/g, " ").trim() : "";
+
+  const acik = [metin(kaynak.Adi ?? kaynak.Ad), metin(kaynak.Soyadi ?? kaynak.Soyad)]
+    .filter(Boolean)
+    .join(" ");
+  if (acik) return acik;
+
+  for (const anahtar of ["AdUnvan", "AdSoyad", "Unvan", "AdUnvanYildizli"]) {
+    const deger = metin(kaynak[anahtar]);
+    if (deger) return deger;
+  }
+  return "";
 }
 
 /**
@@ -55,6 +78,11 @@ function okuAdSoyad(payload: Record<string, unknown>): string {
  * gövdeleri `DogumTarihi` istiyor ama kullanıcı sorgu tuttuğunda bu alanı
  * hiç doldurmuyor; yanıtta varsa buradan besliyoruz. Alan adı ve biçim
  * dokümante edilmediği için birkaç olasılık deneniyor.
+ *
+ * Alan çoğu zaman gerçek tarihi taşımıyor: gönderdiğimiz değer yankılanıyor,
+ * göndermediğimizde de .NET varsayılanı `0001-01-01` dönüyor. Bu yüzden
+ * yalnızca makul bir doğum yılı kabul ediliyor; aksi hâlde kullanıcının
+ * doğum tarihi alanına çöp bir değer yazılırdı.
  */
 function okuDogumTarihi(payload: Record<string, unknown>): string {
   const sigortali = payload.Sigortali;
@@ -63,17 +91,25 @@ function okuDogumTarihi(payload: Record<string, unknown>): string {
       ? (sigortali as Record<string, unknown>)
       : payload;
 
+  const buYil = new Date().getFullYear();
+  const makul = (yil: string): boolean => {
+    const sayi = Number(yil);
+    return sayi >= 1900 && sayi <= buYil;
+  };
+
   for (const anahtar of ["DogumTarihi", "Dogumtarihi", "DogumTarih"]) {
     const deger = kaynak[anahtar];
     if (typeof deger !== "string" || !deger.trim()) continue;
 
     // "1970-12-24" ya da "1970-12-24T00:00:00" → tarih kısmı yeter.
     const iso = deger.match(/^(\d{4})-(\d{2})-(\d{2})/);
-    if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
+    if (iso && makul(iso[1])) return `${iso[1]}-${iso[2]}-${iso[3]}`;
 
     // "24.12.1970" biçimi.
     const noktali = deger.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
-    if (noktali) return `${noktali[3]}-${noktali[2]}-${noktali[1]}`;
+    if (noktali && makul(noktali[3])) {
+      return `${noktali[3]}-${noktali[2]}-${noktali[1]}`;
+    }
   }
   return "";
 }
@@ -173,18 +209,21 @@ export default function KimlikAdimi({
           KimlikNo: kimlikNoOf(durum),
           // Boş doğum tarihi göndermiyoruz; MERNİS gerekiyorsa geri istiyor.
           ...(durum.birthDate ? { DogumTarihi: durum.birthDate } : {}),
-          Cep: durum.phone.replace(/\D/g, ""),
+          Cep: normalizeMobilePhone(durum.phone),
         },
       });
 
-      // Başarısız sorgu da HTTP 200 ve HataKodu'suz dönüyor; gerçek sinyal
-      // `isMernis`. Bu yüzden yalnızca fırlatılan hataya güvenilemez.
-      const dogrulandi = yanit.isMernis === true;
+      // Başarısız sorgu da HTTP 200 ve HataKodu'suz dönüyor, `isMernis` ise
+      // ters yönde çalışıyor. Bu yüzden kaydın bulunup bulunmadığı dönen
+      // verinin doluluğundan anlaşılıyor.
+      const adSoyad = okuAdSoyad(yanit);
+      const adresKodu = okuAdresKodu(yanit);
+      const dogrulandi = Boolean(adSoyad || adresKodu);
       const yanittakiDogum = okuDogumTarihi(yanit);
       onDegis({
-        adSoyad: okuAdSoyad(yanit),
+        adSoyad,
         mernisTamam: dogrulandi,
-        adresKodu: okuAdresKodu(yanit),
+        adresKodu,
         sigortaliStr:
           typeof yanit.SigortaliStr === "string" ? yanit.SigortaliStr : "",
         // Kullanıcının girdiği değer varsa ona dokunulmuyor.
@@ -198,14 +237,16 @@ export default function KimlikAdimi({
         return;
       }
 
+      // Kayıt bulunamadığında doğum tarihi sorgunun sonucunu değiştirmiyor;
+      // teklif gövdesi için gerektiği için isteniyor.
       if (!durum.birthDate) {
         setDogumTarihiIstendi(true);
         setUyari(
-          "Kaydınız bulunamadı. Doğum tarihinizi girip tekrar deneyin.",
+          "Kaydınız bulunamadı. Devam etmek için doğum tarihinizi girin.",
         );
       } else {
         setUyari(
-          "Kimlik bilgileri doğrulanamadı. Bilgilerinizi kontrol edin veya yine de devam edin.",
+          "Kaydınız bulunamadı. Kimlik numaranızı kontrol edin veya bilgilerinizi kendiniz girerek devam edin.",
         );
       }
     } catch (error) {

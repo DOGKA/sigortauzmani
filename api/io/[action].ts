@@ -27,6 +27,13 @@ interface ActionDef {
   queryParams?: string[];
   /** Kanal alanı istemciden değil sunucudan gelir. */
   injectKanal?: boolean;
+  /**
+   * MERNİS'te `KodGonder` gönderilmezse sunucu SMS onay kodu moduna geçiyor:
+   * kayıt hiç dönmüyor, yanıtta yalnızca `isMernis: false` kalıyor. `false`
+   * gönderildiğinde maskeli ad soyad ve UAVT adres kodu geliyor. Alan istemciye
+   * bırakılmıyor; aksi hâlde tarayıcıdan müşteriye SMS tetiklenebilirdi.
+   */
+  injectKodGonder?: boolean;
   rateLimit?: { limit: number; windowSeconds: number };
 }
 
@@ -57,6 +64,7 @@ const ACTIONS: Record<string, ActionDef> = {
     method: "POST",
     path: "/api/sorgu/mernis",
     injectKanal: true,
+    injectKodGonder: true,
     rateLimit: { limit: 30, windowSeconds: HOUR },
   },
   tramer: {
@@ -160,6 +168,9 @@ export default async function handler(request: Request): Promise<Response> {
     }
     if (action.injectKanal) {
       body = { ...(body as Record<string, unknown>), Kanal: ioKanal() };
+    }
+    if (action.injectKodGonder) {
+      body = { ...(body as Record<string, unknown>), KodGonder: false };
     }
   }
 
