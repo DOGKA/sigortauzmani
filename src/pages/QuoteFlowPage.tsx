@@ -11,6 +11,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import AdvisorVideo from "../components/AdvisorVideo";
 import { getProduct } from "../data/products";
 import { IoError, primleriBekle, teklifOlustur } from "../lib/io/client";
 import type { SatinAlmaSonuc, SirketTeklifi, TeklifPayload } from "../lib/io/types";
@@ -52,6 +53,10 @@ const ADIM_ETIKETLERI: Record<Adim, string> = {
 };
 
 const ADIM_SIRASI: Adim[] = ["kimlik", "detay", "fiyatlar", "sonuc"];
+
+const DETAY_VIDEO = "/advisor-2.mp4";
+const DETAY_METIN =
+  "Teşekkür ederim. Son adıma geçiyoruz. Lütfen kalan iki bilgiyi de paylaşın. Ardından sizin için en uygun sigorta tekliflerini hazırlayacağım.";
 
 interface SecilenTeklif {
   bransNo: number;
@@ -309,7 +314,17 @@ export default function QuoteFlowPage() {
               </li>
             ))}
           </ol>
-        ) : (
+        ) : null}
+
+        {!geriDonus && (adim === "kimlik" || adim === "detay") ? (
+          <AdvisorVideo
+            replayKey={aktifIndex}
+            videoSrc={adim === "detay" ? DETAY_VIDEO : undefined}
+            transcript={adim === "detay" ? DETAY_METIN : undefined}
+          />
+        ) : null}
+
+        {geriDonus ? (
           <div className="flow__card">
             <h2 className="flow__card-title">
               Şu anda anında teklif alınamıyor
@@ -332,7 +347,7 @@ export default function QuoteFlowPage() {
               </Link>
             </div>
           </div>
-        )}
+        ) : null}
 
         {!geriDonus && adim === "kimlik" ? (
           <KimlikAdimi
