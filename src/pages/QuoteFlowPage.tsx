@@ -372,7 +372,6 @@ export default function QuoteFlowPage() {
 
         {!geriDonus && adim === "detay" && gereksinim.adimTipi === "seyahat" ? (
           <SeyahatAdimi
-            kimlik={kimlik}
             durum={seyahat}
             onDegis={(patch) => setSeyahat((onceki) => ({ ...onceki, ...patch }))}
             onGeri={() => setAdim("kimlik")}
@@ -384,7 +383,6 @@ export default function QuoteFlowPage() {
 
         {!geriDonus && adim === "detay" && gereksinim.adimTipi === "dask" ? (
           <DaskAdimi
-            kimlik={kimlik}
             durum={dask}
             onDegis={(patch) => setDask((onceki) => ({ ...onceki, ...patch }))}
             onGeri={() => setAdim("kimlik")}

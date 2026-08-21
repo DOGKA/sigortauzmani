@@ -174,26 +174,19 @@ export async function sorguMernis(body: {
   }
 }
 
-export function sorguTramer(body: {
+/**
+ * Araç bilgisini sigorta şirketi tarafında hazırlar. Sunucu yanıt gövdesini
+ * gizliyor: TRAMER ruhsat sahibinin bilgisini döndürüyor ve bu, sorguyu
+ * yapan kişinin kendi verisi olmak zorunda değil. Buraya yalnızca sorgunun
+ * tuttuğu bilgisi geliyor; tutmazsa `IoError` fırlar.
+ */
+export async function sorguTramer(body: {
   BransNo: number | string;
   SigortaEttirenAyniMi: boolean;
   Sigortali: { KimlikNo: string; Dogumtarihi?: string; Cep?: string };
   Arac: { Plaka: string; TescilBelge: string };
-}): Promise<Record<string, unknown>> {
-  return call("tramer", { method: "POST", body });
-}
-
-export function sorguTescilBelge(body: {
-  BransNo: number | string;
-  SigortaEttirenAyniMi: boolean;
-  Sigortali: { KimlikNo: string; Dogumtarihi?: string; Cep?: string };
-  Arac: { Plaka: string };
-}): Promise<Record<string, unknown>> {
-  return call("tescilbelge", { method: "POST", body });
-}
-
-export function sorguDaskPolice(policeNo: string): Promise<Record<string, unknown>> {
-  return call("dask-sorgu", { method: "POST", body: { pno: policeNo } });
+}): Promise<void> {
+  await call("tramer", { method: "POST", body });
 }
 
 // ============================================================

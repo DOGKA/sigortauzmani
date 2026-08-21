@@ -26,7 +26,11 @@ export interface KimlikDurumu {
   vkn: string;
   birthDate: string;
   phone: string;
-  /** MERNİS'ten dönen ad soyad; yalnızca kullanıcıya gösterilir. */
+  /**
+   * MERNİS'ten dönen ad soyad. Müşteriye hiç gösterilmiyor — maskeli bile
+   * olsa, başkasının kimlik numarasını girene o kişi hakkında bilgi vermek
+   * olurdu. Yalnızca oturum kaydına yazılıp admin panelinde görünüyor.
+   */
   adSoyad: string;
   /**
    * MERNİS doğrulaması tuttu mu. Dikkat: başarısız sorgu da HTTP 200
@@ -64,12 +68,6 @@ export interface AracDurumu {
   yakitTipi: string;
   /** TRAMER'den araç bilgisi geldi mi */
   tramerTamam: boolean;
-  /**
-   * TRAMER'in döndürdüğü ruhsat sahibi adı, soyadı maskeli. Sorgulanan
-   * kimlikten farklı olabiliyor, bu yüzden sigortalı adı olarak değil
-   * doğrulama amaçlı gösteriliyor.
-   */
-  aracSahibi: string;
 }
 
 export interface SeyahatDurumu {
@@ -220,7 +218,6 @@ export const bosArac: AracDurumu = {
   sasiNo: "",
   yakitTipi: "",
   tramerTamam: false,
-  aracSahibi: "",
 };
 
 export const bosSeyahat: SeyahatDurumu = {

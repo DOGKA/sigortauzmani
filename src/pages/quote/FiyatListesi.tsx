@@ -117,26 +117,23 @@ export default function FiyatListesi({ sonuclar, onSatinAl, onGeri }: Props) {
                       {sirket.Id === enUygun ? (
                         <span className="flow__badge">En uygun</span>
                       ) : null}
-                      {gosterim ? (
-                        <span className="flow__badge flow__badge--indirim">
-                          %{gosterim.yuzde} indirim
-                        </span>
-                      ) : null}
                     </div>
                     <div className="flow__teklif-detay">
-                      {gosterim ? (
-                        <span className="flow__teklif-liste">
-                          {formatPrim(gosterim.listeFiyati)}
+                      <span className="flow__teklif-fiyat">
+                        {gosterim ? (
+                          <span className="flow__teklif-liste">
+                            {formatPrim(gosterim.listeFiyati)}
+                          </span>
+                        ) : null}
+                        <span className="flow__teklif-prim">
+                          {formatPrim(sirket.Prim)}
                         </span>
-                      ) : null}
-                      <span className="flow__teklif-prim">
-                        {formatPrim(sirket.Prim)}
+                        {gosterim ? (
+                          <span className="flow__teklif-kazanc">
+                            {formatPrim(gosterim.kazanc)} kazanç
+                          </span>
+                        ) : null}
                       </span>
-                      {gosterim ? (
-                        <span className="flow__teklif-kazanc">
-                          {formatPrim(gosterim.kazanc)} kazanç
-                        </span>
-                      ) : null}
                       {sirket.Taksit ? (
                         <span className="flow__teklif-taksit">
                           {sirket.Taksit}

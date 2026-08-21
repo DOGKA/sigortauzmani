@@ -133,22 +133,27 @@ export default function OdemeModali({
   const ozet = (
     <div className="flow__modal-head">
       <span className="flow__modal-sirket">{teklif.SirketAdi}</span>
+
       {gosterim ? (
-        <span className="flow__teklif-liste">
-          {paraBirimi.format(gosterim.listeFiyati)}
+        <span className="flow__teklif-fiyat">
+          <span className="flow__teklif-liste">
+            {paraBirimi.format(gosterim.listeFiyati)}
+          </span>
+          <span className="flow__teklif-kazanc">
+            {paraBirimi.format(gosterim.kazanc)} kazanç
+          </span>
         </span>
       ) : null}
-      <strong className="flow__modal-prim">
-        {typeof teklif.Prim === "number" ? paraBirimi.format(teklif.Prim) : "—"}
-      </strong>
-      {gosterim ? (
-        <span className="flow__teklif-kazanc">
-          {paraBirimi.format(gosterim.kazanc)} kazanç sağladınız
-        </span>
-      ) : null}
-      {teklif.Taksit ? (
-        <span className="flow__modal-taksit">{teklif.Taksit}</span>
-      ) : null}
+
+      {/* Ödenecek tutar her zaman en altta ve en büyük punto. */}
+      <span className="flow__modal-odenecek">
+        <strong className="flow__modal-prim">
+          {typeof teklif.Prim === "number" ? paraBirimi.format(teklif.Prim) : "—"}
+        </strong>
+        {teklif.Taksit ? (
+          <span className="flow__modal-taksit">{teklif.Taksit}</span>
+        ) : null}
+      </span>
     </div>
   );
 

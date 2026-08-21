@@ -33,6 +33,12 @@ interface ActionDef {
   queryParams?: string[];
   /** Kanal alanı istemciden değil sunucudan gelir. */
   injectKanal?: boolean;
+  /**
+   * Yanıt gövdesi tarayıcıya hiç verilmez, yalnızca başarı bilgisi döner.
+   * Sorgu uçları ruhsat sahibinin adı gibi üçüncü kişi verisi taşıyor;
+   * arayüzde göstermemek yetmiyor, yanıt ağ sekmesinden de okunabiliyor.
+   */
+  yanitiGizle?: boolean;
   rateLimit?: { limit: number; windowSeconds: number };
 }
 
@@ -65,28 +71,20 @@ const ACTIONS: Record<string, ActionDef> = {
     injectKanal: true,
     rateLimit: { limit: 30, windowSeconds: HOUR },
   },
+  // Aracı sigorta şirketi tarafında hazırlıyor; arayüzün tek ihtiyacı
+  // sorgunun tutup tutmadığı. Plaka ve ruhsat seri numarasını bilen birine
+  // ruhsat sahibinin bilgisini döndürmemek için gövde gizleniyor.
   tramer: {
     method: "POST",
     path: "/api/sorgu/tramer",
     injectKanal: true,
+    yanitiGizle: true,
     rateLimit: { limit: 30, windowSeconds: HOUR },
   },
-  tescilbelge: {
-    method: "POST",
-    path: "/api/sorgu/tescilbelge",
-    injectKanal: true,
-    rateLimit: { limit: 30, windowSeconds: HOUR },
-  },
-  dogumtarihi: {
-    method: "POST",
-    path: "/api/sorgu/dogumtarihi",
-    rateLimit: { limit: 30, windowSeconds: HOUR },
-  },
-  "dask-sorgu": {
-    method: "POST",
-    path: "/api/sorgu/dask",
-    rateLimit: { limit: 30, windowSeconds: HOUR },
-  },
+  // tescilbelge, dogumtarihi ve dask sorguları bilinçli olarak açılmadı:
+  // akışta karşılıkları yok ve plakadan / kimlik numarasından / poliçe
+  // numarasından kişisel veri döndürdükleri için allowlist'te durmaları
+  // kötüye kullanıma davet olurdu.
 
   // --- Teklif yardımcıları (oturum kaydı gerektirmeyenler) ---
   teklifdetay: {
@@ -182,7 +180,7 @@ export default async function handler(request: Request): Promise<Response> {
   );
 
   const response = result.ok
-    ? jsonResponse(result.data)
+    ? jsonResponse(action.yanitiGizle ? { tamam: true } : result.data)
     : errorResponse(result.error);
 
   return withCookie(response, session);

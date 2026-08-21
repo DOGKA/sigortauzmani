@@ -35,8 +35,6 @@ export interface FiyatGosterimi {
   /** Üstü çizili gösterilen referans fiyat. */
   listeFiyati: number;
   kazanc: number;
-  /** Kartta "%18" olarak yazılan tam sayı oran. */
-  yuzde: number;
 }
 
 function oranBul(prim: number): number {
@@ -66,6 +64,5 @@ export function fiyatGosterimi(prim: unknown): FiyatGosterimi | null {
     prim,
     listeFiyati,
     kazanc: kurusaYuvarla(listeFiyati - prim),
-    yuzde: Math.round(oran * 100),
   };
 }

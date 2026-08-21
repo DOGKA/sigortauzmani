@@ -34,7 +34,6 @@ import {
   isValidPlate,
   normalizeMobilePhone,
 } from "../../utils/validation";
-import { maskeleSoyad, okuAdSoyad } from "../../lib/io/okuma";
 import IlerlemePaneli from "./IlerlemePaneli";
 import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
 import { kimlikNoOf, type AracDurumu, type KimlikDurumu, type UrunGereksinimi } from "./flowState";
@@ -147,7 +146,11 @@ export default function AracAdimi({
     setTramerDurumu("sorguluyor");
     setTramerNotu("");
     try {
-      const yanit = await sorguTramer({
+      // Yanıt kullanıcıya hiç gösterilmiyor: TRAMER ruhsat sahibinin adını
+      // döndürüyor ve bu, sorgulayan kişinin kendi bilgisi olmayabilir.
+      // Sorgunun tek işlevi araç bilgisini sigorta şirketi tarafında
+      // hazırlamak; burada yalnızca başarılı olup olmadığı önemli.
+      await sorguTramer({
         BransNo: gereksinim.bransNo,
         SigortaEttirenAyniMi: true,
         Sigortali: {
@@ -161,14 +164,7 @@ export default function AracAdimi({
         },
       });
       setTramerDurumu("geldi");
-      // TRAMER, sorguladığımız kimliğin değil ruhsat sahibinin adını
-      // döndürüyor: farklı kişilerle denendiğinde yanıt plakanın sahibini
-      // veriyor. Bu yüzden "sigortalı" olarak değil araç sahibi olarak
-      // gösteriliyor; kullanıcı yanlış plaka girdiyse buradan görüyor.
-      onDegis({
-        tramerTamam: true,
-        aracSahibi: maskeleSoyad(okuAdSoyad(yanit)),
-      });
+      onDegis({ tramerTamam: true });
     } catch (error) {
       // Dokümantasyon HataKodu 14/17'de araç bilgisinin gelmediğini ve
       // YK gibi elle girişe düşülmesi gerektiğini söylüyor.
@@ -178,7 +174,7 @@ export default function AracAdimi({
           ? error.message
           : "Araç bilgileri getirilemedi.",
       );
-      onDegis({ tramerTamam: false, aracSahibi: "" });
+      onDegis({ tramerTamam: false });
     }
   };
 
@@ -250,11 +246,6 @@ export default function AracAdimi({
   return (
     <div className="flow__card">
       <h2 className="flow__card-title">Araç bilgileri</h2>
-      {kimlik.adSoyad ? (
-        <p className="flow__card-sub">
-          Sigortalı: <strong>{kimlik.adSoyad}</strong>
-        </p>
-      ) : null}
 
       {gereksinim.meslekGerekli ? (
         <label className="flow__field flow__field--full">
@@ -347,11 +338,7 @@ export default function AracAdimi({
                 : "Araç bilgilerini getir"}
             </button>
             {tramerDurumu === "geldi" ? (
-              <span className="flow__ok">
-                {durum.aracSahibi
-                  ? `Araç bilgileri alındı. Ruhsat sahibi: ${durum.aracSahibi}`
-                  : "Araç bilgileri alındı."}
-              </span>
+              <span className="flow__ok">Araç bilgileri alındı.</span>
             ) : null}
           </div>
 

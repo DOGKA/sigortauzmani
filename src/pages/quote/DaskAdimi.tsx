@@ -28,10 +28,9 @@ import {
 import AdresSecici from "./AdresSecici";
 import IlerlemePaneli from "./IlerlemePaneli";
 import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
-import type { DaskDurumu, KimlikDurumu } from "./flowState";
+import type { DaskDurumu } from "./flowState";
 
 interface Props {
-  kimlik: KimlikDurumu;
   durum: DaskDurumu;
   onDegis: (patch: Partial<DaskDurumu>) => void;
   onGeri: () => void;
@@ -41,7 +40,6 @@ interface Props {
 }
 
 export default function DaskAdimi({
-  kimlik,
   durum,
   onDegis,
   onGeri,
@@ -90,11 +88,6 @@ export default function DaskAdimi({
   return (
     <div className="flow__card">
       <h2 className="flow__card-title">Bina bilgileri</h2>
-      {kimlik.adSoyad ? (
-        <p className="flow__card-sub">
-          Sigortalı: <strong>{kimlik.adSoyad}</strong>
-        </p>
-      ) : null}
 
       <div className="flow__toggle" role="group" aria-label="DASK poliçe durumu">
         <button

@@ -23,14 +23,13 @@ import {
 import type { Il, Ulke } from "../../lib/io/types";
 import IlerlemePaneli from "./IlerlemePaneli";
 import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
-import type { KimlikDurumu, SeyahatDurumu } from "./flowState";
+import type { SeyahatDurumu } from "./flowState";
 
 function bugun(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
 interface Props {
-  kimlik: KimlikDurumu;
   durum: SeyahatDurumu;
   onDegis: (patch: Partial<SeyahatDurumu>) => void;
   onGeri: () => void;
@@ -40,7 +39,6 @@ interface Props {
 }
 
 export default function SeyahatAdimi({
-  kimlik,
   durum,
   onDegis,
   onGeri,
@@ -103,11 +101,6 @@ export default function SeyahatAdimi({
   return (
     <div className="flow__card">
       <h2 className="flow__card-title">Seyahat bilgileri</h2>
-      {kimlik.adSoyad ? (
-        <p className="flow__card-sub">
-          Sigortalı: <strong>{kimlik.adSoyad}</strong>
-        </p>
-      ) : null}
 
       <div className="flow__grid">
         <label className="flow__field">
