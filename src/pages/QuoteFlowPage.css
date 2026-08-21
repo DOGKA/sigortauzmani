@@ -594,15 +594,18 @@
 .flow__modal-head {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   gap: 6px;
-  padding-bottom: 20px;
+  /* Yatay boşluk, uzun şirket adının sağ üstteki kapatma düğmesinin altına
+     girmesini engelliyor. */
+  padding: 0 34px 20px;
   margin-bottom: 20px;
+  text-align: center;
   border-bottom: 1px solid #eef2fa;
 }
 
 .flow__modal-head .flow__teklif-fiyat {
-  justify-content: flex-start;
+  justify-content: center;
   gap: 2px 12px;
 }
 
@@ -611,10 +614,12 @@
   font-size: 14px;
 }
 
+/* Hangi şirketten poliçe alındığı ödemenin en belirleyici bilgilerinden
+   biri; ikincil gri tonda kalınca gözden kaçıyordu. */
 .flow__modal-sirket {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--ink-500);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink-900);
 }
 
 /* Taksit bilgisi tutarın sağında, aynı taban çizgisinde duruyor. */
@@ -622,6 +627,7 @@
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 4px 10px;
 }
 
