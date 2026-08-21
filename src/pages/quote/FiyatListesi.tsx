@@ -119,26 +119,26 @@ export default function FiyatListesi({ sonuclar, onSatinAl, onGeri }: Props) {
                       ) : null}
                     </div>
                     <div className="flow__teklif-detay">
-                      <span className="flow__teklif-fiyat">
-                        {gosterim ? (
+                      {gosterim ? (
+                        <span className="flow__teklif-fiyat">
                           <span className="flow__teklif-liste">
                             {formatPrim(gosterim.listeFiyati)}
                           </span>
-                        ) : null}
-                        <span className="flow__teklif-prim">
-                          {formatPrim(sirket.Prim)}
-                        </span>
-                        {gosterim ? (
                           <span className="flow__teklif-kazanc">
                             {formatPrim(gosterim.kazanc)} kazanç
                           </span>
-                        ) : null}
-                      </span>
-                      {sirket.Taksit ? (
-                        <span className="flow__teklif-taksit">
-                          {sirket.Taksit}
                         </span>
                       ) : null}
+                      <span className="flow__teklif-odenecek">
+                        <strong className="flow__teklif-prim">
+                          {formatPrim(sirket.Prim)}
+                        </strong>
+                        {sirket.Taksit ? (
+                          <span className="flow__teklif-taksit">
+                            {sirket.Taksit}
+                          </span>
+                        ) : null}
+                      </span>
                     </div>
                     <button
                       type="button"

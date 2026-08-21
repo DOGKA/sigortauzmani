@@ -213,6 +213,8 @@ export function teklifOlustur(body: {
   productSlug: string;
   talepler: TeklifTalebi[];
   kisi: KisiBilgisi;
+  /** Panelde okunacak, kodları etiketlenmiş girdi özeti. */
+  girdiler?: { etiket: string; deger: string }[];
 }): Promise<TeklifOlusturSonuc> {
   // `api/io/teklif.ts` statik rota olduğu için `[action].ts` yerine ona düşer.
   return call<TeklifOlusturSonuc>("teklif", { method: "POST", body });

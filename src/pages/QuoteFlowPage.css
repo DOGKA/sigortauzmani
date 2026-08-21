@@ -507,14 +507,23 @@
   gap: 2px;
 }
 
-/* Liste fiyatı, ödenecek prim ve kazanç aynı satırda yan yana duruyor;
-   üst üste dizildiklerinde kart hem uzuyor hem sıkışık okunuyordu. */
+/* Üstte indirimsiz fiyat ile kazanç aynı satırda, altta ödenecek tutar daha
+   büyük punto ile duruyor. Üçünü tek satıra dizmek tutarı kalabalığın
+   içinde bırakıyordu. */
 .flow__teklif-fiyat {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 2px 10px;
+  gap: 2px 8px;
+}
+
+.flow__teklif-odenecek {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 2px 8px;
 }
 
 .flow__teklif-liste {
@@ -524,8 +533,9 @@
 }
 
 .flow__teklif-prim {
-  font-size: 17px;
+  font-size: 20px;
   font-weight: 700;
+  letter-spacing: -0.01em;
   color: var(--ink-900);
 }
 
@@ -710,5 +720,16 @@
 
   .flow__teklif button {
     grid-column: 1 / -1;
+  }
+
+  /* Şirket adı ile fiyat aynı satırı paylaştığı için dar ekranda fiyat
+     bloğu biraz küçülüyor; tutar yine en büyük öge. */
+  .flow__teklif-prim {
+    font-size: 18px;
+  }
+
+  .flow__teklif-liste,
+  .flow__teklif-kazanc {
+    font-size: 12px;
   }
 }

@@ -50,9 +50,40 @@ function kisiTipi(value: unknown): KisiTipi {
   return KISI_TIPLERI.includes(value as KisiTipi) ? (value as KisiTipi) : "sahis";
 }
 
+/**
+ * Panelde gösterilecek etiketli girdi özeti. Kodları etikete çeviren
+ * tablolar istemcide olduğu için özet orada üretiliyor; burada yalnızca
+ * biçimi doğrulanıp kayda alınıyor. Gösterim amaçlı olduğundan teklif
+ * gövdesini etkilemiyor.
+ */
+interface OzetSatiri {
+  etiket: string;
+  deger: string;
+}
+
+const MAX_OZET_SATIRI = 40;
+const MAX_OZET_UZUNLUK = 200;
+
+function temizOzet(value: unknown): OzetSatiri[] {
+  if (!Array.isArray(value)) return [];
+  const satirlar: OzetSatiri[] = [];
+  for (const satir of value.slice(0, MAX_OZET_SATIRI)) {
+    if (!satir || typeof satir !== "object") continue;
+    const { etiket, deger } = satir as Record<string, unknown>;
+    if (typeof etiket !== "string" || typeof deger !== "string") continue;
+    if (!etiket.trim() || !deger.trim()) continue;
+    satirlar.push({
+      etiket: etiket.slice(0, MAX_OZET_UZUNLUK),
+      deger: deger.slice(0, MAX_OZET_UZUNLUK),
+    });
+  }
+  return satirlar;
+}
+
 interface RequestBody {
   productSlug?: string;
   talepler?: TeklifTalep[];
+  girdiler?: unknown;
   kisi?: {
     entityType?: KisiTipi;
     tckn?: string | null;
@@ -157,6 +188,7 @@ export default async function handler(request: Request): Promise<Response> {
   }
 
   const kisi = body.kisi ?? {};
+  const girdiler = temizOzet(body.girdiler);
   const oturum = await createOturum({
     session_id: session.id,
     ip_hash: ipHash,
@@ -170,7 +202,7 @@ export default async function handler(request: Request): Promise<Response> {
     birth_date: kisi.birthDate ?? null,
     plate: kisi.plate ?? null,
     adres_kodu: kisi.adresKodu ?? null,
-    form_data: { talepler },
+    form_data: { girdiler, talepler },
   });
 
   const sonuclar: { bransNo: number; teklifId: number }[] = [];
@@ -224,7 +256,7 @@ export default async function handler(request: Request): Promise<Response> {
     await updateOturum(oturum.id, {
       status: "sorgu_tamam",
       io_teklif_id: sonuclar[0].teklifId,
-      form_data: { talepler, teklifler: sonuclar, hatalar },
+      form_data: { girdiler, talepler, teklifler: sonuclar, hatalar },
     });
   }
 

@@ -10,6 +10,11 @@ import {
   maskPhone,
 } from "@/lib/format";
 import {
+  girilenBilgiler,
+  teklifHatalari,
+  teklifKayitlari,
+} from "@/lib/formVerisi";
+import {
   BRANS_LABELS,
   OTURUM_STATUS_LABELS,
   OTURUM_STATUS_ORDER,
@@ -312,24 +317,66 @@ function OturumRow({
 }
 
 /**
- * Adım verisi ürün başına farklı alanlar taşıdığı (ve IO'ya gönderilen ham
- * gövdeyi de içerdiği) için kolonlara açılmıyor. Katmanlı bir yapı olduğu
- * için biçimli JSON olarak gösteriliyor; tek satıra sıkıştırmak okunmaz
- * oluyordu. Kart bilgisi bu alana hiç yazılmıyor.
+ * Müşterinin adımlarda girdiği her alan. Kaynak `form_data`; kart bilgisi bu
+ * alana hiç yazılmıyor. Ham JSON da altta duruyor — özetin kapsamadığı bir
+ * alan çıkarsa oradan görülebilsin.
  */
 function FormVerisi({ formData }: { formData: Record<string, unknown> }) {
-  const [acik, setAcik] = useState(false);
+  const [hamAcik, setHamAcik] = useState(false);
   if (!formData || !Object.keys(formData).length) return null;
+
+  const bilgiler = girilenBilgiler(formData);
+  const kayitlar = teklifKayitlari(formData);
+  const hatalar = teklifHatalari(formData);
 
   return (
     <div className="mt-4 border-t border-slate-200 pt-4">
+      <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+        Girilen Bilgiler
+      </p>
+      {bilgiler.length === 0 ? (
+        <p className="mt-2 text-sm text-slate-400">Adım verisi kaydedilmemiş.</p>
+      ) : (
+        <dl className="mt-2 grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:grid-cols-3 lg:grid-cols-4">
+          {bilgiler.map((satir) => (
+            <div key={`${satir.etiket}-${satir.deger}`}>
+              <dt className="text-xs font-semibold uppercase tracking-wide text-slate-400">
+                {satir.etiket}
+              </dt>
+              <dd className="mt-0.5 font-medium break-words text-slate-700">
+                {satir.deger}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
+      {kayitlar.length > 0 && (
+        <p className="mt-3 text-sm text-slate-500">
+          <span className="font-semibold text-slate-600">IO teklif no: </span>
+          {kayitlar
+            .map((kayit) => `${bransAdi(kayit.bransNo)} #${kayit.teklifId}`)
+            .join(" · ")}
+        </p>
+      )}
+
+      {hatalar.length > 0 && (
+        <ul className="mt-2 space-y-1 text-sm text-rose-600">
+          {hatalar.map((hata) => (
+            <li key={`${hata.bransNo}-${hata.message}`}>
+              {bransAdi(hata.bransNo)}: {hata.message}
+            </li>
+          ))}
+        </ul>
+      )}
+
       <button
-        onClick={() => setAcik((onceki) => !onceki)}
-        className="text-xs font-semibold uppercase tracking-wide text-slate-400 transition hover:text-slate-600"
+        onClick={() => setHamAcik((onceki) => !onceki)}
+        className="mt-3 text-xs font-semibold uppercase tracking-wide text-slate-400 transition hover:text-slate-600"
       >
-        Girilen Bilgiler {acik ? "▾" : "▸"}
+        Sigorta Şirketine Gönderilen Ham Veri {hamAcik ? "▾" : "▸"}
       </button>
-      {acik && (
+      {hamAcik && (
         <pre className="mt-2 max-h-80 overflow-auto rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs leading-relaxed text-slate-600">
           {JSON.stringify(formData, null, 2)}
         </pre>

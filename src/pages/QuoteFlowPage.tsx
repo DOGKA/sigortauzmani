@@ -29,6 +29,7 @@ import {
   daskTeklifPayload,
   seyahatTeklifPayload,
 } from "./quote/buildPayload";
+import { ozetSatirlari } from "./quote/ozet";
 import {
   bosArac,
   bosDask,
@@ -216,6 +217,19 @@ export default function QuoteFlowPage() {
               : null,
           adresKodu: gereksinim.adimTipi === "dask" ? dask.adresKodu : null,
         },
+        // Panelde okunabilir olsun diye kodların etiketlenmiş hâli; IO
+        // gövdesi de ayrıca kaydedildiği için bu yalnızca gösterim içindir.
+        girdiler: ozetSatirlari({
+          gereksinim,
+          kimlik,
+          arac,
+          seyahat,
+          dask,
+          meslekKodu,
+          immBedel,
+          manevi,
+          kaskoDa,
+        }),
       });
 
       setOturumId(sonuc.oturumId);
