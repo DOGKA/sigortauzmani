@@ -10,6 +10,9 @@
  * etmesin.
  */
 
+import IlerlemePaneli from "./IlerlemePaneli";
+import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
+import { fiyatGosterimi } from "./fiyatlandirma";
 import { BRANS_ADLARI, type BransSonucu } from "./flowState";
 import type { SirketTeklifi } from "../../lib/io/types";
 
@@ -56,10 +59,11 @@ export default function FiyatListesi({ sonuclar, onSatinAl, onGeri }: Props) {
       <h2 className="flow__card-title">Teklifler</h2>
 
       {!hepsiTamam ? (
-        <p className="flow__pending">
-          <span className="flow__spinner" aria-hidden="true" />
-          Sigorta şirketlerinden fiyatlar toplanıyor…
-        </p>
+        <IlerlemePaneli
+          baslik="Teklifleriniz hazırlanıyor"
+          mesajlar={TEKLIF_HAZIRLIK_MESAJLARI}
+          not="Teklifler geldikçe aşağıdaki listeye eklenir. Bu işlem genellikle bir dakikadan kısa sürer; sayfada kalmanız yeterli."
+        />
       ) : null}
 
       {hepsiTamam && toplamTeklif === 0 ? (
@@ -100,34 +104,57 @@ export default function FiyatListesi({ sonuclar, onSatinAl, onGeri }: Props) {
             ) : null}
 
             <ul className="flow__teklifler">
-              {sirali.map((sirket) => (
-                <li
-                  key={`${sirket.Id}-${sirket.TeklifNo}`}
-                  className={`flow__teklif${sirket.Id === enUygun ? " flow__teklif--best" : ""}`}
-                >
-                  <div className="flow__teklif-sirket">
-                    <span className="flow__teklif-ad">{sirket.SirketAdi}</span>
-                    {sirket.Id === enUygun ? (
-                      <span className="flow__badge">En uygun</span>
-                    ) : null}
-                  </div>
-                  <div className="flow__teklif-detay">
-                    <span className="flow__teklif-prim">
-                      {formatPrim(sirket.Prim)}
-                    </span>
-                    {sirket.Taksit ? (
-                      <span className="flow__teklif-taksit">{sirket.Taksit}</span>
-                    ) : null}
-                  </div>
-                  <button
-                    type="button"
-                    className="flow__primary flow__primary--sm"
-                    onClick={() => onSatinAl(sonuc.bransNo, sonuc.teklifId, sirket)}
+              {sirali.map((sirket) => {
+                const gosterim = fiyatGosterimi(sirket.Prim);
+
+                return (
+                  <li
+                    key={`${sirket.Id}-${sirket.TeklifNo}`}
+                    className={`flow__teklif${sirket.Id === enUygun ? " flow__teklif--best" : ""}`}
                   >
-                    Satın al
-                  </button>
-                </li>
-              ))}
+                    <div className="flow__teklif-sirket">
+                      <span className="flow__teklif-ad">{sirket.SirketAdi}</span>
+                      {sirket.Id === enUygun ? (
+                        <span className="flow__badge">En uygun</span>
+                      ) : null}
+                      {gosterim ? (
+                        <span className="flow__badge flow__badge--indirim">
+                          %{gosterim.yuzde} indirim
+                        </span>
+                      ) : null}
+                    </div>
+                    <div className="flow__teklif-detay">
+                      {gosterim ? (
+                        <span className="flow__teklif-liste">
+                          {formatPrim(gosterim.listeFiyati)}
+                        </span>
+                      ) : null}
+                      <span className="flow__teklif-prim">
+                        {formatPrim(sirket.Prim)}
+                      </span>
+                      {gosterim ? (
+                        <span className="flow__teklif-kazanc">
+                          {formatPrim(gosterim.kazanc)} kazanç
+                        </span>
+                      ) : null}
+                      {sirket.Taksit ? (
+                        <span className="flow__teklif-taksit">
+                          {sirket.Taksit}
+                        </span>
+                      ) : null}
+                    </div>
+                    <button
+                      type="button"
+                      className="flow__primary flow__primary--sm"
+                      onClick={() =>
+                        onSatinAl(sonuc.bransNo, sonuc.teklifId, sirket)
+                      }
+                    >
+                      Satın al
+                    </button>
+                  </li>
+                );
+              })}
             </ul>
           </section>
         );

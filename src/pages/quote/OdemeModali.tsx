@@ -14,6 +14,10 @@
  */
 
 import { useState } from "react";
+import BilgiNotu from "./BilgiNotu";
+import IlerlemePaneli from "./IlerlemePaneli";
+import { ODEME_MESAJLARI } from "./beklemeMetinleri";
+import { fiyatGosterimi } from "./fiyatlandirma";
 import { IoError, satinAl } from "../../lib/io/client";
 import type { SatinAlmaSonuc, SirketTeklifi } from "../../lib/io/types";
 
@@ -124,6 +128,53 @@ export default function OdemeModali({
     }
   };
 
+  const gosterim = fiyatGosterimi(teklif.Prim);
+
+  const ozet = (
+    <div className="flow__modal-head">
+      <span className="flow__modal-sirket">{teklif.SirketAdi}</span>
+      {gosterim ? (
+        <span className="flow__teklif-liste">
+          {paraBirimi.format(gosterim.listeFiyati)}
+        </span>
+      ) : null}
+      <strong className="flow__modal-prim">
+        {typeof teklif.Prim === "number" ? paraBirimi.format(teklif.Prim) : "—"}
+      </strong>
+      {gosterim ? (
+        <span className="flow__teklif-kazanc">
+          {paraBirimi.format(gosterim.kazanc)} kazanç sağladınız
+        </span>
+      ) : null}
+      {teklif.Taksit ? (
+        <span className="flow__modal-taksit">{teklif.Taksit}</span>
+      ) : null}
+    </div>
+  );
+
+  // Ödeme sürerken kapatma ve form alanları gösterilmiyor: mükerrer çekim
+  // riskini doğuracak her etkileşim kapalı kalıyor.
+  if (gonderiliyor) {
+    return (
+      <div
+        className="flow__overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Ödeme"
+      >
+        <div className="flow__modal">
+          {ozet}
+          <IlerlemePaneli
+            baslik="Ödemeniz işleniyor"
+            mesajlar={ODEME_MESAJLARI}
+            tahminiSaniye={25}
+            not="Lütfen bu ekranı kapatmayın. İşlem tamamlandığında poliçeniz ve makbuzunuz görüntülenecek."
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flow__overlay" role="dialog" aria-modal="true" aria-label="Ödeme">
       <div className="flow__modal">
@@ -136,17 +187,7 @@ export default function OdemeModali({
           ×
         </button>
 
-        <div className="flow__modal-head">
-          <span className="flow__modal-sirket">{teklif.SirketAdi}</span>
-          <strong className="flow__modal-prim">
-            {typeof teklif.Prim === "number"
-              ? paraBirimi.format(teklif.Prim)
-              : "—"}
-          </strong>
-          {teklif.Taksit ? (
-            <span className="flow__modal-taksit">{teklif.Taksit}</span>
-          ) : null}
-        </div>
+        {ozet}
 
         <div className="flow__grid">
           <label className="flow__field flow__field--full">
@@ -235,15 +276,16 @@ export default function OdemeModali({
           type="button"
           className="flow__primary flow__primary--block"
           onClick={odemeYap}
-          disabled={gonderiliyor}
         >
-          {gonderiliyor ? "Ödeme alınıyor…" : "Ödeme yap"}
+          Ödeme yap
         </button>
 
-        <p className="flow__fineprint">
-          Kart bilgileriniz sigorta şirketinin sanal POS altyapısına iletilir,
-          tarafımızda saklanmaz.
-        </p>
+        <BilgiNotu>
+          Kart bilgileriniz yalnızca poliçe primini tahsil etmek için sigorta
+          şirketinin sanal POS altyapısına iletilir; sistemlerimizde
+          saklanmaz. İşlem sonrasında kartınızın yalnızca son dört hanesi
+          kayıtlarınızda görünür.
+        </BilgiNotu>
       </div>
     </div>
   );

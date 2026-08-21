@@ -35,6 +35,8 @@ import {
   normalizeMobilePhone,
 } from "../../utils/validation";
 import { maskeleSoyad, okuAdSoyad } from "../../lib/io/okuma";
+import IlerlemePaneli from "./IlerlemePaneli";
+import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
 import { kimlikNoOf, type AracDurumu, type KimlikDurumu, type UrunGereksinimi } from "./flowState";
 
 interface Props {
@@ -558,6 +560,14 @@ export default function AracAdimi({
       ) : null}
 
       {hata ? <p className="flow__warning">{hata}</p> : null}
+
+      {calisiyor ? (
+        <IlerlemePaneli
+          baslik="Teklifleriniz hazırlanıyor"
+          mesajlar={TEKLIF_HAZIRLIK_MESAJLARI}
+          tahminiSaniye={20}
+        />
+      ) : null}
 
       <div className="flow__actions">
         <button type="button" className="flow__ghost" onClick={onGeri}>

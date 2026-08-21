@@ -21,6 +21,8 @@ import {
   normalizeIlKodu,
 } from "../../lib/io/constants";
 import type { Il, Ulke } from "../../lib/io/types";
+import IlerlemePaneli from "./IlerlemePaneli";
+import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
 import type { KimlikDurumu, SeyahatDurumu } from "./flowState";
 
 function bugun(): string {
@@ -213,6 +215,14 @@ export default function SeyahatAdimi({
       </div>
 
       {hata ? <p className="flow__warning">{hata}</p> : null}
+
+      {calisiyor ? (
+        <IlerlemePaneli
+          baslik="Teklifleriniz hazırlanıyor"
+          mesajlar={TEKLIF_HAZIRLIK_MESAJLARI}
+          tahminiSaniye={20}
+        />
+      ) : null}
 
       <div className="flow__actions">
         <button type="button" className="flow__ghost" onClick={onGeri}>

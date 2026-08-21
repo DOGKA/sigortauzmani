@@ -26,6 +26,8 @@ import {
   insaaYillari,
 } from "../../lib/io/constants";
 import AdresSecici from "./AdresSecici";
+import IlerlemePaneli from "./IlerlemePaneli";
+import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
 import type { DaskDurumu, KimlikDurumu } from "./flowState";
 
 interface Props {
@@ -127,8 +129,8 @@ export default function DaskAdimi({
             <span className="flow__error">{hatalar.daskPoliceNo}</span>
           ) : (
             <span className="flow__hint">
-              Poliçenizin üzerinde yazan numara. Bulunamazsa teklif hiç
-              oluşmuyor, bu yüzden poliçenizden kontrol edin.
+              Mevcut DASK poliçenizin üzerinde yer alır. Yenileme teklifinin
+              hazırlanabilmesi için numaranın eksiksiz girilmesi gerekir.
             </span>
           )}
         </label>
@@ -349,6 +351,14 @@ export default function DaskAdimi({
       </div>
 
       {hata ? <p className="flow__warning">{hata}</p> : null}
+
+      {calisiyor ? (
+        <IlerlemePaneli
+          baslik="Teklifleriniz hazırlanıyor"
+          mesajlar={TEKLIF_HAZIRLIK_MESAJLARI}
+          tahminiSaniye={20}
+        />
+      ) : null}
 
       <div className="flow__actions">
         <button type="button" className="flow__ghost" onClick={onGeri}>

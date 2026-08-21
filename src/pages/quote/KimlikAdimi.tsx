@@ -24,8 +24,11 @@
  */
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { IoError, sorguMernis } from "../../lib/io/client";
 import { okuAdSoyad, okuAdresKodu, okuDogumTarihi } from "../../lib/io/okuma";
+import { ROUTES } from "../../lib/seo/routes";
+import BilgiNotu from "./BilgiNotu";
 import {
   formatPhoneInput,
   isValidForeignId,
@@ -58,12 +61,6 @@ function kimlikGecerli(durum: KimlikDurumu): boolean {
 interface Props {
   bransNo: number;
   durum: KimlikDurumu;
-  /**
-   * Doğum tarihi her branşta zorunlu; bu bayrak yalnızca ipucu metnini
-   * değiştiriyor. Seyahatte prim doğrudan yaşa bağlı olduğu için kullanıcıya
-   * bunun neden istendiği söyleniyor.
-   */
-  dogumZorunlu?: boolean;
   onDegis: (patch: Partial<KimlikDurumu>) => void;
   onDevam: () => void;
 }
@@ -71,7 +68,6 @@ interface Props {
 export default function KimlikAdimi({
   bransNo,
   durum,
-  dogumZorunlu = false,
   onDegis,
   onDevam,
 }: Props) {
@@ -266,16 +262,22 @@ export default function KimlikAdimi({
             />
             {hatalar.birthDate ? (
               <span className="flow__error">{hatalar.birthDate}</span>
-            ) : (
-              <span className="flow__hint">
-                {dogumZorunlu
-                  ? "Primin hesaplanması için gerekli."
-                  : "Sigorta şirketleri teklif için istiyor."}
-              </span>
-            )}
+            ) : null}
           </label>
         ) : null}
       </div>
+
+      <BilgiNotu>
+        Paylaştığınız bilgiler yalnızca anlaşmalı sigorta şirketlerinden size
+        özel fiyat teklifi almak ve seçtiğiniz poliçeyi düzenlemek için
+        kullanılır. Primler kişiye göre değiştiğinden doğum tarihi de sigorta
+        şirketlerinin fiyatlama kurallarında yer alır. Verileriniz KVKK
+        kapsamında güvenle işlenir, pazarlama amacıyla üçüncü kişilerle
+        paylaşılmaz.{" "}
+        <Link to={ROUTES.kvkk} target="_blank" rel="noreferrer">
+          KVKK Aydınlatma Metni
+        </Link>
+      </BilgiNotu>
 
       {uyari ? <p className="flow__warning">{uyari}</p> : null}
 

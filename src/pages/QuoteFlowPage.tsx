@@ -353,7 +353,6 @@ export default function QuoteFlowPage() {
           <KimlikAdimi
             bransNo={gereksinim.bransNo}
             durum={kimlik}
-            dogumZorunlu={gereksinim.adimTipi !== "arac"}
             onDegis={(patch) => setKimlik((onceki) => ({ ...onceki, ...patch }))}
             onDevam={() => {
               // MERNİS kayıtlı adresin UAVT kodunu verdiyse DASK adımı hazır
