@@ -157,11 +157,21 @@ export function getAdresKayitlari(
 // Sorgular
 // ============================================================
 
-export function sorguMernis(body: {
+export async function sorguMernis(body: {
   BransNo: number | string;
   Sigortali: { KimlikNo: string; DogumTarihi?: string; Cep?: string };
 }): Promise<Record<string, unknown>> {
-  return call("mernis", { method: "POST", body });
+  try {
+    return await call("mernis", { method: "POST", body });
+  } catch (error) {
+    // Vite yerelde api/ fonksiyonlarını çalıştırmaz; 404 o zaman düşer.
+    // Canlıda sorgu zaten kapalı ve atlandi döner. Her iki durumda da
+    // kimlik adımı durmamalı ve müşteriye SMS gitmemeli.
+    if (error instanceof IoError && (error.status === 404 || error.status === 0)) {
+      return { atlandi: true };
+    }
+    throw error;
+  }
 }
 
 export function sorguTramer(body: {
