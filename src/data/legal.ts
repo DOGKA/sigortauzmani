@@ -119,14 +119,14 @@ export const legalDocuments: LegalDocument[] = [
     intro: [],
     sections: [
       {
-        heading: "01 Amaç ve kapsam",
+        heading: "01. Amaç ve kapsam",
         paragraphs: [
           "Bu Gizlilik Politikası; sigortauzmani.net internet sitesinin kullanılması, sigorta teklif talebi oluşturulması, poliçe işlemlerinin yürütülmesi, poliçe iptal başvurusu yapılması, iletişim formunun kullanılması ve destek hizmetlerinden yararlanılması sırasında paylaşılan bilgilerin nasıl toplandığını, kullanıldığını, saklandığını ve korunduğunu açıklamaktadır.",
           "Kişisel verilerin işlenmesine ilişkin ayrıntılı hukuki açıklamalar KVKK Aydınlatma Metni içerisinde yer almaktadır.",
         ],
       },
       {
-        heading: "02 Toplanan bilgiler",
+        heading: "02. Toplanan bilgiler",
         paragraphs: [
           "Kullanılan hizmete ve seçilen sigorta ürününe göre aşağıdaki bilgiler işlenebilir:",
         ],
@@ -143,7 +143,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "03 Bilgilerin toplanma yöntemleri",
+        heading: "03. Bilgilerin toplanma yöntemleri",
         paragraphs: [
           "Bilgiler aşağıdaki kanallar aracılığıyla elde edilebilir:",
         ],
@@ -161,7 +161,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "04 Bilgilerin kullanım amaçları",
+        heading: "04. Bilgilerin kullanım amaçları",
         paragraphs: [
           "Toplanan bilgiler aşağıdaki amaçlarla kullanılabilir:",
         ],
@@ -185,7 +185,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "05 Bilgilerin paylaşılması",
+        heading: "05. Bilgilerin paylaşılması",
         paragraphs: [
           "Bilgiler, hizmetin yürütülmesi için gerekli olduğu ölçüde aşağıdaki taraflarla paylaşılabilir:",
         ],
@@ -202,7 +202,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "06 Yurt dışına veri aktarımı",
+        heading: "06. Yurt dışına veri aktarımı",
         paragraphs: [
           "İnternet sitesinde kullanılan barındırma, e-posta, iletişim, güvenlik, dosya saklama ve benzeri teknik hizmetlerin altyapılarının yurt dışında bulunması hâlinde bazı kişisel veriler yurt dışına aktarılabilir veya yurt dışında işlenebilir.",
           "Yurt dışına veri aktarımları; 6698 sayılı Kişisel Verilerin Korunması Kanunu’nun 9. maddesi, ilgili yönetmelikler ve Kişisel Verileri Koruma Kurulu tarafından belirlenen yeterlilik kararları, uygun güvenceler, standart sözleşmeler veya kanunda düzenlenen diğer aktarım şartları çerçevesinde gerçekleştirilir.",
@@ -210,7 +210,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "07 WhatsApp ve harici hizmetler",
+        heading: "07. WhatsApp ve harici hizmetler",
         paragraphs: [
           "Teklif talebi tamamlandıktan sonra sürecin WhatsApp Business üzerinden devam ettirilmesi kullanıcıya sunulabilir.",
           "WhatsApp yönlendirme bağlantısına T.C. kimlik numarası, telefon numarası, plaka veya diğer hassas form bilgileri eklenmez. Bağlantı üzerinden yalnızca talebin bulunmasını sağlayan talep veya takip numarası aktarılabilir.",
@@ -219,7 +219,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "08 Çerezler ve teknik kayıtlar",
+        heading: "08. Çerezler ve teknik kayıtlar",
         paragraphs: [
           "İnternet sitesinin güvenli, hızlı ve doğru biçimde çalışabilmesi için zorunlu çerezler ve sınırlı teknik kayıtlar kullanılabilir.",
           "Zorunlu olmayan analiz, performans, kişiselleştirme veya pazarlama çerezleri kullanıcı tercihleri doğrultusunda çalıştırılır ve gerekli durumlarda önceden izin alınır.",
@@ -227,7 +227,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "09 Başka kişilere ait bilgilerin paylaşılması",
+        heading: "09. Başka kişilere ait bilgilerin paylaşılması",
         paragraphs: [
           "Eş, çocuk veya başka bir kişi adına teklif talebi oluşturulurken yalnızca teklif ve poliçe süreci için gerekli bilgiler paylaşılmalıdır.",
           "Başvuru sahibi, başka bir yetişkine ait bilgileri paylaşmadan önce bu bilgileri paylaşmaya yetkili olduğundan emin olmalıdır. Başka kişilere ait kişisel verilerin yetkisiz veya ilgisiz amaçlarla paylaşılmaması gerekir.",
@@ -236,7 +236,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "10 Yüklenen belgeler ve hassas bilgiler",
+        heading: "10. Yüklenen belgeler ve hassas bilgiler",
         paragraphs: [
           "İletişim ve poliçe iptal formlarına yalnızca başvurunun değerlendirilmesi için gerekli belgeler yüklenmelidir.",
           "Sağlık bilgileri, banka ve ödeme bilgileri, hesap şifreleri, biyometrik bilgiler, ceza mahkûmiyeti bilgileri ve başvuruyla ilgisi bulunmayan üçüncü kişilere ait belgeler açıkça istenmediği sürece gönderilmemelidir.",
@@ -245,7 +245,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "11 Bilgilerin saklanması ve silinmesi",
+        heading: "11. Bilgilerin saklanması ve silinmesi",
         paragraphs: [
           "Bilgiler; teklifin hazırlanması, başvurunun sonuçlandırılması, poliçe işlemlerinin yürütülmesi, müşteri desteğinin sağlanması ve yasal yükümlülüklerin yerine getirilmesi için gerekli olan süre boyunca saklanır.",
           "Saklama süreleri belirlenirken aşağıdaki hususlar dikkate alınır:",
@@ -262,7 +262,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "12 Bilgi güvenliği",
+        heading: "12. Bilgi güvenliği",
         paragraphs: [
           "Kişisel bilgilerin yetkisiz erişime, kayba, kötüye kullanıma, izinsiz açıklanmaya ve değiştirilmeye karşı korunması amacıyla uygun teknik ve idari güvenlik tedbirleri uygulanır.",
           "Bu kapsamda veri iletiminde SSL/TLS tabanlı güvenli bağlantı teknolojilerinden, erişim yetkilendirmelerinden, sistem kayıtlarından, güvenlik kontrollerinden ve gerekli diğer koruma yöntemlerinden yararlanılır.",
@@ -271,7 +271,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "13 Kullanıcı hakları ve başvuru",
+        heading: "13. Kullanıcı hakları ve başvuru",
         paragraphs: [
           "Kullanıcılar, kişisel verileriyle ilgili olarak aşağıdaki haklara sahiptir:",
         ],
@@ -294,7 +294,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "14 Politika değişiklikleri",
+        heading: "14. Politika değişiklikleri",
         paragraphs: [
           "Bu Gizlilik Politikası; internet sitesindeki hizmetlerin, kullanılan teknik altyapının, iş süreçlerinin veya ilgili mevzuatın değişmesi hâlinde güncellenebilir.",
           "Önemli değişiklikler güncel tarih bilgisiyle birlikte bu sayfada yayımlanır. Politikanın güncel sürümü yayımlandığı tarihten itibaren geçerli olur.",
@@ -315,7 +315,7 @@ export const legalDocuments: LegalDocument[] = [
     intro: [],
     sections: [
       {
-        heading: "01 Amaç ve kapsam",
+        heading: "01. Amaç ve kapsam",
         paragraphs: [
           "Bu Çerez Politikası, sigortauzmani.net internet sitesi (“Site”) ziyaret edildiğinde kullanılan çerezler ve benzer teknolojiler hakkında bilgi vermek amacıyla hazırlanmıştır.",
           "Politika; kullanılan teknolojilerin amaçlarını, türlerini, saklama sürelerini, hukuki sebeplerini ve kullanıcıların çerez tercihlerini nasıl yönetebileceğini açıklamaktadır.",
@@ -323,7 +323,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "02 Çerez nedir?",
+        heading: "02. Çerez nedir?",
         paragraphs: [
           "Çerezler, bir internet sitesi ziyaret edildiğinde tarayıcı aracılığıyla kullanıcının cihazına kaydedilebilen küçük metin dosyalarıdır.",
           "Çerezler; internet sitesinin güvenli ve düzgün çalışması, kullanıcı tercihlerinin hatırlanması, oturum işlemlerinin yürütülmesi, site performansının ölçülmesi, hizmetlerin geliştirilmesi ve kullanıcıya daha uygun içeriklerin sunulması gibi amaçlarla kullanılabilir.",
@@ -331,24 +331,27 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "03 Çerezlerin sınıflandırılması",
+        heading: "03. Çerezlerin sınıflandırılması",
         paragraphs: [
-          "Kullanım süresine göre:",
+          "Çerezler kullanım süresine, kaynağına ve kullanım amacına göre aşağıdaki başlıklar altında sınıflandırılmaktadır.",
         ],
+      },
+      {
+        heading: "03.1 Kullanım süresine göre",
         items: [
           "Oturum çerezleri: Tarayıcı kapatıldığında veya oturum sona erdiğinde silinen geçici çerezlerdir.",
           "Kalıcı çerezler: Belirlenen saklama süresi boyunca veya kullanıcı tarafından silinene kadar cihazda kalan çerezlerdir.",
         ],
       },
       {
-        heading: "03 Kaynağına göre",
+        heading: "03.2 Kaynağına göre",
         items: [
           "Birinci taraf çerezleri: Doğrudan sigortauzmani.net tarafından yerleştirilen çerezlerdir.",
           "Üçüncü taraf çerezleri: Site üzerinde kullanılan analiz, reklam, iletişim, güvenlik, video, harita veya sosyal medya hizmetleri tarafından yerleştirilebilen çerezlerdir.",
         ],
       },
       {
-        heading: "03 Kullanım amacına göre",
+        heading: "03.3 Kullanım amacına göre",
         items: [
           "Zorunlu çerezler: Sitenin güvenli ve doğru biçimde çalışabilmesi, formların kullanılabilmesi, kullanıcı tercihlerinin hatırlanması ve güvenlik kontrollerinin gerçekleştirilmesi için gerekli olan çerezlerdir.",
           "İşlevsel çerezler: Dil, görünüm, bölge, iletişim veya benzeri kullanıcı tercihlerinin hatırlanmasını ve Site özelliklerinin kişiselleştirilmesini sağlayan çerezlerdir.",
@@ -357,7 +360,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "04 Site üzerinde kullanılan çerezler",
+        heading: "04. Site üzerinde kullanılan çerezler",
         paragraphs: [
           "Site üzerinde zorunlu, işlevsel, performans ve analiz, reklam ve pazarlama çerezleri kullanılabilir.",
           "Zorunlu çerezler; Sitenin çalışması, formların güvenli biçimde gönderilmesi, oturum bütünlüğünün korunması, kullanıcının çerez tercihlerinin hatırlanması, zararlı trafik ve kötüye kullanım girişimlerinin önlenmesi amacıyla kullanılır.",
@@ -368,7 +371,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "05 Çerezlerin kullanım ve saklama süreleri",
+        heading: "05. Çerezlerin kullanım ve saklama süreleri",
         paragraphs: [
           "Oturum çerezleri, kullanıcının Siteyi ziyaret ettiği süre boyunca kullanılır ve tarayıcı kapatıldığında silinir.",
           "Sitenin güvenliği, form işlemleri ve oturum bütünlüğü için kullanılan zorunlu çerezler, kullanım amaçlarının gerektirdiği süre boyunca saklanır.",
@@ -381,7 +384,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "06 Çerezlerin kullanım amaçları",
+        heading: "06. Çerezlerin kullanım amaçları",
         paragraphs: [
           "Çerezler ve benzer teknolojiler aşağıdaki amaçlarla kullanılabilir:",
         ],
@@ -400,7 +403,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "07 Çerezlerin hukuki sebepleri",
+        heading: "07. Çerezlerin hukuki sebepleri",
         paragraphs: [
           "Sitenin çalışması ve güvenliği için gerekli olan zorunlu çerezler; hizmetin kullanıcı tarafından açıkça talep edilmesi, sözleşmenin kurulması veya ifasıyla doğrudan ilgili olması ve veri sorumlusunun meşru menfaatleri kapsamında kullanılabilir.",
           "Çerez tercihinin hatırlanmasını sağlayan kayıtlar, kullanıcının seçiminin korunması ve tercih panelinin her sayfada tekrar gösterilmemesi amacıyla kullanılmaktadır.",
@@ -409,7 +412,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "08 Çerez tercihlerinin yönetilmesi",
+        heading: "08. Çerez tercihlerinin yönetilmesi",
         paragraphs: [
           "Kullanıcılar, Site altında yer alan “Çerez Tercihleri” bağlantısı üzerinden tercihlerini görüntüleyebilir ve değiştirebilir.",
           "Çerez tercih panelinde kullanıcılara aşağıdaki seçenekler sunulur:",
@@ -427,7 +430,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "09 Üçüncü taraf hizmetler ve bağlantılar",
+        heading: "09. Üçüncü taraf hizmetler ve bağlantılar",
         paragraphs: [
           "Site üzerinde analiz, reklam, güvenlik, iletişim, video, harita, sosyal medya ve benzeri hizmetler sunan üçüncü taraf araçları kullanılabilir.",
           "Bu hizmetler, kullanıcı izin verdiğinde kendi çerezlerini veya benzer teknolojilerini kullanabilir. Üçüncü taraf hizmet sağlayıcılar tarafından gerçekleştirilen veri işleme faaliyetleri, ilgili hizmet sağlayıcının gizlilik ve çerez kurallarına da tabi olabilir.",
@@ -436,7 +439,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "10 Çerezler aracılığıyla işlenebilecek bilgiler",
+        heading: "10. Çerezler aracılığıyla işlenebilecek bilgiler",
         paragraphs: [
           "Kullanılan çerezin niteliğine göre aşağıdaki teknik bilgiler işlenebilir:",
         ],
@@ -460,7 +463,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "11 Bilgilerin paylaşılması",
+        heading: "11. Bilgilerin paylaşılması",
         paragraphs: [
           "Çerezler ve benzer teknolojiler aracılığıyla elde edilen teknik bilgiler, kullanım amacının gerektirdiği ölçüde aşağıdaki taraflarla paylaşılabilir:",
         ],
@@ -478,7 +481,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "12 Yurt dışına veri aktarımı",
+        heading: "12. Yurt dışına veri aktarımı",
         paragraphs: [
           "Sitenin barındırma, analiz, reklam, iletişim, güvenlik veya teknik altyapısında yurt dışında bulunan hizmet sağlayıcılardan yararlanılması hâlinde bazı teknik bilgiler yurt dışında işlenebilir veya bu bilgilere yurt dışından erişilebilir.",
           "Bu işlemler, 6698 sayılı Kişisel Verilerin Korunması Kanunu’nun 9. maddesinde belirtilen yurt dışına aktarım şartları ve gerekli güvenceler çerçevesinde gerçekleştirilir.",
@@ -486,14 +489,14 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "13 Bilgilerin güvenliği",
+        heading: "13. Bilgilerin güvenliği",
         paragraphs: [
           "Çerezler ve benzer teknolojiler aracılığıyla elde edilen bilgilerin yetkisiz erişime, kayba, kötüye kullanıma, izinsiz açıklanmaya veya değiştirilmeye karşı korunması amacıyla uygun teknik ve idari güvenlik tedbirleri uygulanır.",
           "Üçüncü taraf hizmet sağlayıcıların seçiminde veri güvenliği, erişim yetkileri, saklama süreleri ve kişisel verilerin korunmasına ilişkin yükümlülükler dikkate alınır.",
         ],
       },
       {
-        heading: "14 Kullanıcı hakları",
+        heading: "14. Kullanıcı hakları",
         paragraphs: [
           "Kullanıcılar, çerezler aracılığıyla işlenen kişisel verileriyle ilgili haklarını KVKK Aydınlatma Metni içerisinde belirtilen yöntemlerle kullanabilir.",
           "Çerez ve gizlilik uygulamalarıyla ilgili genel sorular aşağıdaki iletişim kanalları üzerinden iletilebilir:",
@@ -502,7 +505,7 @@ export const legalDocuments: LegalDocument[] = [
         ],
       },
       {
-        heading: "15 Politikanın güncellenmesi",
+        heading: "15. Politikanın güncellenmesi",
         paragraphs: [
           "Bu Çerez Politikası; Sitede kullanılan teknolojilerin, hizmet sağlayıcıların, çerezlerin, iş süreçlerinin veya ilgili mevzuatın değişmesi hâlinde güncellenebilir.",
           "Politikanın güncel sürümü, son güncelleme tarihiyle birlikte bu sayfada yayımlanır.",

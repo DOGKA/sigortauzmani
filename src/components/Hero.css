@@ -150,6 +150,12 @@
   transition: transform 0.25s ease;
 }
 
+/* Kısa süreli trafik ikonu diğerlerinin aksine kare değil, enine uzun.
+   Aynı genişlik sınırında komşularından iri görünüyor; daraltılıyor. */
+.product-card__icon[data-slug="kisa-sureli-trafik"] img {
+  max-width: 84px;
+}
+
 .product-card:hover .product-card__icon img {
   transform: scale(1.07);
 }

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { formatDateTime, formatPrim, maskKimlikNo } from "@/lib/format";
+import { formatDateTime, formatPrim, maskKimlikNo, paraKodu } from "@/lib/format";
 import { BRANS_LABELS, type SatinAlmaKaydi } from "@/lib/types";
 
 const STATUS_STYLES: Record<SatinAlmaKaydi["status"], string> = {
@@ -79,9 +79,20 @@ export default function PolicelerTable() {
       (bransFilter === "all" || String(k.brans_no) === bransFilter),
   );
 
-  const toplamPrim = filtered
-    .filter((k) => k.status === "basarili")
+  const basarili = filtered.filter((k) => k.status === "basarili");
+  const toplamTry = basarili
+    .filter((k) => paraKodu(k.brans_no) === "TRY")
     .reduce((toplam, k) => toplam + (Number(k.prim) || 0), 0);
+  const toplamEur = basarili
+    .filter((k) => paraKodu(k.brans_no) === "EUR")
+    .reduce((toplam, k) => toplam + (Number(k.prim) || 0), 0);
+  const toplamMetin = [
+    `${filtered.length} poliçe`,
+    toplamTry ? formatPrim(toplamTry, "TRY") : null,
+    toplamEur ? formatPrim(toplamEur, "EUR") : null,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white">
@@ -137,7 +148,7 @@ export default function PolicelerTable() {
         </button>
 
         <span className="text-sm text-slate-400">
-          {filtered.length} poliçe · {formatPrim(toplamPrim)}
+          {toplamMetin}
         </span>
       </div>
 
@@ -234,7 +245,7 @@ function PoliceRow({
           {maskKimlikNo(kimlikNoOf(kayit))}
         </td>
         <td className="px-4 py-3.5 font-semibold whitespace-nowrap text-slate-800">
-          {formatPrim(kayit.prim)}
+          {formatPrim(kayit.prim, paraKodu(kayit.brans_no))}
         </td>
         <td className="px-4 py-3.5">
           <span

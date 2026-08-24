@@ -104,6 +104,12 @@ interface IoFetchInit {
  * girişinde olmalı, bizim sistemimizden hiç kod gitmemeli. Bu yüzden bayrak
  * tek tek uçlarda değil tüm IO çağrılarının geçtiği bu noktada kapatılıyor —
  * ileride yeni bir uç eklendiğinde gözden kaçmasın.
+ *
+ * Kimlik numarası varken `Cep` de düşürülüyor. Numara IO tarafında hiçbir işe
+ * yaramıyor: aynı kimlik ve araçla gerçek numara, alakasız bir numara ve hiç
+ * numara göndermek üçü de aynı teklife düşüyor, yanıt gönderileni aynen geri
+ * yazıyor. Satın alma isteğinde `Sigortali` bloğu zaten yok. Telefonu tutan
+ * tek yer oturum kaydımız; panelde teklif geçmişinden okunuyor.
  */
 function kodGondermeyiKapat(body: unknown): unknown {
   if (!body || typeof body !== "object" || Array.isArray(body)) return body;
@@ -116,10 +122,13 @@ function kodGondermeyiKapat(body: unknown): unknown {
   // Alan hem kökte hem sigortalı bloğunda okunabiliyor.
   const sigortali = govde.Sigortali;
   if (sigortali && typeof sigortali === "object" && !Array.isArray(sigortali)) {
-    govde.Sigortali = {
+    const blok: Record<string, unknown> = {
       ...(sigortali as Record<string, unknown>),
       KodGonder: false,
     };
+    const kimlikNo = String(blok.KimlikNo ?? "").replace(/\D/g, "");
+    if (kimlikNo) delete blok.Cep;
+    govde.Sigortali = blok;
   }
   return govde;
 }

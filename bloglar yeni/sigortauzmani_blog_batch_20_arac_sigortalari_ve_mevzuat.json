@@ -1,0 +1,157 @@
+{
+  "category": "Araç Sigortaları ve Mevzuat",
+  "batch": 20,
+  "language": "tr-TR",
+  "source_checked_at": "2026-07-28",
+  "writing_standard": {
+    "structure": [
+      "Başlık",
+      "Kısa Özet",
+      "İçerik",
+      "FAQ",
+      "Sonuç Değerlendirme"
+    ],
+    "style": "Editoryal, sade ve edilgen anlatım",
+    "external_link_required": true,
+    "marketing_focus": true,
+    "blogs_per_json": 4
+  },
+  "blogs": [
+    {
+      "id": 77,
+      "title": "İkinci El Araç Alırken Sigorta ve Hasar Geçmişi Nasıl Sorgulanır?",
+      "short_summary": "İkinci el araç satın alınmadan önce hasar tutarları, ağır hasar durumu, değişen parçalar, kasko geçmişi ve plaka değişiklikleri SBM hizmetleri üzerinden sorgulanabilir. Ancak sigorta kayıtlarında görünmeyen onarımlar bulunabileceği için sorgulama sonucu ekspertiz ve fiziki incelemeyle birlikte değerlendirilmelidir.",
+      "content_html": "<p>İkinci el araç alırken yalnızca kilometre, boya ve dış görünüş kontrolüyle karar verilmemelidir. Aracın geçmişte sigorta şirketlerine bildirilen kazaları, hasar tutarları, ağır hasar kaydı, değişen parçaları ve kaskolu olduğu dönemler satıştan önce araştırılmalıdır.</p>\n\n<p>Sigorta Bilgi ve Gözetim Merkezi tarafından sunulan SMS, web ve TRAMER hizmetleriyle araç geçmişine ilişkin önemli verilere ulaşılabilir. Ancak bu kayıtların bütün onarımları göstermediği unutulmamalıdır.</p>\n\n<h2>5664 ile hasar kaydı nasıl sorgulanır?</h2>\n\n<p>Aracın plakası boşluk bırakılmadan 5664'e SMS olarak gönderildiğinde sigorta şirketleri tarafından bildirilen hasar kayıtları sorgulanabilir. Plaka değişmiş olsa bile sistemde bulunan geçmiş hasarlar görüntülenebilir.</p>\n\n<p>Araç detayları ve eksper raporuna göre değişen parçalar için 5664 hizmetindeki farklı sorgu seçenekleri kullanılabilir. SMS hizmeti ücretlidir ve güncel ücret operatörler ile SBM tarafından belirlenir.</p>\n\n<h2>Sigortam360 ve TRAMER360 hangi bilgileri gösterir?</h2>\n\n<p>SBM'nin web ve mobil hizmetlerinde plaka veya şasi numarasıyla daha ayrıntılı rapor alınabilir. Sorgu türüne göre şu bilgiler görüntülenebilir:</p>\n\n<ul>\n<li>Kaza tarihi ve hasar nedeni,</li>\n<li>Hasar tutarı ve ağır hasar durumu,</li>\n<li>Mevcutsa eksper raporu bilgileri,</li>\n<li>Değişen parçalar ve parça orijinalliği,</li>\n<li>Aracın kaskolu ve kaskosuz olduğu süreler,</li>\n<li>Plaka ve araç türü değişiklikleri,</li>\n<li>Son sahiplik türü ve sahiplik süresi.</li>\n</ul>\n\n<p>TRAMER360 raporunda hasar, kasko, sahiplik ve değişiklik bilgileri tek raporda birleştirilebilir. Özellikle yüksek bedelli bir araçta yalnızca kısa hasar sorgusu yerine ayrıntılı rapor tercih edilebilir.</p>\n\n<h2>e-Devlet üzerinden hangi kayıtlar kontrol edilebilir?</h2>\n\n<p>Araç sahibi kendi adına kayıtlı trafik ve kasko poliçelerini, hasar bilgilerini ve muayene durumunu e-Devlet üzerinden sorgulayabilir. Satın alma aşamasında satıcıdan ilgili kayıtları birlikte açması veya barkodlu belgeleri paylaşması istenebilir.</p>\n\n<p>Alıcının yalnızca plaka bilgisiyle başka bir kişiye ait bütün e-Devlet kayıtlarına erişmesi mümkün değildir. Bu nedenle satıcının şeffaf biçimde belge sunması, güvenli bir alım süreci açısından önemlidir.</p>\n\n<h2>Hasar kaydında görünmeyen onarımlar olabilir mi?</h2>\n\n<p>Evet. SBM tarafından sunulan hasar geçmişi, 2003 yılından itibaren sigorta şirketlerince bildirilen kasko ve trafik sigortası hasar ödemeleriyle sınırlıdır. Sigortaya bildirilmeden özel serviste veya araç sahibinin kendi imkânıyla yaptırılan onarımlar kayıtlarda görünmeyebilir.</p>\n\n<p>Cam, mini onarım, anahtar, lastik, jant ve bazı hırsızlık ödemeleri de standart hasar sorgusunda yer almayabilir. Bu nedenle “hasar kaydı yok” sonucu, aracın hiç hasar görmediğini kesin olarak göstermez.</p>\n\n<h2>Plaka yerine şasi numarası neden kontrol edilmelidir?</h2>\n\n<p>Plaka değiştirilebilir; şasi numarası ise araca özgüdür. Plaka ve şasi bilgileri birlikte sorgulanarak kayıtların doğru araçla eşleştiği doğrulanmalıdır. Ruhsattaki şasi numarasıyla araç üzerindeki numaranın aynı olduğu da kontrol edilmelidir.</p>\n\n<h2>Sorgulama sonucu ekspertizin yerine geçer mi?</h2>\n\n<p>Hayır. Sigorta geçmişi geçmişte bildirilen olayları gösterirken ekspertiz aracın mevcut teknik durumunu inceler. Motor, şanzıman, şasi, airbag, elektronik sistem, boya ve mekanik kontroller ayrıca yaptırılmalıdır.</p>\n\n<p>Satın alma kararı verilirken hasar raporu, ekspertiz sonucu, servis kayıtları, muayene kilometreleri ve satış ilanındaki bilgiler birlikte değerlendirilmelidir.</p>\n\n<h2>Araç satın alınmadan önce önerilen kontrol sırası</h2>\n\n<ol>\n<li>Plaka ve şasi numarası satıcıdan alınmalıdır.</li>\n<li>SBM hasar ve araç detay sorguları yapılmalıdır.</li>\n<li>Muayene ve kilometre kayıtları kontrol edilmelidir.</li>\n<li>Yetkili veya uzman servisten bakım geçmişi istenmelidir.</li>\n<li>Bağımsız ekspertiz yaptırılmalıdır.</li>\n<li>Alıcı adına trafik sigortası ve isteğe bağlı kasko teklifleri hazırlanmalıdır.</li>\n</ol>\n\n<p>SBM üzerinden sunulan sorgu seçenekleri ve kayıtların kapsamı <a href=\"https://www.sbm.org.tr/tr/web-sorgulama\" target=\"_blank\" rel=\"noopener noreferrer\">Sigorta Bilgi ve Gözetim Merkezi web sorgulama sayfasından</a> incelenebilir.</p>",
+      "faq": [
+        {
+          "question": "Hasar kaydı olmayan araç kesinlikle kazasız mıdır?",
+          "answer": "Hayır. Sigortaya bildirilmeyen veya araç sahibi tarafından karşılanan onarımlar SBM kayıtlarında görünmeyebilir."
+        },
+        {
+          "question": "Plaka değişirse eski hasarlar silinir mi?",
+          "answer": "Hayır. SBM sorgulamalarında plaka değişikliğinden önceki kayıtlar da sistem verileri kapsamında görüntülenebilir."
+        },
+        {
+          "question": "Hasar sorgusu ekspertiz raporunun yerine geçer mi?",
+          "answer": "Hayır. Hasar sorgusu geçmiş sigorta kayıtlarını, ekspertiz ise aracın mevcut teknik durumunu gösterir."
+        }
+      ],
+      "result_assessment": "İkinci el araç alımında tek bir sorgu sonucuna güvenilmemelidir. Plaka ve şasi üzerinden sigorta geçmişi incelenmeli, satıcıdan e-Devlet ve servis kayıtları istenmeli ve bağımsız ekspertiz yaptırılmalıdır. Araç uygun bulunduğunda trafik sigortası ile kasko tekliflerinin önceden karşılaştırılması, toplam sahip olma maliyetinin satıştan önce görülmesini sağlar.",
+      "external_links": [
+        {
+          "title": "SBM - Web ile Araç Hasar Sorgulama",
+          "url": "https://www.sbm.org.tr/tr/web-sorgulama"
+        },
+        {
+          "title": "SBM - 5664 SMS Sorgulamaları",
+          "url": "https://www.sbm.org.tr/tr/sms-sorgulamalari"
+        },
+        {
+          "title": "e-Devlet - Trafik Poliçe ve Hasar Bilgileri Sorgulama",
+          "url": "https://www.turkiye.gov.tr/sbm-trafik-police-sorgulama"
+        },
+        {
+          "title": "e-Devlet - Kasko Poliçe ve Hasar Bilgileri Sorgulama",
+          "url": "https://www.turkiye.gov.tr/sbm-kasko-police-sorgulama"
+        }
+      ]
+    },
+    {
+      "id": 78,
+      "title": "Araç Satışı Gerçekleşmezse Yapılan Trafik Sigortası İptal Edilebilir mi?",
+      "short_summary": "Noter satışı için alıcı adına düzenlenen trafik sigortası, satış veya devir işlemi tamamlanmazsa alıcının talebi üzerine başlangıçtan iptal edilebilir. Tahsil edilen prim herhangi bir kesinti yapılmadan iade edilir.",
+      "content_html": "<p>Araç satışından önce alıcı adına trafik sigortası düzenlenmesi zorunludur. Ancak tarafların anlaşamaması, araç üzerinde satış engeli çıkması, güvenli ödeme işleminin tamamlanmaması veya başka bir nedenle noter devri gerçekleşmeyebilir.</p>\n\n<p>Bu durumda alıcı adına hazırlanmış poliçenin kullanılmadan kalması gerekmez. SEDDK düzenlemesine göre satış veya devir işlemi tamamlanmamışsa poliçe, alıcının talebi üzerine başlangıçtan iptal edilir ve tahsil edilen prim kesinti yapılmadan iade edilir.</p>\n\n<h2>Başlangıçtan iptal ne anlama gelir?</h2>\n\n<p>Başlangıçtan iptal, poliçenin hiç yürürlüğe girmemiş gibi sonlandırılmasıdır. Normal poliçe iptalinde geçen günlere ait prim kesilebilirken, satış gerçekleşmediği için yapılan bu özel iptalde tahsil edilen primin tamamı iade edilir.</p>\n\n<p>Bu hak, aracı satış veya devir yoluyla alacak kişi adına düzenlenen ancak noter işlemi tamamlanmayan trafik poliçeleri için uygulanır.</p>\n\n<h2>İptal talebi nasıl yapılır?</h2>\n\n<p>Poliçeyi düzenleyen sigorta acentesine veya sigorta şirketine başvurulmalıdır. Satışın gerçekleşmediği belirtilerek poliçenin başlangıçtan iptali talep edilir.</p>\n\n<p>Şirketin işlem yöntemine göre yazılı talep, e-posta, mobil uygulama veya müşteri hizmetleri üzerinden kayıt oluşturulabilir. Başvuru numarasının saklanması önerilir.</p>\n\n<h2>Hangi belgeler istenebilir?</h2>\n\n<ul>\n<li>Trafik sigortası poliçe numarası,</li>\n<li>Alıcının kimlik bilgileri,</li>\n<li>Satışın tamamlanmadığını gösteren noter veya sistem kaydı,</li>\n<li>Varsa satış işlemine ilişkin referans bilgisi,</li>\n<li>Prim iadesi için IBAN veya ödeme kanalı bilgisi.</li>\n</ul>\n\n<p>Her olayda aynı belge listesi istenmeyebilir. Satış işleminin sistemden doğrulanabildiği durumlarda ek belge talebi azaltılabilir.</p>\n\n<h2>Prim iadesinde kesinti yapılır mı?</h2>\n\n<p>Hayır. İlgili düzenlemede tahsil edilen primin herhangi bir kesinti yapılmaksızın iade edileceği belirtilmiştir. Poliçenin kredi kartıyla ödenmesi hâlinde iade karta; banka hesabından ödenmesi hâlinde ilgili hesaba veya bildirilen IBAN'a yapılabilir.</p>\n\n<p>Bankanın kart ve provizyon işlemleri nedeniyle iadenin ekstreye yansıması birkaç iş günü sürebilir. Sigorta şirketinin iade kaydıyla bankanın hesaba yansıtma süresi birbirinden farklıdır.</p>\n\n<h2>Satış başka bir tarihe ertelenirse ne yapılmalı?</h2>\n\n<p>Satışın kısa süre içinde yeniden yapılması planlanıyorsa poliçenin tarih veya araç bilgisi açısından değiştirilip değiştirilemeyeceği acenteye sorulabilir. Ancak noter devri yapılmamış bir poliçenin gereksiz biçimde açık tutulması yerine, başlangıçtan iptal edilip yeni satış tarihine uygun poliçe düzenlenmesi daha güvenli olabilir.</p>\n\n<h2>Aynı araç daha sonra satın alınırsa eski poliçe kullanılabilir mi?</h2>\n\n<p>Başlangıçtan iptal edilen poliçe yeniden aktif hâle getirilmez. Araç daha sonra satın alınacaksa yeni satış tarihine ve güncel verilere göre yeni trafik sigortası düzenlenir.</p>\n\n<h2>İade yapılmazsa ne yapılmalıdır?</h2>\n\n<p>Önce sigorta şirketinden yazılı açıklama ve iade işlem numarası istenmelidir. Poliçe, ödeme dekontu, iptal talebi ve satışın gerçekleşmediğine ilişkin belgeler saklanmalıdır. Sorun çözülemezse şirketin şikâyet birimine ve ilgili resmî başvuru kanallarına müracaat edilebilir.</p>\n\n<p>Satış tamamlanmayan araç için poliçenin başlangıçtan iptal edilmesi ve primin kesintisiz iadesine ilişkin kural <a href=\"https://www.seddk.gov.tr/upload/2024-30.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">SEDDK'nin 2024/30 sayılı Genelgesinde</a> düzenlenmiştir.</p>",
+      "faq": [
+        {
+          "question": "Satış gerçekleşmezse trafik sigortası primi tamamen iade edilir mi?",
+          "answer": "Evet. Düzenleme kapsamındaki poliçe başlangıçtan iptal edilir ve tahsil edilen prim herhangi bir kesinti yapılmadan iade edilir."
+        },
+        {
+          "question": "Poliçe kendiliğinden iptal olur mu?",
+          "answer": "Hayır. Alıcının sigorta şirketine veya acenteye iptal talebinde bulunması gerekir."
+        },
+        {
+          "question": "Araç daha sonra alınırsa aynı poliçe tekrar kullanılabilir mi?",
+          "answer": "Başlangıçtan iptal edilen poliçe yeniden kullanılamaz. Yeni satış tarihine uygun yeni poliçe düzenlenmelidir."
+        }
+      ],
+      "result_assessment": "Noter satışı tamamlanmadığında trafik sigortası için ödenen prim kaybedilmez. İptal talebi geciktirilmeden acenteye veya şirkete iletilmeli ve iadenin ödeme kanalına yansıyıp yansımadığı kontrol edilmelidir. Araç yeniden satın alınacaksa yeni tarihte farklı şirketlerin güncel teklifleri karşılaştırılarak poliçe tekrar düzenlenmelidir.",
+      "external_links": [
+        {
+          "title": "SEDDK - 2024/30 Sayılı Trafik Sigortası Genelgesi",
+          "url": "https://www.seddk.gov.tr/upload/2024-30.pdf"
+        },
+        {
+          "title": "SEDDK - Sigortacılık Mevzuatı ve Genelgeler",
+          "url": "https://www.seddk.gov.tr/tr/mevzuat/sigortacilik/genelge-teblig-ve-sektor-duyurulari"
+        }
+      ]
+    },
+    {
+      "id": 79,
+      "title": "İkinci El Araç Alırken Ekspertiz Raporu Zorunlu mu? 2026 Güncel Kurallar",
+      "short_summary": "Ekspertiz raporu her bireysel araç satışında genel bir noter şartı değildir. Yetki belgeli işletmelerin yaptığı belirli otomobil ve arazi taşıtı satışlarında, araç sekiz yaşın veya 160 bin kilometrenin üzerinde değilse satıştan önceki üç gün içinde rapor alınması gerekir.",
+      "content_html": "<p>İkinci el araç alırken ekspertiz raporunun zorunlu olup olmadığı, satışın kim tarafından yapıldığına ve aracın yaş ile kilometresine göre belirlenir. Bireyler arasında yapılan her satışta ekspertiz raporu noter tarafından zorunlu tutulmaz.</p>\n\n<p>Yetki belgesi bulunan ikinci el araç işletmelerinde ise tüketicinin korunması amacıyla farklı kurallar uygulanır. Rapor zorunlu olmasa bile yüksek bedelli bir araçta bağımsız ekspertiz yaptırılması güçlü biçimde önerilir.</p>\n\n<h2>Galeriden alınan araçta ekspertiz zorunlu mu?</h2>\n\n<p>TSE hizmet yeterlilik belgesine sahip ekspertiz işletmesi bulunan illerde faaliyet gösteren yetki belgeli işletmeler, ikinci el otomobil ve arazi taşıtı satışı öncesinde ekspertiz raporu almakla yükümlüdür.</p>\n\n<p>Rapor satış tarihinden önceki üç gün içinde alınmalıdır. Daha eski bir rapor güncel kabul edilmeyebilir. Raporun bir nüshası satış sırasında alıcıya teslim edilir.</p>\n\n<h2>Hangi araçlarda ekspertiz zorunlu değildir?</h2>\n\n<p>Model yılına göre sekiz yaşın veya 160 bin kilometrenin üzerindeki taşıtlarda işletmenin ekspertiz raporu alma zorunluluğu bulunmaz. TSE hizmet yeterlilik belgesine sahip ekspertiz işletmesi bulunmayan illerde faaliyet gösteren işletmeler için de istisna uygulanabilir.</p>\n\n<p>Zorunluluğun bulunmaması, aracın ekspertiz yaptırılmadan satın alınmasının güvenli olduğu anlamına gelmez. Özellikle yaşlı veya yüksek kilometreli araçlarda mekanik risk daha yüksek olabilir.</p>\n\n<h2>Bireysel satışlarda ekspertiz yaptırılmalı mı?</h2>\n\n<p>Bireysel satıcıdan alınan araçlarda genel bir ekspertiz raporu zorunluluğu yoktur. Buna rağmen alıcının kendi seçtiği bağımsız bir merkezde inceleme yaptırması önerilir.</p>\n\n<p>Satıcının önerdiği tek bir ekspertiz merkezine bağlı kalınmamalı; raporun şasi, motor, elektronik, airbag, boya, mekanik ve yol testi gibi yeterli bölümleri içerdiği kontrol edilmelidir.</p>\n\n<h2>Ekspertiz raporunda neler bulunmalıdır?</h2>\n\n<ul>\n<li>Aracın marka, model, şasi ve kilometre bilgileri,</li>\n<li>Motor, şanzıman ve mekanik sistemlerin durumu,</li>\n<li>Şasi, podye, direk ve taşıyıcı bölümlerin kontrolü,</li>\n<li>Boyalı, değişen ve işlem görmüş parçalar,</li>\n<li>Airbag ve elektronik güvenlik sistemleri,</li>\n<li>Fren, süspansiyon ve lastik durumu,</li>\n<li>Arıza kodları ve yol testi sonuçları.</li>\n</ul>\n\n<h2>Rapor temiz çıkarsa araç kesin sorunsuz mudur?</h2>\n\n<p>Hayır. Ekspertiz raporu inceleme anındaki durumu ve kullanılan cihazların kapsamını gösterir. Motorun iç parçaları, ileride oluşabilecek arızalar veya erişilemeyen bölgeler tamamen tespit edilemeyebilir.</p>\n\n<p>Raporda kapsam dışı bırakılan bölümler, cihaz ölçüm toleransları ve ekspertiz merkezinin sorumluluk şartları okunmalıdır. Yetkili servis bakım geçmişi ve sigorta hasar kayıtları da ayrıca kontrol edilmelidir.</p>\n\n<h2>Ekspertiz raporu ile SBM hasar kaydı farklı mı?</h2>\n\n<p>Evet. Ekspertiz raporunda aracın mevcut fiziki ve teknik durumu incelenir. SBM hasar sorgusunda ise sigorta şirketlerince geçmişte bildirilen hasarlar gösterilir. Her iki kontrol birbirini tamamlar.</p>\n\n<h2>2026 yılında yeni bir ekspertiz düzenlemesi var mı?</h2>\n\n<p>Ticaret Bakanlığı tarafından Motorlu Kara Taşıtı Ekspertiz Hizmetleri Hakkında yeni bir yönetmelik taslağı Mayıs 2026'da görüşe açılmıştır. Taslak yürürlüğe girene kadar mevcut yükümlülükler uygulanır. Yayın öncesinde güncel mevzuatın yeniden kontrol edilmesi gerekir.</p>\n\n<h2>Satış öncesi en güvenli yöntem</h2>\n\n<ol>\n<li>SBM hasar ve araç detay sorgusu yapılmalıdır.</li>\n<li>Satıcıdan servis ve bakım kayıtları istenmelidir.</li>\n<li>Bağımsız ekspertiz merkezi seçilmelidir.</li>\n<li>Raporla araç üzerindeki şasi ve ruhsat bilgileri eşleştirilmelidir.</li>\n<li>Masraf çıkarabilecek parçalar için fiyat alınmalıdır.</li>\n<li>Trafik sigortası ve kasko maliyeti satıştan önce hesaplanmalıdır.</li>\n</ol>\n\n<p>Ekspertiz raporu zorunluluğunun güncel kapsamı <a href=\"https://ticaret.gov.tr/ic-ticaret/sikca-sorulan-sorular/sektorel-ticaret\" target=\"_blank\" rel=\"noopener noreferrer\">Ticaret Bakanlığı Sektörel Ticaret Sıkça Sorulan Sorular sayfasından</a> incelenebilir.</p>",
+      "faq": [
+        {
+          "question": "Bireysel araç satışında ekspertiz raporu zorunlu mu?",
+          "answer": "Hayır. Bireyler arasındaki her satışta genel bir noter zorunluluğu bulunmaz; ancak alıcının bağımsız ekspertiz yaptırması önerilir."
+        },
+        {
+          "question": "Galeriden alınan her araçta ekspertiz zorunlu mu?",
+          "answer": "Yetki belgeli işletmelerde belirli koşullarda zorunludur. Sekiz yaşın veya 160 bin kilometrenin üzerindeki araçlarda zorunluluk bulunmaz."
+        },
+        {
+          "question": "Ekspertiz raporu kaç gün geçerlidir?",
+          "answer": "Yetki belgeli işletmenin zorunlu raporu satış tarihinden önceki üç gün içinde alınmış olmalıdır."
+        }
+      ],
+      "result_assessment": "Ekspertiz zorunluluğu bulunmayan bir araçta dahi raporsuz alım yapılması önerilmez. Bağımsız ekspertiz, SBM hasar raporu ve servis geçmişi birlikte incelenmelidir. Muhtemel onarım giderlerine ek olarak trafik sigortası ve kasko maliyeti de satıştan önce hesaplanırsa aracın gerçek toplam maliyeti daha doğru görülebilir.",
+      "external_links": [
+        {
+          "title": "Ticaret Bakanlığı - İkinci El Taşıt Ticareti Sıkça Sorulan Sorular",
+          "url": "https://ticaret.gov.tr/ic-ticaret/sikca-sorulan-sorular/sektorel-ticaret"
+        },
+        {
+          "title": "Ticaret Bakanlığı - Ekspertiz Hizmetleri Yönetmelik Taslağı",
+          "url": "https://ticaret.gov.tr/haberler/motorlu-kara-tasiti-ekspertiz-hizmetleri-hakkinda-yonetmelik-taslagi-goruse-acildi"
+        }
+      ]
+    },
+    {
+      "id": 80,
+      "title": "İkinci El Araçta Gizli Ayıp Çıkarsa Ne Yapılır? Alıcının Hakları",
+      "short_summary": "İkinci el araçta satış sırasında açıklanmayan ciddi bir arıza, kilometre müdahalesi veya geçmiş hasar ortaya çıkarsa ayıplı mal hükümleri gündeme gelebilir. Profesyonel satıcıdan alınan araçlarda tüketici; iade, bedel indirimi, ücretsiz onarım veya mümkünse ayıpsız misliyle değişim haklarından birini talep edebilir.",
+      "content_html": "<p>İkinci el araç satın alındıktan sonra motor arızası, şasi işlemi, airbag eksikliği, kilometre düşürülmesi veya ilan açıklamasına aykırı başka bir durum ortaya çıkabilir. Satış sırasında bilinmeyen ve aracın değerini ya da kullanımını önemli ölçüde etkileyen bu durumlar gizli ayıp olarak değerlendirilebilir.</p>\n\n<p>Alıcının kullanabileceği haklar, aracın yetki belgeli işletmeden mi yoksa bireysel satıcıdan mı alındığına göre değişir.</p>\n\n<h2>Hangi durumlar ayıp sayılabilir?</h2>\n\n<ul>\n<li>İlanda “değişensiz” denilen araçta değişen parça bulunması,</li>\n<li>Ağır hasar veya şasi işleminin gizlenmesi,</li>\n<li>Kilometre göstergesine müdahale edilmiş olması,</li>\n<li>Motor, şanzıman veya elektrik sistemindeki ciddi arızanın açıklanmaması,</li>\n<li>Airbaglerin açılmış, iptal edilmiş veya eksik olması,</li>\n<li>Araçta rehin, hukuki kısıtlama veya kullanım engeli bulunması,</li>\n<li>Aracın vaat edilen özellikleri taşımaması.</li>\n</ul>\n\n<p>Alıcıya satıştan önce açıkça bildirilen ve satış belgesinde gösterilen bir kusur için sonradan gizli ayıp iddiasında bulunulması zorlaşabilir. Bu nedenle ilan ve satış açıklamaları saklanmalıdır.</p>\n\n<h2>Galeriden alınan araçta hangi haklar kullanılabilir?</h2>\n\n<p>Araç ticari veya mesleki amaçla hareket eden bir işletmeden tüketici sıfatıyla satın alınmışsa 6502 sayılı Tüketicinin Korunması Hakkında Kanun uygulanabilir.</p>\n\n<p>Tüketici şu seçimlik haklardan birini talep edebilir:</p>\n\n<ul>\n<li>Aracı geri vermeye hazır olduğunu bildirerek sözleşmeden dönme,</li>\n<li>Aracı elinde tutup ayıp oranında bedel indirimi isteme,</li>\n<li>Bütün masrafları satıcıya ait olmak üzere ücretsiz onarım isteme,</li>\n<li>İmkân varsa ayıpsız misliyle değiştirilmesini isteme.</li>\n</ul>\n\n<p>Satıcı, tüketicinin mevzuata uygun olarak seçtiği talebi yerine getirmekle yükümlüdür. Talebin olayın niteliğine göre orantısız güçlük doğurması hâlinde diğer seçimlik haklar değerlendirilebilir.</p>\n\n<h2>İlk altı ayda ispat yükü kimdedir?</h2>\n\n<p>Teslimden itibaren altı ay içinde ortaya çıkan ayıbın teslim tarihinde var olduğu kabul edilir. Bu durumda malın ayıplı olmadığını ispat yükü satıcıya aittir. Arızanın kullanıcı hatasından kaynaklandığı ileri sürülüyorsa teknik raporla değerlendirme yapılabilir.</p>\n\n<h2>İkinci el araçta sorumluluk süresi ne kadar?</h2>\n\n<p>Tüketici mevzuatına tabi ikinci el ürün satışlarında satıcının ayıplı maldan sorumluluğu bir yıldan az olamaz. Ayıp ağır kusur veya hileyle gizlenmişse zamanaşımı hükümleri uygulanmaz.</p>\n\n<p>Yetki belgeli işletme tarafından satılan, yönetmelik kapsamındaki otomobil ve arazi taşıtlarında motor, şanzıman, tork konvertörü, diferansiyel ve elektrik sistemi için ayrıca üç ay veya 5 bin kilometrelik garanti bulunmaktadır.</p>\n\n<h2>Bireysel satıcıdan alınan araçta ne değişir?</h2>\n\n<p>Satıcının ticari veya mesleki amaçla hareket etmediği bireysel satışlar çoğunlukla tüketici işlemi sayılmaz. Bu durumda Türk Borçlar Kanunundaki ayıptan sorumluluk hükümleri uygulanır. Satış sözleşmesindeki beyanlar, satıcının kusuru bilip bilmediği ve ayıbın gizlenip gizlenmediği ayrıca değerlendirilir.</p>\n\n<p>Bireysel satışlarda da satıcının bildiği ciddi kusuru hileyle gizlemesi hukuki sorumluluğu ortadan kaldırmaz. Somut olay için hukuki destek alınması gerekebilir.</p>\n\n<h2>Ayıp fark edildiğinde hangi adımlar izlenmeli?</h2>\n\n<ol>\n<li>Araç kullanılmaya devam edilerek hasarın büyümesi önlenmelidir.</li>\n<li>Yetkili veya uzman servisten yazılı arıza ve neden raporu alınmalıdır.</li>\n<li>İlan görüntüsü, ekspertiz raporu, mesajlar ve noter satış belgesi saklanmalıdır.</li>\n<li>Satıcıya gecikmeden yazılı bildirim yapılmalıdır.</li>\n<li>Tercih edilen iade, indirim veya onarım talebi açıkça belirtilmelidir.</li>\n<li>Uyuşmazlık çözülmezse bedeline göre tüketici hakem heyeti, tüketici mahkemesi veya görevli mahkeme yolu değerlendirilmelidir.</li>\n</ol>\n\n<h2>Ekspertiz raporu satıcının sorumluluğunu kaldırır mı?</h2>\n\n<p>Her zaman kaldırmaz. Ekspertizde tespit edilemeyen veya satıcı tarafından gizlenen bir kusur daha sonra ortaya çıkabilir. Ancak raporda açıkça belirtilmiş ve alıcının bildiği bir kusur için ayıp iddiası zayıflayabilir.</p>\n\n<h2>Sigorta hasar kaydı delil olarak kullanılabilir mi?</h2>\n\n<p>SBM raporları, aracın geçmişteki sigorta hasarlarını gösterebilir ve uyuşmazlıkta yardımcı belge olarak kullanılabilir. Ancak kayıt bulunmaması aracın kazasız olduğunu tek başına kanıtlamaz. Teknik servis raporu ve bağımsız bilirkişi incelemesi daha belirleyici olabilir.</p>\n\n<p>Ayıplı mal tanımı, tüketicinin seçimlik hakları ve süreler <a href=\"https://tuketici.ticaret.gov.tr/yayinlar/tuketici-bilgi-rehberi/ayipli-mal-ve-hizmetler-hakkinda-bilgilendirme\" target=\"_blank\" rel=\"noopener noreferrer\">Ticaret Bakanlığının Ayıplı Mal Bilgilendirme Rehberinden</a> incelenebilir.</p>",
+      "faq": [
+        {
+          "question": "Galeriden alınan ayıplı araç iade edilebilir mi?",
+          "answer": "Şartlar sağlanıyorsa tüketici sözleşmeden dönerek aracı iade etme hakkını seçebilir. Somut olay ve kusurun niteliği değerlendirilir."
+        },
+        {
+          "question": "Ekspertizde çıkmayan arızadan satıcı sorumlu olur mu?",
+          "answer": "Arıza satış tarihinde mevcut ve alıcıdan gizlenmişse sorumluluk doğabilir. Teknik rapor ve diğer deliller önemlidir."
+        },
+        {
+          "question": "İkinci el araçta ayıp için süre ne kadar?",
+          "answer": "Tüketici işlemlerinde ikinci el ürün için sorumluluk bir yıldan az olamaz. Ayıp ağır kusur veya hileyle gizlenmişse zamanaşımı uygulanmaz."
+        }
+      ],
+      "result_assessment": "Gizli ayıp fark edildiğinde araç hemen kontrol ettirilmeli ve satıcıya sözlü değil, yazılı bildirim yapılmalıdır. İlan, ekspertiz, servis raporu ve SBM kayıtları birlikte saklanmalıdır. Satın alma öncesinde bağımsız ekspertiz ile sigorta geçmişinin birlikte incelenmesi, sonradan doğabilecek uyuşmazlık riskini önemli ölçüde azaltır.",
+      "external_links": [
+        {
+          "title": "Ticaret Bakanlığı - Ayıplı Mal ve Hizmetler Rehberi",
+          "url": "https://tuketici.ticaret.gov.tr/yayinlar/tuketici-bilgi-rehberi/ayipli-mal-ve-hizmetler-hakkinda-bilgilendirme"
+        },
+        {
+          "title": "Ticaret Bakanlığı - İkinci El Taşıt Ticareti Sıkça Sorulan Sorular",
+          "url": "https://ticaret.gov.tr/ic-ticaret/sikca-sorulan-sorular/sektorel-ticaret"
+        },
+        {
+          "title": "6502 Sayılı Tüketicinin Korunması Hakkında Kanun",
+          "url": "https://tuketici.ticaret.gov.tr/data/5e81982d13b876a1b04c7a42/Tuketicinin_Korunmasi_Hakkinda_Kanun_6502_Ocak_2021.pdf"
+        }
+      ]
+    }
+  ]
+}

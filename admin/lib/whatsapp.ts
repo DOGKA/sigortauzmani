@@ -17,7 +17,7 @@ export function buildTalepWhatsAppMessage(talep: Talep): string {
   return [
     "Merhaba,",
     "",
-    `Sigorta Uzmanı'ndan yazıyorum. Web sitemizden ilettiğiniz ${talep.product_title} talebiniz (${talep.talep_no}) için size ulaşıyorum.`,
+    `Sigorta Uzmanı'ndan yazıyorum. Web sitemizden ilettiğiniz ${talep.product_title} talebiniz (${talep.talep_no}) için size ulaşıyorum.${talep.sirket_adi ? ` ${talep.sirket_adi} teklifi hakkında konuşmak istiyorum.` : ""}`,
     "",
     "Müsait misiniz?",
   ].join("\n");

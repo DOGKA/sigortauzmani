@@ -6,6 +6,7 @@ import {
   formatDate,
   formatDateTime,
   formatPrim,
+  paraKodu,
   maskKimlikNo,
   maskPhone,
 } from "@/lib/format";
@@ -439,7 +440,7 @@ function Fiyatlar({ oturumId }: { oturumId: string }) {
                 )}
               </span>
               <span className="text-sm font-semibold text-slate-800">
-                {formatPrim(fiyat.prim)}
+                {formatPrim(fiyat.prim, paraKodu(fiyat.brans_no))}
               </span>
             </li>
           ))}

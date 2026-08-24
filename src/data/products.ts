@@ -46,6 +46,21 @@ export const products: Product[] = [
     ],
   },
   {
+    slug: "kisa-sureli-trafik",
+    title: "Kısa Süreli Trafik",
+    badge: "Yeni",
+    seoTitle: "Kısa Süreli Trafik Sigortası Fiyatları 2026 için Teklif Al",
+    metaDescription:
+      "Kısa süreli (geçici) trafik sigortası fiyatlarını karşılaştırın. Noter satışı ve devir işlemleri için plaka ve ruhsat bilgisiyle dakikalar içinde teklif alın.",
+    serviceType: "Kısa Süreli Zorunlu Trafik Sigortası",
+    seoBullets: [
+      "Kısa süreli trafik sigortası fiyatlarını farklı sigorta şirketleri arasında karşılaştırın.",
+      "Noter satışı, devir ve geçici kullanım gibi bir yıldan kısa süreli ihtiyaçlar için düzenlenir.",
+      "Teminat kapsamı yıllık zorunlu trafik sigortasıyla aynıdır; yalnızca poliçe süresi kısadır.",
+      "Plaka ve ruhsat bilgilerinizle size özel kısa süreli trafik sigortası teklifinizi alın.",
+    ],
+  },
+  {
     slug: "tamamlayici-saglik",
     title: "Tamamlayıcı Sağlık",
     seoTitle: "Tamamlayıcı Sağlık Sigortası Fiyatları 2026 için Teklif Al",
@@ -118,7 +133,6 @@ export const products: Product[] = [
   {
     slug: "yesil-kart",
     title: "Yeşil Kart",
-    badge: "Yeni",
     seoTitle: "Yeşil Kart Sigortası Fiyatları 2026 için Teklif Al",
     metaDescription:
       "2026 Yeşil Kart Sigortası fiyatlarını araç türü ve süreye göre öğrenin. Aracınızla yurt dışına çıkmadan önce 15 gün-1 yıl arası poliçe teklifi alın.",
@@ -146,9 +160,12 @@ export const products: Product[] = [
   },
 ];
 
-// Ana sayfadaki ikon grid'i dört sütunlu olduğu için sekiz üründe tutuluyor
+// Ana sayfadaki ikon grid'i dört sütunlu olduğu için sekiz üründe tutuluyor.
+// Konut ve Yeşil Kart yalnızca menüde; grid'de yer kalmıyor.
+const HERO_DISI = new Set(["konut", "yesil-kart"]);
+
 export const heroProducts: Product[] = products.filter(
-  (p) => p.slug !== "konut",
+  (p) => !HERO_DISI.has(p.slug),
 );
 
 export function getProduct(slug: string): Product | undefined {

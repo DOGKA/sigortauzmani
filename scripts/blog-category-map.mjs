@@ -12,7 +12,7 @@ export const FINAL_CATEGORIES = [
   "Sigorta Rehberi",
 ];
 
-/** slug -> yeni kategori (68 yazının tamamını kapsar) */
+/** slug -> yeni kategori (110 yazının tamamını kapsar) */
 export const CATEGORY_MAP = {
   // Araç Sigortaları
   "trafik-sigortasi-neleri-karsilar": "Araç Sigortaları",
@@ -91,4 +91,48 @@ export const CATEGORY_MAP = {
   "sigorta-eksperi-nedir-ne-yapar": "Sigorta Rehberi",
   "2026-sigortacilik-mevzuati-degisiklikleri": "Sigorta Rehberi",
   "hayat-sigortasinda-vergi-avantaji": "Sigorta Rehberi",
+
+  // bloglar yeni (batch 18-28)
+  "2026-arac-alim-satiminda-yeni-kurallar-bilmeniz-gereken-mevzuat-degisiklikleri": "Araç Sigortaları",
+  "arac-satarken-trafik-sigortasi-zorunlu-mu-2026-guncel-rehber": "Araç Sigortaları",
+  "arac-satinca-trafik-sigortasi-ne-olur-iptal-ve-prim-iadesi-sureci": "Araç Sigortaları",
+  "noter-arac-satis-ucretleri-2026-guncel-masraflar-ve-islem-adimlari": "Araç Sigortaları",
+  "ikinci-el-arac-satisinda-guvenli-odeme-sistemi-nasil-calisir": "Araç Sigortaları",
+  "arac-alim-satiminda-gerekli-belgeler-2026-guncel-liste": "Araç Sigortaları",
+  "arac-satisini-engelleyen-borclar-nelerdir-mtv-trafik-cezasi-ve-haciz-durumlari": "Araç Sigortaları",
+  "engelli-araclarinda-2026-otv-istisnasi-ve-yeni-duzenlemeler": "Araç Sigortaları",
+  "ikinci-el-arac-alirken-sigorta-ve-hasar-gecmisi-nasil-sorgulanir": "Araç Sigortaları",
+  "arac-satisi-gerceklesmezse-yapilan-trafik-sigortasi-iptal-edilebilir-mi": "Araç Sigortaları",
+  "ikinci-el-arac-alirken-ekspertiz-raporu-zorunlu-mu-2026-guncel-kurallar": "Araç Sigortaları",
+  "ikinci-el-aracta-gizli-ayip-cikarsa-ne-yapilir-alicinin-haklari": "Araç Sigortaları",
+  "tamamlayici-saglik-sigortasi-nedir-kimler-yaptirabilir-2026-rehberi": "Sağlık Sigortaları",
+  "ozel-saglik-sigortasi-ile-tamamlayici-saglik-sigortasi-arasindaki-farklar": "Sağlık Sigortaları",
+  "tamamlayici-saglik-sigortasi-neleri-karsilar-neleri-karsilamaz": "Sağlık Sigortaları",
+  "2026-tamamlayici-saglik-sigortasi-fiyatlari-nasil-belirlenir": "Sağlık Sigortaları",
+  "bekleme-suresi-nedir-saglik-sigortasinda-hangi-hastaliklar-kapsanir": "Sağlık Sigortaları",
+  "dogum-teminatli-saglik-sigortasi-nedir-sartlari-ve-avantajlari": "Sağlık Sigortaları",
+  "mevcut-hastaliklar-saglik-sigortasini-etkiler-mi": "Sağlık Sigortaları",
+  "aile-saglik-sigortasi-mi-bireysel-saglik-sigortasi-mi-daha-avantajli": "Sağlık Sigortaları",
+  "2026da-saglik-sigortasi-secerken-dikkat-edilmesi-gereken-10-kritik-nokta": "Sağlık Sigortaları",
+  "saglik-sigortasinda-hastane-agi-network-nedir-dogru-ag-nasil-secilir": "Sağlık Sigortaları",
+  "saglik-sigortasinda-sirket-degistirirken-kazanilmis-haklar-korunur-mu-2026-rehberi": "Sağlık Sigortaları",
+  "ilk-arabami-aldim-hangi-sigortalari-yaptirmaliyim-2026-rehberi": "Sigorta Rehberi",
+  "25-yas-alti-suruculer-icin-trafik-sigortasi-neden-daha-pahali": "Sigorta Rehberi",
+  "elektrikli-arac-sahipleri-icin-kasko-rehberi-togg-ve-tesla-dahil": "Sigorta Rehberi",
+  "universite-ogrencileri-tamamlayici-saglik-sigortasi-yaptirabilir-mi": "Sigorta Rehberi",
+  "yurt-disina-gidecek-ogrenciler-icin-seyahat-saglik-sigortasi-rehberi": "Sigorta Rehberi",
+  "ilk-ise-girdim-isverenin-saglik-sigortasi-yetmezse-ne-yapmaliyim": "Sigorta Rehberi",
+  "ev-kiralayan-gencler-icin-konut-sigortasi-gerekli-mi": "Sigorta Rehberi",
+  "elektrikli-scooter-ve-bisiklet-kazalarinda-sigorta-nasil-isler": "Sigorta Rehberi",
+  "telefon-laptop-ve-oyun-konsolu-sigortalanabilir-mi-bilmeniz-gerekenler": "Sigorta Rehberi",
+  "yapay-zeka-caginda-siber-guvenlik-sigortasi-nedir-kimler-icin-mantikli": "Sigorta Rehberi",
+  "internetten-alisveriste-dolandirilirsam-sigorta-karsilar-mi": "Sigorta Rehberi",
+  "sosyal-medya-hesabi-calinirsa-sigorta-karsilar-mi-dijital-kimlik-koruma-rehberi": "Sigorta Rehberi",
+  "en-cok-yapilan-7-sigorta-hatasi-yeni-suruculer-dikkat": "Sigorta Rehberi",
+  "trafik-sigortasi-ile-kasko-arasindaki-fark-nedir-hangisi-ne-oder": "Sigorta Rehberi",
+  "kaza-yaptim-ne-yapmaliyim-ilk-10-dakikada-izlenecek-adimlar": "Sigorta Rehberi",
+  "kasko-her-hasari-karsilar-mi-en-cok-karistirilan-10-durum": "Sigorta Rehberi",
+  "hasarsizlik-indirimi-nedir-hangi-durumlarda-bozulur": "Sigorta Rehberi",
+  "imm-nedir-trafik-sigortasi-limiti-yetmezse-ne-olur": "Sigorta Rehberi",
+  "trafik-sigortasi-gecikirse-ne-olur-cezasi-ve-riskleri-2026": "Sigorta Rehberi",
 };

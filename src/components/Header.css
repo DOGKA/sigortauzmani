@@ -92,9 +92,9 @@
   transform: translateX(-50%);
   z-index: 60;
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 26px;
-  width: 560px;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 22px;
+  width: min(760px, calc(100vw - 48px));
   padding: 22px;
   border-radius: 20px;
   background: #ffffff;
@@ -314,6 +314,23 @@
 
   .header__phone-label {
     display: none;
+  }
+
+  .header__mega {
+    left: 0;
+    transform: translateX(-18%);
+    animation-name: mega-in-narrow;
+  }
+}
+
+@keyframes mega-in-narrow {
+  from {
+    opacity: 0;
+    transform: translateX(-18%) translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-18%) translateY(0);
   }
 }
 

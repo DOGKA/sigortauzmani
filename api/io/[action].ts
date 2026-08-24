@@ -97,12 +97,10 @@ const ACTIONS: Record<string, ActionDef> = {
     path: "/api/teklif/teklifguncelle",
     rateLimit: { limit: 120, windowSeconds: HOUR },
   },
-  yazdir: {
-    method: "GET",
-    path: "/api/yazdir",
-    queryParams: ["id", "tipi"],
-    rateLimit: { limit: 120, windowSeconds: HOUR },
-  },
+  // `/api/yazdir` bilinçli olarak burada değil: id'yi sorgu parametresinden
+  // alıyor, sahibine bakmıyor ve id'ler ardışık ilerliyor. Serbest bırakılsa
+  // sayaç çevirerek başkalarının teklif ve poliçe PDF'leri indirilebilirdi.
+  // Oturum doğrulaması yapan `api/io/belge.ts` üzerinden geçiyor.
 };
 
 function buildQuery(

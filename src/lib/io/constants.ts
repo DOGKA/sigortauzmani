@@ -16,6 +16,10 @@ export interface Secenek {
 /** Faz 1'de self servise açılan ürünler ve IO branş kodları. */
 export const OTOMATIK_URUNLER: Record<string, number> = {
   "trafik-sigortasi": 0,
+  // Kısa süreli trafik ayrı bir branş değil; aynı branşta `Arac.KisaSureli`
+  // ile ayrılıyor. Ürün olarak ayrı durması, akışın kendi alan ve şirket
+  // kurallarını taşıyabilmesi için.
+  "kisa-sureli-trafik": 0,
   kasko: 1,
   imm: 22,
   "seyahat-saglik": 6,

@@ -8,12 +8,19 @@
  * Otorizasyona düşen teklifler sunucuda eleniyor (`api/io/primler.ts`), bu
  * listeye hiç gelmiyor. Sayısı taşınıyor ki müşteri eksik şirketleri merak
  * etmesin.
+ *
+ * Satın alınabilir şirketlerde prim şişirilip indirimli gösterilir. Diğer
+ * şirketlerde yalnızca şişirilmiş tutar durur ve "Teklif iste" admin
+ * talebine düşer.
  */
 
+import { useState } from "react";
+import BelgeButonu from "./BelgeButonu";
 import IlerlemePaneli from "./IlerlemePaneli";
 import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
-import { fiyatGosterimi } from "./fiyatlandirma";
+import { fiyatGosterimi, kartTutari } from "./fiyatlandirma";
 import { BRANS_ADLARI, type BransSonucu } from "./flowState";
+import { satinAlinabilirSirket } from "../../lib/io/satinAlFiltre";
 import type { SirketTeklifi } from "../../lib/io/types";
 
 const paraBirimi = new Intl.NumberFormat("tr-TR", {
@@ -27,23 +34,65 @@ function formatPrim(prim: number | undefined): string {
   return paraBirimi.format(prim);
 }
 
-/** En düşük primi bulur; kartlarda "en uygun" etiketi için. */
-function enUygunId(sirketler: SirketTeklifi[]): number | null {
+function teklifAnahtari(bransNo: number, sirket: SirketTeklifi): string {
+  return `${bransNo}-${sirket.Id}-${sirket.TeklifNo}`;
+}
+
+function gosterilenTutar(
+  bransNo: number,
+  sirket: SirketTeklifi,
+  kisaSureli: boolean,
+): number {
+  const gosterim = fiyatGosterimi(sirket.Prim);
+  if (!gosterim) return Infinity;
+  return kartTutari(
+    gosterim,
+    satinAlinabilirSirket(bransNo, sirket.SirketKodu, kisaSureli),
+  );
+}
+
+/** En düşük görünen fiyat; kartlarda "en uygun" etiketi için. */
+function enUygunId(
+  bransNo: number,
+  sirketler: SirketTeklifi[],
+  kisaSureli: boolean,
+): number | null {
   let enIyi: SirketTeklifi | null = null;
+  let enIyiTutar = Infinity;
   for (const sirket of sirketler) {
-    if (typeof sirket.Prim !== "number" || sirket.Prim <= 0) continue;
-    if (!enIyi || sirket.Prim < enIyi.Prim) enIyi = sirket;
+    const tutar = gosterilenTutar(bransNo, sirket, kisaSureli);
+    if (tutar >= enIyiTutar) continue;
+    enIyi = sirket;
+    enIyiTutar = tutar;
   }
   return enIyi?.Id ?? null;
 }
 
 interface Props {
   sonuclar: BransSonucu[];
+  /** Teklif PDF'i oturuma karşı doğrulandığı için gerekli; yoksa gizlenir. */
+  oturumId: string | null;
+  /** Kısa süreli trafikte anında satın alınabilir şirket listesi farklı. */
+  kisaSureli: boolean;
   onSatinAl: (bransNo: number, teklifId: number, teklif: SirketTeklifi) => void;
+  onTeklifIste: (
+    bransNo: number,
+    teklif: SirketTeklifi,
+  ) => Promise<{ ok: true } | { ok: false; error: string }>;
   onGeri: () => void;
 }
 
-export default function FiyatListesi({ sonuclar, onSatinAl, onGeri }: Props) {
+export default function FiyatListesi({
+  sonuclar,
+  oturumId,
+  kisaSureli,
+  onSatinAl,
+  onTeklifIste,
+  onGeri,
+}: Props) {
+  const [gonderiliyor, setGonderiliyor] = useState<string | null>(null);
+  const [hatalar, setHatalar] = useState<Record<string, string>>({});
+
   const hepsiTamam = sonuclar.every((sonuc) => sonuc.tamamlandi);
   const toplamTeklif = sonuclar.reduce(
     (toplam, sonuc) => toplam + sonuc.sirketler.length,
@@ -53,6 +102,29 @@ export default function FiyatListesi({ sonuclar, onSatinAl, onGeri }: Props) {
     (toplam, sonuc) => toplam + sonuc.otorizasyonSayisi,
     0,
   );
+
+  // Talep açılınca sayfa başarı ekranına geçiyor; bu yüzden burada
+  // "alındı" durumu tutulmuyor, yalnızca gönderim sırası kilitleniyor.
+  const teklifIste = async (bransNo: number, teklif: SirketTeklifi) => {
+    const anahtar = teklifAnahtari(bransNo, teklif);
+    if (gonderiliyor) return;
+
+    setGonderiliyor(anahtar);
+    setHatalar((onceki) => {
+      if (!onceki[anahtar]) return onceki;
+      const sonraki = { ...onceki };
+      delete sonraki[anahtar];
+      return sonraki;
+    });
+
+    const sonuc = await onTeklifIste(bransNo, teklif);
+    setGonderiliyor(null);
+
+    const hataMesaji = "error" in sonuc ? sonuc.error : null;
+    if (hataMesaji) {
+      setHatalar((onceki) => ({ ...onceki, [anahtar]: hataMesaji }));
+    }
+  };
 
   return (
     <div className="flow__card flow__card--wide">
@@ -84,12 +156,12 @@ export default function FiyatListesi({ sonuclar, onSatinAl, onGeri }: Props) {
       ) : null}
 
       {sonuclar.map((sonuc) => {
-        const enUygun = enUygunId(sonuc.sirketler);
-        const sirali = [...sonuc.sirketler].sort((a, b) => {
-          const aPrim = typeof a.Prim === "number" ? a.Prim : Infinity;
-          const bPrim = typeof b.Prim === "number" ? b.Prim : Infinity;
-          return aPrim - bPrim;
-        });
+        const enUygun = enUygunId(sonuc.bransNo, sonuc.sirketler, kisaSureli);
+        const sirali = [...sonuc.sirketler].sort(
+          (a, b) =>
+            gosterilenTutar(sonuc.bransNo, a, kisaSureli) -
+            gosterilenTutar(sonuc.bransNo, b, kisaSureli),
+        );
 
         return (
           <section key={sonuc.bransNo} className="flow__brans">
@@ -106,10 +178,17 @@ export default function FiyatListesi({ sonuclar, onSatinAl, onGeri }: Props) {
             <ul className="flow__teklifler">
               {sirali.map((sirket) => {
                 const gosterim = fiyatGosterimi(sirket.Prim);
+                const satinAl = satinAlinabilirSirket(
+                  sonuc.bransNo,
+                  sirket.SirketKodu,
+                  kisaSureli,
+                );
+                const anahtar = teklifAnahtari(sonuc.bransNo, sirket);
+                const bekliyor = gonderiliyor === anahtar;
 
                 return (
                   <li
-                    key={`${sirket.Id}-${sirket.TeklifNo}`}
+                    key={anahtar}
                     className={`flow__teklif${sirket.Id === enUygun ? " flow__teklif--best" : ""}`}
                   >
                     <div className="flow__teklif-sirket">
@@ -117,9 +196,21 @@ export default function FiyatListesi({ sonuclar, onSatinAl, onGeri }: Props) {
                       {sirket.Id === enUygun ? (
                         <span className="flow__badge">En uygun</span>
                       ) : null}
+                      {oturumId ? (
+                        <BelgeButonu
+                          key={anahtar}
+                          oturumId={oturumId}
+                          bransNo={sonuc.bransNo}
+                          teklifId={sonuc.teklifId}
+                          sirketTeklifId={sirket.Id}
+                          tip="teklif"
+                          etiket="Teklif PDF'i"
+                          gorunum="ikon"
+                        />
+                      ) : null}
                     </div>
                     <div className="flow__teklif-detay">
-                      {gosterim ? (
+                      {gosterim && satinAl ? (
                         <span className="flow__teklif-fiyat">
                           <span className="flow__teklif-liste">
                             {formatPrim(gosterim.listeFiyati)}
@@ -131,7 +222,11 @@ export default function FiyatListesi({ sonuclar, onSatinAl, onGeri }: Props) {
                       ) : null}
                       <span className="flow__teklif-odenecek">
                         <strong className="flow__teklif-prim">
-                          {formatPrim(sirket.Prim)}
+                          {formatPrim(
+                            gosterim
+                              ? kartTutari(gosterim, satinAl)
+                              : sirket.Prim,
+                          )}
                         </strong>
                         {sirket.Taksit ? (
                           <span className="flow__teklif-taksit">
@@ -140,15 +235,33 @@ export default function FiyatListesi({ sonuclar, onSatinAl, onGeri }: Props) {
                         ) : null}
                       </span>
                     </div>
-                    <button
-                      type="button"
-                      className="flow__primary flow__primary--sm"
-                      onClick={() =>
-                        onSatinAl(sonuc.bransNo, sonuc.teklifId, sirket)
-                      }
-                    >
-                      Satın al
-                    </button>
+                    {satinAl ? (
+                      <button
+                        type="button"
+                        className="flow__primary flow__primary--sm"
+                        onClick={() =>
+                          onSatinAl(sonuc.bransNo, sonuc.teklifId, sirket)
+                        }
+                      >
+                        Satın al
+                      </button>
+                    ) : (
+                      <div className="flow__teklif-aksiyon">
+                        <button
+                          type="button"
+                          className="flow__primary flow__primary--sm"
+                          disabled={bekliyor || Boolean(gonderiliyor)}
+                          onClick={() => void teklifIste(sonuc.bransNo, sirket)}
+                        >
+                          {bekliyor ? "Gönderiliyor…" : "Teklif iste"}
+                        </button>
+                        {hatalar[anahtar] ? (
+                          <span className="flow__teklif-hata">
+                            {hatalar[anahtar]}
+                          </span>
+                        ) : null}
+                      </div>
+                    )}
                   </li>
                 );
               })}

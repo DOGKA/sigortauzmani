@@ -160,6 +160,13 @@ function aracSatirlari(girdi: OzetGirdisi): OzetSatiri[] {
   }
   if (gereksinim.bransNo === 0) {
     satirlar.push({
+      etiket: "Poliçe süresi",
+      deger: gereksinim.kisaSureli ? "Kısa süreli" : "Yıllık",
+    });
+  }
+  // Kasko ek teklifi kısa süreli üründe sorulmuyor; satır da o zaman düşüyor.
+  if (gereksinim.bransNo === 0 && !gereksinim.kisaSureli) {
+    satirlar.push({
       etiket: "Kasko teklifi de istendi",
       deger: girdi.kaskoDa ? "Evet" : "Hayır",
     });

@@ -35,22 +35,24 @@ import {
   isValidMobilePhone,
   isValidTckn,
   isValidVkn,
-  normalizeMobilePhone,
 } from "../../utils/validation";
 import type { KimlikDurumu, KisiTipi } from "./flowState";
 import { kimlikNoOf } from "./flowState";
 
-const TIP_ETIKETLERI: Record<KisiTipi, string> = {
-  sahis: "T.C. vatandaşı",
-  yabanci: "Yabancı uyruklu",
-  sirket: "Şirket",
-};
-
-const ALAN_ETIKETLERI: Record<KisiTipi, string> = {
-  sahis: "T.C. Kimlik Numarası",
-  yabanci: "Yabancı Kimlik Numarası",
-  sirket: "Vergi Kimlik Numarası",
-};
+/**
+ * Kişi tipi kullanıcıya sorulmuyor, numaranın kendisinden okunuyor:
+ * 10 hane Vergi Kimlik Numarası, 99 ile başlayan 11 hane Yabancı Kimlik
+ * Numarası, kalan 11 hane T.C. Kimlik Numarası.
+ *
+ * T.C. Kimlik Numarası yazılırken onuncu hanede bir an "şirket" görünüyor;
+ * ayrım yalnızca doğum tarihi alanını etkilediği ve alan on birinci hanede
+ * geri geldiği için ayrıca bir gecikme kurgusuna girilmedi.
+ */
+function kisiTipiCikar(kimlikNo: string): KisiTipi {
+  if (kimlikNo.length === 10) return "sirket";
+  if (kimlikNo.startsWith("99")) return "yabanci";
+  return "sahis";
+}
 
 function kimlikGecerli(durum: KimlikDurumu): boolean {
   if (durum.entityType === "sahis") return isValidTckn(durum.tckn);
@@ -78,12 +80,14 @@ export default function KimlikAdimi({
   const dogrula = () => {
     const next: Record<string, string> = {};
     if (!kimlikGecerli(durum)) {
+      // Alan tek olduğu için eksik girişte hangi numaranın beklendiği
+      // söylenmeli; tip yalnızca girilen değerden çıkarılabiliyor.
       next.kimlik =
         durum.entityType === "sirket"
           ? "Geçerli bir Vergi Kimlik Numarası girin (10 hane)."
           : durum.entityType === "yabanci"
             ? "Yabancı Kimlik Numarası 99 ile başlayan 11 hane olmalı."
-            : "Geçerli bir T.C. Kimlik Numarası girin (11 hane).";
+            : "T.C. Kimlik Numarası 11 hane, Vergi Kimlik Numarası 10 hane olmalı.";
     }
     if (!isValidMobilePhone(durum.phone)) {
       next.phone = "Geçerli bir cep telefonu girin (05XX XXX XX XX).";
@@ -111,7 +115,6 @@ export default function KimlikAdimi({
           KimlikNo: kimlikNoOf(durum),
           // Boş doğum tarihi göndermiyoruz; MERNİS gerekiyorsa geri istiyor.
           ...(durum.birthDate ? { DogumTarihi: durum.birthDate } : {}),
-          Cep: normalizeMobilePhone(durum.phone),
         },
       });
 
@@ -164,36 +167,25 @@ export default function KimlikAdimi({
     }
   };
 
-  const kisiTipiDegis = (tip: KisiTipi) => {
-    if (tip === durum.entityType) return;
+  const kimlikDegeri = kimlikNoOf(durum);
+
+  const kimlikYaz = (value: string) => {
+    const kimlikNo = value.replace(/\D/g, "").slice(0, 11);
+    const tip = kisiTipiCikar(kimlikNo);
     onDegis({
       entityType: tip,
-      tckn: "",
-      ykn: "",
-      vkn: "",
+      tckn: tip === "sahis" ? kimlikNo : "",
+      ykn: tip === "yabanci" ? kimlikNo : "",
+      vkn: tip === "sirket" ? kimlikNo : "",
+      // Numara değişti; önceki sorgunun sonucu artık bu kişiye ait değil.
       adSoyad: "",
       mernisTamam: false,
       sigortaliStr: "",
       adresKodu: "",
     });
-    setHatalar({});
-    setUyari("");
   };
 
-  const kimlikDegeri =
-    durum.entityType === "sahis"
-      ? durum.tckn
-      : durum.entityType === "yabanci"
-        ? durum.ykn
-        : durum.vkn;
-
-  const kimlikYaz = (value: string) => {
-    if (durum.entityType === "sahis") onDegis({ tckn: value });
-    else if (durum.entityType === "yabanci") onDegis({ ykn: value });
-    else onDegis({ vkn: value });
-  };
-
-  // Şirketlerde doğum tarihi hiç sorulmuyor.
+  // Vergi Kimlik Numarası girildiyse doğum tarihi sorulmuyor.
   const dogumTarihiGoster = durum.entityType !== "sirket";
 
   return (
@@ -203,32 +195,20 @@ export default function KimlikAdimi({
         Bilgileriniz sigorta şirketlerinden fiyat almak için kullanılır.
       </p>
 
-      <div className="flow__toggle" role="group" aria-label="Kişi tipi">
-        {(Object.keys(TIP_ETIKETLERI) as KisiTipi[]).map((tip) => (
-          <button
-            key={tip}
-            type="button"
-            className={`flow__toggle-btn${durum.entityType === tip ? " flow__toggle-btn--active" : ""}`}
-            onClick={() => kisiTipiDegis(tip)}
-          >
-            {TIP_ETIKETLERI[tip]}
-          </button>
-        ))}
-      </div>
-
       <div className="flow__grid">
         <label className="flow__field">
-          <span className="flow__label">{ALAN_ETIKETLERI[durum.entityType]}</span>
+          <span className="flow__label">TCKN / VKN</span>
           <input
             className={`flow__input${hatalar.kimlik ? " flow__input--error" : ""}`}
             inputMode="numeric"
             autoComplete="off"
-            maxLength={durum.entityType === "sirket" ? 10 : 11}
+            maxLength={11}
             value={kimlikDegeri}
-            onChange={(event) =>
-              kimlikYaz(event.target.value.replace(/\D/g, ""))
-            }
+            onChange={(event) => kimlikYaz(event.target.value)}
           />
+          <span className="flow__hint">
+            Şirket adına alıyorsanız Vergi Kimlik Numarası girin.
+          </span>
           {hatalar.kimlik ? (
             <span className="flow__error">{hatalar.kimlik}</span>
           ) : null}

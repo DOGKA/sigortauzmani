@@ -24,6 +24,8 @@ import {
 } from "../_shared/io";
 import { findOturum, rateCheck, recordSatinAlma, updateOturum } from "../_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
+import { belgeGetir } from "../_shared/yazdir";
+import { satinAlinabilirSirket } from "../../src/lib/io/satinAlFiltre";
 import { normalizeSirketKodu, sirketAdi } from "../../src/lib/io/sirketler";
 
 export const config = { runtime: "edge" };
@@ -87,24 +89,6 @@ function validateKart(kart: Kart): { ok: true } | { ok: false; message: string }
   return { ok: true };
 }
 
-/** PDF adresi yanıtta Url / pdf / downloadUrl olarak gelebiliyor. */
-function readPdfUrl(payload: unknown): string | null {
-  if (!payload || typeof payload !== "object") return null;
-  const record = payload as Record<string, unknown>;
-  for (const key of ["Url", "url", "pdf", "Pdf", "downloadUrl"]) {
-    const value = record[key];
-    if (typeof value === "string" && value.startsWith("http")) return value;
-  }
-  return null;
-}
-
-async function fetchPdf(id: number, tipi: "t" | "m"): Promise<string | null> {
-  const result = await ioFetch(`/api/yazdir?id=${id}&tipi=${tipi}`, {
-    method: "GET",
-  });
-  return result.ok ? readPdfUrl(result.data) : null;
-}
-
 export default async function handler(request: Request): Promise<Response> {
   if (request.method !== "POST") {
     return jsonResponse({ error: "Yöntem desteklenmiyor." }, 405);
@@ -152,6 +136,23 @@ export default async function handler(request: Request): Promise<Response> {
   const kartNo = digitsOnly(kart.KartNo);
   const kartSon4 = kartNo.slice(-4);
   const sirketKodu = normalizeSirketKodu(teklif.SirketKodu);
+
+  // Kısa süreli trafikte izin listesi farklı. Bayrak istemciden değil oturum
+  // kaydındaki üründen okunuyor; aksi hâlde istemci listeyi seçebilirdi.
+  const kisaSureli = oturum.product_slug === "kisa-sureli-trafik";
+
+  if (!satinAlinabilirSirket(bransNo, sirketKodu, kisaSureli)) {
+    return withCookie(
+      jsonResponse(
+        {
+          error:
+            "Bu teklif anında satın alınamıyor. Ekibimiz sizinle iletişime geçecek.",
+        },
+        403,
+      ),
+      session,
+    );
+  }
 
   const result = await ioFetch(`/api/teklif/satinal`, {
     method: "POST",
@@ -231,11 +232,20 @@ export default async function handler(request: Request): Promise<Response> {
     );
   }
 
-  // Poliçe ve makbuz PDF'leri satın alma sonrası TeklifDetay.Id ile alınır.
+  // Poliçe ve makbuz PDF'leri seçilen teklif satırının Id'siyle alınır;
+  // IO satın almadan sonra yeni bir belge kimliği üretmiyor.
+  //
+  // Makbuz her şirkette çıkmıyor ("Pdf Yazdırılamadı.") ve çıkacak olanlarda
+  // da poliçeden biraz sonra hazırlanabiliyor. Bu yüzden burada dönen null
+  // satın almayı başarısız yapmıyor; sonuç ekranı makbuzu talep üzerine
+  // yeniden istiyor (`api/io/belge.ts`).
   const pdfId = Number(teklif.Id);
-  const [policePdf, makbuzPdf] = Number.isFinite(pdfId)
-    ? await Promise.all([fetchPdf(pdfId, "t"), fetchPdf(pdfId, "m")])
+  const [policeBelgesi, makbuzBelgesi] = Number.isFinite(pdfId)
+    ? await Promise.all([belgeGetir(pdfId, "t"), belgeGetir(pdfId, "m")])
     : [null, null];
+
+  const policePdf = policeBelgesi?.ok ? policeBelgesi.url : null;
+  const makbuzPdf = makbuzBelgesi?.ok ? makbuzBelgesi.url : null;
 
   await recordSatinAlma({
     oturum_id: oturum.id,

@@ -1,0 +1,161 @@
+{
+  "category": "Araç Sigortaları ve Mevzuat",
+  "batch": 19,
+  "language": "tr-TR",
+  "source_checked_at": "2026-07-28",
+  "writing_standard": {
+    "structure": [
+      "Başlık",
+      "Kısa Özet",
+      "İçerik",
+      "FAQ",
+      "Sonuç Değerlendirme"
+    ],
+    "style": "Editoryal, sade ve edilgen anlatım",
+    "external_link_required": true,
+    "marketing_focus": true,
+    "blogs_per_json": 4
+  },
+  "blogs": [
+    {
+      "id": 73,
+      "title": "İkinci El Araç Satışında Güvenli Ödeme Sistemi Nasıl Çalışır?",
+      "short_summary": "İkinci el araç satışında Güvenli Ödeme Sistemi, araç bedeli ile mülkiyetin eş zamanlı olarak el değiştirmesini sağlar. Satış bedeli noter işlemi tamamlanana kadar güvenli hesapta tutulur; devir gerçekleştiğinde satıcının hesabına aktarılır.",
+      "content_html": "<p>İkinci el araç satışında Güvenli Ödeme Sistemi, alıcının ödeme yapmasına rağmen aracı devralamaması veya satıcının aracı devretmesine rağmen bedeli alamaması riskini azaltmak amacıyla kullanılmaktadır. Nakit, havale, EFT ve FAST gibi yöntemlerle gerçekleştirilen ikinci el motorlu kara taşıtı satışlarında sistemin kullanılması zorunludur.</p>\n\n<p>Ödeme doğrudan alıcının hesabından satıcının hesabına gönderilmez. Satış bedeli önce yetkili banka, elektronik para kuruluşu veya ödeme kuruluşu tarafından işletilen güvenli hesaba aktarılır. Noter devri tamamlandığında para otomatik olarak satıcıya gönderilir.</p>\n\n<h2>Güvenli Ödeme Sistemi işlemini kim başlatır?</h2>\n\n<p>İşlem satıcı tarafından başlatılır. Satıcı, hizmet alınacak banka veya ödeme kuruluşunun Güvenli Ödeme Sistemi ekranına giriş yaparak kendi bilgilerini, alıcının bilgilerini, aracın bilgilerini ve satış bedelini kaydeder.</p>\n\n<p>Kayıt tamamlandığında bir referans numarası oluşturulur. Bu numara SMS veya e-posta yoluyla alıcıya gönderilir. Referans numarasının noter işleminden önce hazırlanması, satış günü yaşanabilecek beklemeyi azaltır.</p>\n\n<h2>Alıcı hangi işlemleri yapar?</h2>\n\n<p>Alıcı, kendisine gönderilen referans numarasıyla sisteme giriş yapar. Satıcı tarafından girilen araç, kişi ve satış bedeli bilgileri kontrol edilerek onaylanır. Bilgilerde hata bulunuyorsa ödeme yapılmadan önce satıcıdan kaydın düzeltilmesi istenir.</p>\n\n<p>Onay sonrasında satış bedeli sistemde belirtilen güvenli hesaba transfer edilir. Para yatırıldığında noter sistemi üzerinden ödeme hazır bilgisi görülebilir. Satış işleminin tamamlanabilmesi için bedelin güvenli hesaba eksiksiz şekilde aktarılmış olması gerekir.</p>\n\n<h2>Noterde para nasıl kontrol edilir?</h2>\n\n<p>Noter tarafından araç üzerindeki kayıtlar, taraf bilgileri, alıcı adına düzenlenen trafik sigortası ve güvenli ödeme kaydı elektronik ortamda kontrol edilir. Ödemenin sisteme aktarılmadığı görülürse satış tamamlanmaz.</p>\n\n<p>Taraflar satış sözleşmesini imzaladığında ve araç alıcı adına tescil edildiğinde, noter sistemi tarafından ödeme kuruluşuna devir bilgisi iletilir. Güvenli hesapta bekleyen araç bedeli satıcının bildirdiği hesaba aktarılır.</p>\n\n<h2>Satış gerçekleşmezse para ne olur?</h2>\n\n<p>Noter devri tamamlanmazsa para satıcıya gönderilmez. İşlem iptal edildiğinde veya sistemde belirlenen süre sona erdiğinde bedel alıcının hesabına iade edilir. İade süresi, kullanılan banka veya ödeme kuruluşunun çalışma düzenine göre değişebilir.</p>\n\n<h2>Satış bedeli doğru yazılmalı mı?</h2>\n\n<p>Sisteme girilen bedel ile noter satış sözleşmesinde beyan edilen bedelin uyumlu olması gerekir. Araç bedelinin bir kısmının sistem dışında elden veya farklı bir hesaba gönderilmesi, güvenli ödeme korumasını zayıflatır ve taraflar arasında uyuşmazlık oluşturabilir.</p>\n\n<p>Kapora daha önce ödenmişse, bu tutarın satış bedelinde nasıl gösterileceği ve güvenli ödeme kaydına nasıl yansıtılacağı işlem yapılacak kuruluştan öğrenilmelidir.</p>\n\n<h2>Güvenli ödeme için ücret alınır mı?</h2>\n\n<p>Sistemi sunan kuruluş tarafından hizmet bedeli alınabilir. Ücretin alıcıdan mı, satıcıdan mı veya işlem tutarından mı tahsil edileceği kullanılan kuruluşa göre değişebilir. İşlem başlatılmadan önce hizmet bedeli ve iade koşulları kontrol edilmelidir.</p>\n\n<h2>Güvenli işlem için dikkat edilmesi gerekenler</h2>\n\n<ul>\n<li>Referans numarası yalnızca resmî banka veya ödeme kuruluşu kanallarında kullanılmalıdır.</li>\n<li>Satıcı ve alıcı adına kayıtlı hesaplar tercih edilmelidir.</li>\n<li>Araç plakası, kimlik bilgileri ve satış bedeli ödeme öncesinde doğrulanmalıdır.</li>\n<li>SMS ile gönderilen şüpheli bağlantılara giriş yapılmamalıdır.</li>\n<li>Noter devri tamamlanmadan sistem dışında ek ödeme yapılmamalıdır.</li>\n<li>İşlem ve ödeme dekontları saklanmalıdır.</li>\n</ul>\n\n<p>Sistemin resmî işlem sırası ve zorunluluk kapsamı <a href=\"https://ticaret.gov.tr/haberler/ticaret-bakanligi-ve-noterler-birligi-tarafindan-kurulan-guvenli-odeme-sistemi-27-eylul-2024-tarihinde-zorunlu-hale-geliyor\" target=\"_blank\" rel=\"noopener noreferrer\">Ticaret Bakanlığının Güvenli Ödeme Sistemi açıklaması</a> üzerinden incelenebilir.</p>",
+      "faq": [
+        {
+          "question": "Güvenli Ödeme Sistemi kullanmadan ikinci el araç satılabilir mi?",
+          "answer": "Satış bedelinin nakit, havale, EFT veya benzeri yöntemlerle ödendiği ikinci el araç satışlarında sistemin kullanılması zorunludur."
+        },
+        {
+          "question": "Noter satışı iptal olursa para satıcıya gider mi?",
+          "answer": "Hayır. Devir tamamlanmadığında bedel satıcıya aktarılmaz ve sistem kurallarına göre alıcının hesabına iade edilir."
+        },
+        {
+          "question": "Güvenli ödeme referans numarasını kim oluşturur?",
+          "answer": "İşlem satıcı tarafından başlatılır ve oluşturulan referans numarası alıcıya gönderilir."
+        }
+      ],
+      "result_assessment": "Güvenli Ödeme Sistemi, araç ve paranın aynı işlem içinde güvenli şekilde el değiştirmesini sağlar. Satış bedeli, araç bilgileri ve taraf hesapları noter gününden önce hazırlanmalıdır. Devir öncesinde alıcı adına trafik sigortasının da düzenlenmesi gerektiğinden, sigorta tekliflerinin önceden karşılaştırılması satış sürecinin kesintisiz tamamlanmasına yardımcı olur.",
+      "external_links": [
+        {
+          "title": "Ticaret Bakanlığı - Güvenli Ödeme Sistemi",
+          "url": "https://ticaret.gov.tr/haberler/ticaret-bakanligi-ve-noterler-birligi-tarafindan-kurulan-guvenli-odeme-sistemi-27-eylul-2024-tarihinde-zorunlu-hale-geliyor"
+        },
+        {
+          "title": "Türkiye Noterler Birliği - Güvenli Ödeme Hizmeti",
+          "url": "https://portal.tnb.org.tr/Sayfalar/GuvenliOdemeHiz.aspx"
+        }
+      ]
+    },
+    {
+      "id": 74,
+      "title": "Araç Alım Satımında Gerekli Belgeler (2026 Güncel Liste)",
+      "short_summary": "2026 yılında ikinci el araç satışında tarafların kimlikleri, araç tescil belgesi, alıcı adına trafik sigortası ve Güvenli Ödeme Sistemi kaydı temel hazırlıklar arasında yer alır. Vekâlet, şirket, vasi veya miras işlemlerinde ek belgeler istenir.",
+      "content_html": "<p>Araç alım satımında gerekli belgeler, satışın taraflarına ve aracın hukuki durumuna göre değişebilir. Bireysel bir araç satışında işlem çoğunlukla elektronik kayıtlar üzerinden yürütülür. Ancak kimlik, ruhsat, ödeme ve temsil belgelerindeki eksiklik satışın ertelenmesine neden olabilir.</p>\n\n<p>Noter tarafından muayene, trafik sigortası, MTV borcu ve araç üzerindeki kısıtlamalar sistem üzerinden kontrol edilir. Elektronik kontrol yapılması, tarafların gerekli belgeleri hazırlama sorumluluğunu ortadan kaldırmaz.</p>\n\n<h2>Bireysel araç satışında temel belgeler</h2>\n\n<ul>\n<li>Alıcı ve satıcının geçerli T.C. kimlik kartı, nüfus cüzdanı veya pasaportu,</li>\n<li>Aracın motorlu araç tescil belgesi, yani ruhsatı,</li>\n<li>Alıcı adına düzenlenmiş zorunlu trafik sigortası,</li>\n<li>Güvenli Ödeme Sistemi referans numarası ve ödeme kaydı,</li>\n<li>Gerekli görülürse tarafların banka hesap veya IBAN bilgileri.</li>\n</ul>\n\n<p>Trafik sigortası poliçesi çoğunlukla elektronik ortamda görüntülenir. Buna rağmen poliçe numarasının ve başlangıç tarihinin hazır bulundurulması yararlı olur. Poliçenin alıcı adına ve satış tarihiyle uyumlu olarak düzenlendiği kontrol edilmelidir.</p>\n\n<h2>Ruhsat kaybolmuşsa satış yapılabilir mi?</h2>\n\n<p>Araç tescil bilgileri noter sistemi üzerinden görüntülenebilse de ruhsat kaybı işlem öncesinde notere bildirilmelidir. Aracın çalıntı, kayıp belge veya tescil kaydıyla ilgili başka bir kısıtlaması bulunuyorsa ek işlem yapılması gerekebilir.</p>\n\n<h2>Vekâletle araç satışında hangi belge gerekir?</h2>\n\n<p>Alıcı veya satıcı notere şahsen gidemiyorsa araç alım ya da satım yetkisini açıkça içeren noterlik vekâletnamesi gerekir. Vekâletnamede aracın plakası, şasi bilgisi veya işlem yetkisinin kapsamı kontrol edilmelidir.</p>\n\n<p>Genel vekâletnamede araç satma veya satın alma yetkisi bulunmuyorsa işlem yapılamayabilir. Vekilin de geçerli kimlik belgesini yanında bulundurması gerekir.</p>\n\n<h2>Şirket adına araç satışında hangi belgeler istenir?</h2>\n\n<ul>\n<li>Şirketi temsil eden kişinin kimlik belgesi,</li>\n<li>Temsil ve ilzam yetkisini gösteren güncel belge,</li>\n<li>İmza sirküleri veya elektronik sistemde doğrulanabilen yetki kaydı,</li>\n<li>Şirketin vergi kimlik numarası,</li>\n<li>Gerekli hâllerde yönetim kurulu veya ortaklar kurulu kararı.</li>\n</ul>\n\n<p>Şirketin temsil şekli birlikte imza gerektiriyorsa yalnızca bir yetkilinin notere gitmesi yeterli olmayabilir. Yetki yapısı satış gününden önce kontrol edilmelidir.</p>\n\n<h2>Vasi, kayyım veya yasal temsilci işlemlerinde ek belgeler</h2>\n\n<p>Kısıtlı veya küçük adına kayıtlı aracın satılması için mahkeme kararı, vasi ya da kayyım belgesi ve gerektiğinde satış izni istenebilir. Mahkeme kararının kesinleşme durumu ve satış yetkisinin açıkça bulunması gerekir.</p>\n\n<h2>Miras kalan araç satılırken hangi belgeler gerekir?</h2>\n\n<p>Veraset ilamı, mirasçılık belgesi, vergi ilişik kesme veya intikal işlemlerini gösteren belgeler istenebilir. Araç bütün mirasçılar adına kayıtlıysa satışta tüm hak sahiplerinin hazır bulunması veya uygun vekâlet vermesi gerekir.</p>\n\n<h2>Ekspertiz raporu zorunlu mu?</h2>\n\n<p>Bireyler arasındaki her özel araç satışında ekspertiz raporu noter için genel bir zorunluluk değildir. Bununla birlikte aracın teknik durumunun belgelenmesi, sonradan oluşabilecek uyuşmazlıkların azaltılmasını sağlar.</p>\n\n<p>Yetki belgeli işletmeler tarafından yapılan belirli ikinci el araç satışlarında yaş ve kilometre şartlarına bağlı ekspertiz yükümlülüğü bulunmaktadır. Satışın galeri veya yetkili işletme üzerinden yapılması hâlinde rapor şartları ayrıca kontrol edilmelidir.</p>\n\n<h2>Belge dışında sistemden kontrol edilen şartlar</h2>\n\n<ul>\n<li>Aracın geçerli muayenesinin bulunması,</li>\n<li>Vadesi geçmiş MTV ve araçla ilişkili ceza borçlarının bulunmaması,</li>\n<li>Haciz, rehin, tedbir veya satış yasağı kaydının olmaması,</li>\n<li>Alıcı adına zorunlu trafik sigortasının bulunması,</li>\n<li>Güvenli ödeme kaydının tamamlanması.</li>\n</ul>\n\n<p>Araç tescil işlemlerinde istenebilecek belgeler işlem türüne göre değişebildiği için güncel liste <a href=\"https://portal.tnb.org.tr/Artes/Sayfalar/TescilGerekliEvrak.aspx\" target=\"_blank\" rel=\"noopener noreferrer\">Türkiye Noterler Birliği Araç Tescil Sistemi</a> üzerinden kontrol edilebilir.</p>",
+      "faq": [
+        {
+          "question": "Araç satışında ruhsatın aslı gerekli mi?",
+          "answer": "Araç tescil bilgileri elektronik olarak görülse de ruhsatın satışta bulundurulması ve kayıp olması hâlinde notere bilgi verilmesi önerilir."
+        },
+        {
+          "question": "Alıcı adına trafik sigortası olmadan noter satışı yapılır mı?",
+          "answer": "Hayır. Alıcı adına zorunlu trafik sigortası düzenlenmeden satış ve tescil işlemi tamamlanamaz."
+        },
+        {
+          "question": "Araç satışında ekspertiz raporu herkese zorunlu mu?",
+          "answer": "Bireysel satışların tamamında genel bir noter zorunluluğu değildir. Yetki belgeli işletme satışlarında ürünün yaşı ve kilometresine göre zorunluluk bulunabilir."
+        }
+      ],
+      "result_assessment": "Araç satışında yalnızca kimlik ve ruhsatla notere gitmek yeterli olmayabilir. Alıcı trafik sigortası, güvenli ödeme kaydı, temsil belgeleri ve araç üzerindeki elektronik kontroller önceden tamamlanmalıdır. Satın alınacak araç için sigorta tekliflerinin satış tarihinden önce hazırlanması, belge eksikliğine bağlı gecikmeleri ve son dakika fiyat baskısını azaltır.",
+      "external_links": [
+        {
+          "title": "Türkiye Noterler Birliği - Tescil İşlemi İçin Gerekli Belgeler",
+          "url": "https://portal.tnb.org.tr/Artes/Sayfalar/TescilGerekliEvrak.aspx"
+        },
+        {
+          "title": "Türkiye Noterler Birliği - Araç Tescil Sistemi SSS",
+          "url": "https://portal.tnb.org.tr/Artes/Sayfalar/SSSTumu.aspx"
+        },
+        {
+          "title": "Ticaret Bakanlığı - Güvenli Ödeme Sistemi",
+          "url": "https://ticaret.gov.tr/haberler/ticaret-bakanligi-ve-noterler-birligi-tarafindan-kurulan-guvenli-odeme-sistemi-27-eylul-2024-tarihinde-zorunlu-hale-geliyor"
+        }
+      ]
+    },
+    {
+      "id": 75,
+      "title": "Araç Satışını Engelleyen Borçlar Nelerdir? MTV, Trafik Cezası ve Haciz Durumları",
+      "short_summary": "Vadesi geçmiş MTV, araçla ilişkili trafik cezaları, geçersiz muayene ve araç kaydındaki haciz, rehin veya tedbir şerhleri noter satışını durdurabilir. Satış gününden önce e-Devlet ve Dijital Vergi Dairesi üzerinden kontrol yapılmalıdır.",
+      "content_html": "<p>Araç satışında alıcı ve satıcı anlaşmış olsa bile noter sistemi bazı borç ve kısıtlama kayıtları nedeniyle işlemi durdurabilir. Bu kayıtların satış günü öğrenilmesi, güvenli ödeme işleminin ve planlanan devrin ertelenmesine yol açabilir.</p>\n\n<p>Noter tarafından MTV borcu, trafik idari para cezası, muayene, trafik sigortası ve araç üzerindeki kısıtlayıcı şerhler elektronik olarak kontrol edilir. Satışa engel kayıt giderilmeden devir tamamlanamaz.</p>\n\n<h2>MTV borcu araç satışını engeller mi?</h2>\n\n<p>Evet. Satış tarihine kadar ödenmesi gereken Motorlu Taşıtlar Vergisi borçlarının kapatılması gerekir. Vadesi geçmiş borcun taksitlendirilmiş olması, satış için her zaman yeterli değildir. GİB açıklamalarına göre satış yapılabilmesi için taksitlendirilmiş borçlar dâhil araçla ilişkili borçların tamamen ödenmesi gerekir.</p>\n\n<p>Satış yılın ilk altı ayında yapılacaksa ilk dönem MTV'si; ikinci altı ayında yapılacaksa ilgili döneme kadar tahakkuk etmiş vergiler kontrol edilir. Ödeme sonrasında kaydın noter sistemine yansıması zaman alabileceği için borç son dakikaya bırakılmamalıdır.</p>\n\n<h2>Trafik cezaları satışa engel olur mu?</h2>\n\n<p>Araç plakasına veya araç sahibine düzenlenmiş ve satış kontrolünde görülen trafik idari para cezaları devir öncesinde ödenmelidir. Ceza yeni düzenlenmişse bankada veya e-Devlet'te görünmesi ile noter sistemine yansıması arasında süre farkı bulunabilir.</p>\n\n<p>Cezaya itiraz edilmiş olması, sistemde tahsilat veya satış engeli kaydının otomatik olarak kaldırıldığı anlamına gelmez. Tedbir kararı veya tahsilat kaydı ayrıca kontrol edilmelidir.</p>\n\n<h2>Hacizli araç satılabilir mi?</h2>\n\n<p>Araç kayıtlarında aktif haciz bulunuyorsa normal noter satışı yapılamaz. Haczin ilgili icra müdürlüğü, vergi dairesi veya alacaklı kurum tarafından kaldırılması ve terkin bilgisinin araç siciline işlenmesi gerekir.</p>\n\n<p>Borcun ödenmiş olması tek başına yeterli olmayabilir. Haciz kaldırma yazısının düzenlenmesi ve kaydın elektronik sistemden silinmesi beklenmelidir.</p>\n\n<h2>Rehinli araç satılabilir mi?</h2>\n\n<p>Banka kredisi veya başka bir borç nedeniyle araç üzerinde rehin bulunabilir. Rehin kaydı satışa engel oluşturabilir veya alacaklının onayını gerektirebilir. Kredi kapatılmış olsa bile banka tarafından rehin fekki yapılmadıysa noter sistemi kaydı aktif görebilir.</p>\n\n<p>Satıştan elde edilecek bedelle kredi kapatılacaksa banka, alıcı, satıcı ve noter süreci önceden planlanmalıdır. Güvenli Ödeme Sistemi dışındaki ek ödeme anlaşmalarının hukuki ve mali riskleri ayrıca değerlendirilmelidir.</p>\n\n<h2>Tedbir ve satış yasağı ne anlama gelir?</h2>\n\n<p>Mahkeme, savcılık, icra müdürlüğü veya başka bir yetkili kurum tarafından araç üzerine ihtiyati tedbir, yakalama, müsadere veya satış yasağı kaydı konulabilir. Bu kayıt kaldırılmadan araç devredilemez.</p>\n\n<p>Boşanma, miras, ortaklık, dolandırıcılık veya ceza soruşturması gibi uyuşmazlıklarda tedbir kaydıyla karşılaşılabilir. Kaydın hangi kurum tarafından konulduğu öğrenilmeli ve kaldırma işlemi aynı kurum üzerinden yürütülmelidir.</p>\n\n<h2>Muayenesiz araç satılabilir mi?</h2>\n\n<p>Trafikte kayıtlı bir aracın satışında geçerli muayene bilgisi sistemden kontrol edilir. Muayene süresi geçmişse satış işlemi tamamlanmayabilir. Trafikten çekme belgeli araçlarda ise muayene ve trafik sigortası bakımından farklı kurallar uygulanabilir.</p>\n\n<h2>HGS ve otoyol geçiş borçları ne olur?</h2>\n\n<p>İhlalli geçiş borçları ayrıca sorgulanmalıdır. Her geçiş borcu doğrudan noter sisteminde aynı şekilde satış engeli oluşturmayabilir; ancak borç icra veya haciz kaydına dönüşmüşse devir engellenebilir. Satıştan sonra eski plakaya ilişkin uyuşmazlık yaşanmaması için HGS hesabı kapatılmalı veya araçla ilişiği kesilmelidir.</p>\n\n<h2>Satıştan önce nereden sorgulama yapılabilir?</h2>\n\n<ul>\n<li>Dijital Vergi Dairesinden MTV ve trafik cezası borçları,</li>\n<li>e-Devlet üzerinden araç detayları ve e-haciz kaydı,</li>\n<li>TÜVTÜRK veya e-Devlet üzerinden muayene durumu,</li>\n<li>Banka veya finans kuruluşundan rehin durumu,</li>\n<li>KGM ve ilgili işletmeler üzerinden ihlalli geçiş kayıtları.</li>\n</ul>\n\n<p>MTV borcunun satışa etkisi ve taksitlendirilmiş borçların durumu <a href=\"https://cdn.gib.gov.tr/api/gibportal-file/file/getFileResources?objectKey=arsiv%2Ffileadmin%2Fbeyannamerehberi%2F2026%2F2026MtvTpcRehberi.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">Gelir İdaresi Başkanlığının 2026 MTV ve Trafik Cezası Rehberi</a> üzerinden kontrol edilebilir.</p>",
+      "faq": [
+        {
+          "question": "Taksitlendirilmiş MTV borcu varken araç satılabilir mi?",
+          "answer": "Satış yapılabilmesi için taksitlendirilmiş borçlar dâhil araçla ilgili ödenmesi gereken borçların kapatılması istenir."
+        },
+        {
+          "question": "Araç kredisi bittiği hâlde rehin görünüyorsa ne yapılır?",
+          "answer": "Kredinin kullanıldığı banka veya finans kuruluşundan rehin kaldırma işlemi talep edilmeli ve kaydın araç sicilinden silindiği doğrulanmalıdır."
+        },
+        {
+          "question": "Haciz borcu ödendikten hemen sonra araç satılabilir mi?",
+          "answer": "Borcun ödenmesinin yanında haczin ilgili kurum tarafından kaldırılması ve terkin bilgisinin sisteme işlenmesi gerekir."
+        }
+      ],
+      "result_assessment": "Araç satışından önce yalnızca borcun ödenmesi değil, haciz ve rehin gibi kayıtların sistemden kaldırıldığı da doğrulanmalıdır. Kontroller satış gününden birkaç gün önce tamamlanırsa noter ve güvenli ödeme işlemlerinin ertelenme riski azaltılır. Alıcı adına trafik sigortası da önceden hazırlanarak satışın bütün şartları tek seferde tamamlanabilir.",
+      "external_links": [
+        {
+          "title": "GİB - 2026 Motorlu Taşıtlar Vergisi ve Trafik İdari Para Cezası Rehberi",
+          "url": "https://cdn.gib.gov.tr/api/gibportal-file/file/getFileResources?objectKey=arsiv%2Ffileadmin%2Fbeyannamerehberi%2F2026%2F2026MtvTpcRehberi.pdf"
+        },
+        {
+          "title": "e-Devlet - Araçlara Uygulanan Elektronik Haciz Sorgulama",
+          "url": "https://www.turkiye.gov.tr/gib-intvrg-araclara-uygulanan-elektronik-haciz-sorgulama"
+        },
+        {
+          "title": "Türkiye Noterler Birliği - Araç Satış, Devir ve Tescil Usul ve Esasları",
+          "url": "https://portal.tnb.org.tr/GenelgeGenelYaziEklerDocLib/20237181553871USUL_VE_ESASLAR.pdf"
+        }
+      ]
+    },
+    {
+      "id": 76,
+      "title": "Engelli Araçlarında 2026 ÖTV İstisnası ve Yeni Düzenlemeler",
+      "short_summary": "2026 yılında engelli araçlarında ÖTV istisnası için 87.03 kapsamındaki araçlarda vergiler dâhil üst sınır 2.873.900 TL'dir. En az yüzde 40 yerli katkı şartı ve on yıllık yeni araç alma süresi uygulanırken, 17 Nisan 2026'da kapsam önemli bir engelli grubu için genişletilmiştir.",
+      "content_html": "<p>Engelli araçlarında 2026 ÖTV istisnası, engellilik oranı, ortopedik durum, sürücü belgesi, araç türü, yerli katkı oranı ve aracın vergiler dâhil satış bedeline göre uygulanır. Yalnızca engelli sağlık kurulu raporunun bulunması her başvuru için tek başına yeterli değildir.</p>\n\n<p>2026 yılında yürürlükte olan kurallar değerlendirilirken yüzde 90 ve üzeri engellilik, yüzde 90 altı özel tertibatlı kullanım ve 17 Nisan 2026'da kapsama eklenen yeni grup birbirinden ayrılmalıdır.</p>\n\n<h2>2026 ÖTV istisnası üst limiti ne kadar?</h2>\n\n<p>87.03 tarife pozisyonundaki binek otomobil, panelvan, pick-up, arazi taşıtı ve benzeri araçlarda, hesaplanması gereken ÖTV ve diğer bütün vergiler dâhil bedelin 2.873.900 TL'yi aşmaması gerekir.</p>\n\n<p>87.04 kapsamındaki yük taşımaya mahsus araçlarda motor silindir hacminin 2.800 cm³'ü aşmaması; 87.11 kapsamındaki motosikletlerde ise ilgili tarife ve kullanım koşullarının sağlanması gerekir.</p>\n\n<h2>Yüzde 40 yerli katkı şartı devam ediyor mu?</h2>\n\n<p>Evet. İstisna kapsamında satın alınacak aracın yerli katkı oranının en az yüzde 40 olması gerekir. Araç fiyatının üst sınırın altında bulunması tek başına yeterli değildir. Modelin yerli katkı şartını karşılayıp karşılamadığı satıcı veya üretici tarafından doğrulanmalıdır.</p>\n\n<h2>Yüzde 90 ve üzeri engelliler için şartlar</h2>\n\n<p>Engellilik derecesi yüzde 90 veya üzerinde olan kişiler tarafından, kanunda belirtilen şartları taşıyan araçlar on yılda bir defaya mahsus olmak üzere ÖTV istisnasıyla satın alınabilir.</p>\n\n<p>Bu grupta aracın özel tertibatlı olması veya engelli kişi tarafından bizzat kullanılması genel olarak aranmaz. Ancak araç engelli kişinin sürekli kullanım ve yararına sunulmalıdır. Fatura ve tescil engelli kişi adına yapılır.</p>\n\n<h2>Yüzde 90'ın altında engellilikte uygulama</h2>\n\n<p>Engellilik derecesi yüzde 90'ın altında olan kişilerde, engelin aracı bizzat kullanmayı gerektiren hareket ettirici özel tertibatla uyumlu olması gerekir. Sağlık kurulu raporunda özel tertibatlı araç kullanma gerekliliği açıkça belirtilmeli ve sürücü belgesindeki kodlar raporla uyumlu olmalıdır.</p>\n\n<p>Her yüzde 40 veya üzeri engellilik raporu bu kapsamda otomatik araç alma hakkı sağlamaz. Engel türü, özel tertibat ihtiyacı ve sürücü belgesi değerlendirmesi birlikte ele alınır.</p>\n\n<h2>17 Nisan 2026 tarihinde ne değişti?</h2>\n\n<p>7577 sayılı Kanunla, engelli sağlık kurulu raporunda ortopedik engelliliği yüzde 40 ve üzerinde bulunan ve bu engeli nedeniyle sürücü belgesi alamayan kişiler de ÖTV istisnası kapsamına alınmıştır.</p>\n\n<p>Bu kişilerde sürücü belgesi alınamadığının sağlık raporuyla belgelenmesi gerekir. Aracın engelli kişinin ihtiyaçları için kullanılması, yerli katkı ve fiyat şartlarının sağlanması ve işlemin ilgili tebliğdeki usule göre yürütülmesi gerekir.</p>\n\n<h2>İstisnadan kaç yılda bir yararlanılabilir?</h2>\n\n<p>ÖTV istisnasıyla yeni araç alma hakkı on yılda bir kullanılabilir. Araç daha erken satılsa ve satış sırasında ÖTV ödense bile, ilk iktisap tarihinden itibaren on yıllık süre tamamlanmadan yeniden istisnalı araç alınamaz.</p>\n\n<h2>Araç beş yıldan önce satılabilir mi?</h2>\n\n<p>ÖTV istisnasıyla alınan aracın, istisnadan yararlanamayan bir kişiye beş yıl dolmadan satılması veya devredilmesi hâlinde, ilk alımda ödenmeyen ÖTV aranır. Beş yılın dolması satıştaki vergi yükünü etkileyebilir; ancak yeni bir istisnalı araç alınabilmesi için on yıllık süre ayrıca dikkate alınır.</p>\n\n<h2>Başvuruda hangi belgeler istenebilir?</h2>\n\n<ul>\n<li>Engelli sağlık kurulu raporu veya ÇÖZGER,</li>\n<li>Gerekliyse sürücü adayları ve sürücüler için sağlık raporu,</li>\n<li>Özel tertibatı gösteren teknik belge ve proje,</li>\n<li>Uygun kodları içeren sürücü belgesi,</li>\n<li>Engelli kişi adına düzenlenen araç faturası,</li>\n<li>Vergi dairesi ve tescil işlemleri için kimlik ve temsil belgeleri.</li>\n</ul>\n\n<h2>ÖTV istisnası trafik sigortasını kaldırır mı?</h2>\n\n<p>Hayır. ÖTV istisnasıyla alınan araç için zorunlu trafik sigortası yaptırılması gerekir. Aracın kullanıcıları, özel tertibatı ve ruhsattaki kullanım kısıtlamaları sigorta şirketine doğru şekilde bildirilmelidir.</p>\n\n<p>Kasko zorunlu değildir; ancak vergisiz alınmış olması aracın onarım ve parça maliyetini ortadan kaldırmaz. Araç bedeli, özel tertibat, yetkili servis ve ikame araç şartları farklı şirketlerin teklifleri üzerinden karşılaştırılmalıdır.</p>\n\n<p>2026 üst limiti, yararlanabilecek kişiler ve araç şartları <a href=\"https://gib.gov.tr/vergi-konulari/1_bireysel/8_engelliler_icin_vergi_avantajlari/8\" target=\"_blank\" rel=\"noopener noreferrer\">Gelir İdaresi Başkanlığının Engelliler İçin Vergi Avantajları sayfası</a> üzerinden güncel olarak kontrol edilebilir.</p>",
+      "faq": [
+        {
+          "question": "2026 engelli araç ÖTV üst limiti ne kadar?",
+          "answer": "87.03 kapsamındaki araçlarda ÖTV ve diğer bütün vergiler dâhil bedel 2.873.900 TL'yi aşmamalıdır."
+        },
+        {
+          "question": "Yüzde 40 engelli raporu olan herkes ÖTV'siz araç alabilir mi?",
+          "answer": "Hayır. Engel türü, özel tertibat gerekliliği, sürücü belgesi durumu ve sağlık raporundaki açıklamalar birlikte değerlendirilir. 17 Nisan 2026 itibarıyla, ortopedik engeli yüzde 40 ve üzeri olup bu nedenle sürücü belgesi alamayan kişiler de kapsama alınmıştır."
+        },
+        {
+          "question": "Engelli aracı kaç yıl sonra yeniden ÖTV'siz alınabilir?",
+          "answer": "Yeni bir istisnalı araç alınabilmesi için ilk iktisap tarihinden itibaren on yıl geçmesi gerekir."
+        }
+      ],
+      "result_assessment": "2026 ÖTV istisnasında yalnızca engel oranına bakılarak araç seçilmemelidir. 2.873.900 TL üst sınırı, en az yüzde 40 yerli katkı şartı, sağlık raporu ve sürücü belgesi koşulları araç siparişi verilmeden önce doğrulanmalıdır. Araç satın alındıktan sonra zorunlu trafik sigortası düzenlenmeli; özel tertibat ve kullanım koşulları doğru beyan edilerek kasko teklifleri de teminatlarıyla birlikte karşılaştırılmalıdır.",
+      "external_links": [
+        {
+          "title": "GİB - Engelliler İçin Vergi Avantajları",
+          "url": "https://gib.gov.tr/vergi-konulari/1_bireysel/8_engelliler_icin_vergi_avantajlari/8"
+        },
+        {
+          "title": "GİB - Özel Tüketim Vergisi Kanunu",
+          "url": "https://gib.gov.tr/mevzuat/kanun/437"
+        },
+        {
+          "title": "Aile ve Sosyal Hizmetler Bakanlığı - Engelliler İçin Motorlu Taşıt Muafiyetleri",
+          "url": "https://www.aile.gov.tr/sss/engelli-ve-yasli-hizmetleri-genel-mudurlugu/engelliler-icin-motorlu-tasit-aliminda-sunulan-hizmet-ve-muafiyetler/"
+        },
+        {
+          "title": "GİB - 7577 Sayılı Kanun",
+          "url": "https://gib.gov.tr/mevzuat/kanun/659"
+        }
+      ]
+    }
+  ]
+}

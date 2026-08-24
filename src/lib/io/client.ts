@@ -250,10 +250,23 @@ export function satinAl(body: {
   return call<SatinAlmaSonuc>("satinal", { method: "POST", body });
 }
 
-export function teklifPdfUrl(id: number): Promise<{ Url?: string }> {
-  return call<{ Url?: string }>("yazdir", {
-    query: { id: String(id), tipi: "t" },
-  });
+/**
+ * Teklif PDF'i, poliçe PDF'i ve ödeme makbuzu.
+ *
+ * Belge her teklifte çıkmıyor — şirketlerin bir kısmı teklif PDF'i
+ * paylaşmıyor, makbuz da poliçeden biraz sonra hazırlanabiliyor. Bu durumda
+ * sunucu 404 ve açıklayıcı bir mesaj döndüğü için çağıran taraf `IoError`
+ * yakalayıp mesajı olduğu gibi gösterebilir.
+ */
+export function belgeGetir(body: {
+  oturumId: string;
+  bransNo: number;
+  teklifId: number;
+  sirketTeklifId: number;
+  tip: "teklif" | "police" | "makbuz";
+}): Promise<{ url: string }> {
+  // `api/io/belge.ts` statik rota olduğu için `[action].ts` yerine ona düşer.
+  return call<{ url: string }>("belge", { method: "POST", body });
 }
 
 // ============================================================

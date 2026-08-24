@@ -13,6 +13,8 @@ export interface TalepEmailPayload {
   document_serial?: string | null;
   motor_no?: string | null;
   sasi_no?: string | null;
+  sirket_adi?: string | null;
+  gosterilen_prim?: number | null;
 }
 
 function formatDate(iso: string | null | undefined) {
@@ -46,6 +48,8 @@ export function buildTalepEmailHtml(talep: TalepEmailPayload) {
         <table style="width:100%;border-collapse:collapse;">
           ${row("Sigorta Türü", talep.product_title)}
           ${row("Talep No", talep.talep_no)}
+          ${row("Şirket", talep.sirket_adi)}
+          ${row("Görünen fiyat", typeof talep.gosterilen_prim === "number" ? talep.gosterilen_prim.toLocaleString("tr-TR", { style: "currency", currency: "TRY" }) : null)}
           ${row("Sigortalanacak Kişi", talep.insured_for)}
           ${row("Sigortalı Türü", talep.entity_type === "sirket" ? "Şirket" : talep.entity_type === "sahis" ? "Şahıs" : null)}
           ${talep.entity_type === "sirket" ? row("Vergi No", talep.vergi_no) : row("T.C. Kimlik No", talep.tckn)}

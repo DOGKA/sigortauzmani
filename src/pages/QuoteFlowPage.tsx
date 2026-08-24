@@ -12,13 +12,16 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import AdvisorVideo from "../components/AdvisorVideo";
+import TalepBasariEkrani from "../components/TalepBasariEkrani";
 import { getProduct } from "../data/products";
 import { IoError, primleriBekle, teklifOlustur } from "../lib/io/client";
 import type { SatinAlmaSonuc, SirketTeklifi, TeklifPayload } from "../lib/io/types";
+import { createTalep, generateTalepNo } from "../lib/supabase";
 import { ROBOTS_NOINDEX, pageOgImageUrl } from "../lib/seo/config";
 import { ROUTES } from "../lib/seo/routes";
 import { useSeo } from "../lib/seo/useSeo";
 import AracAdimi from "./quote/AracAdimi";
+import BelgeButonu from "./quote/BelgeButonu";
 import DaskAdimi from "./quote/DaskAdimi";
 import FiyatListesi from "./quote/FiyatListesi";
 import KimlikAdimi from "./quote/KimlikAdimi";
@@ -35,6 +38,7 @@ import {
   bosDask,
   bosKimlik,
   bosSeyahat,
+  BRANS_ADLARI,
   kimlikNoOf,
   urunGereksinimi,
   type Adim,
@@ -44,6 +48,7 @@ import {
   type KimlikDurumu,
   type SeyahatDurumu,
 } from "./quote/flowState";
+import { fiyatGosterimi } from "./quote/fiyatlandirma";
 import "./QuoteFlowPage.css";
 
 const ADIM_ETIKETLERI: Record<Adim, string> = {
@@ -63,6 +68,13 @@ interface SecilenTeklif {
   bransNo: number;
   teklifId: number;
   teklif: SirketTeklifi;
+}
+
+/** Anında satın alınamayan şirketlerde açılan talep. */
+interface TalepBasarisi {
+  talepNo: string;
+  urunAdi: string;
+  sirketAdi: string;
 }
 
 export default function QuoteFlowPage() {
@@ -91,6 +103,11 @@ export default function QuoteFlowPage() {
 
   const [secilen, setSecilen] = useState<SecilenTeklif | null>(null);
   const [satinAlma, setSatinAlma] = useState<SatinAlmaSonuc | null>(null);
+  // Poliçe ve makbuz PDF'leri satın alınan teklifin satır kimliğiyle
+  // alınıyor; sonuç ekranı ödeme modalı kapandıktan sonra da ihtiyaç duyuyor.
+  const [satinAlinan, setSatinAlinan] = useState<SecilenTeklif | null>(null);
+  // "Teklif iste" ile açılan talep; lead formundaki başarı ekranını açıyor.
+  const [talepBasari, setTalepBasari] = useState<TalepBasarisi | null>(null);
 
   const pollAbort = useRef<AbortController | null>(null);
   // En az bir fiyat geldiyse polling hatası akışı bozmamalı; kullanıcı
@@ -185,7 +202,8 @@ export default function QuoteFlowPage() {
 
     // Trafik akışında aynı araç için Kasko da hazırlanabiliyor. Kasko
     // yakıt tipi istediği için kullanıcı seçmediyse ek teklif atlanır.
-    if (gereksinim.bransNo === 0 && kaskoDa) {
+    // Kısa süreli trafikte bu seçenek hiç sorulmuyor.
+    if (gereksinim.bransNo === 0 && !gereksinim.kisaSureli && kaskoDa) {
       const kaskoGereksinim = { ...gereksinim, bransNo: 1, yakitGerekli: true };
       talepler.push({
         bransNo: 1,
@@ -292,6 +310,89 @@ export default function QuoteFlowPage() {
     }
   };
 
+  const teklifIste = async (
+    bransNo: number,
+    teklif: SirketTeklifi,
+  ): Promise<{ ok: true } | { ok: false; error: string }> => {
+    if (!product || !gereksinim) {
+      return { ok: false, error: "Ürün bulunamadı." };
+    }
+
+    const gosterim = fiyatGosterimi(teklif.Prim);
+    const kaskoEkTeklif = bransNo === 1 && product.slug !== "kasko";
+    const talepNo = generateTalepNo();
+    const urunAdi = kaskoEkTeklif ? BRANS_ADLARI[1] : product.title;
+
+    const sonuc = await createTalep({
+      talep_no: talepNo,
+      product_slug: kaskoEkTeklif ? "kasko" : product.slug,
+      // Ana üründe branş adı yerine ürünün kendi başlığı kullanılıyor:
+      // kısa süreli trafik de branş 0'da çalıştığı için branş adı
+      // "Trafik Sigortası" derdi ve panelde iki ürün ayırt edilemezdi.
+      product_title: urunAdi,
+      insured_for: null,
+      entity_type: kimlik.entityType === "sirket" ? "sirket" : "sahis",
+      tckn: kimlik.entityType === "sirket" ? null : kimlikNoOf(kimlik) || null,
+      vergi_no: kimlik.entityType === "sirket" ? kimlik.vkn || null : null,
+      phone: kimlik.phone || null,
+      birth_date: kimlik.birthDate || null,
+      plate:
+        gereksinim.aracGerekli && arac.plakaVar
+          ? arac.plaka.toUpperCase() || null
+          : null,
+      document_serial:
+        gereksinim.aracGerekli && arac.plakaVar
+          ? arac.tescilBelge.toUpperCase() || null
+          : null,
+      motor_no:
+        gereksinim.aracGerekli && !arac.plakaVar
+          ? arac.motorNo.trim().toUpperCase() || null
+          : null,
+      sasi_no:
+        gereksinim.aracGerekli && !arac.plakaVar
+          ? arac.sasiNo.trim().toUpperCase() || null
+          : null,
+      sirket_adi: teklif.SirketAdi ?? null,
+      gosterilen_prim: gosterim?.listeFiyati ?? null,
+    });
+
+    if (!sonuc.ok) return sonuc;
+
+    // Talep açıldıktan sonra fiyat listesinde kalmanın anlamı yok; süreç
+    // artık ekibin elinde. Lead formuyla aynı başarı ekranına geçiliyor.
+    pollAbort.current?.abort();
+    setTalepBasari({
+      talepNo,
+      urunAdi,
+      sirketAdi: teklif.SirketAdi ?? "",
+    });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    return sonuc;
+  };
+
+  /** "Yeni teklif oluştur" — akışı ilk adımdan başlatır. */
+  const akisiSifirla = () => {
+    setTalepBasari(null);
+    setSatinAlma(null);
+    setSatinAlinan(null);
+    setSecilen(null);
+    setSonuclar([]);
+    setOturumId(null);
+    setOturumNo(null);
+    setKimlik(bosKimlik);
+    setArac(bosArac);
+    setSeyahat(bosSeyahat);
+    setDask(bosDask);
+    setMeslekKodu("");
+    setImmBedel("1");
+    setManevi("0");
+    setKaskoDa(false);
+    setHata("");
+    setGeriDonus("");
+    setAdim("kimlik");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   if (!product || !gereksinim) {
     return (
       <div className="flow flow--empty">
@@ -299,6 +400,35 @@ export default function QuoteFlowPage() {
         <Link to="/" className="flow__primary">
           Anasayfaya dön
         </Link>
+      </div>
+    );
+  }
+
+  // Talep açıldıysa akış biter: adım çubuğu ve fiyat listesi yerine lead
+  // formuyla aynı başarı ekranı gösteriliyor.
+  if (talepBasari) {
+    return (
+      <div className="flow">
+        <div className="flow__inner">
+          <nav className="flow__breadcrumb" aria-label="Sayfa yolu">
+            <Link to="/">Ana Sayfa</Link>
+            <span aria-hidden="true">/</span>
+            <span>{product.title}</span>
+          </nav>
+
+          <div className="flow__card flow__card--basari">
+            <TalepBasariEkrani
+              talepNo={talepBasari.talepNo}
+              urunAdi={talepBasari.urunAdi}
+              whatsappEkSatiri={
+                talepBasari.sirketAdi
+                  ? `İlgilendiğim şirket: ${talepBasari.sirketAdi}`
+                  : undefined
+              }
+              onYeniTeklif={akisiSifirla}
+            />
+          </div>
+        </div>
       </div>
     );
   }
@@ -432,9 +562,12 @@ export default function QuoteFlowPage() {
         {!geriDonus && adim === "fiyatlar" ? (
           <FiyatListesi
             sonuclar={sonuclar}
+            oturumId={oturumId}
+            kisaSureli={gereksinim.kisaSureli}
             onSatinAl={(bransNo, teklifId, teklif) =>
               setSecilen({ bransNo, teklifId, teklif })
             }
+            onTeklifIste={teklifIste}
             onGeri={() => {
               pollAbort.current?.abort();
               setAdim("detay");
@@ -466,6 +599,9 @@ export default function QuoteFlowPage() {
               <dd>**** {satinAlma.kartSon4}</dd>
             </dl>
 
+            {/* Ödeme anında hazır olmayan belge gizlenmiyor: makbuz sigorta
+                şirketinde poliçeden biraz sonra oluşabildiği için buton
+                kalıyor ve istendiğinde yeniden soruluyor. */}
             <div className="flow__inline-actions">
               {satinAlma.policePdfUrl ? (
                 <a
@@ -476,7 +612,17 @@ export default function QuoteFlowPage() {
                 >
                   Poliçeyi indir
                 </a>
+              ) : oturumId && satinAlinan ? (
+                <BelgeButonu
+                  oturumId={oturumId}
+                  bransNo={satinAlinan.bransNo}
+                  teklifId={satinAlinan.teklifId}
+                  sirketTeklifId={satinAlinan.teklif.Id}
+                  tip="police"
+                  etiket="Poliçeyi indir"
+                />
               ) : null}
+
               {satinAlma.makbuzPdfUrl ? (
                 <a
                   className="flow__secondary"
@@ -484,8 +630,17 @@ export default function QuoteFlowPage() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Makbuzu indir
+                  Ödeme makbuzunu indir
                 </a>
+              ) : oturumId && satinAlinan ? (
+                <BelgeButonu
+                  oturumId={oturumId}
+                  bransNo={satinAlinan.bransNo}
+                  teklifId={satinAlinan.teklifId}
+                  sirketTeklifId={satinAlinan.teklif.Id}
+                  tip="makbuz"
+                  etiket="Ödeme makbuzunu indir"
+                />
               ) : null}
             </div>
 
@@ -508,6 +663,7 @@ export default function QuoteFlowPage() {
           onKapat={() => setSecilen(null)}
           onBasarili={(sonuc) => {
             pollAbort.current?.abort();
+            setSatinAlinan(secilen);
             setSecilen(null);
             setSatinAlma(sonuc);
             setAdim("sonuc");

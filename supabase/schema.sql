@@ -17,6 +17,8 @@ create table if not exists public.talepler (
   document_serial text,
   motor_no text,
   sasi_no text,
+  sirket_adi text,
+  gosterilen_prim numeric,
   contact_pref text not null default 'hemen'
     check (contact_pref in ('hemen', 'tarihli')),
   contact_date date,
@@ -31,7 +33,9 @@ alter table public.talepler
   add column if not exists entity_type text not null default 'sahis',
   add column if not exists vergi_no text,
   add column if not exists motor_no text,
-  add column if not exists sasi_no text;
+  add column if not exists sasi_no text,
+  add column if not exists sirket_adi text,
+  add column if not exists gosterilen_prim numeric;
 
 create index if not exists talepler_created_at_idx on public.talepler (created_at desc);
 create index if not exists talepler_status_idx on public.talepler (status);

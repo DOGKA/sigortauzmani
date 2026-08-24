@@ -20,6 +20,8 @@ export interface Talep {
   document_serial: string | null;
   motor_no: string | null;
   sasi_no: string | null;
+  sirket_adi?: string | null;
+  gosterilen_prim?: number | null;
   contact_pref: "hemen" | "tarihli";
   contact_date: string | null;
   contact_time: string | null;

@@ -37,6 +37,17 @@ export interface FiyatGosterimi {
   kazanc: number;
 }
 
+/**
+ * Kartta görünen tutar. Satın alınabilir şirkette gerçek prim (indirimli
+ * gibi duran), diğerlerinde şişirilmiş liste fiyatı.
+ */
+export function kartTutari(
+  gosterim: FiyatGosterimi,
+  indirimli: boolean,
+): number {
+  return indirimli ? gosterim.prim : gosterim.listeFiyati;
+}
+
 function oranBul(prim: number): number {
   for (const dilim of DILIMLER) {
     if (prim <= dilim.ustSinir) return dilim.oran;

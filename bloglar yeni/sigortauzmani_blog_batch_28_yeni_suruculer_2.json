@@ -1,0 +1,127 @@
+{
+  "category": "Sigorta Rehberi",
+  "subcategory": "Yeni Sürücüler ve Araç Sigortası",
+  "batch": 28,
+  "language": "tr-TR",
+  "source_checked_at": "2026-07-28",
+  "writing_standard": {
+    "structure": [
+      "Başlık",
+      "Kısa Özet",
+      "İçerik",
+      "FAQ",
+      "Sonuç Değerlendirme"
+    ],
+    "style": "Editoryal, sade ve edilgen anlatım",
+    "external_link_required": true,
+    "marketing_focus": true,
+    "blogs_in_json": 3
+  },
+  "blogs": [
+    {
+      "id": 109,
+      "title": "Hasarsızlık İndirimi Nedir? Hangi Durumlarda Bozulur?",
+      "short_summary": "Hasarsızlık indirimi, sigortalının önceki poliçe dönemlerindeki hasar durumuna göre daha avantajlı prim elde etmesini sağlayan uygulamadır. Trafik sigortasında basamak sistemi mevzuatla belirlenirken kaskoda şirket ve ürün şartları uygulanır. Her hasar indirimi aynı şekilde bozmaz; mini onarım, cam, karşı tarafın tam kusurlu olduğu olaylar ve hasarsızlık koruma teminatı poliçeye göre farklı sonuç doğurabilir.",
+      "content_html": "<p>Hasarsızlık indirimi, sürücünün veya araç işleteninin geçmiş poliçe dönemlerindeki hasar durumunun yeni poliçe primine yansıtılmasıdır. Trafik sigortasında basamak sistemi, kaskoda ise şirketlerin ürün ve tarife koşulları uygulanır.</p>\n\n<p>Bu iki sistem aynı değildir. Trafik sigortasındaki basamak ile kaskodaki hasarsızlık kademesinin birlikte yükselmesi veya düşmesi zorunlu değildir.</p>\n\n<h2>Trafik sigortasında hasarsızlık basamağı nasıl çalışır?</h2>\n\n<p>İlk kez araç işleteni olan ve önceki poliçe kaydı bulunmayan kişiler çoğunlukla 4. basamaktan başlar. Poliçe dönemindeki hasar durumuna göre yenilemede daha avantajlı veya daha yüksek primli basamağa geçilebilir.</p>\n\n<p>Basamak bilgisi SBM kayıtları üzerinden yürütülür. Araç değişikliği veya satışında hakların uygulanması yürürlükteki tarife kurallarına göre değerlendirilir.</p>\n\n<h2>Kaskoda hasarsızlık indirimi nasıl çalışır?</h2>\n\n<p>Kasko hasarsızlık indirimi sigorta şirketinin tarifesine ve poliçe özel şartlarına bağlıdır. Kesintisiz sigortalılık, önceki hasar sayısı, hasar tutarı ve hasarın türü dikkate alınabilir.</p>\n\n<p>Şirket değişikliğinde geçmiş kasko ve hasar kayıtları sorgulanabilir; ancak yeni şirket aynı indirim oranını vermek zorunda olmayabilir.</p>\n\n<h2>Hangi hasarlar indirimi bozabilir?</h2>\n\n<ul>\n<li>Kusurlu olunan trafik kazaları,</li>\n<li>Kaskodan ödenen çarpma ve çarpışma hasarları,</li>\n<li>Hırsızlık veya tam hasar dosyaları,</li>\n<li>Bir poliçe döneminde birden fazla hasar,</li>\n<li>Şirket tarafından indirimi etkilediği belirtilen cam ve doğal afet hasarları.</li>\n</ul>\n\n<p>Hasarın indirimi etkileyip etkilemeyeceği şirket ve ürün şartlarına göre değişir. “Küçük hasar kesinlikle bozmaz” şeklinde genel bir kural bulunmaz.</p>\n\n<h2>Karşı taraf tamamen kusurluysa indirim bozulur mu?</h2>\n\n<p>Kasko şirketi hasarı ödedikten sonra kusurlu karşı tarafa veya sigorta şirketine tam olarak rücu edebiliyorsa hasarsızlığın korunması mümkün olabilir.</p>\n\n<p>Kusur oranı, tahsilat durumu ve poliçe şartı önemlidir. Dosya kapanmadan indirim sonucunun kesinleştiği düşünülmemelidir.</p>\n\n<h2>Cam hasarı hasarsızlığı bozar mı?</h2>\n\n<p>Bazı kasko ürünlerinde anlaşmalı cam servisinde yapılan belirli sayıda işlem indirimi etkilemeyebilir. Orijinal cam, anlaşmasız servis veya birden fazla cam hasarında farklı uygulama bulunabilir.</p>\n\n<p>Cam hizmetinin “hasarsızlığı bozmaz” şartı poliçede açıkça görülmelidir.</p>\n\n<h2>Mini onarım indirimi etkiler mi?</h2>\n\n<p>Mini onarım hizmetleri çoğunlukla belirli adet ve ölçü sınırlarında sunulur. Hizmet limitinde kullanılan işlem hasar dosyası açılmadan yürütülebilir; ancak ürünler arasında farklılık bulunur.</p>\n\n<p>İşlem yapılmadan önce acente veya asistans hizmetinden hasarsızlık etkisi teyit edilmelidir.</p>\n\n<h2>Hasarsızlık koruma teminatı nedir?</h2>\n\n<p>Hasarsızlık koruma, belirli sayı veya türde hasara rağmen kasko indirim kademesinin korunmasını sağlayabilen ek teminattır.</p>\n\n<p>Bu teminat sınırsız değildir. Bir hasar, belirli hasar tutarı, cam veya park hasarı gibi koşullar uygulanabilir. Ağır hasar, hırsızlık veya birden fazla dosya koruma dışında bırakılabilir.</p>\n\n<h2>Araç satılınca hasarsızlık hakkı kaybolur mu?</h2>\n\n<p>Araç satışında trafik ve kasko poliçeleri sona erdirilebilir; ancak sigortalının geçmiş hasar ve basamak kaydı tamamen silinmez. Yeni araç alındığında hakların aktarılması ürün ve mevzuat şartlarına göre değerlendirilebilir.</p>\n\n<p>Yeni aracın kullanım türü, araç grubu ve poliçe başlangıç tarihi sonucu etkileyebilir.</p>\n\n<h2>Hasarsızlığı korumak için nelere dikkat edilmeli?</h2>\n\n<ul>\n<li>Poliçe yenilemesi geciktirilmemelidir.</li>\n<li>Hasar açılmadan önce mini onarım ve cam şartları sorulmalıdır.</li>\n<li>Karşı taraf kusurluysa belgeler eksiksiz alınmalıdır.</li>\n<li>Hasarsızlık koruma teminatının sınırları okunmalıdır.</li>\n<li>Şirket değişiminde eski poliçe ve hasar belgesi saklanmalıdır.</li>\n<li>Küçük hasarın cepten ödenmesi ile yenileme primine etkisi birlikte hesaplanmalıdır.</li>\n</ul>\n\n<p>Trafik sigortası basamak ve gecikme uygulamalarına ilişkin açıklamalar <a href=\"https://www.sbm.org.tr/tr/sss\" target=\"_blank\" rel=\"noopener noreferrer\">SBM Sıkça Sorulan Sorular sayfasından</a>; güncel azami prim tabloları ise <a href=\"https://www.sbm.org.tr/tr/trafik-sigortasi-azami-brut-prim-tablosu\" target=\"_blank\" rel=\"noopener noreferrer\">SBM Azami Brüt Prim Tablosu sayfasından</a> takip edilebilir.</p>",
+      "faq": [
+        {
+          "question": "Her kasko hasarı hasarsızlık indirimini bozar mı?",
+          "answer": "Hayır. Cam, mini onarım, karşı tarafa tam rücu edilen hasar ve koruma teminatı ürüne göre indirimi etkilemeyebilir."
+        },
+        {
+          "question": "Şirket değiştirince hasarsızlık indirimi kaybolur mu?",
+          "answer": "Geçmiş kayıtlar sorgulanabilir; ancak yeni şirketin uygulayacağı oran ve kademe kendi tarifesine göre değişebilir."
+        },
+        {
+          "question": "Küçük hasarı kaskodan yaptırmak mantıklı mı?",
+          "answer": "Onarım tutarı, muafiyet, hasarsızlık kaybı ve yenileme primine olası etkisi birlikte hesaplanmalıdır."
+        }
+      ],
+      "result_assessment": "Hasarsızlık indirimi yalnızca bugünkü hasar ödemesini değil, sonraki poliçe maliyetini de etkileyebilir. Küçük hasarda dosya açmadan önce mini onarım, cam ve hasarsızlık koruma şartları kontrol edilmelidir. Şirket teklifleri karşılaştırılırken yalnızca mevcut prim değil, hasar sonrası hangi kademenin uygulanacağı da değerlendirilmelidir.",
+      "external_links": [
+        {
+          "title": "SBM - Trafik Sigortası Sıkça Sorulan Sorular",
+          "url": "https://www.sbm.org.tr/tr/sss"
+        },
+        {
+          "title": "SBM - Trafik Sigortası Azami Brüt Prim Tablosu",
+          "url": "https://www.sbm.org.tr/tr/trafik-sigortasi-azami-brut-prim-tablosu"
+        },
+        {
+          "title": "SEDDK - Kara Araçları Kasko Sigortası Genel Şartları",
+          "url": "https://seddk.gov.tr/upload/Sigortac%C4%B1l%C4%B1k%20Mevzuat%C4%B1/Genel%20%C5%9Eartlar/Mal%20Sigortalar%C4%B1/Kara%20Ara%C3%A7lar%C4%B1%20Kasko%20Sigortas%C4%B1%20Genel%20%C5%9Eartlar%C4%B1.pdf"
+        }
+      ]
+    },
+    {
+      "id": 110,
+      "title": "İMM Nedir? Trafik Sigortası Limiti Yetmezse Ne Olur?",
+      "short_summary": "İhtiyari Mali Mesuliyet Sigortası, trafik sigortasının ödeme limitini aşan üçüncü kişi zararlarını poliçede belirlenen limite kadar karşılayan ek sorumluluk güvencesidir. 2026 yılında otomobiller için trafik sigortası maddi zarar limiti araç başına 400.000 TL, kaza başına 800.000 TL'dir. Yüksek değerli araçlara veya birden fazla araca verilen zararda bu limit aşıldığında kalan tutar sürücü ve işletene yönelebilir.",
+      "content_html": "<p>İMM, “İhtiyari Mali Mesuliyet” ifadesinin kısaltmasıdır. Zorunlu trafik sigortasının üçüncü kişilere yönelik teminat limitlerinin üzerinde kalan hukuki sorumluluğu, poliçede yazılı limite kadar güvence altına alır.</p>\n\n<p>İMM çoğunlukla kasko poliçesine eklenir; ancak kaskonun bulunması her zaman yeterli veya yüksek İMM limiti bulunduğu anlamına gelmez.</p>\n\n<h2>Trafik sigortası limiti neden yetmeyebilir?</h2>\n\n<p>2026 yılında insan taşımada kullanılan motorlu araçlarda maddi zarar teminatı araç başına 400.000 TL, kaza başına 800.000 TL'dir.</p>\n\n<p>Bir sürücünün yüksek değerli bir araca ağır hasar vermesi veya zincirleme kazada birkaç araca zarar vermesi hâlinde toplam zarar bu limitleri aşabilir.</p>\n\n<h2>Limit aşılırsa kalan zararı kim öder?</h2>\n\n<p>Zorunlu trafik sigortası yürürlükteki limite kadar ödeme yapar. Limitin üzerinde kalan ve hukuken sorumlu olunan bölüm araç işleteni, sürücü veya diğer sorumlulara yöneltilebilir.</p>\n\n<p>İMM poliçesi varsa bu aşan bölüm, İMM limiti ve özel şartları içinde değerlendirilir.</p>\n\n<h2>İMM hangi zararları karşılayabilir?</h2>\n\n<ul>\n<li>Trafik sigortası limitini aşan araç ve eşya zararları,</li>\n<li>Limit üzerindeki bedensel zarar sorumlulukları,</li>\n<li>Poliçe kapsamındaki hukuki savunma giderleri,</li>\n<li>Ek sözleşme bulunuyorsa manevi tazminat talepleri.</li>\n</ul>\n\n<p>Manevi tazminatın standart İMM kapsamına otomatik olarak girdiği düşünülmemelidir. Genel şartlara göre ek sözleşmeyle teminata alınabilir.</p>\n\n<h2>İMM kendi aracımı karşılar mı?</h2>\n\n<p>Hayır. İMM, üçüncü kişilere karşı mali sorumluluk teminatıdır. Sigortalının kendi aracındaki zarar kasko kapsamında değerlendirilir.</p>\n\n<h2>İMM ile sınırsız İMM arasındaki fark nedir?</h2>\n\n<p>Standart İMM'de poliçede belirli bir üst limit yazılır. Piyasada “sınırsız” olarak sunulan ürünlerde de genel şartlar, olay başına şartlar, alt limitler ve kapsam dışı durumlar bulunabilir.</p>\n\n<p>Ürünün adı yerine poliçe metnindeki azami ödeme, manevi tazminat, yurt dışı ve savunma giderleri kontrol edilmelidir.</p>\n\n<h2>Ne kadar İMM limiti seçilmeli?</h2>\n\n<p>Herkes için geçerli tek bir ideal limit bulunmaz. Kullanılan şehir, yıllık kilometre, aracın kullanım amacı, sürücü deneyimi ve trafikte karşılaşılabilecek araç değerleri dikkate alınmalıdır.</p>\n\n<p>Yalnızca mevcut aracın değeri esas alınmamalıdır. İMM, kendi aracınızı değil zarar verebileceğiniz araçları ve kişileri ilgilendirir.</p>\n\n<h2>İMM fiyatı neden değişir?</h2>\n\n<ul>\n<li>Seçilen teminat limiti,</li>\n<li>Araç türü ve kullanım biçimi,</li>\n<li>Sürücü ve hasar geçmişi,</li>\n<li>Manevi tazminat ek teminatı,</li>\n<li>Yurt dışı kapsamı,</li>\n<li>Kaskoyla paket veya ayrı ürün olması.</li>\n</ul>\n\n<h2>İMM poliçesinde kontrol edilmesi gerekenler</h2>\n\n<ul>\n<li>Maddi ve bedensel zarar limitinin birleşik mi ayrı mı olduğu,</li>\n<li>Olay başına ve yıllık azami ödeme,</li>\n<li>Manevi tazminat teminatı,</li>\n<li>Hukuki savunma giderleri,</li>\n<li>Yurt dışı geçerliliği,</li>\n<li>Sürücü ve kullanım kısıtlamaları,</li>\n<li>Muafiyet ve kapsam dışı hâller.</li>\n</ul>\n\n<p>İMM'nin trafik sigortası limitini aşan sorumluluğu poliçe limitine kadar karşıladığı <a href=\"https://seddk.gov.tr/files/doc/motorlu-kara-tasitlari-ihtiyari-mali-sorumluluk-sigortasi-genel-sartlari.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">SEDDK Motorlu Kara Taşıtları İhtiyari Mali Sorumluluk Sigortası Genel Şartlarında</a> açıklanmaktadır.</p>",
+      "faq": [
+        {
+          "question": "İMM zorunlu mu?",
+          "answer": "Hayır. İsteğe bağlıdır; ancak trafik sigortası limitini aşan sorumluluk için önemli ek güvence sağlar."
+        },
+        {
+          "question": "İMM kendi aracımın hasarını karşılar mı?",
+          "answer": "Hayır. Kendi araç hasarı kaskodan, üçüncü kişilere verilen limit üstü zarar İMM'den değerlendirilir."
+        },
+        {
+          "question": "Manevi tazminat İMM'ye dâhil mi?",
+          "answer": "Genel şartlara göre ek sözleşmeyle teminata alınabilir. Poliçede açıkça yer almalıdır."
+        }
+      ],
+      "result_assessment": "2026 araç ve onarım değerleri karşısında yalnızca zorunlu trafik limitine güvenmek önemli bir kişisel borç riski yaratabilir. İMM limiti, kasko fiyatına eklenen küçük bir kalem olarak değil, üçüncü kişilere karşı gerçek mali sorumluluk koruması olarak değerlendirilmelidir. Teklifler aynı limit ve manevi tazminat şartlarıyla karşılaştırılmalıdır.",
+      "external_links": [
+        {
+          "title": "SEDDK - Motorlu Kara Taşıtları İhtiyari Mali Sorumluluk Sigortası Genel Şartları",
+          "url": "https://seddk.gov.tr/files/doc/motorlu-kara-tasitlari-ihtiyari-mali-sorumluluk-sigortasi-genel-sartlari.pdf"
+        },
+        {
+          "title": "SEDDK - 2026 Zorunlu Trafik Sigortası Teminat Limitleri",
+          "url": "https://www.seddk.gov.tr/tr/tuketici-kosesi/teminat-limitleri/zorunlu-trafik-sigortasi-limitleri"
+        },
+        {
+          "title": "SEDDK - Sigortacılık Genel Şartları",
+          "url": "https://www.seddk.gov.tr/tr/mevzuat/sigortacilik/genel-sartlar"
+        }
+      ]
+    },
+    {
+      "id": 111,
+      "title": "Trafik Sigortası Gecikirse Ne Olur? Cezası ve Riskleri (2026)",
+      "short_summary": "Trafik sigortası araç işleteni sıfatının kazanıldığı tarihten itibaren yaptırılmalıdır. Sigortasız geçen her 30 gün için sonraki poliçeye yüzde 5 gecikme zammı uygulanır ve toplam artış yüzde 50 ile sınırlıdır. Sigortasız araçla kazaya karışıldığında üçüncü kişilere verilen zararlar sürücü ve araç sahibinin kişisel sorumluluğuna kalabilir; araç hakkında trafik mevzuatı kapsamında idari işlem de uygulanabilir.",
+      "content_html": "<p>Zorunlu trafik sigortasının bir gün veya birkaç hafta geciktirilmesi önemsiz görülmemelidir. Poliçenin sona erdiği anda yeni dönem otomatik olarak başlamaz; yenileme yapılmadıysa araç sigortasız hâle gelir.</p>\n\n<p>Sigortasız dönem hem yasal yaptırım hem de kazada oluşabilecek yüksek tazminat yükü açısından ciddi risk taşır.</p>\n\n<h2>Trafik sigortası ne zaman yaptırılmalıdır?</h2>\n\n<p>Araç işleteni sıfatının kazanıldığı tarihten itibaren trafik sigortası bulunmalıdır. Yeni araç alımında alıcı adına poliçe noter devri öncesinde hazırlanır.</p>\n\n<p>Mevcut araçta poliçe bitiş tarihini takip eden yeni dönem için kesintisiz yenileme yapılmalıdır.</p>\n\n<h2>Gecikme zammı nasıl uygulanır?</h2>\n\n<p>SBM açıklamasına göre trafik sigortası yaptırma yükümlülüğünün yerine getirilmediği her 30 gün için, sonraki sözleşme primine yüzde 5 gecikme zammı eklenir.</p>\n\n<p>Toplam gecikme zammı primin yüzde 50'siyle sınırlıdır. Bu oran, şirketin belirlediği temel teklif ve diğer tarife unsurları üzerine uygulanır.</p>\n\n<h2>Bir günlük gecikmede ne olur?</h2>\n\n<p>Poliçe sona erdiği anda teminat biter. Gecikme zammının 30 günlük dönemlerle hesaplanması, ilk 29 günün sigortalı olduğu anlamına gelmez.</p>\n\n<p>Bir günlük boşlukta dahi gerçekleşen kaza eski poliçeden karşılanmaz ve sonradan düzenlenen poliçe geçmişe dönük koruma sağlamaz.</p>\n\n<h2>Sigortasız araçla yakalanmanın sonucu nedir?</h2>\n\n<p>Zorunlu trafik sigortası bulunmayan araç için trafik mevzuatı kapsamında idari yaptırım uygulanabilir ve araç trafikten men sürecine konu olabilir.</p>\n\n<p>Güncel para cezası tutarları yıllara göre değişebildiğinden işlem tarihindeki resmî tarife kontrol edilmelidir.</p>\n\n<h2>Sigortasız araç kazaya karışırsa ne olur?</h2>\n\n<p>Sigortasız aracın kusuruyla üçüncü kişilere zarar verilirse trafik sigortası şirketi bulunmadığından zarar talepleri doğrudan sürücü ve araç işletenine yöneltilebilir.</p>\n\n<p>Bazı bedensel zararlar Güvence Hesabı kapsamında değerlendirilebilse bile bu durum sorumlu kişilerin borcunu ortadan kaldırmayabilir; ödenen tutarlar sorumlulara rücu edilebilir. Araç ve eşya zararlarının Güvence Hesabı tarafından genel olarak karşılanacağı düşünülmemelidir.</p>\n\n<h2>Kasko varsa trafik sigortasına gerek var mı?</h2>\n\n<p>Evet. Kasko, zorunlu trafik sigortasının yerine geçmez. Kasko kendi aracın zararını ve seçilen ek riskleri korurken trafik sigortası üçüncü kişilere karşı yasal sorumluluk içindir.</p>\n\n<h2>Poliçe neden otomatik yenilenmeyebilir?</h2>\n\n<ul>\n<li>Kredi kartının süresinin dolması,</li>\n<li>Ödeme talimatının reddedilmesi,</li>\n<li>Telefon veya iletişim bilgilerinin güncel olmaması,</li>\n<li>Araç ya da sigortalı bilgilerinin değişmesi,</li>\n<li>Teklif onayının verilmemesi,</li>\n<li>Acentenin otomatik yenileme yetkisinin bulunmaması.</li>\n</ul>\n\n<p>Yenileme hatırlatması alınması, poliçenin kesin olarak düzenlendiği anlamına gelmez. Poliçe numarası, başlangıç tarihi ve tahsilat durumu kontrol edilmelidir.</p>\n\n<h2>Gecikmiş poliçe nasıl yenilenir?</h2>\n\n<ol>\n<li>Plaka, ruhsat ve sigortalı bilgileri hazırlanmalıdır.</li>\n<li>SBM basamak ve gecikme bilgisi sistemden kontrol edilmelidir.</li>\n<li>Birden fazla şirketten güncel teklif alınmalıdır.</li>\n<li>Seçilen teklif aynı gün yürürlüğe alınmalıdır.</li>\n<li>Poliçe ve ödeme belgesi e-Devlet veya şirket sisteminden doğrulanmalıdır.</li>\n</ol>\n\n<h2>Gecikmeyi önlemek için ne yapılabilir?</h2>\n\n<ul>\n<li>Bitiş tarihinden 15-20 gün önce teklif alınmalıdır.</li>\n<li>Telefon ve e-posta bilgileri güncel tutulmalıdır.</li>\n<li>Kredi kartı ve taksit durumu kontrol edilmelidir.</li>\n<li>Poliçe düzenlendikten sonra e-Devlet kaydı doğrulanmalıdır.</li>\n<li>Araç satılmışsa eski poliçenin yeni alıcıya geçmediği bilinmelidir.</li>\n</ul>\n\n<p>Araç işleteni sıfatının kazanıldığı tarihte sigorta yaptırılması gerektiği ve her 30 günlük gecikme için yüzde 5, toplamda yüzde 50'ye kadar prim artışı uygulandığı <a href=\"https://www.sbm.org.tr/tr/sss\" target=\"_blank\" rel=\"noopener noreferrer\">SBM Sıkça Sorulan Sorular sayfasında</a> açıklanmaktadır.</p>",
+      "faq": [
+        {
+          "question": "Trafik sigortası bir gün gecikirse araç sigortasız mı olur?",
+          "answer": "Evet. Eski poliçe bitince teminat sona erer. Yeni poliçe düzenlenene kadar sigortasız dönem oluşur."
+        },
+        {
+          "question": "Gecikme zammı ne kadar?",
+          "answer": "Her 30 günlük gecikme için yüzde 5 uygulanır ve toplam artış primin yüzde 50'siyle sınırlıdır."
+        },
+        {
+          "question": "Kasko varsa sigortasız trafik cezasından kurtulunur mu?",
+          "answer": "Hayır. Kasko, zorunlu trafik sigortasının yerine geçmez."
+        }
+      ],
+      "result_assessment": "Trafik sigortası yenilemesi son güne bırakılmamalıdır. Bir günlük kesinti bile kaza anında bütün sorumluluğun kişisel bütçeye kalmasına neden olabilir. Bitiş tarihinden önce farklı şirketlerin teklifleri karşılaştırılmalı, poliçe düzenlendikten sonra başlangıç ve tahsilat bilgileri mutlaka doğrulanmalıdır.",
+      "external_links": [
+        {
+          "title": "SBM - Trafik Sigortası Sıkça Sorulan Sorular",
+          "url": "https://www.sbm.org.tr/tr/sss"
+        },
+        {
+          "title": "SEDDK - Trafik Sigortası Genel Şartları",
+          "url": "https://www.seddk.gov.tr/upload/Sigortac%C4%B1l%C4%B1k%20Mevzuat%C4%B1/Genel%20%C5%9Eartlar/Sorumluluk%20Sigortalar%C4%B1/Karayollar%C4%B1%20Motorlu%20Ara%C3%A7lar%20Zorunlu%20Mali%20Sorumluluk%20Trafik%20Sigortas%C4%B1%20Genel%20%C5%9Eartlar%C4%B1.pdf"
+        },
+        {
+          "title": "Güvence Hesabı - Sıkça Sorulan Sorular",
+          "url": "https://www.guvencehesabi.org.tr/sikca-sorulan-sorular"
+        }
+      ]
+    }
+  ]
+}

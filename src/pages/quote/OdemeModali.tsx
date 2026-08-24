@@ -18,14 +18,9 @@ import BilgiNotu from "./BilgiNotu";
 import IlerlemePaneli from "./IlerlemePaneli";
 import { ODEME_MESAJLARI } from "./beklemeMetinleri";
 import { fiyatGosterimi } from "./fiyatlandirma";
+import { formatPrim } from "./paraBirimi";
 import { IoError, satinAl } from "../../lib/io/client";
 import type { SatinAlmaSonuc, SirketTeklifi } from "../../lib/io/types";
-
-const paraBirimi = new Intl.NumberFormat("tr-TR", {
-  style: "currency",
-  currency: "TRY",
-  minimumFractionDigits: 2,
-});
 
 /** Kart numarasını 4'erli gruplar hâlinde gösterir; sunucuya rakamlar gider. */
 function formatKartNo(value: string): string {
@@ -137,10 +132,10 @@ export default function OdemeModali({
       {gosterim ? (
         <span className="flow__teklif-fiyat">
           <span className="flow__teklif-liste">
-            {paraBirimi.format(gosterim.listeFiyati)}
+            {formatPrim(gosterim.listeFiyati, bransNo)}
           </span>
           <span className="flow__teklif-kazanc">
-            {paraBirimi.format(gosterim.kazanc)} kazanç
+            {formatPrim(gosterim.kazanc, bransNo)} kazanç
           </span>
         </span>
       ) : null}
@@ -148,7 +143,7 @@ export default function OdemeModali({
       {/* Ödenecek tutar her zaman en altta ve en büyük punto. */}
       <span className="flow__modal-odenecek">
         <strong className="flow__modal-prim">
-          {typeof teklif.Prim === "number" ? paraBirimi.format(teklif.Prim) : "—"}
+          {formatPrim(teklif.Prim, bransNo)}
         </strong>
         {teklif.Taksit ? (
           <span className="flow__modal-taksit">{teklif.Taksit}</span>

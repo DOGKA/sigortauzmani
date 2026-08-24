@@ -7,7 +7,6 @@
 
 import { kullanimSekilleri, ykPlaka } from "../../lib/io/constants";
 import type { Arac, TeklifPayload } from "../../lib/io/types";
-import { normalizeMobilePhone } from "../../utils/validation";
 import {
   aracKodu,
   kimlikNoOf,
@@ -21,12 +20,14 @@ import {
 /**
  * Araç branşlarında `Dogumtarihi` (küçük t), konut/sağlıkta `DogumTarihi`
  * kullanılıyor. Dokümantasyondaki bu tutarsızlık örneklerde net.
+ *
+ * `Cep` bilinçli olarak yok: IO teklifi yalnızca `KimlikNo` ve araca göre
+ * eşleştiriyor, numara sonucu değiştirmiyor. Telefon oturum kaydımızda durur.
  */
 function sigortaliAracBransi(kimlik: KimlikDurumu) {
   return {
     KimlikNo: kimlikNoOf(kimlik),
     Dogumtarihi: kimlik.birthDate,
-    Cep: normalizeMobilePhone(kimlik.phone),
   };
 }
 
@@ -35,7 +36,6 @@ function sigortaliDigerBrans(kimlik: KimlikDurumu) {
   return {
     KimlikNo: kimlikNoOf(kimlik),
     DogumTarihi: kimlik.birthDate,
-    Cep: normalizeMobilePhone(kimlik.phone),
   };
 }
 
@@ -49,8 +49,8 @@ function aracAlanlari(
       TescilBelge: arac.tescilBelge.replace(/\s/g, "").toUpperCase(),
       PlakamYok: false,
     };
-    // Trafikte kısa vadeli ürün ayrı; standart akışta her zaman false.
-    if (gereksinim.bransNo === 0) alanlar.KisaSureli = false;
+    // Kısa süreli trafik ayrı bir ürün; standart trafikte her zaman false.
+    if (gereksinim.bransNo === 0) alanlar.KisaSureli = gereksinim.kisaSureli;
     // Kasko ve İMM araç kodunu istiyor; plakalı akışta TRAMER'den gelir
     // ama kullanıcı marka/model seçtiyse onu gönderiyoruz.
     const kod = aracKodu(arac);
@@ -81,7 +81,10 @@ function aracAlanlari(
     // KT/KS tablosundaki öneri kullanılır, kullanıcı görmez.
     KisiSayisi: arac.kisiSayisi || String(secilenSekil?.kisiSayisi ?? 5),
   };
-  if (gereksinim.bransNo === 0) alanlar.KisaSureli = false;
+  // Kısa süreli poliçe plakalı araç istiyor, bu yüzden YK akışı o üründe
+  // hiç açılmıyor; yine de bayrak burada sessizce false'a düşürülmüyor ki
+  // yanlışlıkla yıllık trafik teklifi çalışmasın.
+  if (gereksinim.bransNo === 0) alanlar.KisaSureli = gereksinim.kisaSureli;
   if (gereksinim.yakitGerekli) alanlar.YakitTipi = arac.yakitTipi;
   return alanlar;
 }

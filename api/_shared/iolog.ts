@@ -144,19 +144,60 @@ export async function updateOturum(
 
 /** Oturumu çerez kimliğiyle doğrular; başka bir ziyaretçinin oturumuna
  * müdahale edilmesini engeller. */
+interface OturumOzeti {
+  id: string;
+  product_slug: string;
+  brans_no: number;
+  io_teklif_id: number | null;
+}
+
 export async function findOturum(
   oturumId: string,
   sessionId: string,
-): Promise<{ id: string; brans_no: number; io_teklif_id: number | null } | null> {
-  const rows = await dbRequest<
-    { id: string; brans_no: number; io_teklif_id: number | null }[]
-  >(
+): Promise<OturumOzeti | null> {
+  const rows = await dbRequest<OturumOzeti[]>(
     `teklif_oturumlari?id=eq.${encodeURIComponent(oturumId)}` +
       `&session_id=eq.${encodeURIComponent(sessionId)}` +
-      `&select=id,brans_no,io_teklif_id&limit=1`,
+      `&select=id,product_slug,brans_no,io_teklif_id&limit=1`,
     { method: "GET" },
   );
   return rows?.[0] ?? null;
+}
+
+/**
+ * Oturumun IO'da açtığı teklif kimlikleri.
+ *
+ * `io_teklif_id` yalnızca ilk branşı taşıyor; trafik akışında aynı oturumda
+ * Kasko da çalıştırılabildiği için tamamı `form_data.teklifler` içinde. Belge
+ * uçu istemciden gelen TeklifId'yi bu listeye karşı doğruluyor, aksi hâlde
+ * başka bir ziyaretçinin teklifinin PDF'i istenebilirdi.
+ */
+export async function oturumTeklifIdleri(
+  oturumId: string,
+  sessionId: string,
+): Promise<number[]> {
+  const rows = await dbRequest<
+    {
+      io_teklif_id: number | null;
+      form_data: { teklifler?: { teklifId?: unknown }[] } | null;
+    }[]
+  >(
+    `teklif_oturumlari?id=eq.${encodeURIComponent(oturumId)}` +
+      `&session_id=eq.${encodeURIComponent(sessionId)}` +
+      `&select=io_teklif_id,form_data&limit=1`,
+    { method: "GET" },
+  );
+
+  const row = rows?.[0];
+  if (!row) return [];
+
+  const idler = new Set<number>();
+  if (Number.isFinite(row.io_teklif_id)) idler.add(Number(row.io_teklif_id));
+  for (const teklif of row.form_data?.teklifler ?? []) {
+    const id = Number(teklif?.teklifId);
+    if (Number.isFinite(id) && id > 0) idler.add(id);
+  }
+  return [...idler];
 }
 
 export interface FiyatInput {

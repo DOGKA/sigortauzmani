@@ -8,6 +8,7 @@ import {
   type Talep,
   type TalepStatus,
 } from "@/lib/types";
+import { formatPrim, paraKodu } from "@/lib/format";
 import { buildTalepWhatsAppUrl } from "@/lib/whatsapp";
 
 const STATUS_STYLES: Record<TalepStatus, string> = {
@@ -159,6 +160,7 @@ export default function TaleplerTable() {
             <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-400">
               <th className="px-5 py-3.5 font-semibold">Talep No</th>
               <th className="px-4 py-3.5 font-semibold">Sigorta Türü</th>
+              <th className="px-4 py-3.5 font-semibold">Şirket</th>
               <th className="px-4 py-3.5 font-semibold">Telefon</th>
               <th className="px-4 py-3.5 font-semibold">İletişim Tercihi</th>
               <th className="px-4 py-3.5 font-semibold">Durum</th>
@@ -169,13 +171,13 @@ export default function TaleplerTable() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={7} className="px-5 py-14 text-center text-slate-400">
+                <td colSpan={8} className="px-5 py-14 text-center text-slate-400">
                   Yükleniyor...
                 </td>
               </tr>
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-5 py-14 text-center text-slate-400">
+                <td colSpan={8} className="px-5 py-14 text-center text-slate-400">
                   Gösterilecek talep yok.
                 </td>
               </tr>
@@ -224,6 +226,9 @@ function TalepRow({
         <td className="px-4 py-3.5 font-medium text-slate-700">
           {talep.product_title}
         </td>
+        <td className="px-4 py-3.5 text-slate-600">
+          {talep.sirket_adi ?? "-"}
+        </td>
         <td className="px-4 py-3.5 text-slate-600">{talep.phone ?? "-"}</td>
         <td className="px-4 py-3.5 text-slate-600">
           {talep.contact_pref === "tarihli" ? (
@@ -270,8 +275,20 @@ function TalepRow({
 
       {expanded && (
         <tr className="border-b border-slate-100 bg-slate-50/60">
-          <td colSpan={7} className="px-5 py-4">
+          <td colSpan={8} className="px-5 py-4">
             <dl className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:grid-cols-3 lg:grid-cols-4">
+              <DetailItem label="Şirket" value={talep.sirket_adi ?? null} />
+              <DetailItem
+                label="Görünen fiyat"
+                value={
+                  talep.gosterilen_prim != null
+                    ? formatPrim(
+                        talep.gosterilen_prim,
+                        paraKodu(undefined, talep.product_slug),
+                      )
+                    : null
+                }
+              />
               <DetailItem
                 label="Sigortalı Türü"
                 value={

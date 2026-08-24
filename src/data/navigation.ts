@@ -1,15 +1,17 @@
 import vehicleGroupIcon from "../assets/icons/arac-sigortalari.svg";
 import healthGroupIcon from "../assets/icons/saglik-sigortalari.svg";
+import homeGroupIcon from "../assets/icons/konut.svg";
 import { products, type Product } from "./products";
 
-const VEHICLE_SLUGS = ["trafik-sigortasi", "kasko", "imm", "yesil-kart"];
-const HEALTH_HOME_SLUGS = [
-  "tamamlayici-saglik",
-  "ozel-saglik",
-  "seyahat-saglik",
-  "konut",
-  "dask",
+const VEHICLE_SLUGS = [
+  "trafik-sigortasi",
+  "kasko",
+  "kisa-sureli-trafik",
+  "imm",
+  "yesil-kart",
 ];
+const HEALTH_SLUGS = ["tamamlayici-saglik", "ozel-saglik", "seyahat-saglik"];
+const HOME_SLUGS = ["konut", "dask"];
 
 export interface ProductGroup {
   title: string;
@@ -28,8 +30,13 @@ export const productGroups: ProductGroup[] = [
     items: bySlugs(VEHICLE_SLUGS),
   },
   {
-    title: "Sağlık ve Konut Sigortaları",
+    title: "Sağlık Sigortaları",
     icon: healthGroupIcon,
-    items: bySlugs(HEALTH_HOME_SLUGS),
+    items: bySlugs(HEALTH_SLUGS),
+  },
+  {
+    title: "Konut Sigortaları",
+    icon: homeGroupIcon,
+    items: bySlugs(HOME_SLUGS),
   },
 ];

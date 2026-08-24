@@ -32,7 +32,6 @@ import {
   isValidChassisNo,
   isValidDocumentSerial,
   isValidPlate,
-  normalizeMobilePhone,
 } from "../../utils/validation";
 import IlerlemePaneli from "./IlerlemePaneli";
 import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
@@ -82,6 +81,11 @@ export default function AracAdimi({
     "bekliyor" | "sorguluyor" | "geldi" | "gelmedi"
   >("bekliyor");
   const [tramerNotu, setTramerNotu] = useState("");
+
+  // Kısa süreli poliçe plakalı araç istiyor; YK akışı o üründe hiç açılmıyor.
+  useEffect(() => {
+    if (gereksinim.kisaSureli && !durum.plakaVar) onDegis({ plakaVar: true });
+  }, [gereksinim.kisaSureli, durum.plakaVar, onDegis]);
 
   // Meslek listesi kaskoda zorunlu; diğer branşlarda hiç istenmiyor.
   useEffect(() => {
@@ -156,7 +160,6 @@ export default function AracAdimi({
         Sigortali: {
           KimlikNo: kimlikNoOf(kimlik),
           Dogumtarihi: kimlik.birthDate,
-          Cep: normalizeMobilePhone(kimlik.phone),
         },
         Arac: {
           Plaka: durum.plaka.replace(/\s/g, "").toUpperCase(),
@@ -271,22 +274,30 @@ export default function AracAdimi({
         </label>
       ) : null}
 
-      <div className="flow__toggle" role="group" aria-label="Araç durumu">
-        <button
-          type="button"
-          className={`flow__toggle-btn${durum.plakaVar ? " flow__toggle-btn--active" : ""}`}
-          onClick={() => plakaModuDegis(true)}
-        >
-          Plakam var
-        </button>
-        <button
-          type="button"
-          className={`flow__toggle-btn${!durum.plakaVar ? " flow__toggle-btn--active" : ""}`}
-          onClick={() => plakaModuDegis(false)}
-        >
-          Plakam henüz çıkmadı
-        </button>
-      </div>
+      {gereksinim.kisaSureli ? (
+        <p className="flow__hint">
+          Kısa süreli trafik sigortası, noter satışı ve devir gibi bir yıldan
+          kısa süreli ihtiyaçlar için düzenlenir. Teminatları yıllık zorunlu
+          trafik sigortasıyla aynıdır.
+        </p>
+      ) : (
+        <div className="flow__toggle" role="group" aria-label="Araç durumu">
+          <button
+            type="button"
+            className={`flow__toggle-btn${durum.plakaVar ? " flow__toggle-btn--active" : ""}`}
+            onClick={() => plakaModuDegis(true)}
+          >
+            Plakam var
+          </button>
+          <button
+            type="button"
+            className={`flow__toggle-btn${!durum.plakaVar ? " flow__toggle-btn--active" : ""}`}
+            onClick={() => plakaModuDegis(false)}
+          >
+            Plakam henüz çıkmadı
+          </button>
+        </div>
+      )}
 
       {durum.plakaVar ? (
         <>
@@ -533,7 +544,7 @@ export default function AracAdimi({
         </div>
       ) : null}
 
-      {gereksinim.bransNo === 0 ? (
+      {gereksinim.bransNo === 0 && !gereksinim.kisaSureli ? (
         <label className="flow__check">
           <input
             type="checkbox"

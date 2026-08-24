@@ -7,11 +7,27 @@
  * ekranında tüm müşterilerin kimlik numarasını aynı anda taşımıyor.
  */
 
-const paraBirimi = new Intl.NumberFormat("tr-TR", {
-  style: "currency",
-  currency: "TRY",
-  minimumFractionDigits: 2,
-});
+const FORMATTERLAR: Record<"TRY" | "EUR", Intl.NumberFormat> = {
+  TRY: new Intl.NumberFormat("tr-TR", {
+    style: "currency",
+    currency: "TRY",
+    minimumFractionDigits: 2,
+  }),
+  EUR: new Intl.NumberFormat("tr-TR", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 2,
+  }),
+};
+
+/** Seyahat sağlık primleri Euro; diğer self servis ürünler TL. */
+export function paraKodu(
+  bransNo?: number | null,
+  productSlug?: string | null,
+): "TRY" | "EUR" {
+  if (bransNo === 6 || productSlug === "seyahat-saglik") return "EUR";
+  return "TRY";
+}
 
 export function formatDateTime(iso: string) {
   return new Date(iso).toLocaleString("tr-TR", {
@@ -29,12 +45,15 @@ export function formatDate(iso: string | null) {
   return `${day}.${month}.${year}`;
 }
 
-export function formatPrim(prim: number | string | null) {
+export function formatPrim(
+  prim: number | string | null,
+  para: "TRY" | "EUR" = "TRY",
+) {
   if (prim === null || prim === "") return "-";
   // Supabase numeric kolonları string olarak dönebiliyor.
   const sayi = typeof prim === "string" ? Number(prim) : prim;
   if (!Number.isFinite(sayi)) return "-";
-  return paraBirimi.format(sayi);
+  return FORMATTERLAR[para].format(sayi);
 }
 
 /**

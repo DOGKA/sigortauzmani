@@ -1,0 +1,162 @@
+{
+  "category": "Sigorta Rehberi",
+  "subcategory": "Yeni Sürücüler ve Araç Sigortası",
+  "batch": 27,
+  "language": "tr-TR",
+  "source_checked_at": "2026-07-28",
+  "writing_standard": {
+    "structure": [
+      "Başlık",
+      "Kısa Özet",
+      "İçerik",
+      "FAQ",
+      "Sonuç Değerlendirme"
+    ],
+    "style": "Editoryal, sade ve edilgen anlatım",
+    "external_link_required": true,
+    "marketing_focus": true,
+    "blogs_in_json": 4
+  },
+  "blogs": [
+    {
+      "id": 105,
+      "title": "En Çok Yapılan 7 Sigorta Hatası (Yeni Sürücüler Dikkat!)",
+      "short_summary": "Yeni sürücüler tarafından en sık yapılan sigorta hataları; trafik sigortasının kendi aracını karşıladığının düşünülmesi, yalnızca en ucuz poliçenin seçilmesi, yenilemenin geciktirilmesi, İMM limitinin yetersiz bırakılması, kullanım bilgilerinin yanlış bildirilmesi, kasko özel şartlarının okunmaması ve kaza sonrasında hatalı işlem yapılmasıdır. Bu hatalar düşük prim avantajından çok daha büyük mali kayıplara yol açabilir.",
+      "content_html": "<p>İlk kez araç sahibi olan sürücüler için sigorta süreci çoğunlukla “trafik sigortası yaptırıldı, işlem tamamlandı” şeklinde değerlendirilir. Oysa trafik sigortası, kasko, İhtiyari Mali Mesuliyet ve asistans hizmetleri birbirinden farklı riskleri karşılar.</p>\n\n<p>Poliçe alınırken yapılan küçük bir hata, kaza gününde aracın onarım giderinin, üçüncü kişiye verilen yüksek tutarlı zararın veya çekici masrafının sürücünün bütçesine kalmasına neden olabilir. Yeni sürücülerde en sık karşılaşılan yedi hata aşağıda açıklanmıştır.</p>\n\n<h2>1. Trafik sigortasının kendi aracı da karşıladığını düşünmek</h2>\n\n<p>Zorunlu trafik sigortası, sigortalı aracın kusuruyla üçüncü kişilere verilen maddi ve bedensel zararları yürürlükteki limitler içinde karşılar. Sigortalının kendi aracındaki hasar bu poliçenin temel kapsamına girmez.</p>\n\n<p>Örneğin sürücünün park hâlindeki başka bir araca çarpması durumunda karşı aracın zararı trafik sigortasından değerlendirilebilir. Kendi aracındaki tampon, far ve kaporta hasarı için ise kasko poliçesi bulunması gerekir.</p>\n\n<h2>2. Yalnızca en ucuz teklifi seçmek</h2>\n\n<p>Aynı isimle sunulan poliçelerin kapsamı aynı olmayabilir. Kaskoda yetkili servis, orijinal parça, ikame araç, sel, dolu, anahtar kaybı, cam, mini onarım ve çekici şartları şirketlere göre değişebilir.</p>\n\n<p>Daha düşük primli bir poliçede yüksek muafiyet, sınırlı servis ağı veya dar kapsam bulunabilir. Fiyat karşılaştırması aynı teminatlar üzerinden yapılmadığında gerçekte daha pahalı bir risk satın alınmış olur.</p>\n\n<h2>3. Trafik sigortasını veya kaskoyu geciktirmek</h2>\n\n<p>Trafik sigortası araç işleteni sıfatının kazanıldığı tarihten itibaren yaptırılmalıdır. Sigortasız geçirilen dönem, hem yasal ve mali risk oluşturur hem de sonraki poliçede gecikme zammına yol açabilir.</p>\n\n<p>SBM açıklamasına göre yükümlülüğün yerine getirilmediği her 30 gün için, toplamda primin yüzde 50'sini aşmamak üzere yüzde 5 gecikme zammı uygulanır.</p>\n\n<p>Kasko zorunlu olmasa da eski poliçe sona erdikten sonra yenilenirse arada teminatsız dönem oluşur. Bu boşlukta gerçekleşen hasar yeni poliçeden karşılanmaz.</p>\n\n<h2>4. İMM limitini düşük bırakmak veya hiç almamak</h2>\n\n<p>2026 yılında insan taşımada kullanılan motorlu araçlar için zorunlu trafik sigortasının maddi zarar limiti araç başına 400.000 TL, kaza başına 800.000 TL'dir. Birden fazla yüksek değerli araca zarar verilmesi hâlinde bu limitler yetersiz kalabilir.</p>\n\n<p>İhtiyari Mali Mesuliyet teminatı, trafik sigortası limitini aşan üçüncü kişi zararlarında poliçede yazılı limite kadar ek koruma sağlar. Yeni sürücülerde manevra ve mesafe hatası riski daha yüksek görülebildiği için İMM yalnızca lüks araç sahiplerinin ihtiyacı olarak düşünülmemelidir.</p>\n\n<h2>5. Araç kullanımını ve sürücü bilgilerini yanlış bildirmek</h2>\n\n<p>Araç ticari amaçla kullanılıyorsa, kiralama veya kurye faaliyetinde bulunuyorsa ya da aracı düzenli olarak farklı kişiler kullanıyorsa bu durum doğru şekilde bildirilmelidir.</p>\n\n<p>Gerçeğe aykırı kullanım, sürücü veya araç bilgisi daha düşük prim sağlasa bile hasar anında prim farkı, tazminat indirimi veya sözleşme uyuşmazlığı doğurabilir. Poliçedeki plaka, şasi, model, kullanım türü ve sigortalı bilgileri teslim alındığı gün kontrol edilmelidir.</p>\n\n<h2>6. Kasko özel şartlarını okumamak</h2>\n\n<p>Kasko genel şartları temel çerçeveyi belirler; gerçek teminat yapısı poliçedeki özel şartlar, klozlar, limitler ve muafiyetlerle oluşur.</p>\n\n<p>“Genişletilmiş kasko” ifadesi tek başına sel, dolu, deprem, kemirgen zararı, yanlış yakıt, anahtar kaybı veya yurt dışı kullanımının bulunduğunu kanıtlamaz. Her riskin poliçede açıkça yer aldığı görülmelidir.</p>\n\n<h2>7. Kaza sonrasında yanlış işlem yapmak</h2>\n\n<p>Kaza yerinde yeterli fotoğraf çekilmemesi, taraf bilgilerinin alınmaması, uygun olmadığı hâlde maddi hasarlı kaza tespit tutanağı düzenlenmesi veya sigorta şirketine haber verilmeden onarıma başlanması hasar sürecini zorlaştırabilir.</p>\n\n<p>Yaralanma veya ölüm, alkol şüphesi, sürücü belgesinin bulunmaması, araçlardan birinin geçerli trafik sigortasının olmaması ve tarafların anlaşamaması gibi durumlarda standart kaza tespit tutanağı kullanılmamalı; kolluk birimlerine haber verilmelidir.</p>\n\n<h2>Yeni sürücüler için doğru poliçe kontrol listesi</h2>\n\n<ul>\n<li>Trafik sigortası başlangıç ve bitiş tarihi kontrol edilmelidir.</li>\n<li>Kasko ile trafik sigortasının farklı riskleri karşıladığı bilinmelidir.</li>\n<li>İMM limiti araç değerleri dikkate alınarak seçilmelidir.</li>\n<li>Yetkili servis, parça ve ikame araç şartları incelenmelidir.</li>\n<li>Muafiyet ve kapsam dışı durumlar okunmalıdır.</li>\n<li>Araç kullanım biçimi ve düzenli sürücüler doğru bildirilmelidir.</li>\n<li>Kaza anında izlenecek adımlar telefonda veya araçta saklanmalıdır.</li>\n</ul>\n\n<p>Trafik sigortasının güncel teminat limitleri <a href=\"https://www.seddk.gov.tr/tr/tuketici-kosesi/teminat-limitleri/zorunlu-trafik-sigortasi-limitleri\" target=\"_blank\" rel=\"noopener noreferrer\">SEDDK teminat limitleri sayfasından</a>; kaza tespit tutanağının kullanılmayacağı durumlar ise <a href=\"https://www.sbm.org.tr/tr/sss/?cat=4\" target=\"_blank\" rel=\"noopener noreferrer\">SBM KTT Sıkça Sorulan Sorular sayfasından</a> kontrol edilebilir.</p>",
+      "faq": [
+        {
+          "question": "Trafik sigortası kendi aracımın hasarını karşılar mı?",
+          "answer": "Hayır. Trafik sigortası, kusurla üçüncü kişilere verilen zararları limitler içinde karşılar. Kendi araç hasarı için kasko gerekir."
+        },
+        {
+          "question": "En ucuz kasko neden her zaman avantajlı değildir?",
+          "answer": "Düşük fiyatlı poliçede servis ağı, parça türü, ikame araç, doğal afet veya muafiyet şartları daha sınırlı olabilir."
+        },
+        {
+          "question": "Yeni sürücüler için İMM gerekli mi?",
+          "answer": "Zorunlu değildir; ancak trafik sigortası limitini aşan yüksek üçüncü kişi zararlarına karşı önemli bir ek güvence sağlar."
+        }
+      ],
+      "result_assessment": "Yeni sürücülerin en büyük hatası, poliçeyi yalnızca fiyat ve zorunluluk üzerinden değerlendirmektir. Trafik sigortası, kasko ve İMM aynı teklif tablosunda karşılaştırılmalı; servis, parça, muafiyet ve asistans şartları birlikte okunmalıdır. Teminatı doğru kurulmuş bir poliçe, primde sağlanan küçük tasarruftan çok daha büyük bir mali kaybı önleyebilir.",
+      "external_links": [
+        {
+          "title": "SEDDK - 2026 Zorunlu Trafik Sigortası Teminat Limitleri",
+          "url": "https://www.seddk.gov.tr/tr/tuketici-kosesi/teminat-limitleri/zorunlu-trafik-sigortasi-limitleri"
+        },
+        {
+          "title": "SBM - Kaza Tespit Tutanağı Sıkça Sorulan Sorular",
+          "url": "https://www.sbm.org.tr/tr/sss/?cat=4"
+        },
+        {
+          "title": "SEDDK - Kara Araçları Kasko Sigortası Genel Şartları",
+          "url": "https://seddk.gov.tr/upload/Sigortac%C4%B1l%C4%B1k%20Mevzuat%C4%B1/Genel%20%C5%9Eartlar/Mal%20Sigortalar%C4%B1/Kara%20Ara%C3%A7lar%C4%B1%20Kasko%20Sigortas%C4%B1%20Genel%20%C5%9Eartlar%C4%B1.pdf"
+        }
+      ]
+    },
+    {
+      "id": 106,
+      "title": "Trafik Sigortası ile Kasko Arasındaki Fark Nedir? Hangisi Ne Öder?",
+      "short_summary": "Trafik sigortası yasal olarak zorunludur ve kusurlu aracın üçüncü kişilere verdiği zararları belirlenen limitler içinde karşılar. Kasko ise isteğe bağlıdır ve sigortalı aracın çarpma, çarpışma, yanma, çalınma ve poliçeye eklenen diğer riskler sonucu oluşan zararlarını güvence altına alabilir. İki poliçe birbirinin alternatifi değil, tamamlayıcısıdır.",
+      "content_html": "<p>Trafik sigortası ile kasko arasındaki en temel fark, kimin zararının korunduğudur. Trafik sigortasında üçüncü kişilere karşı hukuki sorumluluk, kaskoda ise sigortalı aracın kendisi ön plandadır.</p>\n\n<p>Yeni araç sahipleri tarafından bu iki ürün sıklıkla birbirinin yerine düşünülür. Oysa trafik sigortasının bulunması aracın kendi hasarını, kaskonun bulunması da yasal trafik sigortası zorunluluğunu ortadan kaldırmaz.</p>\n\n<h2>Trafik sigortası nedir?</h2>\n\n<p>Zorunlu trafik sigortası, aracın işletilmesi sırasında üçüncü kişilere verilen ve trafik sigortası genel şartları kapsamına giren maddi ve bedensel zararları kaza tarihinde geçerli limitler içinde karşılar.</p>\n\n<p>Poliçe araç sahibi için değil, zarar gören üçüncü kişilerin korunması amacıyla zorunlu tutulur.</p>\n\n<h2>Kasko nedir?</h2>\n\n<p>Kasko, sigortalı aracın uğrayabileceği zararları poliçede seçilen kapsam doğrultusunda güvence altına alan isteğe bağlı bir mal sigortasıdır.</p>\n\n<p>Dar kasko, kasko, genişletilmiş kasko ve tam kasko gibi ürün türleri bulunabilir. Poliçenin adı kadar hangi risklerin açıkça teminata alındığı önemlidir.</p>\n\n<h2>Hangi kazada hangi poliçe devreye girer?</h2>\n\n<ul>\n<li><strong>Başka araca kusurlu şekilde çarpılırsa:</strong> Karşı tarafın zararı trafik sigortasından, sigortalının kendi araç hasarı kaskodan değerlendirilebilir.</li>\n<li><strong>Park hâlindeki araca bilinmeyen kişi çarparsa:</strong> Fail bulunamazsa kendi araç hasarı, poliçe şartları uygunsa kaskodan karşılanabilir.</li>\n<li><strong>Araç çalınırsa:</strong> Trafik sigortası ödeme yapmaz; hırsızlık teminatı bulunan kasko değerlendirilir.</li>\n<li><strong>Sel veya dolu hasarı oluşursa:</strong> Trafik sigortası devreye girmez; ilgili ek risk kaskoda bulunmalıdır.</li>\n<li><strong>Yayaya veya başka mala zarar verilirse:</strong> Kusurlu aracın trafik sigortası, limitler içinde devreye girebilir.</li>\n</ul>\n\n<h2>Trafik sigortası hangi zararları karşılamaz?</h2>\n\n<ul>\n<li>Sigortalının kendi aracındaki hasar,</li>\n<li>Kendi eşyasına verilen zarar,</li>\n<li>Poliçe limitini aşan üçüncü kişi zararı,</li>\n<li>Kaskoya özgü hırsızlık, doğal afet ve araç hasarları,</li>\n<li>Genel şartlarda kapsam dışında bırakılan talepler.</li>\n</ul>\n\n<h2>Kasko hangi zararları karşılamayabilir?</h2>\n\n<p>Kaskonun bulunması bütün zararların ödeneceği anlamına gelmez. Normal eskime, mekanik arıza, üretim hatası, poliçede bulunmayan doğal afetler, yanlış veya eksik beyan ve genel şartlardaki teminat dışı durumlar ödeme kapsamı dışında kalabilir.</p>\n\n<p>Muafiyetli poliçede hasarın belirli bölümü sigortalı tarafından karşılanabilir.</p>\n\n<h2>2026 trafik sigortası limitleri neden önemlidir?</h2>\n\n<p>İnsan taşımada kullanılan motorlu araçlarda 2026 yılı maddi zarar teminatı araç başına 400.000 TL, kaza başına 800.000 TL'dir. Bedensel zararlar için kişi ve kaza başına daha yüksek ayrı limitler uygulanır.</p>\n\n<p>Bu limitlerin üzerinde kalan sorumluluk sürücü ve araç işletenine yönelebilir. İMM teminatı bu nedenle kasko paketinde ayrıca değerlendirilmelidir.</p>\n\n<h2>Trafik sigortası ve kasko aynı şirketten mi alınmalı?</h2>\n\n<p>Aynı şirketten alınması zorunlu değildir. Trafik sigortasında bir şirket, kaskoda başka bir şirket tercih edilebilir.</p>\n\n<p>Seçim yapılırken trafik poliçesinde fiyat ve ödeme planı; kaskoda ise teminat, servis, parça, ikame araç ve hasar hizmeti birlikte karşılaştırılmalıdır.</p>\n\n<h2>Kasko yaptırmaya değer mi?</h2>\n\n<p>Aracın yüksek bedelli, krediyle alınmış, yeni veya yoğun kullanılan bir araç olması kaskonun önemini artırır. Ancak daha düşük değerli bir araçta da sürücünün olası bir tam hasarı kendi bütçesinden karşılayıp karşılayamayacağı değerlendirilmelidir.</p>\n\n<p>Kasko kararı yalnızca aracın yaşına göre değil, ekonomik riskin taşınabilirliğine göre verilmelidir.</p>\n\n<p>Trafik sigortasının kapsamı <a href=\"https://www.seddk.gov.tr/upload/Sigortac%C4%B1l%C4%B1k%20Mevzuat%C4%B1/Genel%20%C5%9Eartlar/Sorumluluk%20Sigortalar%C4%B1/Karayollar%C4%B1%20Motorlu%20Ara%C3%A7lar%20Zorunlu%20Mali%20Sorumluluk%20Trafik%20Sigortas%C4%B1%20Genel%20%C5%9Eartlar%C4%B1.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">SEDDK Trafik Sigortası Genel Şartlarından</a>; kasko kapsamı ise <a href=\"https://seddk.gov.tr/upload/Sigortac%C4%B1l%C4%B1k%20Mevzuat%C4%B1/Genel%20%C5%9Eartlar/Mal%20Sigortalar%C4%B1/Kara%20Ara%C3%A7lar%C4%B1%20Kasko%20Sigortas%C4%B1%20Genel%20%C5%9Eartlar%C4%B1.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">Kasko Genel Şartlarından</a> incelenebilir.</p>",
+      "faq": [
+        {
+          "question": "Trafik sigortam varsa kaskoya gerek var mı?",
+          "answer": "Trafik sigortası kendi aracınızı korumaz. Araç hasarı, hırsızlık ve seçilen diğer riskler için kasko ayrıca değerlendirilmelidir."
+        },
+        {
+          "question": "Kaskom varsa trafik sigortası yaptırmak zorunda mıyım?",
+          "answer": "Evet. Kasko isteğe bağlıdır; zorunlu trafik sigortasının yerini tutmaz."
+        },
+        {
+          "question": "Kazada hem trafik hem kasko kullanılabilir mi?",
+          "answer": "Evet. Kusura ve hasara göre karşı tarafın zararı trafik sigortasından, kendi araç hasarı kaskodan değerlendirilebilir."
+        }
+      ],
+      "result_assessment": "Trafik sigortası ile kasko arasında seçim yapılmaz; iki ürün farklı zararları karşılar. Trafik poliçesi yasal sorumluluğu, kasko ise aracın ekonomik değerini korur. Araç sahibi için en dengeli yapı; trafik sigortası, ihtiyaca uygun kasko ve yeterli İMM limitinin birlikte karşılaştırılmasıyla oluşturulur.",
+      "external_links": [
+        {
+          "title": "SEDDK - Trafik Sigortası Genel Şartları",
+          "url": "https://www.seddk.gov.tr/upload/Sigortac%C4%B1l%C4%B1k%20Mevzuat%C4%B1/Genel%20%C5%9Eartlar/Sorumluluk%20Sigortalar%C4%B1/Karayollar%C4%B1%20Motorlu%20Ara%C3%A7lar%20Zorunlu%20Mali%20Sorumluluk%20Trafik%20Sigortas%C4%B1%20Genel%20%C5%9Eartlar%C4%B1.pdf"
+        },
+        {
+          "title": "SEDDK - Kara Araçları Kasko Sigortası Genel Şartları",
+          "url": "https://seddk.gov.tr/upload/Sigortac%C4%B1l%C4%B1k%20Mevzuat%C4%B1/Genel%20%C5%9Eartlar/Mal%20Sigortalar%C4%B1/Kara%20Ara%C3%A7lar%C4%B1%20Kasko%20Sigortas%C4%B1%20Genel%20%C5%9Eartlar%C4%B1.pdf"
+        },
+        {
+          "title": "SEDDK - 2026 Zorunlu Trafik Sigortası Limitleri",
+          "url": "https://www.seddk.gov.tr/tr/tuketici-kosesi/teminat-limitleri/zorunlu-trafik-sigortasi-limitleri"
+        }
+      ]
+    },
+    {
+      "id": 107,
+      "title": "Kaza Yaptım, Ne Yapmalıyım? İlk 10 Dakikada İzlenecek Adımlar",
+      "short_summary": "Trafik kazasından sonra önce can güvenliği sağlanmalı, yaralanma varsa 112 ve kolluk birimleri aranmalıdır. Yalnızca maddi hasarlı ve tarafların anlaşabildiği uygun kazalarda kaza tespit tutanağı düzenlenebilir. Olay yeri fotoğrafları, taraf bilgileri, poliçe bilgileri ve tanık kayıtları alınmalı; araç onarılmadan önce sigorta şirketine hasar ihbarı yapılmalıdır.",
+      "content_html": "<p>Trafik kazasından sonraki ilk dakikalarda verilen kararlar hem can güvenliğini hem de sigorta dosyasının sağlıklı yürütülmesini etkiler. Panikle aracın hemen hareket ettirilmesi, yeterli fotoğraf alınmaması veya uygun olmayan olayda kaza tespit tutanağı doldurulması hak kaybına yol açabilir.</p>\n\n<h2>1. Aracı güvenli hâle getirin</h2>\n\n<p>Mümkünse dörtlü ikaz lambaları yakılmalı, kontak kapatılmalı ve ikincil kaza riski önlenmelidir. Yakıt sızıntısı, yangın veya yüksek voltaj riski bulunan araçlara yaklaşılmamalıdır.</p>\n\n<p>Trafik akışı içinde kalınması tehlikeliyse güvenli alana geçilmelidir. Reflektör ve uyarı ekipmanı uygun mesafeye yerleştirilmelidir.</p>\n\n<h2>2. Yaralanma olup olmadığını kontrol edin</h2>\n\n<p>Yaralanma, bilinç kaybı, ciddi ağrı veya ölüm şüphesi varsa 112 aranmalıdır. Yaralı, acil tehlike bulunmadıkça bilinçsiz şekilde hareket ettirilmemelidir.</p>\n\n<p>Yaralanmalı kazalarda yalnızca maddi hasarlı kaza tespit tutanağı düzenlenmez; kolluk birimlerinin olay yerine gelmesi beklenir.</p>\n\n<h2>3. Kolluk çağrılması gereken durumları belirleyin</h2>\n\n<p>Aşağıdaki durumlarda standart maddi hasarlı kaza tespit tutanağı kullanılmamalıdır:</p>\n\n<ul>\n<li>Yaralanma veya ölüm bulunması,</li>\n<li>Taraflardan birinin sürücü belgesinin olmaması veya yetersiz olması,</li>\n<li>Araçlardan birinin geçerli trafik sigortasının bulunmaması,</li>\n<li>Alkol, uyuşturucu veya uyarıcı madde şüphesi,</li>\n<li>Tarafların olayın oluş şekli üzerinde anlaşamaması,</li>\n<li>Kamu aracına veya kamu malına zarar verilmesi,</li>\n<li>Tek taraflı kaza gibi tutanağın kapsam dışı kaldığı durumlar.</li>\n</ul>\n\n<h2>4. Araçlar hareket ettirilmeden fotoğraf çekin</h2>\n\n<p>Can güvenliği açısından mümkünse araçların son konumu, yol şeritleri, trafik işaretleri, fren izleri, hasar bölgeleri ve çevrenin geniş açılı görüntüleri alınmalıdır.</p>\n\n<p>Her aracın plakası ve hasarlı bölgesi ayrı ayrı fotoğraflanmalıdır. Kamera kaydı bulunabilecek iş yeri, bina veya araçlar not edilmelidir.</p>\n\n<h2>5. Taraf ve araç bilgilerini alın</h2>\n\n<ul>\n<li>Sürücü adı, soyadı ve iletişim bilgisi,</li>\n<li>T.C. kimlik veya sürücü belgesi bilgisi,</li>\n<li>Araç plakası ve ruhsat bilgileri,</li>\n<li>Trafik sigortası şirketi ve poliçe numarası,</li>\n<li>Araç sahibinin sürücüden farklı olması hâlinde işleten bilgileri,</li>\n<li>Tanıkların iletişim bilgileri.</li>\n</ul>\n\n<h2>6. Kaza tespit tutanağını eksiksiz doldurun</h2>\n\n<p>Taraflar yalnızca maddi hasarlı kazanın oluş şekli üzerinde anlaşabiliyorsa basılı veya mobil kaza tutanağı hazırlanabilir. Kroki, araçların yönü, şeritler, işaretler ve ilk darbe noktaları açıkça gösterilmelidir.</p>\n\n<p>Tutanağa kusur oranı yazmak yerine olayın nasıl gerçekleştiği açıklanmalıdır. Kusur değerlendirmesi sigorta şirketleri tarafından kayıt ve belgeler üzerinden yapılır.</p>\n\n<h2>7. Aracı güvenli şekilde kaldırın</h2>\n\n<p>Fotoğraf ve tutanak işlemleri tamamlandıktan sonra araç yürüyebiliyorsa trafik güvenliğini bozmayacak yere alınabilir. Araç kullanılamıyorsa poliçedeki asistans veya çekici hizmeti aranmalıdır.</p>\n\n<p>Elektrikli ve ağır hasarlı araçlarda üreticiye uygun taşıma yöntemi kullanılmalıdır.</p>\n\n<h2>8. Sigorta şirketine hasar ihbarı yapın</h2>\n\n<p>Kasko hasarı için kendi sigorta şirketine, karşı tarafın trafik sigortasından talep edilecek zarar için ilgili şirkete bildirim yapılır. İhbar numarası alınmalı ve istenen belgeler öğrenilmelidir.</p>\n\n<p>Poliçe şartları değerlendirilmeden ve eksper süreci tamamlanmadan onarıma başlanmaması önerilir.</p>\n\n<h2>9. Belgeleri tek dosyada saklayın</h2>\n\n<ul>\n<li>Kaza tespit veya kolluk tutanağı,</li>\n<li>Fotoğraf ve videolar,</li>\n<li>Ruhsat ve sürücü belgesi örnekleri,</li>\n<li>Poliçe bilgileri,</li>\n<li>Çekici ve otopark belgeleri,</li>\n<li>Servis, eksper ve onarım evrakları,</li>\n<li>Sağlık raporları ve faturalar.</li>\n</ul>\n\n<h2>10. Kusur sonucunu takip edin</h2>\n\n<p>Kaza tespit tutanağına ilişkin sonuç SBM üzerinden sorgulanabilir. Yeni bilgi veya belge bulunması hâlinde belirlenen süre içinde itiraz yapılabilir. SBM sayfasında kusur değerlendirmesine itiraz için 5 iş günlük süre açıklanmaktadır.</p>\n\n<p>Kaza tutanağının kullanılacağı ve kullanılmayacağı durumlar <a href=\"https://www.sbm.org.tr/tr/sss/?cat=4\" target=\"_blank\" rel=\"noopener noreferrer\">SBM'nin resmî KTT açıklamalarından</a>; tutanak durumu ve itiraz süreci ise <a href=\"https://www.sbm.org.tr/tr/ktt-sorgulama-ve-itiraz\" target=\"_blank\" rel=\"noopener noreferrer\">KTT Sorgulama ve İtiraz hizmetinden</a> takip edilebilir.</p>",
+      "faq": [
+        {
+          "question": "Her maddi hasarlı kazada tutanak tutulabilir mi?",
+          "answer": "Hayır. Yaralanma, alkol şüphesi, sigortasız araç, yetersiz ehliyet ve tarafların anlaşamaması gibi durumlarda kolluk çağrılmalıdır."
+        },
+        {
+          "question": "Kaza yerinde araçları hemen çekmeli miyim?",
+          "answer": "Önce can güvenliği sağlanmalı ve mümkünse araç konumları ayrıntılı şekilde fotoğraflanmalıdır. Sonrasında trafik güvenliğine göre araçlar kaldırılabilir."
+        },
+        {
+          "question": "Kusur oranına kaç gün içinde itiraz edilir?",
+          "answer": "SBM KTT sisteminde yeni bilgi ve belgelerle 5 iş günü içinde itiraz imkânı bulunmaktadır."
+        }
+      ],
+      "result_assessment": "Kaza sonrasında en değerli işlem, hızlı davranmaktan önce doğru kanıtı toplamaktır. Yaralanmada kolluk ve sağlık ekipleri çağrılmalı; uygun maddi hasarlı kazada tutanak, fotoğraf ve poliçe bilgileri eksiksiz hazırlanmalıdır. Kasko ve trafik poliçesindeki asistans numaralarının önceden kaydedilmesi, kaza anındaki belirsizliği önemli ölçüde azaltır.",
+      "external_links": [
+        {
+          "title": "SBM - Kaza Tespit Tutanağı Sıkça Sorulan Sorular",
+          "url": "https://www.sbm.org.tr/tr/sss/?cat=4"
+        },
+        {
+          "title": "SBM - KTT Sorgulama ve İtiraz",
+          "url": "https://www.sbm.org.tr/tr/ktt-sorgulama-ve-itiraz"
+        },
+        {
+          "title": "SBM - Mobil Kaza Tutanağı",
+          "url": "https://www.sbm.org.tr/tr/mobil-kaza-tutanagi-mkt"
+        }
+      ]
+    },
+    {
+      "id": 108,
+      "title": "Kasko Her Hasarı Karşılar mı? En Çok Karıştırılan 10 Durum",
+      "short_summary": "Kasko her araç hasarını otomatik olarak karşılamaz. Ödeme yapılabilmesi için olayın poliçedeki teminatlardan birine girmesi, genel ve özel şartların sağlanması, doğru beyan verilmesi ve hasarın zamanında bildirilmesi gerekir. Mekanik arıza, normal yıpranma, poliçede bulunmayan doğal afetler, yanlış kullanım ve bazı evrak eksiklikleri ödeme dışında kalabilir.",
+      "content_html": "<p>Kasko, araç sahibine geniş koruma sağlayabilir; ancak “araçta oluşan her zarar ödenir” şeklinde sınırsız bir ürün değildir. Kapsam, poliçe türü, ek teminatlar, muafiyetler ve özel şartlarla belirlenir.</p>\n\n<h2>1. Park hâlindeki araca vurulması</h2>\n\n<p>Failin bilinmediği park hasarı, çarpma veya çarpışma teminatı kapsamında değerlendirilebilir. Olay yeri fotoğrafı, kamera kaydı, kolluk veya beyan belgesi istenebilir.</p>\n\n<p>Hasarın ne zaman ve nasıl oluştuğunun açıklanamaması incelemeyi zorlaştırabilir.</p>\n\n<h2>2. Sel ve su baskını</h2>\n\n<p>Sel ve su baskını kaskoda ek sözleşmeyle teminata alınabilen risklerdendir. Poliçede açıkça bulunması, muafiyet ve kullanım şartlarının kontrol edilmesi gerekir.</p>\n\n<p>Suya girmiş aracın tekrar çalıştırılması hasarı büyütebilir ve değerlendirmeyi etkileyebilir.</p>\n\n<h2>3. Dolu hasarı</h2>\n\n<p>Dolu, poliçede doğal afet veya ilgili ek teminat içinde bulunuyorsa kaporta ve cam zararları karşılanabilir. Boyasız göçük düzeltme, servis seçimi ve muafiyet şartları ürüne göre değişebilir.</p>\n\n<h2>4. Mekanik arıza</h2>\n\n<p>Motor, şanzıman veya elektronik sistemin kullanım, eskime ya da iç arıza nedeniyle bozulması standart kaskonun temel konusu değildir. Üretici garantisi, bakım sözleşmesi veya özel mekanik arıza ürünü farklı değerlendirilir.</p>\n\n<p>Kaza sonucu mekanik parça zarar görmüşse dış olayla bağlantısı eksper tarafından incelenebilir.</p>\n\n<h2>5. Yanlış yakıt doldurulması</h2>\n\n<p>Yanlış yakıt standart kasko kapsamında otomatik olarak bulunmaz. Bazı ürünlerde ek teminat veya asistans hizmeti olarak sunulabilir.</p>\n\n<p>Araç çalıştırılmadan fark edilmesi ile motorun çalıştırılarak hasarın büyütülmesi farklı değerlendirmeye tabi olabilir.</p>\n\n<h2>6. Anahtar kaybı veya anahtarla çalınma</h2>\n\n<p>Anahtar kaybı, kilit sisteminin değiştirilmesi ve aracın anahtarla çalınması için poliçede özel şart bulunabilir. Anahtarın araç üzerinde bırakılması, güvenlik önlemleri ve olayın kolluğa bildirilmesi değerlendirilir.</p>\n\n<h2>7. Lastik, jant ve çukur hasarı</h2>\n\n<p>Yalnızca lastik veya jantta oluşan zarar bazı poliçelerde sınırlı veya kapsam dışı olabilir. Aynı olayda aracın başka parçaları da zarar görmüşse dosya farklı değerlendirilebilir.</p>\n\n<p>Lastik ve jant ek teminatı, adet limiti ve eskime payı kontrol edilmelidir.</p>\n\n<h2>8. Cam kırılması</h2>\n\n<p>Cam hasarı kaskoda bulunabilir; ancak orijinal cam, eşdeğer cam, yetkili servis ve anlaşmalı cam servisi şartları değişir. Kamera ve sensörlü camlarda kalibrasyon giderinin kapsama dâhil olduğu ayrıca görülmelidir.</p>\n\n<h2>9. Alkollü veya ehliyetsiz kullanım</h2>\n\n<p>Aracın ehliyetsiz kişi tarafından kullanılması veya olayla doğrudan bağlantılı alkol ve uyuşturucu kullanımı genel şartlar kapsamında ödeme dışında kalabilir. Somut olay, kaza nedeni ve yargısal değerlendirmeler önem taşır.</p>\n\n<p>“Kasko her koşulda öder” düşüncesiyle araç kullanım kuralları ihlal edilmemelidir.</p>\n\n<h2>10. Sürücünün kendi hatasıyla yaptığı kaza</h2>\n\n<p>Kasko, sürücünün kusurlu olduğu çarpma ve çarpışma hasarlarını temel kapsam içinde değerlendirebilir. Ancak kasıt, ağır ihlal, poliçe dışı kullanım veya teminat dışı başka bir durum bulunmamalıdır.</p>\n\n<h2>Kasko ödeme sürecini etkileyen diğer unsurlar</h2>\n\n<ul>\n<li>Poliçedeki muafiyet oranı,</li>\n<li>Eksik veya yanlış araç bilgisi,</li>\n<li>Aracın ticari ya da özel kullanım biçimi,</li>\n<li>Belirlenen servis ve parça şartları,</li>\n<li>Hasarın zamanında ihbar edilmesi,</li>\n<li>Eksper incelemesinden önce onarıma başlanması,</li>\n<li>Hasarsızlık koruma ve mini onarım şartları.</li>\n</ul>\n\n<p>Kaskonun ana teminatları, ek sözleşmeyle alınabilecek riskleri ve teminat dışı hâlleri <a href=\"https://seddk.gov.tr/upload/Sigortac%C4%B1l%C4%B1k%20Mevzuat%C4%B1/Genel%20%C5%9Eartlar/Mal%20Sigortalar%C4%B1/Kara%20Ara%C3%A7lar%C4%B1%20Kasko%20Sigortas%C4%B1%20Genel%20%C5%9Eartlar%C4%B1.pdf\" target=\"_blank\" rel=\"noopener noreferrer\">SEDDK Kara Araçları Kasko Sigortası Genel Şartlarından</a> incelenebilir.</p>",
+      "faq": [
+        {
+          "question": "Kasko sürücünün kendi hatasını karşılar mı?",
+          "answer": "Çarpma veya çarpışma teminatı kapsamında değerlendirilebilir. Kasıt, poliçe dışı kullanım ve genel şartlardaki istisnalar bulunmamalıdır."
+        },
+        {
+          "question": "Motor arızasını kasko karşılar mı?",
+          "answer": "Normal mekanik arıza ve yıpranma çoğunlukla karşılanmaz. Arıza kasko kapsamındaki ani dış olayın sonucuysa ayrıca değerlendirilebilir."
+        },
+        {
+          "question": "Sel ve dolu her kaskoda var mı?",
+          "answer": "Hayır. Bu risklerin poliçede veya ek teminatta açıkça bulunduğu kontrol edilmelidir."
+        }
+      ],
+      "result_assessment": "Kaskonun gerçek değeri poliçe başlığında değil, özel şartlarında ortaya çıkar. Sel, dolu, cam, anahtar, lastik, yanlış yakıt ve servis kapsamı ayrı ayrı kontrol edilmelidir. Teklifler aynı riskler ve aynı muafiyetlerle karşılaştırıldığında, “geniş kapsamlı” görünen fakat kritik teminatları eksik olan poliçeler daha kolay ayırt edilir.",
+      "external_links": [
+        {
+          "title": "SEDDK - Kara Araçları Kasko Sigortası Genel Şartları",
+          "url": "https://seddk.gov.tr/upload/Sigortac%C4%B1l%C4%B1k%20Mevzuat%C4%B1/Genel%20%C5%9Eartlar/Mal%20Sigortalar%C4%B1/Kara%20Ara%C3%A7lar%C4%B1%20Kasko%20Sigortas%C4%B1%20Genel%20%C5%9Eartlar%C4%B1.pdf"
+        },
+        {
+          "title": "SEDDK - Sigortacılık Genel Şartları",
+          "url": "https://www.seddk.gov.tr/tr/mevzuat/sigortacilik/genel-sartlar"
+        },
+        {
+          "title": "Türkiye Sigorta Birliği - Kasko Değer Listesi",
+          "url": "https://www.tsb.org.tr/tr/kasko-deger-listesi"
+        }
+      ]
+    }
+  ]
+}

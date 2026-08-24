@@ -30,7 +30,7 @@ export default function Hero() {
               style={{ animationDelay: `${i * 60}ms` }}
             >
               {product.badge && <span className="product-card__badge">{product.badge}</span>}
-              <div className="product-card__icon">
+              <div className="product-card__icon" data-slug={product.slug}>
                 <img src={productIcons[product.slug]} alt="" />
               </div>
               <span className="product-card__title">{product.title}</span>

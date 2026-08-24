@@ -31,6 +31,7 @@ admin/out
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
+.cursor/mcp.json
 .idea
 .DS_Store
 *.suo

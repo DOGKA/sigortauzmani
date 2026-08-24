@@ -116,6 +116,11 @@ export interface UrunGereksinimi {
   /** Kaskoda zorunlu, trafikte değil. */
   yakitGerekli: boolean;
   immGerekli: boolean;
+  /**
+   * Trafik branşında kısa süreli (geçici) poliçe. `Arac.KisaSureli` olarak
+   * gidiyor; plakalı araç istiyor ve satın alınabilir şirket listesi ayrı.
+   */
+  kisaSureli: boolean;
 }
 
 export const URUN_GEREKSINIMLERI: Record<string, UrunGereksinimi> = {
@@ -126,6 +131,16 @@ export const URUN_GEREKSINIMLERI: Record<string, UrunGereksinimi> = {
     meslekGerekli: false,
     yakitGerekli: false,
     immGerekli: false,
+    kisaSureli: false,
+  },
+  "kisa-sureli-trafik": {
+    bransNo: 0,
+    adimTipi: "arac",
+    aracGerekli: true,
+    meslekGerekli: false,
+    yakitGerekli: false,
+    immGerekli: false,
+    kisaSureli: true,
   },
   kasko: {
     bransNo: 1,
@@ -134,6 +149,7 @@ export const URUN_GEREKSINIMLERI: Record<string, UrunGereksinimi> = {
     meslekGerekli: true,
     yakitGerekli: true,
     immGerekli: false,
+    kisaSureli: false,
   },
   imm: {
     bransNo: 22,
@@ -142,6 +158,7 @@ export const URUN_GEREKSINIMLERI: Record<string, UrunGereksinimi> = {
     meslekGerekli: false,
     yakitGerekli: false,
     immGerekli: true,
+    kisaSureli: false,
   },
   "seyahat-saglik": {
     bransNo: 6,
@@ -150,6 +167,7 @@ export const URUN_GEREKSINIMLERI: Record<string, UrunGereksinimi> = {
     meslekGerekli: false,
     yakitGerekli: false,
     immGerekli: false,
+    kisaSureli: false,
   },
   dask: {
     bransNo: 2,
@@ -158,6 +176,7 @@ export const URUN_GEREKSINIMLERI: Record<string, UrunGereksinimi> = {
     meslekGerekli: false,
     yakitGerekli: false,
     immGerekli: false,
+    kisaSureli: false,
   },
 };
 

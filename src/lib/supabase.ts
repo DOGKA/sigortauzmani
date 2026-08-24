@@ -30,7 +30,11 @@ export interface TalepInsert {
   document_serial: string | null;
   motor_no: string | null;
   sasi_no: string | null;
+  sirket_adi?: string | null;
+  gosterilen_prim?: number | null;
 }
+
+export type TalepSonuc = { ok: true } | { ok: false; error: string };
 
 export type IptalBrans =
   | "kasko"
@@ -126,16 +130,44 @@ export function generateIletisimNo(): string {
   return `IL-${yy}${mm}${dd}-${suffix}`;
 }
 
-export async function createTalep(talep: TalepInsert): Promise<void> {
-  const client = getSupabase();
-  if (!client) return;
+function sutunYok(error: { code?: string; message?: string }): boolean {
+  return (
+    error.code === "PGRST204" ||
+    /Could not find the '.+' column/i.test(error.message ?? "")
+  );
+}
 
-  const { error } = await client.from("talepler").insert(talep);
+export async function createTalep(talep: TalepInsert): Promise<TalepSonuc> {
+  const client = getSupabase();
+  if (!client) {
+    return { ok: false, error: "Bağlantı kurulamadı. Lütfen tekrar deneyin." };
+  }
+
+  const { sirket_adi, gosterilen_prim, ...temel } = talep;
+  const genis = {
+    ...temel,
+    ...(sirket_adi ? { sirket_adi } : {}),
+    ...(typeof gosterilen_prim === "number" ? { gosterilen_prim } : {}),
+  };
+
+  let { error } = await client.from("talepler").insert(genis);
+  if (error && sutunYok(error) && (sirket_adi || gosterilen_prim != null)) {
+    const yedekBaslik = sirket_adi
+      ? `${temel.product_title} · ${sirket_adi}`
+      : temel.product_title;
+    ({ error } = await client.from("talepler").insert({
+      ...temel,
+      product_title: yedekBaslik,
+    }));
+  }
+
   if (error) {
     console.error("Talep kaydedilemedi:", error.message);
-    return;
+    return { ok: false, error: "Talep kaydedilemedi. Lütfen tekrar deneyin." };
   }
+
   void sendTalepNotificationEmail(talep);
+  return { ok: true };
 }
 
 async function sendTalepNotificationEmail(talep: TalepInsert) {
