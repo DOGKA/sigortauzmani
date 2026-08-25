@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import MakbuzButonu from "@/components/MakbuzButonu";
 import { createClient } from "@/lib/supabase/client";
 import { formatDateTime, formatPrim, maskKimlikNo, paraKodu } from "@/lib/format";
 import { useVurgu, VURGU_SATIR_SINIFI } from "@/lib/bildirim/useVurgu";
@@ -329,8 +330,11 @@ function PoliceRow({
               )}
             </dl>
 
-            {(kayit.police_pdf_url || kayit.makbuz_pdf_url) && (
-              <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-200 pt-4">
+            {/* Makbuz düğmesi adres boşken de duruyor: belge satın alma anında
+                hazır olmadığı için kayıt genelde boş kalıyor ve tıklandığında
+                IO'dan o an isteniyor. */}
+            {(kayit.police_pdf_url || kayit.status === "basarili") && (
+              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-slate-200 pt-4">
                 {kayit.police_pdf_url && (
                   <a
                     href={kayit.police_pdf_url}
@@ -342,16 +346,12 @@ function PoliceRow({
                     Poliçeyi Görüntüle
                   </a>
                 )}
-                {kayit.makbuz_pdf_url && (
-                  <a
-                    href={kayit.makbuz_pdf_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="rounded-xl border border-slate-200 px-3.5 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    Makbuzu Görüntüle
-                  </a>
+                {kayit.status === "basarili" && (
+                  <MakbuzButonu
+                    key={kayit.id}
+                    satinAlmaId={kayit.id}
+                    mevcutUrl={kayit.makbuz_pdf_url}
+                  />
                 )}
               </div>
             )}
