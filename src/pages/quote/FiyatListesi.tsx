@@ -20,19 +20,9 @@ import IlerlemePaneli from "./IlerlemePaneli";
 import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
 import { fiyatGosterimi, kartTutari } from "./fiyatlandirma";
 import { BRANS_ADLARI, type BransSonucu } from "./flowState";
+import { formatPrim } from "./paraBirimi";
 import { satinAlinabilirSirket } from "../../lib/io/satinAlFiltre";
 import type { SirketTeklifi } from "../../lib/io/types";
-
-const paraBirimi = new Intl.NumberFormat("tr-TR", {
-  style: "currency",
-  currency: "TRY",
-  minimumFractionDigits: 2,
-});
-
-function formatPrim(prim: number | undefined): string {
-  if (typeof prim !== "number" || !Number.isFinite(prim)) return "—";
-  return paraBirimi.format(prim);
-}
 
 function teklifAnahtari(bransNo: number, sirket: SirketTeklifi): string {
   return `${bransNo}-${sirket.Id}-${sirket.TeklifNo}`;
@@ -213,10 +203,10 @@ export default function FiyatListesi({
                       {gosterim && satinAl ? (
                         <span className="flow__teklif-fiyat">
                           <span className="flow__teklif-liste">
-                            {formatPrim(gosterim.listeFiyati)}
+                            {formatPrim(gosterim.listeFiyati, sonuc.bransNo)}
                           </span>
                           <span className="flow__teklif-kazanc">
-                            {formatPrim(gosterim.kazanc)} kazanç
+                            {formatPrim(gosterim.kazanc, sonuc.bransNo)} kazanç
                           </span>
                         </span>
                       ) : null}
@@ -226,6 +216,7 @@ export default function FiyatListesi({
                             gosterim
                               ? kartTutari(gosterim, satinAl)
                               : sirket.Prim,
+                            sonuc.bransNo,
                           )}
                         </strong>
                         {sirket.Taksit ? (
