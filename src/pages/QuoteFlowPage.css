@@ -636,8 +636,8 @@
 .flow__modal {
   position: relative;
   width: 100%;
-  max-width: 440px;
-  padding: 28px;
+  max-width: 408px;
+  padding: 24px;
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 24px 64px rgb(16 28 48 / 25%);
@@ -645,11 +645,11 @@
 
 .flow__modal-close {
   position: absolute;
-  top: 14px;
-  right: 16px;
-  width: 30px;
-  height: 30px;
-  font-size: 22px;
+  top: 12px;
+  right: 12px;
+  width: 28px;
+  height: 28px;
+  font-size: 21px;
   line-height: 1;
   color: var(--ink-400);
   border-radius: 8px;
@@ -667,8 +667,8 @@
   gap: 6px;
   /* Yatay boşluk, uzun şirket adının sağ üstteki kapatma düğmesinin altına
      girmesini engelliyor. */
-  padding: 0 34px 20px;
-  margin-bottom: 20px;
+  padding: 0 32px 16px;
+  margin-bottom: 16px;
   text-align: center;
   border-bottom: 1px solid #eef2fa;
 }
@@ -701,7 +701,7 @@
 }
 
 .flow__modal-prim {
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--ink-900);
@@ -710,6 +710,46 @@
 .flow__modal-taksit {
   font-size: 13px;
   color: var(--ink-400);
+}
+
+/* Ödeme formu, adım kartlarındakinden bir tık daha derli toplu: kart
+   alanlarının tamamı kaydırmadan görünsün diye dikey boşluklar kısılıyor. */
+.flow__modal .flow__grid {
+  /* Ay, yıl ve CVV tek satırı paylaşıyor; auto-fit dar modalde bunları alt
+     alta düşürüp formu gereksiz uzatıyordu. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.flow__modal .flow__field {
+  gap: 5px;
+}
+
+.flow__modal .flow__label {
+  font-size: 12.5px;
+}
+
+.flow__modal .flow__input {
+  padding: 9px 12px;
+  border-radius: 9px;
+}
+
+.flow__modal .flow__warning {
+  margin-bottom: 12px;
+}
+
+.flow__modal .flow__primary--block {
+  padding: 11px 20px;
+}
+
+.flow__modal .flow__bilgi {
+  gap: 8px;
+  padding: 10px 12px;
+  margin-top: 12px;
+  margin-bottom: 0;
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .flow__fallback-text {
@@ -816,5 +856,33 @@
   .flow__teklif-liste,
   .flow__teklif-kazanc {
     font-size: 12px;
+  }
+
+  /* Ödeme modalı dar ekranda neredeyse tüm yüksekliği kaplıyordu; kenar ve
+     başlık boşlukları kısılınca form kaydırmadan tamamlanabiliyor. */
+  .flow__overlay {
+    padding: 12px;
+  }
+
+  .flow__modal {
+    padding: 20px 16px;
+    border-radius: 16px;
+  }
+
+  .flow__modal-head {
+    padding: 0 28px 14px;
+    margin-bottom: 14px;
+  }
+
+  .flow__modal-sirket {
+    font-size: 15px;
+  }
+
+  .flow__modal-prim {
+    font-size: 23px;
+  }
+
+  .flow__modal .flow__grid {
+    gap: 10px;
   }
 }
