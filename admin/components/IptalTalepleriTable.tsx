@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useVurgu, VURGU_SATIR_SINIFI } from "@/lib/bildirim/useVurgu";
 import {
   IPTAL_BRANS_LABELS,
   IPTAL_STATUS_LABELS,
@@ -46,6 +47,7 @@ export default function IptalTalepleriTable() {
   const [statusFilter, setStatusFilter] = useState<IptalStatus | "all">("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const supabase = useMemo(() => createClient(), []);
+  const { vurguId, vurguRef } = useVurgu(setExpandedId);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -178,6 +180,8 @@ export default function IptalTalepleriTable() {
                   key={item.id}
                   item={item}
                   expanded={expandedId === item.id}
+                  vurgulu={vurguId === item.id}
+                  satirRef={vurguId === item.id ? vurguRef : undefined}
                   onToggle={() =>
                     setExpandedId((id) => (id === item.id ? null : item.id))
                   }
@@ -197,6 +201,8 @@ export default function IptalTalepleriTable() {
 function IptalRow({
   item,
   expanded,
+  vurgulu,
+  satirRef,
   onToggle,
   onStatusChange,
   onSaveNote,
@@ -204,6 +210,8 @@ function IptalRow({
 }: {
   item: IptalTalep;
   expanded: boolean;
+  vurgulu: boolean;
+  satirRef?: (dugum: HTMLTableRowElement | null) => void;
   onToggle: () => void;
   onStatusChange: (status: IptalStatus) => void;
   onSaveNote: (note: string) => Promise<boolean>;
@@ -228,7 +236,10 @@ function IptalRow({
   return (
     <>
       <tr
-        className="cursor-pointer border-b border-slate-100 hover:bg-slate-50/70"
+        ref={satirRef}
+        className={`cursor-pointer border-b border-slate-100 hover:bg-slate-50/70 ${
+          vurgulu ? VURGU_SATIR_SINIFI : ""
+        }`}
         onClick={(e) => {
           if ((e.target as HTMLElement).closest("button, a, select, input, textarea, label")) return;
           onToggle();

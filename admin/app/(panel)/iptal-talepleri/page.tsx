@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import IptalTalepleriTable from "@/components/IptalTalepleriTable";
 
 export const metadata = {
@@ -16,7 +17,10 @@ export default function IptalTalepleriPage() {
         </div>
       </div>
       <div className="mt-6">
-        <IptalTalepleriTable />
+        {/* Tablo bildirimden gelen ?vurgu parametresini okuyor. */}
+        <Suspense fallback={null}>
+          <IptalTalepleriTable />
+        </Suspense>
       </div>
     </div>
   );

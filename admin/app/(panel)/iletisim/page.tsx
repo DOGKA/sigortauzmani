@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import IletisimTable from "@/components/IletisimTable";
 
 export const metadata = {
@@ -14,7 +15,10 @@ export default function IletisimPage() {
         </p>
       </div>
       <div className="mt-6">
-        <IletisimTable />
+        {/* Tablo bildirimden gelen ?vurgu parametresini okuyor. */}
+        <Suspense fallback={null}>
+          <IletisimTable />
+        </Suspense>
       </div>
     </div>
   );

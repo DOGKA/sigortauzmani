@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import PolicelerTable from "@/components/PolicelerTable";
 
 export const metadata = {
@@ -17,7 +18,10 @@ export default function Page() {
         </div>
       </div>
       <div className="mt-6">
-        <PolicelerTable />
+        {/* Tablo bildirimden gelen ?vurgu parametresini okuyor. */}
+        <Suspense fallback={null}>
+          <PolicelerTable />
+        </Suspense>
       </div>
     </div>
   );

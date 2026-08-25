@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import TaleplerTable from "@/components/TaleplerTable";
 
 export const metadata = {
@@ -16,7 +17,10 @@ export default function TaleplerPage() {
         </div>
       </div>
       <div className="mt-6">
-        <TaleplerTable />
+        {/* Tablo bildirimden gelen ?vurgu parametresini okuyor. */}
+        <Suspense fallback={null}>
+          <TaleplerTable />
+        </Suspense>
       </div>
     </div>
   );

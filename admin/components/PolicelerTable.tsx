@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { formatDateTime, formatPrim, maskKimlikNo, paraKodu } from "@/lib/format";
+import { useVurgu, VURGU_SATIR_SINIFI } from "@/lib/bildirim/useVurgu";
 import { BRANS_LABELS, type SatinAlmaKaydi } from "@/lib/types";
 
 const STATUS_STYLES: Record<SatinAlmaKaydi["status"], string> = {
@@ -35,6 +36,7 @@ export default function PolicelerTable() {
   const [bransFilter, setBransFilter] = useState<string>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const supabase = useMemo(() => createClient(), []);
+  const { vurguId, vurguRef } = useVurgu(setExpandedId);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -199,6 +201,8 @@ export default function PolicelerTable() {
                   key={kayit.id}
                   kayit={kayit}
                   expanded={expandedId === kayit.id}
+                  vurgulu={vurguId === kayit.id}
+                  satirRef={vurguId === kayit.id ? vurguRef : undefined}
                   onToggle={() =>
                     setExpandedId((id) => (id === kayit.id ? null : kayit.id))
                   }
@@ -215,10 +219,14 @@ export default function PolicelerTable() {
 function PoliceRow({
   kayit,
   expanded,
+  vurgulu,
+  satirRef,
   onToggle,
 }: {
   kayit: SatinAlmaKaydi;
   expanded: boolean;
+  vurgulu: boolean;
+  satirRef?: (dugum: HTMLTableRowElement | null) => void;
   onToggle: () => void;
 }) {
   const oturum = kayit.teklif_oturumlari;
@@ -226,7 +234,10 @@ function PoliceRow({
   return (
     <>
       <tr
-        className="cursor-pointer border-b border-slate-100 transition hover:bg-slate-50"
+        ref={satirRef}
+        className={`cursor-pointer border-b border-slate-100 transition hover:bg-slate-50 ${
+          vurgulu ? VURGU_SATIR_SINIFI : ""
+        }`}
         onClick={onToggle}
       >
         <td className="px-5 py-3.5 font-mono text-[13px] font-semibold text-sky-600">

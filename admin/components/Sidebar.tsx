@@ -3,12 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useBildirimBaglami } from "@/lib/bildirim/BildirimSaglayici";
+import type { BildirimKaynagi } from "@/lib/bildirim/kaynaklar";
 
 interface NavItem {
   href: string;
   label: string;
   icon: React.ReactNode;
   disabled?: boolean;
+  /** Dolu ise bu bölümün okunmamış bildirim sayısı rozet olarak gösterilir. */
+  kaynak?: BildirimKaynagi;
 }
 
 const iconProps = {
@@ -27,6 +31,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     href: "/talepler",
     label: "Talepler",
+    kaynak: "talep",
     icon: (
       <svg {...iconProps}>
         <path d="M8 6h13M8 12h13M8 18h13" />
@@ -39,6 +44,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     href: "/iptal-talepleri",
     label: "İptal Talepleri",
+    kaynak: "iptal_talep",
     icon: (
       <svg {...iconProps}>
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" />
@@ -49,6 +55,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     href: "/iletisim",
     label: "İletişim",
+    kaynak: "iletisim",
     icon: (
       <svg {...iconProps}>
         <rect x="3" y="5" width="18" height="14" rx="2" />
@@ -59,6 +66,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     href: "/policeler",
     label: "Poliçeler",
+    kaynak: "police",
     icon: (
       <svg {...iconProps}>
         <path d="M12 3 5 6v5c0 4.4 3 8.4 7 9.6 4-1.2 7-5.2 7-9.6V6l-7-3Z" />
@@ -141,6 +149,7 @@ const NAV_ITEMS: NavItem[] = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { kaynakSayilari } = useBildirimBaglami();
 
   return (
     <aside className="flex w-64 shrink-0 flex-col border-r border-white/10 bg-[#0b1a30] text-white">
@@ -169,6 +178,7 @@ export default function Sidebar() {
         <ul className="space-y-1">
           {NAV_ITEMS.map((item) => {
             const active = pathname.startsWith(item.href);
+            const okunmamis = item.kaynak ? kaynakSayilari[item.kaynak] : 0;
             return (
               <li key={item.href}>
                 <Link
@@ -181,6 +191,14 @@ export default function Sidebar() {
                 >
                   {item.icon}
                   {item.label}
+                  {okunmamis > 0 && (
+                    <span
+                      className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[11px] font-bold text-white"
+                      aria-label={`${okunmamis} okunmamış`}
+                    >
+                      {okunmamis > 99 ? "99+" : okunmamis}
+                    </span>
+                  )}
                 </Link>
               </li>
             );

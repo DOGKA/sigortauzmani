@@ -9,6 +9,7 @@ import {
   type TalepStatus,
 } from "@/lib/types";
 import { formatPrim, paraKodu } from "@/lib/format";
+import { useVurgu, VURGU_SATIR_SINIFI } from "@/lib/bildirim/useVurgu";
 import { buildTalepWhatsAppUrl } from "@/lib/whatsapp";
 
 const STATUS_STYLES: Record<TalepStatus, string> = {
@@ -50,6 +51,7 @@ export default function TaleplerTable() {
   const [productFilter, setProductFilter] = useState<string>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const supabase = useMemo(() => createClient(), []);
+  const { vurguId, vurguRef } = useVurgu(setExpandedId);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -187,6 +189,8 @@ export default function TaleplerTable() {
                   key={talep.id}
                   talep={talep}
                   expanded={expandedId === talep.id}
+                  vurgulu={vurguId === talep.id}
+                  satirRef={vurguId === talep.id ? vurguRef : undefined}
                   onToggle={() =>
                     setExpandedId((id) => (id === talep.id ? null : talep.id))
                   }
@@ -204,11 +208,15 @@ export default function TaleplerTable() {
 function TalepRow({
   talep,
   expanded,
+  vurgulu,
+  satirRef,
   onToggle,
   onStatusChange,
 }: {
   talep: Talep;
   expanded: boolean;
+  vurgulu: boolean;
+  satirRef?: (dugum: HTMLTableRowElement | null) => void;
   onToggle: () => void;
   onStatusChange: (status: TalepStatus) => void;
 }) {
@@ -217,7 +225,10 @@ function TalepRow({
   return (
     <>
       <tr
-        className="cursor-pointer border-b border-slate-100 transition hover:bg-slate-50"
+        ref={satirRef}
+        className={`cursor-pointer border-b border-slate-100 transition hover:bg-slate-50 ${
+          vurgulu ? VURGU_SATIR_SINIFI : ""
+        }`}
         onClick={onToggle}
       >
         <td className="px-5 py-3.5 font-mono text-[13px] font-semibold text-sky-600">

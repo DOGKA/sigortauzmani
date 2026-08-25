@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useVurgu, VURGU_SATIR_SINIFI } from "@/lib/bildirim/useVurgu";
 import {
   ILETISIM_ONCELIK_LABELS,
   ILETISIM_STATUS_LABELS,
@@ -45,6 +46,7 @@ export default function IletisimTable() {
     useState<IletisimOncelik | "all">("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const supabase = useMemo(() => createClient(), []);
+  const { vurguId, vurguRef } = useVurgu(setExpandedId);
 
   useEffect(() => {
     let cancelled = false;
@@ -172,6 +174,8 @@ export default function IletisimTable() {
                   key={item.id}
                   item={item}
                   expanded={expandedId === item.id}
+                  vurgulu={vurguId === item.id}
+                  satirRef={vurguId === item.id ? vurguRef : undefined}
                   onToggle={() =>
                     setExpandedId((current) =>
                       current === item.id ? null : item.id,
@@ -194,12 +198,16 @@ export default function IletisimTable() {
 function ContactRow({
   item,
   expanded,
+  vurgulu,
+  satirRef,
   onToggle,
   onStatusChange,
   onOpenDocument,
 }: {
   item: IletisimTalep;
   expanded: boolean;
+  vurgulu: boolean;
+  satirRef?: (dugum: HTMLTableRowElement | null) => void;
   onToggle: () => void;
   onStatusChange: (status: IletisimStatus) => void;
   onOpenDocument: () => void;
@@ -207,7 +215,14 @@ function ContactRow({
   return (
     <>
       <tr
-        className={`cursor-pointer ${expanded ? "bg-sky-50/40" : "hover:bg-slate-50/60"}`}
+        ref={satirRef}
+        className={`cursor-pointer ${
+          vurgulu
+            ? VURGU_SATIR_SINIFI
+            : expanded
+              ? "bg-sky-50/40"
+              : "hover:bg-slate-50/60"
+        }`}
         onClick={(e) => {
           if ((e.target as HTMLElement).closest("button, a, select, input, textarea, label")) return;
           onToggle();
