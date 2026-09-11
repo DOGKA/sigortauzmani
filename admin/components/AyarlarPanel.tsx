@@ -46,6 +46,13 @@ const PRODUCT_NAMES: Record<string, string> = {
   konut: "Konut",
 };
 
+/** Uç nokta beklenmeyen bir hatada gövdesiz yanıt verebilir; parse hatası ekranı kilitlemesin. */
+async function readJson<T = object>(
+  response: Response,
+): Promise<Partial<T> & { error?: string }> {
+  return (await response.json().catch(() => ({}))) as Partial<T> & { error?: string };
+}
+
 export default function AyarlarPanel() {
   const [tab, setTab] = useState<Tab>("notifications");
   const [settings, setSettings] = useState<SiteSettings>(structuredClone(DEFAULT_SITE_SETTINGS));
@@ -56,16 +63,24 @@ export default function AyarlarPanel() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const [settingsResponse, legalResponse] = await Promise.all([
-      fetch("/api/ayarlar"),
-      fetch("/api/ayarlar/yasal"),
-    ]);
-    const settingsBody = await settingsResponse.json();
-    const legalBody = await legalResponse.json();
-    if (settingsResponse.ok) setSettings(settingsBody.settings);
-    else setMessage({ kind: "error", text: settingsBody.error ?? "Ayarlar alınamadı." });
-    if (legalResponse.ok) setDocuments(legalBody.documents ?? []);
-    setLoading(false);
+    try {
+      const [settingsResponse, legalResponse] = await Promise.all([
+        fetch("/api/ayarlar"),
+        fetch("/api/ayarlar/yasal"),
+      ]);
+      const settingsBody = await readJson<{ settings: SiteSettings }>(settingsResponse);
+      const legalBody = await readJson<{ documents: LegalDocument[] }>(legalResponse);
+
+      if (settingsResponse.ok && settingsBody.settings) setSettings(settingsBody.settings);
+      else setMessage({ kind: "error", text: settingsBody.error ?? "Ayarlar alınamadı." });
+
+      if (legalResponse.ok) setDocuments(legalBody.documents ?? []);
+      else setMessage({ kind: "error", text: legalBody.error ?? "Yasal belgeler alınamadı." });
+    } catch {
+      setMessage({ kind: "error", text: "Sunucuya ulaşılamadı. Bağlantıyı kontrol edin." });
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -80,8 +95,8 @@ export default function AyarlarPanel() {
       headers: { "content-type": "application/json" },
       body: JSON.stringify(settings),
     });
-    const body = await response.json();
-    if (response.ok) {
+    const body = await readJson<{ settings: SiteSettings }>(response);
+    if (response.ok && body.settings) {
       setSettings(body.settings);
       setMessage({ kind: "ok", text: "Ayarlar kaydedildi." });
     } else setMessage({ kind: "error", text: body.error ?? "Kaydedilemedi." });
@@ -187,8 +202,12 @@ function Notifications({ settings, setSettings }: PanelProps) {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ recipient: testRecipient }),
     });
-    const body = await response.json();
-    setTestMessage(response.ok ? "Test e-postası gönderildi." : body.error);
+    const body = await readJson(response);
+    setTestMessage(
+      response.ok
+        ? "Test e-postası gönderildi."
+        : (body.error ?? "Test gönderilemedi."),
+    );
   }
   return (
     <>
@@ -324,13 +343,17 @@ function Legal({ documents, reload }: { documents: LegalDocument[]; reload: () =
         content: { intro: [], sections: [] },
       }),
     });
-    const body = await response.json();
-    setStatus(response.ok ? "Yeni belge taslağı oluşturuldu." : body.error);
+    const body = await readJson<{ id: string }>(response);
+    setStatus(
+      response.ok
+        ? "Yeni belge taslağı oluşturuldu."
+        : (body.error ?? "Belge oluşturulamadı."),
+    );
     if (response.ok) {
       setShowCreate(false);
       setNewDocument({ slug: "", locale: "tr", title: "", description: "" });
       await reload();
-      setSelectedId(body.id);
+      if (body.id) setSelectedId(body.id);
     }
   }
 
@@ -339,8 +362,8 @@ function Legal({ documents, reload }: { documents: LegalDocument[]; reload: () =
     const response = await fetch(`/api/ayarlar/yasal?id=${encodeURIComponent(selected.id)}`, {
       method: "DELETE",
     });
-    const body = await response.json();
-    setStatus(response.ok ? "Belge silindi." : body.error);
+    const body = await readJson(response);
+    setStatus(response.ok ? "Belge silindi." : (body.error ?? "Belge silinemedi."));
     if (response.ok) {
       setSelectedId("");
       await reload();
@@ -360,8 +383,12 @@ function Legal({ documents, reload }: { documents: LegalDocument[]; reload: () =
           content: JSON.parse(content),
         }),
       });
-      const body = await response.json();
-      setStatus(response.ok ? "Belge sürümü güncellendi." : body.error);
+      const body = await readJson(response);
+      setStatus(
+        response.ok
+          ? "Belge sürümü güncellendi."
+          : (body.error ?? "Sürüm güncellenemedi."),
+      );
       if (response.ok) await reload();
     } catch {
       setStatus("İçerik geçerli JSON olmalıdır.");

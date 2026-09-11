@@ -1,4 +1,5 @@
 import { createClient as createServiceClient } from "@supabase/supabase-js";
+import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import {
   DEFAULT_SITE_SETTINGS,
@@ -6,6 +7,24 @@ import {
   type SettingKey,
   type SiteSettings,
 } from "../../../shared/site-settings";
+
+/**
+ * Beklenmeyen hatada Next.js gövdesiz 500 döndürür; panel yanıtı JSON olarak
+ * okumaya çalıştığı için çöker ve ekran yükleme iskeletinde kalır. Ayar uçları
+ * yanıtlarını bu sarmalayıcıdan geçirerek her durumda okunabilir hata verir.
+ */
+export async function jsonHandler(
+  handler: () => Promise<NextResponse>,
+  fallbackMessage: string,
+  errorStatus = 500,
+) {
+  try {
+    return await handler();
+  } catch (error) {
+    const message = error instanceof Error ? error.message : fallbackMessage;
+    return NextResponse.json({ error: message }, { status: errorStatus });
+  }
+}
 
 export async function requireUser() {
   const client = await createClient();
