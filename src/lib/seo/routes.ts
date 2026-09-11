@@ -11,6 +11,7 @@ export const ROUTES = {
   about: "/hakkimizda",
   contact: "/iletisim",
   kvkk: "/kvkk",
+  kvkkBasvuru: "/kvkk-basvuru",
   privacy: "/gizlilik-politikasi",
   cookies: "/cerez-politikasi",
   blog: "/blog",

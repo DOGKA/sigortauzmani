@@ -2,11 +2,6 @@
  * Yasal metinler. İletişim bilgileri SEO config ile aynı kaynaktan gelir.
  */
 
-import {
-  CONTACT_EMAIL,
-  CONTACT_PHONE_DISPLAY,
-  SITE_URL,
-} from "../lib/seo/config";
 import { ROUTES } from "../lib/seo/routes";
 
 export interface LegalSection {
@@ -29,491 +24,340 @@ export interface LegalDocument {
   summary: string;
 }
 
-const LAST_UPDATED = "28 Temmuz 2026";
+const KVKK_UPDATED = "1 Eylül 2026";
+
+/** Veri sorumlusu bilgileri — tamamlandığında güncellenecek. */
+const KVKK_SORUMLU = {
+  unvan: "[TAM TİCARET UNVANI]",
+  adres: "[AÇIK POSTA ADRESİ]",
+  kep: "[KEP ADRESİ]",
+  eposta: "[KVKK E-POSTA ADRESİ]",
+  telefon: "[TELEFON NUMARASI]",
+  tobb: "[TOBB SİGORTA ACENTELERİ LEVHA NUMARASI]",
+  mersis: "[MERSİS / TİCARET SİCİLİ BİLGİSİ]",
+} as const;
 
 export const legalDocuments: LegalDocument[] = [
   {
     path: ROUTES.kvkk,
     title: "KVKK Aydınlatma Metni",
     description:
-      "6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında Sigorta Uzmanı kişisel veri aydınlatma metni. Veri sorumlusu, işlenen veriler, amaçlar ve haklarınız.",
-    h1: "KVKK Aydınlatma Metni",
-    updatedAt: LAST_UPDATED,
+      "6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında kişisel verilerin işlenmesine ilişkin aydınlatma metni. Veri sorumlusu, işlenen veriler, amaçlar, aktarım ve haklarınız.",
+    h1: "Kişisel Verilerin İşlenmesine İlişkin Aydınlatma Metni",
+    updatedAt: KVKK_UPDATED,
     eyebrow: "Kişisel verilerin korunması",
-    intro: [
-      "6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) uyarınca kişisel verilerinizin işlenmesine ilişkin sizi bilgilendirmek isteriz.",
-      `Bu metin; ${SITE_URL} üzerinden sunulan teklif, iletişim, poliçe iptal ve bilgilendirme hizmetleri kapsamında geçerlidir.`,
-    ],
+    intro: [],
     sections: [
       {
-        heading: "1. İşlenen kişisel veriler",
+        heading: "1. Veri sorumlusu",
         paragraphs: [
-          "Hizmetin niteliğine göre aşağıdaki veri kategorileri işlenebilir:",
+          `6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) kapsamında kişisel verileriniz, veri sorumlusu sıfatıyla ${KVKK_SORUMLU.unvan} (“Şirket”) tarafından işlenmektedir.`,
+          `Adres: ${KVKK_SORUMLU.adres}`,
+          `KEP: ${KVKK_SORUMLU.kep}`,
+          `KVKK e-posta adresi: ${KVKK_SORUMLU.eposta}`,
+          `Telefon: ${KVKK_SORUMLU.telefon}`,
+          `TOBB Sigorta Acenteleri Levha No: ${KVKK_SORUMLU.tobb}`,
+          `MERSİS / Ticaret Sicili: ${KVKK_SORUMLU.mersis}`,
+        ],
+      },
+      {
+        heading: "2. Hangi verileri işliyoruz?",
+        paragraphs: [
+          "Kullandığınız hizmete göre aşağıdaki kişisel veriler işlenebilir:",
         ],
         items: [
-          "Kimlik: ad, soyad, T.C. kimlik numarası, vergi kimlik numarası, doğum tarihi",
-          "İletişim: cep telefonu, e-posta adresi",
-          "Sigorta / araç / konut: plaka, şasi no, ruhsat seri no, teminat tercihi, branş bilgisi",
-          "İşlem güvenliği: IP adresi, tarayıcı bilgisi, form gönderim zamanı",
-          "Başvuru içeriği: mesaj metni, yüklenen belgeler (PDF/görsel), referans / takip numarası",
+          "Ad, soyad, T.C. kimlik numarası, yabancı kimlik numarası veya vergi kimlik numarası gibi kimlik bilgileri",
+          "Telefon numarası ve e-posta adresi gibi iletişim bilgileri",
+          "Doğum tarihi ve sigorta teklifi için gerekli müşteri bilgileri",
+          "Plaka, ruhsat, araç, kullanım şekli ve hasar bilgileri",
+          "Adres, UAVT/adres kodu, bina ve taşınmaz bilgileri",
+          "Talep edilen sigorta ürünü, mevcut poliçe, teklif, teminat ve işlem bilgileri",
+          "API sorgusu, sigorta şirketi yanıtı, anlık teklif, teklif zamanı, sıralama ve poliçeleştirme bilgileri",
+          "Sigorta şirketi tarafından API üzerinden iletilmesi hâlinde ödeme durumu, işlem referansı ve poliçe oluşturma sonucu",
+          "Poliçe iptal talebinde paylaşılan noter satış belgesi ve diğer belgeler",
+          "İletişim formunda yazılan mesaj ve isteğe bağlı olarak yüklenen dosyalar",
+          "IP adresi, tarih-saat, hata, güvenlik ve işlem kayıtları",
+        ],
+        closing: [
+          "Tamamlayıcı Sağlık ve Özel Sağlık teklif formlarında yalnızca anlık teklif alınması ve poliçe sürecinin başlatılması için gerekli kimlik ve iletişim bilgileri toplanır. Web formunda hastalık, teşhis, tedavi, ilaç veya ameliyat bilgisi istenmediği sürece sağlık verisi işlenmez.",
         ],
       },
       {
-        heading: "2. İşleme amaçları",
+        heading: "3. Verileri hangi amaçlarla işliyoruz?",
+        paragraphs: ["Kişisel verileriniz;"],
         items: [
-          "Sigorta teklifi hazırlamak ve sigorta şirketlerinden fiyat/teminat seçenekleri almak",
-          "Poliçe düzenleme, yenileme ve poliçe iptal süreçlerini yürütmek",
-          "İletişim taleplerini yanıtlamak ve müşteri desteği sağlamak",
-          "Yasal yükümlülükleri yerine getirmek ve uyuşmazlık durumunda delil oluşturmak",
-          "Hizmet kalitesini artırmak ve güvenlik (kötüye kullanım / spam önleme) sağlamak",
+          "Sigorta teklif talebinizi almak",
+          "Talebiniz için bir başvuru veya talep numarası oluşturmak",
+          "Kimlik, araç, adres ve sigorta bilgilerini entegre sigorta şirketlerinin API’lerine ve yetkili sigorta bilgi sistemlerine iletmek",
+          "Entegre sigorta şirketlerinden anlık fiyat ve teklif sonucu almak",
+          "Teklifleri fiyat, teminat, kapsam ve sigorta şirketi bilgileriyle karşılaştırarak size göstermek",
+          "Entegrasyonun desteklediği sigorta şirketlerinde kullanıcıyı doğrudan sigorta şirketinin ödeme ekranına yönlendirmek ve poliçeleştirme sonucunu almak",
+          "Çevrim içi satın alma entegrasyonu bulunmayan sigorta şirketlerinde işlemi talep numarasıyla WhatsApp temsilcisine aktarmak",
+          "Sizinle telefon, e-posta veya WhatsApp üzerinden iletişim kurmak",
+          "Seçiminiz hâlinde poliçe düzenleme, ödeme ve satış sonrası destek süreçlerini yürütmek",
+          "Poliçe iptal talebinizi almak ve ilgili sigorta şirketine iletmek",
+          "İletişim, destek, şikâyet ve KVKK başvurularınızı sonuçlandırmak",
+          "Bilgi güvenliğini sağlamak, hataları ve kötüye kullanımı önlemek",
+          "Yasal yükümlülükleri yerine getirmek ve gerektiğinde haklarımızı korumak",
+        ],
+        closing: ["amaçlarıyla işlenir."],
+      },
+      {
+        heading: "4. Kişisel verilerin işlenmesinin hukuki sebepleri",
+        paragraphs: ["Kişisel verileriniz, işleme faaliyetine göre;"],
+        items: [
+          "Bir sözleşmenin kurulması veya ifasıyla doğrudan ilgili olması",
+          "Veri sorumlusunun hukuki yükümlülüğünü yerine getirmesi",
+          "Bir hakkın tesisi, kullanılması veya korunması",
+          "Temel hak ve özgürlüklerinize zarar vermemek kaydıyla meşru menfaatlerimizin bulunması",
+          "Kanunlarda açıkça öngörülmesi",
+        ],
+        closing: [
+          "hukuki sebeplerine dayanılarak işlenir.",
+          "Sağlık verisi gibi özel nitelikli kişisel veriler, yalnızca KVKK’nın 6. maddesinde belirtilen uygun işleme şartlarından biri bulunduğunda işlenir. Açık rıza gerektiren bir işlem varsa aydınlatma metninden ayrı ve isteğe bağlı bir açık rıza metni sunulur.",
+          "Kampanya ve pazarlama iletileri için gereken izin, teklif ve poliçe işlemlerinden ayrı olarak alınır. Pazarlama izni vermemeniz sigorta hizmeti almanıza engel olmaz.",
         ],
       },
       {
-        heading: "3. Hukuki sebepler",
+        heading: "5. Verileri nasıl topluyoruz?",
         paragraphs: [
-          "Kişisel verileriniz; KVKK m.5/2 kapsamında sözleşmenin kurulması veya ifası, hukuki yükümlülüğün yerine getirilmesi, meşru menfaatimiz ve açık rızanız (gerektiğinde) hukuki sebeplerine dayanılarak işlenir.",
+          "Kişisel verileriniz; sigortauzmani.net üzerindeki teklif, API sorgusu, çevrim içi satın alma, iletişim ve poliçe iptal akışları, yüklediğiniz belgeler, telefon, e-posta, WhatsApp görüşmeleri ve hizmetin yürütülmesi sırasında oluşan işlem kayıtları üzerinden otomatik veya kısmen otomatik yöntemlerle toplanır.",
         ],
       },
       {
-        heading: "4. Aktarım",
+        heading: "6. Veriler kimlere aktarılabilir?",
         paragraphs: [
-          "Teklif ve poliçe süreçlerinin yürütülebilmesi için verileriniz, yalnızca gerekli ölçüde ve ilgili mevzuata uygun olarak şu taraflarla paylaşılabilir:",
+          "Kişisel verileriniz, yalnızca ilgili işlem için gerekli olduğu ölçüde;",
         ],
         items: [
-          "Teklif / poliçe ilişkisinin kurulduğu sigorta şirketleri ve yetkili acentelik kanalları",
-          "Teknik altyapı sağlayıcıları (barındırma, e-posta bildirimi, form güvenliği)",
-          "Yetkili kamu kurum ve kuruluşları (yasal zorunluluk halinde)",
+          "API üzerinden anlık teklif alınacak veya poliçe düzenleyecek anlaşmalı sigorta şirketlerine",
+          "Sigorta mevzuatı kapsamında yetkilendirilmiş bilgi ve gözetim sistemlerine",
+          "Web sitesi, barındırma, veri tabanı, dosya saklama, e-posta, SMS, WhatsApp, güvenlik ve müşteri iletişimi hizmeti sağlayan şirketlere",
+          "Ödeme işlemi seçilirse kullanıcıyı doğrudan ilgili sigorta şirketinin ödeme ekranına yönlendirmek amacıyla ilgili sigorta şirketine",
+          "Hukuk, denetim ve mali müşavirlik hizmeti sağlayan kişilere",
+          "Kanunen yetkili kamu kurumlarına, mahkemelere ve denetim mercilerine",
+        ],
+        closing: [
+          "aktarılabilir.",
+          "Her veri bütün alıcı gruplarına aktarılmaz. Aktarım, talep ettiğiniz hizmet ve yürütülen işlemle sınırlıdır.",
         ],
       },
       {
-        heading: "5. Saklama süresi",
+        heading: "7. Anlık teklif ve otomatik işlemler",
         paragraphs: [
-          "Verileriniz, işleme amacının gerektirdiği süre ve ilgili mevzuatta öngörülen zamanaşımı / saklama süreleri boyunca muhafaza edilir. Süre sonunda silinir, yok edilir veya anonim hâle getirilir.",
+          "Teklif fiyatları, uygunluk sonuçları ve bazı teminat seçenekleri, entegre sigorta şirketlerinin kendi fiyatlama ve risk değerlendirme kuralları doğrultusunda otomatik olarak oluşturularak siteye iletilebilir. Sigorta Uzmanı bu sonuçları fiyat, teminat ve kapsam bilgileriyle karşılaştırmalı olarak gösterebilir.",
+          "Poliçe satın alma kararı kullanıcıya aittir. Kullanıcının seçimi olmadan poliçe satın alınmaz veya ödeme işlemi başlatılmaz. Çevrim içi satın alma seçildiğinde kullanıcı doğrudan ilgili sigorta şirketinin ödeme ekranına yönlendirilir. Kart bilgileri Sigorta Uzmanı tarafından görülmez, işlenmez veya saklanmaz. Çevrim içi satın alma entegrasyonu bulunmayan sigorta şirketlerinde kullanıcı, talep numarasıyla WhatsApp temsilcisine yönlendirilir.",
         ],
       },
       {
-        heading: "6. Haklarınız",
+        heading: "8. Yurt dışına aktarım",
         paragraphs: [
-          "KVKK m.11 uyarınca; verilerinizin işlenip işlenmediğini öğrenme, işlenmişse bilgi talep etme, amacına uygun kullanılıp kullanılmadığını öğrenme, yurt içi/yurt dışı aktarıldığı üçüncü kişileri bilme, düzeltilmesini veya silinmesini isteme, otomatik sistemler vasıtasıyla analiz edilmesine itiraz etme ve kanuna aykırı işleme nedeniyle zararın giderilmesini talep etme haklarına sahipsiniz.",
-          `Başvurularınızı ${CONTACT_EMAIL} adresine iletebilir veya sitedeki İletişim formunu kullanabilirsiniz. Talepleriniz en kısa sürede ve en geç 30 gün içinde yanıtlanır.`,
+          "Web sitesi, barındırma, veri tabanı, dosya saklama, güvenlik veya iletişim hizmetlerinin yurt dışında bulunan bir hizmet sağlayıcı üzerinden sunulması hâlinde kişisel veriler, KVKK’nın 9. maddesinde belirtilen şartlar ve uygun güvenceler sağlanarak yurt dışına aktarılabilir.",
         ],
       },
       {
-        heading: "7. Güncelleme",
+        heading: "9. Verilerin saklanması",
         paragraphs: [
-          `Bu aydınlatma metni ${LAST_UPDATED} tarihinde güncellenmiştir. Önemli değişikliklerde sayfa üzerinde yeni sürüm yayımlanır.`,
+          "Kişisel veriler, ilgili hizmetin yürütülmesi ve yasal yükümlülüklerin yerine getirilmesi için gerekli süre boyunca saklanır. Süre sona erdiğinde veriler, uygulanabilir mevzuat ve Şirketin saklama-imha prosedürüne uygun olarak silinir, yok edilir veya anonim hâle getirilir.",
+        ],
+      },
+      {
+        heading: "10. Haklarınız ve başvuru",
+        paragraphs: ["KVKK’nın 11. maddesi kapsamında;"],
+        items: [
+          "Kişisel verilerinizin işlenip işlenmediğini öğrenme",
+          "İşlenmişse buna ilişkin bilgi talep etme",
+          "İşleme amacını ve amaca uygun kullanılıp kullanılmadığını öğrenme",
+          "Verilerin aktarıldığı üçüncü kişileri öğrenme",
+          "Eksik veya yanlış işlenen verilerin düzeltilmesini isteme",
+          "Şartları oluşmuşsa verilerin silinmesini veya yok edilmesini isteme",
+          "Düzeltme, silme veya yok etme işlemlerinin verilerin aktarıldığı üçüncü kişilere bildirilmesini isteme",
+          "Münhasıran otomatik sistemlerle analiz sonucunda aleyhinize bir sonuç çıkmasına itiraz etme",
+          "Kanuna aykırı işleme nedeniyle zarara uğramanız hâlinde zararın giderilmesini talep etme",
+        ],
+        closing: [
+          "haklarına sahipsiniz.",
+          "Başvurularınızı aşağıdaki kanallardan iletebilirsiniz:",
+          `Posta: ${KVKK_SORUMLU.adres}`,
+          `KEP: ${KVKK_SORUMLU.kep}`,
+          `Kayıtlı e-posta adresiniz üzerinden: ${KVKK_SORUMLU.eposta}`,
+          "Başvurunuz, talebin niteliğine göre en kısa sürede ve en geç otuz gün içinde sonuçlandırılır. Başvuru yöntemleri ve gerekli bilgiler için KVKK Başvuru Formu sayfasını kullanabilirsiniz.",
         ],
       },
     ],
     summary:
-      "KVKK aydınlatma metni: işlenen veri kategorileri, amaçlar, aktarım ve başvuru hakları.",
+      "KVKK aydınlatma metni: veri sorumlusu, işlenen veriler, amaçlar, aktarım, otomatik işlemler ve başvuru hakları.",
   },
   {
     path: ROUTES.privacy,
     title: "Gizlilik Politikası",
     description:
-      "sigortauzmani.net gizlilik politikası. Toplanan bilgiler, kullanım amaçları, paylaşım, WhatsApp, çerezler, saklama ve kullanıcı hakları.",
+      "sigortauzmani.net gizlilik politikası. Teklif süreci, form ve dosyalar, ödeme güvenliği, hizmet mesajları ve bilgi güvenliği.",
     h1: "Gizlilik Politikası",
-    updatedAt: "29 Temmuz 2026",
+    updatedAt: "1 Eylül 2026",
     eyebrow: "Yasal metinler",
-    intro: [],
+    intro: [
+      "Sigorta Uzmanı, sigortauzmani.net üzerinden paylaştığınız bilgilerin güvenliğine ve yalnızca belirtilen amaçlarla kullanılmasına önem verir.",
+    ],
     sections: [
       {
-        heading: "01. Amaç ve kapsam",
+        heading: "1. Teklif süreci",
         paragraphs: [
-          "Bu Gizlilik Politikası; sigortauzmani.net internet sitesinin kullanılması, sigorta teklif talebi oluşturulması, poliçe işlemlerinin yürütülmesi, poliçe iptal başvurusu yapılması, iletişim formunun kullanılması ve destek hizmetlerinden yararlanılması sırasında paylaşılan bilgilerin nasıl toplandığını, kullanıldığını, saklandığını ve korunduğunu açıklamaktadır.",
-          "Kişisel verilerin işlenmesine ilişkin ayrıntılı hukuki açıklamalar KVKK Aydınlatma Metni içerisinde yer almaktadır.",
+          "Teklif formunda paylaştığınız bilgiler; entegre sigorta şirketlerinin API’lerinden anlık fiyat almak, teklifleri fiyat, teminat ve kapsam bakımından karşılaştırmak ve sonuçları size göstermek için kullanılır.",
+          "Seçtiğiniz sigorta şirketinde çevrim içi satın alma entegrasyonu bulunuyorsa doğrudan ilgili sigorta şirketinin ödeme ekranına yönlendirilirsiniz. Ödeme tamamlandıktan sonra poliçeleştirme sonucu entegrasyon üzerinden siteye iletilebilir. Bu entegrasyon bulunmuyorsa talebiniz bir talep numarasıyla WhatsApp temsilcisine aktarılır ve satın alma işlemi temsilci desteğiyle tamamlanır.",
+          "Teklif fiyatları ve uygunluk sonuçları, sigorta şirketlerinin kendi fiyatlama ve risk değerlendirme kurallarına göre oluşturulur. Satın alma kararı kullanıcıya aittir; kullanıcı seçmeden poliçe satın alınmaz veya ödeme başlatılmaz.",
         ],
       },
       {
-        heading: "02. Toplanan bilgiler",
+        heading: "2. Form ve dosyalar",
         paragraphs: [
-          "Kullanılan hizmete ve seçilen sigorta ürününe göre aşağıdaki bilgiler işlenebilir:",
-        ],
-        items: [
-          "Kimlik bilgileri: Ad, soyad, T.C. kimlik numarası, vergi kimlik numarası ve doğum tarihi.",
-          "İletişim bilgileri: Cep telefonu numarası ve e-posta adresi.",
-          "Sigorta ve işlem bilgileri: Talep edilen sigorta türü, teklif ve poliçe bilgileri, teminat tercihleri, talep ve takip numarası, yenileme, değişiklik, iptal ve hasar süreçlerine ilişkin bilgiler.",
-          "Araç bilgileri: Plaka, ruhsat belge seri numarası, şasi numarası, motor numarası ve teklif hazırlanması için gerekli diğer araç bilgileri.",
-          "Konut ve taşınmaz bilgileri: Adres, bina ve konut özellikleri ile DASK veya konut sigortası teklifinin hazırlanması için gerekli bilgiler.",
-          "Başvuru ve iletişim bilgileri: İletişim konusu, mesaj içeriği, aciliyet tercihi, talep ve şikâyet kayıtları.",
-          "Belge bilgileri: Noter satış sözleşmesi, poliçe belgesi ve kullanıcı tarafından iletişim veya poliçe iptal formlarına yüklenen diğer belgeler.",
-          "İşlem güvenliği bilgileri: IP adresi, tarayıcı ve cihaz bilgileri, erişim zamanı, form gönderim zamanı ve sistem güvenliği kayıtları.",
-          "Başka kişilere ait bilgiler: Eş, çocuk veya sigortalanması talep edilen diğer kişilere ilişkin, teklif ve poliçe sürecinin gerektirdiği bilgiler.",
+          "İletişim ve poliçe iptal formlarında gönderdiğiniz bilgiler yalnızca talebinizi değerlendirmek ve ilgili işlemi yürütmek için kullanılır.",
+          "Belge yüklerken yalnızca istenen belgeyi paylaşmanız ve işlemle ilgisi olmayan bilgileri mümkünse maskelemeniz önerilir. Yüklenen dosyalara erişim sınırlandırılır; dosya türü ve boyutu kontrol edilir ve güvenlik önlemleri uygulanır.",
         ],
       },
       {
-        heading: "03. Bilgilerin toplanma yöntemleri",
+        heading: "3. Başka kişilere ait bilgiler",
         paragraphs: [
-          "Bilgiler aşağıdaki kanallar aracılığıyla elde edilebilir:",
-        ],
-        items: [
-          "İnternet sitesindeki teklif, iletişim ve poliçe iptal formları.",
-          "Telefon ve e-posta görüşmeleri.",
-          "WhatsApp Business üzerinden gerçekleştirilen yazışmalar.",
-          "Kullanıcı tarafından yüklenen belgeler.",
-          "Talep ve poliçe süreçlerinde kullanılan admin paneli ve müşteri takip sistemleri.",
-          "İlgili sigorta şirketleri ve yetkili sigorta kanalları.",
-          "İnternet sitesi erişim kayıtları, zorunlu çerezler ve güvenlik sistemleri.",
-        ],
-        closing: [
-          "Teklif ve başvuru bilgileri, talebin takip edilebilmesi ve yetkili temsilciler tarafından işleme alınabilmesi amacıyla admin paneli veya müşteri takip sistemlerinde kaydedilebilir.",
+          "Eşiniz, çocuğunuz, çalışanınız veya başka bir kişi adına bilgi giriyorsanız bu bilgileri paylaşmaya ve ilgili kişi adına işlem yapmaya yetkili olmanız gerekir. Çocuklar veya kısıtlı kişiler adına işlemler veli, vasi veya yetkili temsilci üzerinden yürütülmelidir.",
         ],
       },
       {
-        heading: "04. Bilgilerin kullanım amaçları",
+        heading: "4. Hizmet mesajları ve pazarlama",
         paragraphs: [
-          "Toplanan bilgiler aşağıdaki amaçlarla kullanılabilir:",
-        ],
-        items: [
-          "Sigorta teklif talebinin oluşturulması.",
-          "İlgili sigorta şirketlerinden fiyat, teminat ve kapsam seçeneklerinin araştırılması.",
-          "Tekliflerin değerlendirilmesi ve kullanıcıya sunulması.",
-          "Kullanıcıyla telefon, e-posta veya WhatsApp üzerinden iletişim kurulması.",
-          "Poliçe düzenleme, yenileme, değişiklik ve iptal işlemlerinin yürütülmesi.",
-          "Hasar ve poliçe sonrası destek taleplerinin değerlendirilmesi.",
-          "Başvuruların talep veya takip numarası üzerinden yönetilmesi.",
-          "İletişim formu mesajlarının ve yüklenen belgelerin incelenmesi.",
-          "Kullanıcı talep, şikâyet ve sorularının cevaplandırılması.",
-          "Sistem güvenliğinin sağlanması ve kötüye kullanımın önlenmesi.",
-          "Hizmet kalitesinin geliştirilmesi.",
-          "Yasal yükümlülüklerin yerine getirilmesi.",
-          "Olası uyuşmazlıklarda hakların korunması ve işlemlerin kayıt altına alınması.",
-        ],
-        closing: [
-          "Reklam, kampanya ve tanıtım amaçlı elektronik ileti gönderimleri yalnızca gerekli izinlerin alınmış olması hâlinde gerçekleştirilir. Kullanıcılar verdikleri ticari ileti izinlerini ilgili iletişim kanalları veya İleti Yönetim Sistemi üzerinden geri alabilir.",
+          "Talep numarası, teklif durumu, poliçe işlemi, ödeme sonucu, iptal süreci veya güvenlik bildirimi gibi mevcut işleminizle doğrudan ilgili hizmet mesajları gönderilebilir.",
+          "Kampanya ve pazarlama mesajları ise yalnızca ayrıca izin vermeniz hâlinde seçtiğiniz iletişim kanallarından gönderilir. Pazarlama izni vermemeniz teklif veya poliçe işleminizi etkilemez.",
         ],
       },
       {
-        heading: "05. Bilgilerin paylaşılması",
+        heading: "5. Ödeme güvenliği",
         paragraphs: [
-          "Bilgiler, hizmetin yürütülmesi için gerekli olduğu ölçüde aşağıdaki taraflarla paylaşılabilir:",
-        ],
-        items: [
-          "Teklif alınan veya poliçe ilişkisinin kurulduğu sigorta şirketleri.",
-          "Teklif, poliçeleştirme, yenileme, değişiklik, iptal ve hasar süreçlerinde görev alan yetkili sigorta kanalları.",
-          "Barındırma, veri tabanı, e-posta gönderimi, dosya saklama, iletişim, güvenlik ve teknik destek hizmeti sağlayan kuruluşlar.",
-          "Talebi değerlendiren yetkili çalışanlar ve temsilciler.",
-          "Hukuk, mali müşavirlik, denetim ve danışmanlık hizmeti alınan yetkili kişiler.",
-          "Yasal zorunluluk bulunması hâlinde yetkili kamu kurumları, düzenleyici kuruluşlar, mahkemeler, icra müdürlükleri ve diğer yetkili merciler.",
-        ],
-        closing: [
-          "Kişisel bilgiler reklam veya pazarlama amacıyla üçüncü kişilere satılmaz, kiralanmaz ya da ticari veri listesi olarak sunulmaz.",
+          "Çevrim içi satın alma sırasında kullanıcı doğrudan ilgili sigorta şirketinin ödeme ekranına yönlendirilir. Kart numarası, son kullanma tarihi ve CVV bilgisi sigorta şirketinin ödeme ekranına girilir. Sigorta Uzmanı bu bilgileri görmez, işlemez ve saklamaz. Sigorta şirketi tarafından entegrasyon üzerinden iletilmesi hâlinde yalnızca ödemenin başarılı veya başarısız olduğu bilgisi, işlem referansı, prim tutarı ve poliçeleştirme sonucu işlem kaydı kapsamında tutulabilir.",
         ],
       },
       {
-        heading: "06. Yurt dışına veri aktarımı",
+        heading: "6. Bilgi güvenliği",
         paragraphs: [
-          "İnternet sitesinde kullanılan barındırma, e-posta, iletişim, güvenlik, dosya saklama ve benzeri teknik hizmetlerin altyapılarının yurt dışında bulunması hâlinde bazı kişisel veriler yurt dışına aktarılabilir veya yurt dışında işlenebilir.",
-          "Yurt dışına veri aktarımları; 6698 sayılı Kişisel Verilerin Korunması Kanunu’nun 9. maddesi, ilgili yönetmelikler ve Kişisel Verileri Koruma Kurulu tarafından belirlenen yeterlilik kararları, uygun güvenceler, standart sözleşmeler veya kanunda düzenlenen diğer aktarım şartları çerçevesinde gerçekleştirilir.",
-          "Yurt dışı aktarım süreçlerine ilişkin ayrıntılar KVKK Aydınlatma Metni içerisinde açıklanmaktadır.",
+          "Kişisel verilerin yetkisiz erişime, kayba, değişikliğe veya açıklanmaya karşı korunması için erişim kontrolü, şifreleme, güvenli bağlantı, kayıt izleme, yedekleme ve çalışan yetkilendirmesi gibi uygun teknik ve idari önlemler uygulanır.",
         ],
       },
       {
-        heading: "07. WhatsApp ve harici hizmetler",
+        heading: "7. Ayrıntılı bilgi",
         paragraphs: [
-          "Teklif talebi tamamlandıktan sonra sürecin WhatsApp Business üzerinden devam ettirilmesi kullanıcıya sunulabilir.",
-          "WhatsApp yönlendirme bağlantısına T.C. kimlik numarası, telefon numarası, plaka veya diğer hassas form bilgileri eklenmez. Bağlantı üzerinden yalnızca talebin bulunmasını sağlayan talep veya takip numarası aktarılabilir.",
-          "Kullanıcının WhatsApp üzerinden kendisinin gönderdiği mesaj ve belgeler WhatsApp’ın kendi gizlilik ve veri işleme kurallarına da tabi olabilir. WhatsApp yazışmalarında işlem için gerekli olmayan kişisel veya hassas bilgilerin gönderilmemesi önerilir.",
-          "İnternet sitesinde üçüncü kişilere ait internet sitelerine veya harici hizmetlere yönlendiren bağlantılar bulunabilir. Bu hizmetlerin gizlilik uygulamalarından ve içeriklerinden ilgili hizmet sağlayıcılar sorumludur.",
-        ],
-      },
-      {
-        heading: "08. Çerezler ve teknik kayıtlar",
-        paragraphs: [
-          "İnternet sitesinin güvenli, hızlı ve doğru biçimde çalışabilmesi için zorunlu çerezler ve sınırlı teknik kayıtlar kullanılabilir.",
-          "Zorunlu olmayan analiz, performans, kişiselleştirme veya pazarlama çerezleri kullanıcı tercihleri doğrultusunda çalıştırılır ve gerekli durumlarda önceden izin alınır.",
-          "Kullanılan çerez türleri, kullanım amaçları, saklama süreleri ve tercih yönetimi hakkında ayrıntılı bilgi Çerez Politikası içerisinde yer almaktadır.",
-        ],
-      },
-      {
-        heading: "09. Başka kişilere ait bilgilerin paylaşılması",
-        paragraphs: [
-          "Eş, çocuk veya başka bir kişi adına teklif talebi oluşturulurken yalnızca teklif ve poliçe süreci için gerekli bilgiler paylaşılmalıdır.",
-          "Başvuru sahibi, başka bir yetişkine ait bilgileri paylaşmadan önce bu bilgileri paylaşmaya yetkili olduğundan emin olmalıdır. Başka kişilere ait kişisel verilerin yetkisiz veya ilgisiz amaçlarla paylaşılmaması gerekir.",
-          "Çocuklara ait bilgiler yalnızca ebeveyn, veli veya yetkili yasal temsilci tarafından ve sigorta teklifinin hazırlanması için gerekli olduğu ölçüde paylaşılmalıdır. İnternet sitesi doğrudan çocukların kullanımına yönelik değildir.",
-          "Başka kişiler aracılığıyla elde edilen kişisel veriler bakımından gerekli bilgilendirmeler KVKK Aydınlatma Metni ve ilgili veri işleme süreçleri kapsamında gerçekleştirilir.",
-        ],
-      },
-      {
-        heading: "10. Yüklenen belgeler ve hassas bilgiler",
-        paragraphs: [
-          "İletişim ve poliçe iptal formlarına yalnızca başvurunun değerlendirilmesi için gerekli belgeler yüklenmelidir.",
-          "Sağlık bilgileri, banka ve ödeme bilgileri, hesap şifreleri, biyometrik bilgiler, ceza mahkûmiyeti bilgileri ve başvuruyla ilgisi bulunmayan üçüncü kişilere ait belgeler açıkça istenmediği sürece gönderilmemelidir.",
-          "İşlem için gerekli olmayan bilgilerin bulunduğu belgeler değerlendirme dışında bırakılabilir, maskelenebilir veya ilgili saklama ve imha kuralları çerçevesinde sistemlerden kaldırılabilir.",
-          "Özel nitelikli kişisel veriler yalnızca ilgili mevzuatta belirtilen işleme şartlarından birinin bulunması ve gerekli güvenlik tedbirlerinin alınması hâlinde işlenir.",
-        ],
-      },
-      {
-        heading: "11. Bilgilerin saklanması ve silinmesi",
-        paragraphs: [
-          "Bilgiler; teklifin hazırlanması, başvurunun sonuçlandırılması, poliçe işlemlerinin yürütülmesi, müşteri desteğinin sağlanması ve yasal yükümlülüklerin yerine getirilmesi için gerekli olan süre boyunca saklanır.",
-          "Saklama süreleri belirlenirken aşağıdaki hususlar dikkate alınır:",
-        ],
-        items: [
-          "İşlemin tamamlanma durumu",
-          "Poliçe ilişkisinin devam edip etmediği",
-          "İlgili mevzuatta öngörülen saklama süreleri",
-          "Olası uyuşmazlık ve zamanaşımı süreleri",
-          "Sistem güvenliği ve kötüye kullanımın önlenmesi gereklilikleri",
-        ],
-        closing: [
-          "Saklama amacı sona eren ve işlenmesini gerektiren başka bir hukuki sebep bulunmayan bilgiler, kişisel veri saklama ve imha politikaları doğrultusunda silinir, yok edilir veya anonim hâle getirilir.",
-        ],
-      },
-      {
-        heading: "12. Bilgi güvenliği",
-        paragraphs: [
-          "Kişisel bilgilerin yetkisiz erişime, kayba, kötüye kullanıma, izinsiz açıklanmaya ve değiştirilmeye karşı korunması amacıyla uygun teknik ve idari güvenlik tedbirleri uygulanır.",
-          "Bu kapsamda veri iletiminde SSL/TLS tabanlı güvenli bağlantı teknolojilerinden, erişim yetkilendirmelerinden, sistem kayıtlarından, güvenlik kontrollerinden ve gerekli diğer koruma yöntemlerinden yararlanılır.",
-          "Admin paneli ve müşteri takip sistemlerindeki bilgilere erişim, görevleri gereği bu bilgilere ulaşması gereken yetkili kişilerle sınırlandırılır.",
-          "Bununla birlikte internet üzerinden gerçekleştirilen hiçbir veri aktarımının veya elektronik saklama yönteminin tamamen risksiz olduğu garanti edilemez. Kullanıcıların da cihaz, hesap ve iletişim güvenliğine dikkat etmesi gerekir.",
-        ],
-      },
-      {
-        heading: "13. Kullanıcı hakları ve başvuru",
-        paragraphs: [
-          "Kullanıcılar, kişisel verileriyle ilgili olarak aşağıdaki haklara sahiptir:",
-        ],
-        items: [
-          "Kişisel verilerinin işlenip işlenmediğini öğrenme",
-          "İşlenmişse buna ilişkin bilgi talep etme",
-          "İşlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme",
-          "Verilerin aktarıldığı taraflar hakkında bilgi isteme",
-          "Eksik veya yanlış işlenen verilerin düzeltilmesini isteme",
-          "Kanundaki şartların oluşması hâlinde verilerin silinmesini veya yok edilmesini isteme",
-          "Düzeltme, silme ve yok etme işlemlerinin verilerin aktarıldığı taraflara bildirilmesini isteme",
-          "Otomatik sistemler sonucunda aleyhe bir durum ortaya çıkmasına itiraz etme",
-          "Kanuna aykırı veri işleme nedeniyle zarara uğraması hâlinde zararın giderilmesini isteme",
-        ],
-        closing: [
-          "Kişisel verilere ilişkin resmî başvuru yöntemleri ve iletişim bilgileri KVKK Aydınlatma Metni içerisinde açıklanmaktadır.",
-          "Gizlilik uygulamalarıyla ilgili genel sorular için aşağıdaki iletişim kanalları kullanılabilir:",
-          `E-posta: ${CONTACT_EMAIL}`,
-          `Telefon: ${CONTACT_PHONE_DISPLAY}`,
-        ],
-      },
-      {
-        heading: "14. Politika değişiklikleri",
-        paragraphs: [
-          "Bu Gizlilik Politikası; internet sitesindeki hizmetlerin, kullanılan teknik altyapının, iş süreçlerinin veya ilgili mevzuatın değişmesi hâlinde güncellenebilir.",
-          "Önemli değişiklikler güncel tarih bilgisiyle birlikte bu sayfada yayımlanır. Politikanın güncel sürümü yayımlandığı tarihten itibaren geçerli olur.",
+          "Kişisel verilerin hangi amaçlarla ve hangi hukuki sebeplerle işlendiğine ilişkin ayrıntılı bilgi için KVKK Aydınlatma Metni’ni inceleyebilirsiniz.",
         ],
       },
     ],
     summary:
-      "Gizlilik politikası: toplanan bilgiler, kullanım amaçları, paylaşım, WhatsApp, çerezler, saklama ve kullanıcı hakları.",
+      "Gizlilik politikası: teklif süreci, form ve dosyalar, ödeme güvenliği, hizmet mesajları ve bilgi güvenliği.",
   },
   {
     path: ROUTES.cookies,
-    title: "Çerez Politikası",
+    title: "Çerez ve Benzeri Teknolojiler Politikası",
     description:
-      "sigortauzmani.net çerez politikası. Çerez türleri, saklama süreleri, hukuki sebepler, tercih yönetimi ve üçüncü taraf hizmetler.",
-    h1: "Çerez Politikası",
-    updatedAt: "29 Temmuz 2026",
+      "sigortauzmani.net çerez ve benzeri teknolojiler politikası. Mevcut kullanım, üçüncü taraf bağlantıları ve tercih yönetimi.",
+    h1: "Çerez ve Benzeri Teknolojiler Politikası",
+    updatedAt: KVKK_UPDATED,
     eyebrow: "Yasal metinler",
     intro: [],
     sections: [
       {
-        heading: "01. Amaç ve kapsam",
+        heading: "1. Çerez nedir?",
         paragraphs: [
-          "Bu Çerez Politikası, sigortauzmani.net internet sitesi (“Site”) ziyaret edildiğinde kullanılan çerezler ve benzer teknolojiler hakkında bilgi vermek amacıyla hazırlanmıştır.",
-          "Politika; kullanılan teknolojilerin amaçlarını, türlerini, saklama sürelerini, hukuki sebeplerini ve kullanıcıların çerez tercihlerini nasıl yönetebileceğini açıklamaktadır.",
-          "Kişisel verilerin işlenmesine ilişkin ayrıntılı bilgiler KVKK Aydınlatma Metni ve Gizlilik Politikası içerisinde yer almaktadır.",
+          "Çerezler, bir web sitesi ziyaret edildiğinde tarayıcıya kaydedilebilen küçük metin dosyalarıdır. Benzer amaçlarla localStorage ve sessionStorage gibi tarayıcı depolama yöntemleri de kullanılabilir. Bu politikada “çerez” ifadesi, aksi belirtilmedikçe bu benzeri teknolojileri de kapsar.",
         ],
       },
       {
-        heading: "02. Çerez nedir?",
+        heading: "2. Mevcut kullanım",
         paragraphs: [
-          "Çerezler, bir internet sitesi ziyaret edildiğinde tarayıcı aracılığıyla kullanıcının cihazına kaydedilebilen küçük metin dosyalarıdır.",
-          "Çerezler; internet sitesinin güvenli ve düzgün çalışması, kullanıcı tercihlerinin hatırlanması, oturum işlemlerinin yürütülmesi, site performansının ölçülmesi, hizmetlerin geliştirilmesi ve kullanıcıya daha uygun içeriklerin sunulması gibi amaçlarla kullanılabilir.",
-          "Çerezlere ek olarak tarayıcı yerel depolaması, oturum depolaması, piksel, etiket ve benzeri teknolojiler de kullanılabilir. Bu Politikada geçen “çerez” ifadesi, uygun olduğu ölçüde bu teknolojileri de kapsamaktadır.",
+          "Sitenin güvenli şekilde çalışması, form adımlarının yürütülmesi ve kötüye kullanımın önlenmesi için kesinlikle gerekli teknik kayıtlar kullanılabilir. Bu kayıtlar pazarlama amacıyla kullanılmaz.",
+          "Analiz, tercih ve pazarlama teknolojileri yalnızca çerez tercih banner’ında veya tercih merkezinde onay vermeniz hâlinde çalıştırılır. Onay vermeden zorunlu olmayan araçlar yüklenmez.",
+          "Tercihleriniz tarayıcınızda saklanır; footer’daki “Çerez Tercihleri” bağlantısından dilediğiniz zaman değiştirebilirsiniz.",
         ],
       },
       {
-        heading: "03. Çerezlerin sınıflandırılması",
+        heading: "3. Üçüncü taraf bağlantıları",
         paragraphs: [
-          "Çerezler kullanım süresine, kaynağına ve kullanım amacına göre aşağıdaki başlıklar altında sınıflandırılmaktadır.",
+          "Web sitesinde telefon, e-posta, WhatsApp veya başka bir üçüncü taraf hizmetine yönlendiren bağlantılar bulunabilir. Bu bağlantıyı seçmeniz hâlinde ilgili hizmet sağlayıcının kendi gizlilik ve çerez kuralları uygulanır.",
         ],
       },
       {
-        heading: "03.1 Kullanım süresine göre",
-        items: [
-          "Oturum çerezleri: Tarayıcı kapatıldığında veya oturum sona erdiğinde silinen geçici çerezlerdir.",
-          "Kalıcı çerezler: Belirlenen saklama süresi boyunca veya kullanıcı tarafından silinene kadar cihazda kalan çerezlerdir.",
-        ],
-      },
-      {
-        heading: "03.2 Kaynağına göre",
-        items: [
-          "Birinci taraf çerezleri: Doğrudan sigortauzmani.net tarafından yerleştirilen çerezlerdir.",
-          "Üçüncü taraf çerezleri: Site üzerinde kullanılan analiz, reklam, iletişim, güvenlik, video, harita veya sosyal medya hizmetleri tarafından yerleştirilebilen çerezlerdir.",
-        ],
-      },
-      {
-        heading: "03.3 Kullanım amacına göre",
-        items: [
-          "Zorunlu çerezler: Sitenin güvenli ve doğru biçimde çalışabilmesi, formların kullanılabilmesi, kullanıcı tercihlerinin hatırlanması ve güvenlik kontrollerinin gerçekleştirilmesi için gerekli olan çerezlerdir.",
-          "İşlevsel çerezler: Dil, görünüm, bölge, iletişim veya benzeri kullanıcı tercihlerinin hatırlanmasını ve Site özelliklerinin kişiselleştirilmesini sağlayan çerezlerdir.",
-          "Performans ve analiz çerezleri: Site kullanımının ölçülmesi, ziyaretçi hareketlerinin istatistiksel olarak değerlendirilmesi, hata ve performans sorunlarının tespit edilmesi ve hizmetlerin geliştirilmesi amacıyla kullanılan çerezlerdir.",
-          "Reklam ve pazarlama çerezleri: Kullanıcının ilgi alanlarına göre içerik veya reklam sunulması, reklam kampanyalarının ölçülmesi, reklamların tekrar gösterim sıklığının sınırlandırılması ve pazarlama çalışmalarının değerlendirilmesi amacıyla kullanılan çerezlerdir.",
-        ],
-      },
-      {
-        heading: "04. Site üzerinde kullanılan çerezler",
+        heading: "4. Tercihlerin yönetilmesi",
         paragraphs: [
-          "Site üzerinde zorunlu, işlevsel, performans ve analiz, reklam ve pazarlama çerezleri kullanılabilir.",
-          "Zorunlu çerezler; Sitenin çalışması, formların güvenli biçimde gönderilmesi, oturum bütünlüğünün korunması, kullanıcının çerez tercihlerinin hatırlanması, zararlı trafik ve kötüye kullanım girişimlerinin önlenmesi amacıyla kullanılır.",
-          "İşlevsel çerezler; kullanıcının Site üzerindeki tercihlerini hatırlamak, daha kişiselleştirilmiş bir kullanım deneyimi sunmak ve tercih edilen özelliklerin sonraki ziyaretlerde korunmasını sağlamak amacıyla kullanılır.",
-          "Performans ve analiz çerezleri; ziyaret edilen sayfalar, Site üzerinde geçirilen süre, kullanılan cihaz ve tarayıcı türü, yönlendirme kaynağı, sayfa görüntüleme sayısı ve teknik hata kayıtları gibi bilgilerin istatistiksel olarak değerlendirilmesini sağlar.",
-          "Reklam ve pazarlama çerezleri; Siteye yapılan ziyaretlerin reklam kampanyalarıyla ilişkilendirilmesi, reklamların etkinliğinin ölçülmesi, kullanıcıya daha uygun içeriklerin sunulması ve reklam gösterimlerinin yönetilmesi amacıyla kullanılabilir.",
-          "Zorunlu olmayan çerezler, kullanıcı tarafından çerez tercih paneli üzerinden izin verilmeden çalıştırılmaz. Kullanıcı, istediği çerez kategorisine ayrı ayrı izin verebilir veya daha önce verdiği izni geri alabilir.",
+          "Tarayıcınızın ayarlarını kullanarak çerezleri görüntüleyebilir, silebilir veya engelleyebilirsiniz. Kesinlikle gerekli teknolojilerin engellenmesi hâlinde sitenin bazı temel işlevleri çalışmayabilir.",
+          "İleride zorunlu olmayan analiz veya pazarlama teknolojileri kullanılmaya başlanırsa bu politika güncellenecek; kullanıcıya “Zorunlu olmayanları reddet”, “Tercihleri yönet” ve “Tümünü kabul et” seçenekleri eşit görünürlükte sunulacaktır. Kullanıcı kabul etmeden zorunlu olmayan teknolojiler çalıştırılmayacaktır.",
         ],
       },
       {
-        heading: "05. Çerezlerin kullanım ve saklama süreleri",
+        heading: "5. İletişim",
         paragraphs: [
-          "Oturum çerezleri, kullanıcının Siteyi ziyaret ettiği süre boyunca kullanılır ve tarayıcı kapatıldığında silinir.",
-          "Sitenin güvenliği, form işlemleri ve oturum bütünlüğü için kullanılan zorunlu çerezler, kullanım amaçlarının gerektirdiği süre boyunca saklanır.",
-          "Kullanıcının çerez tercihlerini hatırlayan kayıtlar en fazla 6 ay süreyle saklanabilir. Bu sürenin sonunda kullanıcıdan çerez tercihlerini yeniden belirtmesi istenebilir.",
-          "İşlevsel çerezler, ilgili kullanıcı tercihinin hatırlanması için gerekli olan süre boyunca ve en fazla 12 ay süreyle saklanabilir.",
-          "Performans ve analiz çerezleri, istatistiksel değerlendirme ve hizmet geliştirme amaçlarıyla en fazla 12 ay süreyle saklanabilir.",
-          "Reklam ve pazarlama çerezleri, kullanıcının verdiği izin ve ilgili hizmet sağlayıcının teknik ayarları doğrultusunda en fazla 12 ay süreyle saklanabilir.",
-          "Kullanılan çerezlerin teknik isimleri, sağlayıcıları, amaçları ve güncel saklama süreleri Çerez Tercihleri paneli üzerinden görüntülenebilir.",
-          "Çerezlerin içerisine T.C. kimlik numarası, telefon numarası, e-posta adresi, plaka, ruhsat bilgisi veya teklif formlarına girilen diğer sigorta bilgileri kaydedilmez.",
-        ],
-      },
-      {
-        heading: "06. Çerezlerin kullanım amaçları",
-        paragraphs: [
-          "Çerezler ve benzer teknolojiler aşağıdaki amaçlarla kullanılabilir:",
-        ],
-        items: [
-          "Sitenin güvenli ve doğru biçimde çalışmasının sağlanması.",
-          "Sayfalar ve formlar arasında işlem bütünlüğünün korunması.",
-          "Çerez tercihlerinin hatırlanması.",
-          "Zararlı trafik, otomatik istek, spam ve kötüye kullanım girişimlerinin önlenmesi.",
-          "Teknik hata ve güvenlik sorunlarının tespit edilmesi.",
-          "Site performansının ve ziyaretçi kullanımının ölçülmesi.",
-          "Kullanıcı deneyiminin geliştirilmesi.",
-          "Kullanıcı tercihlerine uygun içeriklerin sunulması.",
-          "Reklam ve tanıtım çalışmalarının ölçülmesi.",
-          "Reklamların etkinliğinin ve yönlendirme kaynaklarının değerlendirilmesi.",
-          "Site altyapısının ve hizmet sürekliliğinin korunması.",
-        ],
-      },
-      {
-        heading: "07. Çerezlerin hukuki sebepleri",
-        paragraphs: [
-          "Sitenin çalışması ve güvenliği için gerekli olan zorunlu çerezler; hizmetin kullanıcı tarafından açıkça talep edilmesi, sözleşmenin kurulması veya ifasıyla doğrudan ilgili olması ve veri sorumlusunun meşru menfaatleri kapsamında kullanılabilir.",
-          "Çerez tercihinin hatırlanmasını sağlayan kayıtlar, kullanıcının seçiminin korunması ve tercih panelinin her sayfada tekrar gösterilmemesi amacıyla kullanılmaktadır.",
-          "İşlevsel, performans, analiz, reklam, pazarlama ve takip çerezleri kullanıcının açık rızasına dayanılarak kullanılır.",
-          "Kullanıcının yalnızca Siteyi ziyaret etmesi veya Siteyi kullanmaya devam etmesi açık rıza olarak kabul edilmez. Açık rıza, kullanıcının çerez tercih paneli üzerinden aktif bir seçim yapmasıyla alınır.",
-        ],
-      },
-      {
-        heading: "08. Çerez tercihlerinin yönetilmesi",
-        paragraphs: [
-          "Kullanıcılar, Site altında yer alan “Çerez Tercihleri” bağlantısı üzerinden tercihlerini görüntüleyebilir ve değiştirebilir.",
-          "Çerez tercih panelinde kullanıcılara aşağıdaki seçenekler sunulur:",
-        ],
-        items: [
-          "Tüm çerezleri kabul etme.",
-          "Zorunlu olmayan tüm çerezleri reddetme.",
-          "Çerez kategorilerini ayrı ayrı yönetme.",
-          "Daha önce verilen izinleri geri alma.",
-        ],
-        closing: [
-          "Zorunlu olmayan çerezler varsayılan olarak kapalı tutulur ve kullanıcı tarafından aktif bir seçim yapılmadan çalıştırılmaz.",
-          "Kullanıcılar ayrıca tarayıcı ayarları üzerinden çerezleri görüntüleyebilir, silebilir veya engelleyebilir. Zorunlu çerezlerin engellenmesi hâlinde Sitenin bazı bölümleri veya formları beklenen şekilde çalışmayabilir.",
-          "Açık rızanın geri alınması, geri alma işleminden önce gerçekleştirilen veri işleme faaliyetlerinin hukuka uygunluğunu etkilemez.",
-        ],
-      },
-      {
-        heading: "09. Üçüncü taraf hizmetler ve bağlantılar",
-        paragraphs: [
-          "Site üzerinde analiz, reklam, güvenlik, iletişim, video, harita, sosyal medya ve benzeri hizmetler sunan üçüncü taraf araçları kullanılabilir.",
-          "Bu hizmetler, kullanıcı izin verdiğinde kendi çerezlerini veya benzer teknolojilerini kullanabilir. Üçüncü taraf hizmet sağlayıcılar tarafından gerçekleştirilen veri işleme faaliyetleri, ilgili hizmet sağlayıcının gizlilik ve çerez kurallarına da tabi olabilir.",
-          "Site üzerinde WhatsApp, sosyal medya platformları veya diğer internet sitelerine yönlendiren bağlantılar bulunabilir. Kullanıcı bu bağlantılara tıklayarak başka bir hizmete geçtiğinde ilgili hizmet sağlayıcının gizlilik ve çerez uygulamaları geçerli olabilir.",
-          "Açık rıza gerektiren üçüncü taraf teknolojileri, kullanıcı izni alınmadan yüklenmez ve çalıştırılmaz.",
-        ],
-      },
-      {
-        heading: "10. Çerezler aracılığıyla işlenebilecek bilgiler",
-        paragraphs: [
-          "Kullanılan çerezin niteliğine göre aşağıdaki teknik bilgiler işlenebilir:",
-        ],
-        items: [
-          "Çerez veya oturum tanımlayıcısı.",
-          "Çerez tercih bilgisi.",
-          "IP adresi.",
-          "Tarayıcı ve cihaz bilgileri.",
-          "İşletim sistemi bilgisi.",
-          "Erişim tarihi ve saati.",
-          "Görüntülenen sayfalar.",
-          "Site üzerinde geçirilen süre.",
-          "Tıklama ve yönlendirme bilgileri.",
-          "Trafik ve yönlendirme kaynağı.",
-          "Yaklaşık konum bilgisi.",
-          "Reklam ve kampanya etkileşim bilgileri.",
-          "Form güvenliği ve kötüye kullanım önleme kayıtları.",
-        ],
-        closing: [
-          "Bu bilgiler yalnızca gerekli olduğu ölçüde ve ilgili kullanım amacıyla sınırlı olarak işlenir.",
-        ],
-      },
-      {
-        heading: "11. Bilgilerin paylaşılması",
-        paragraphs: [
-          "Çerezler ve benzer teknolojiler aracılığıyla elde edilen teknik bilgiler, kullanım amacının gerektirdiği ölçüde aşağıdaki taraflarla paylaşılabilir:",
-        ],
-        items: [
-          "Barındırma ve sunucu hizmeti sağlayıcıları.",
-          "Analiz ve performans hizmeti sağlayıcıları.",
-          "Reklam ve pazarlama hizmeti sağlayıcıları.",
-          "Güvenlik, trafik yönetimi ve kötüye kullanım önleme hizmeti sağlayıcıları.",
-          "İletişim ve sosyal medya hizmeti sağlayıcıları.",
-          "Teknik bakım ve destek hizmeti sağlayan yetkili kuruluşlar.",
-          "Yasal zorunluluk bulunması hâlinde yetkili kamu kurumları ve adli merciler.",
-        ],
-        closing: [
-          "Çerez verileri üçüncü kişilere ticari veri listesi olarak satılmaz veya kiralanmaz.",
-        ],
-      },
-      {
-        heading: "12. Yurt dışına veri aktarımı",
-        paragraphs: [
-          "Sitenin barındırma, analiz, reklam, iletişim, güvenlik veya teknik altyapısında yurt dışında bulunan hizmet sağlayıcılardan yararlanılması hâlinde bazı teknik bilgiler yurt dışında işlenebilir veya bu bilgilere yurt dışından erişilebilir.",
-          "Bu işlemler, 6698 sayılı Kişisel Verilerin Korunması Kanunu’nun 9. maddesinde belirtilen yurt dışına aktarım şartları ve gerekli güvenceler çerçevesinde gerçekleştirilir.",
-          "Açık rızaya dayanan üçüncü taraf çerezler kapsamında yurt dışına veri aktarımı yapılması hâlinde kullanıcıya gerekli bilgilendirme sunulur ve ilgili tercih çerez paneli üzerinden alınır.",
-        ],
-      },
-      {
-        heading: "13. Bilgilerin güvenliği",
-        paragraphs: [
-          "Çerezler ve benzer teknolojiler aracılığıyla elde edilen bilgilerin yetkisiz erişime, kayba, kötüye kullanıma, izinsiz açıklanmaya veya değiştirilmeye karşı korunması amacıyla uygun teknik ve idari güvenlik tedbirleri uygulanır.",
-          "Üçüncü taraf hizmet sağlayıcıların seçiminde veri güvenliği, erişim yetkileri, saklama süreleri ve kişisel verilerin korunmasına ilişkin yükümlülükler dikkate alınır.",
-        ],
-      },
-      {
-        heading: "14. Kullanıcı hakları",
-        paragraphs: [
-          "Kullanıcılar, çerezler aracılığıyla işlenen kişisel verileriyle ilgili haklarını KVKK Aydınlatma Metni içerisinde belirtilen yöntemlerle kullanabilir.",
-          "Çerez ve gizlilik uygulamalarıyla ilgili genel sorular aşağıdaki iletişim kanalları üzerinden iletilebilir:",
-          `E-posta: ${CONTACT_EMAIL}`,
-          `Telefon: ${CONTACT_PHONE_DISPLAY}`,
-        ],
-      },
-      {
-        heading: "15. Politikanın güncellenmesi",
-        paragraphs: [
-          "Bu Çerez Politikası; Sitede kullanılan teknolojilerin, hizmet sağlayıcıların, çerezlerin, iş süreçlerinin veya ilgili mevzuatın değişmesi hâlinde güncellenebilir.",
-          "Politikanın güncel sürümü, son güncelleme tarihiyle birlikte bu sayfada yayımlanır.",
+          `Çerez ve benzeri teknolojilerle ilgili sorularınızı ${KVKK_SORUMLU.eposta} adresine iletebilirsiniz.`,
         ],
       },
     ],
     summary:
-      "Çerez politikası: çerez türleri, saklama süreleri, hukuki sebepler, tercih yönetimi ve üçüncü taraf hizmetler.",
+      "Çerez ve benzeri teknolojiler politikası: mevcut kullanım, üçüncü taraf bağlantıları, tercih yönetimi ve iletişim.",
+  },
+  {
+    path: ROUTES.kvkkBasvuru,
+    title: "KVKK Başvuru Formu",
+    description:
+      "6698 sayılı KVKK kapsamında kişisel veri taleplerinizi iletebileceğiniz başvuru kanalları, gerekli bilgiler, talep konuları ve sonuçlandırma süresi.",
+    h1: "KVKK Başvuru Formu",
+    updatedAt: KVKK_UPDATED,
+    eyebrow: "Kişisel verilerin korunması",
+    intro: [
+      `6698 sayılı Kişisel Verilerin Korunması Kanunu’nun 11. maddesi kapsamındaki taleplerinizi ${KVKK_SORUMLU.unvan}’na iletebilirsiniz.`,
+    ],
+    sections: [
+      {
+        heading: "Başvuru kanalları",
+        paragraphs: [
+          `Posta adresi: ${KVKK_SORUMLU.adres}`,
+          `KEP adresi: ${KVKK_SORUMLU.kep}`,
+          `Şirket sisteminde kayıtlı e-posta adresiniz üzerinden: ${KVKK_SORUMLU.eposta}`,
+        ],
+      },
+      {
+        heading: "Başvuruda bulunması gereken bilgiler",
+        paragraphs: ["Başvurunuzda aşağıdaki bilgilere yer verin:"],
+        items: [
+          "Ad ve soyad",
+          "T.C. kimlik numarası; yabancılar için uyruğu, pasaport numarası veya kimlik numarası",
+          "Tebligata esas yerleşim yeri veya iş yeri adresi",
+          "Varsa bildirime esas e-posta adresi ve telefon numarası",
+          "Talebin konusu ve ayrıntılı açıklaması",
+          "Talebi destekleyen bilgi ve belgeler",
+          "Tercih ettiğiniz yanıt yöntemi",
+        ],
+      },
+      {
+        heading: "Talep konuları",
+        paragraphs: [
+          "Başvurunuzda aşağıdaki taleplerden birini veya birkaçını belirtebilirsiniz:",
+        ],
+        items: [
+          "Kişisel verilerimin işlenip işlenmediğini öğrenmek",
+          "İşlenen kişisel verilerim hakkında bilgi talep etmek",
+          "İşleme amacını ve amaca uygun kullanılıp kullanılmadığını öğrenmek",
+          "Verilerimin aktarıldığı üçüncü kişileri öğrenmek",
+          "Eksik veya yanlış işlenen verilerin düzeltilmesini istemek",
+          "Şartları oluşmuşsa verilerin silinmesini veya yok edilmesini istemek",
+          "Düzeltme, silme veya yok etme işlemlerinin üçüncü kişilere bildirilmesini istemek",
+          "Münhasıran otomatik sistemlerle analiz sonucu aleyhime bir sonuca itiraz etmek",
+          "Kanuna aykırı işleme nedeniyle zararımın giderilmesini istemek",
+          "Açık rızamı geri çekmek",
+        ],
+      },
+      {
+        heading: "Sonuçlandırma süresi",
+        paragraphs: [
+          "Başvurular, talebin niteliğine göre en kısa sürede ve en geç otuz gün içinde sonuçlandırılır. Başvurunun ayrıca bir maliyet gerektirmesi hâlinde mevzuatta belirlenen ücretler talep edilebilir.",
+          "Kimlik doğrulama için gerekli olmayan kimlik kartı fotokopisini göndermeyin. Kimlik belgesi istenmesi hâlinde fotoğraf, seri numarası ve işlemle ilgisi olmayan alanları maskeleyebilirsiniz.",
+        ],
+      },
+    ],
+    summary:
+      "KVKK başvuru kanalları, başvuruda yer alması gereken bilgiler, talep konuları ve sonuçlandırma süresi.",
   },
 ];
 

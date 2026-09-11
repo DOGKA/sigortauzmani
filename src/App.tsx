@@ -7,8 +7,10 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { Suspense, lazy, useEffect } from "react";
+import CookieConsent from "./components/cookies/CookieConsent";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import { CookieConsentProvider } from "./lib/cookies/context";
 import HomePage from "./pages/HomePage";
 import { isOtomatikUrun } from "./lib/io/constants";
 
@@ -92,9 +94,10 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <ScrollToTop />
-      <Header />
-      <Routes>
+      <CookieConsentProvider>
+        <ScrollToTop />
+        <Header />
+        <Routes>
         <Route path="/" element={<HomePage />} />
         <Route
           path="/teklif/:slug"
@@ -201,6 +204,14 @@ export default function App() {
           }
         />
         <Route
+          path="/kvkk-basvuru"
+          element={
+            <Suspense fallback={<PageLoader />}>
+              <LegalPage />
+            </Suspense>
+          }
+        />
+        <Route
           path="*"
           element={
             <Suspense fallback={<PageLoader />}>
@@ -208,8 +219,10 @@ export default function App() {
             </Suspense>
           }
         />
-      </Routes>
-      <Footer />
+        </Routes>
+        <Footer />
+        <CookieConsent />
+      </CookieConsentProvider>
     </BrowserRouter>
   );
 }

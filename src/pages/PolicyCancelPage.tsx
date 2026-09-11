@@ -17,6 +17,7 @@ import {
   isValidTckn,
   isValidVkn,
 } from "../utils/validation";
+import FormKvkkNotu from "../components/FormKvkkNotu";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
 import "./PolicyCancelPage.css";
 
@@ -543,6 +544,8 @@ export default function PolicyCancelPage() {
                         )}
                       </div>
                     </div>
+
+                    <FormKvkkNotu variant="iptal" />
 
                     <div className="iptal__actions iptal__actions--end">
                       <button

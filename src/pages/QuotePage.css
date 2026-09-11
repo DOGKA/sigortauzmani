@@ -461,6 +461,34 @@
   line-height: 1.6;
 }
 
+.quote__kvkk-notu {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-500);
+  background: #f7f9fd;
+  border: 1px solid #e5eaf5;
+  border-radius: 12px;
+}
+
+.quote__kvkk-notu-ikon {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  color: var(--brand-500);
+  flex-shrink: 0;
+}
+
+.quote__kvkk-notu a {
+  color: var(--brand-600);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
 .quote__submit {
   padding: 15px;
   border-radius: 14px;

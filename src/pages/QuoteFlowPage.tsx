@@ -495,6 +495,7 @@ export default function QuoteFlowPage() {
 
         {!geriDonus && adim === "kimlik" ? (
           <KimlikAdimi
+            productSlug={product.slug}
             bransNo={gereksinim.bransNo}
             durum={kimlik}
             onDegis={(patch) => setKimlik((onceki) => ({ ...onceki, ...patch }))}

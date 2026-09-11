@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { getProduct } from "../data/products";
 import { productIcons } from "../data/productIcons";
 import AdvisorVideo from "../components/AdvisorVideo";
+import QuoteKvkkNotu from "../components/QuoteKvkkNotu";
 import TalepBasariEkrani from "../components/TalepBasariEkrani";
 import { ROBOTS_NOINDEX, pageOgImageUrl } from "../lib/seo/config";
 import { productServiceNode } from "../lib/seo/nodes/product";
@@ -64,8 +65,6 @@ export default function QuotePage() {
   const [serialHelpOpen, setSerialHelpOpen] = useState(false);
   const [vehicleNoHelpOpen, setVehicleNoHelpOpen] = useState(false);
   const [whyInfoOpen, setWhyInfoOpen] = useState(false);
-  const [kvkkAccepted, setKvkkAccepted] = useState(false);
-  const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [talepNo, setTalepNo] = useState("");
@@ -224,8 +223,6 @@ export default function QuotePage() {
     setSerialHelpOpen(false);
     setVehicleNoHelpOpen(false);
     setWhyInfoOpen(false);
-    setKvkkAccepted(false);
-    setPrivacyAccepted(false);
     setCompleted(false);
     setErrors({});
     setTalepNo("");
@@ -453,6 +450,8 @@ export default function QuotePage() {
                       </p>
                     )}
 
+                    <QuoteKvkkNotu productSlug={product.slug} variant="quote" />
+
                     <button type="submit" className="quote__submit">
                       {product.title} Teklifi Al
                     </button>
@@ -464,7 +463,6 @@ export default function QuotePage() {
                     className="quote__form"
                     onSubmit={(e) => {
                       e.preventDefault();
-                      if (!kvkkAccepted || !privacyAccepted) return;
                       if (validateStep2()) completeQuote();
                     }}
                   >
@@ -676,39 +674,9 @@ export default function QuotePage() {
                       </label>
                     )}
 
-                    <div className="quote__form-footer">
-                      <div className="quote__consents">
-                        <label className="quote__consent">
-                          <input
-                            type="checkbox"
-                            checked={kvkkAccepted && privacyAccepted}
-                            onChange={(event) => {
-                              setKvkkAccepted(event.target.checked);
-                              setPrivacyAccepted(event.target.checked);
-                            }}
-                            required
-                          />
-                          <span>
-                            <Link to={ROUTES.kvkk} className="quote__consent-link">
-                              KVKK
-                            </Link>
-                            {" ve "}
-                            <Link
-                              to={ROUTES.privacy}
-                              className="quote__consent-link"
-                            >
-                              Gizlilik Politikası
-                            </Link>
-                            &rsquo;nı okudum; kişisel verilerimin işlenmesini
-                            kabul ediyorum.
-                          </span>
-                        </label>
-                      </div>
-
-                      <button type="submit" className="quote__submit">
-                        Teklifleri Gör
-                      </button>
-                    </div>
+                    <button type="submit" className="quote__submit">
+                      Teklifleri Gör
+                    </button>
                   </form>
                 )}
               </>

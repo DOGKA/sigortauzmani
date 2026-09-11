@@ -229,6 +229,11 @@
   color: var(--ink-500);
 }
 
+.iptal__panel .form-kvkk-notu {
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
 .iptal__fields {
   display: flex;
   flex-direction: column;

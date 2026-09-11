@@ -24,11 +24,9 @@
  */
 
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { IoError, sorguMernis } from "../../lib/io/client";
 import { okuAdSoyad, okuAdresKodu, okuDogumTarihi } from "../../lib/io/okuma";
-import { ROUTES } from "../../lib/seo/routes";
-import BilgiNotu from "./BilgiNotu";
+import QuoteKvkkNotu from "../../components/QuoteKvkkNotu";
 import {
   formatPhoneInput,
   isValidForeignId,
@@ -61,6 +59,7 @@ function kimlikGecerli(durum: KimlikDurumu): boolean {
 }
 
 interface Props {
+  productSlug: string;
   bransNo: number;
   durum: KimlikDurumu;
   onDegis: (patch: Partial<KimlikDurumu>) => void;
@@ -68,6 +67,7 @@ interface Props {
 }
 
 export default function KimlikAdimi({
+  productSlug,
   bransNo,
   durum,
   onDegis,
@@ -247,17 +247,7 @@ export default function KimlikAdimi({
         ) : null}
       </div>
 
-      <BilgiNotu>
-        Paylaştığınız bilgiler yalnızca anlaşmalı sigorta şirketlerinden size
-        özel fiyat teklifi almak ve seçtiğiniz poliçeyi düzenlemek için
-        kullanılır. Primler kişiye göre değiştiğinden doğum tarihi de sigorta
-        şirketlerinin fiyatlama kurallarında yer alır. Verileriniz KVKK
-        kapsamında güvenle işlenir, pazarlama amacıyla üçüncü kişilerle
-        paylaşılmaz.{" "}
-        <Link to={ROUTES.kvkk} target="_blank" rel="noreferrer">
-          KVKK Aydınlatma Metni
-        </Link>
-      </BilgiNotu>
+      <QuoteKvkkNotu productSlug={productSlug} />
 
       {uyari ? <p className="flow__warning">{uyari}</p> : null}
 

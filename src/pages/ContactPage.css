@@ -228,8 +228,7 @@
 }
 
 .contact__field em,
-.contact__upload em,
-.contact__consent-error {
+.contact__upload em {
   color: #d64850;
   font-size: 12px;
   font-style: normal;
@@ -360,22 +359,8 @@
   font-size: 11px;
 }
 
-.contact__consent {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  cursor: pointer;
-  color: #65758a;
-  font-size: 12px;
-  line-height: 1.55;
-}
-
-.contact__consent input {
-  width: 17px;
-  height: 17px;
-  margin: 1px 0 0;
-  flex: 0 0 auto;
-  accent-color: var(--contact-blue);
+.contact__form .form-kvkk-notu {
+  margin-top: 4px;
 }
 
 .contact__submit {

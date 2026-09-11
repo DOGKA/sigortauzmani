@@ -7,6 +7,7 @@ import {
   uploadIletisimBelge,
   type IletisimOncelik,
 } from "../lib/supabase";
+import FormKvkkNotu from "../components/FormKvkkNotu";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
 import "./ContactPage.css";
 
@@ -19,7 +20,7 @@ const ALLOWED_FILE_TYPES = [
 ];
 
 type FormErrors = Partial<
-  Record<"name" | "email" | "subject" | "message" | "file" | "consent", string>
+  Record<"name" | "email" | "subject" | "message" | "file", string>
 >;
 
 export default function ContactPage() {
@@ -31,7 +32,6 @@ export default function ContactPage() {
   const [priority, setPriority] = useState<IletisimOncelik>("normal");
   const [message, setMessage] = useState("");
   const [file, setFile] = useState<File | null>(null);
-  const [consent, setConsent] = useState(false);
   const [website, setWebsite] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitting, setSubmitting] = useState(false);
@@ -59,7 +59,6 @@ export default function ContactPage() {
     if (message.trim().length < 10) {
       next.message = "Mesajınız en az 10 karakter olmalıdır.";
     }
-    if (!consent) next.consent = "Devam etmek için onay vermelisiniz.";
     if (file && !ALLOWED_FILE_TYPES.includes(file.type)) {
       next.file = "Yalnızca PDF, JPG, PNG veya WebP yükleyebilirsiniz.";
     } else if (file && file.size > MAX_FILE_BYTES) {
@@ -121,7 +120,6 @@ export default function ContactPage() {
     setPriority("normal");
     setMessage("");
     setFile(null);
-    setConsent(false);
     setWebsite("");
     setErrors({});
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -307,23 +305,7 @@ export default function ContactPage() {
               {errors.file && <em>{errors.file}</em>}
             </div>
 
-            <label className="contact__consent">
-              <input
-                type="checkbox"
-                checked={consent}
-                onChange={(event) => {
-                  setConsent(event.target.checked);
-                  clearError("consent");
-                }}
-              />
-              <span>
-                Bilgilerimin talebime yanıt verilmesi amacıyla işlenmesini
-                kabul ediyorum.
-              </span>
-            </label>
-            {errors.consent && (
-              <em className="contact__consent-error">{errors.consent}</em>
-            )}
+            <FormKvkkNotu variant="iletisim" />
 
             <button className="contact__submit" disabled={submitting}>
               {submitting ? "Gönderiliyor…" : "Mesajı Gönder"}

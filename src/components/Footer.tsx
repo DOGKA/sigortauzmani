@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import AmbientBackdrop from "./AmbientBackdrop";
+import { useCookieConsent } from "../lib/cookies/context";
 import { ROUTES } from "../lib/seo/routes";
 import "./Footer.css";
 
 const columns: {
   title: string;
-  links: { label: string; to?: string }[];
+  links: { label: string; to?: string; action?: "cookies" }[];
 }[] = [
   {
     title: "Ürünlerimiz",
@@ -43,14 +44,18 @@ const columns: {
   {
     title: "Yasal",
     links: [
-      { label: "KVKK Metni", to: ROUTES.kvkk },
+      { label: "KVKK Aydınlatma Metni", to: ROUTES.kvkk },
       { label: "Gizlilik Politikası", to: ROUTES.privacy },
       { label: "Çerez Politikası", to: ROUTES.cookies },
+      { label: "Çerez Tercihleri", action: "cookies" as const },
+      { label: "KVKK Başvuru Formu", to: ROUTES.kvkkBasvuru },
     ],
   },
 ];
 
 export default function Footer() {
+  const { openPreferences } = useCookieConsent();
+
   return (
     <footer className="footer">
       <div className="footer__bg" aria-hidden="true">
@@ -90,7 +95,11 @@ export default function Footer() {
                 <ul>
                   {column.links.map((link) => (
                     <li key={link.label}>
-                      {link.to ? (
+                      {link.action === "cookies" ? (
+                        <button type="button" onClick={openPreferences}>
+                          {link.label}
+                        </button>
+                      ) : link.to ? (
                         <Link to={link.to}>{link.label}</Link>
                       ) : (
                         <button type="button">{link.label}</button>

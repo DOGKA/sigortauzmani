@@ -1,0 +1,11 @@
+.form-kvkk-notu {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-500);
+}
+
+.form-kvkk-notu a {
+  color: var(--brand-600);
+  font-weight: 650;
+}
