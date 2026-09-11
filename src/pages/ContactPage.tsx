@@ -8,6 +8,8 @@ import {
   type IletisimOncelik,
 } from "../lib/supabase";
 import FormKvkkNotu from "../components/FormKvkkNotu";
+import { CONTACT_EMAIL } from "../lib/seo/config";
+import { ROUTES } from "../lib/seo/routes";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
 import "./ContactPage.css";
 
@@ -20,7 +22,7 @@ const ALLOWED_FILE_TYPES = [
 ];
 
 type FormErrors = Partial<
-  Record<"name" | "email" | "subject" | "message" | "file", string>
+  Record<"name" | "email" | "subject" | "message" | "file" | "kvkk", string>
 >;
 
 export default function ContactPage() {
@@ -37,6 +39,7 @@ export default function ContactPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [referenceNo, setReferenceNo] = useState<string | null>(null);
+  const [kvkkOkundu, setKvkkOkundu] = useState(false);
 
   useStaticPageSeo("/iletisim");
 
@@ -63,6 +66,9 @@ export default function ContactPage() {
       next.file = "Yalnızca PDF, JPG, PNG veya WebP yükleyebilirsiniz.";
     } else if (file && file.size > MAX_FILE_BYTES) {
       next.file = "Belge boyutu en fazla 5 MB olabilir.";
+    }
+    if (!kvkkOkundu) {
+      next.kvkk = "Devam etmek için KVKK Aydınlatma Metni'ni okuduğunuzu onaylayın.";
     }
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -153,14 +159,14 @@ export default function ContactPage() {
             <span className="contact__section-label">Bize yazın</span>
             <h2>Tek bir form, doğrudan uzman desteği</h2>
             <p>
-              Fiziksel adres bilgisi paylaşmadan, tüm sorularınızı güvenli
-              biçimde çevrim içi olarak iletebilirsiniz.
+              Sigorta işlemlerinizle ilgili sorularınızı ve gerekli belgeleri
+              güvenli biçimde çevrim içi olarak iletebilirsiniz.
             </p>
-            <a className="contact__mail" href="mailto:sigorta@sigortauzmani.net">
+            <a className="contact__mail" href={`mailto:${CONTACT_EMAIL}`}>
               <span aria-hidden="true">@</span>
               <span>
                 <small>E-posta</small>
-                sigorta@sigortauzmani.net
+                {CONTACT_EMAIL}
               </span>
             </a>
           </aside>
@@ -306,6 +312,24 @@ export default function ContactPage() {
             </div>
 
             <FormKvkkNotu variant="iletisim" />
+
+            <label className="contact__kvkk-check">
+              <input
+                type="checkbox"
+                checked={kvkkOkundu}
+                onChange={(event) => {
+                  setKvkkOkundu(event.target.checked);
+                  clearError("kvkk");
+                }}
+              />
+              <span>
+                <Link to={ROUTES.kvkk} target="_blank" rel="noreferrer">
+                  KVKK Aydınlatma Metni
+                </Link>
+                &rsquo;ni okudum.
+              </span>
+            </label>
+            {errors.kvkk && <em className="contact__kvkk-error">{errors.kvkk}</em>}
 
             <button className="contact__submit" disabled={submitting}>
               {submitting ? "Gönderiliyor…" : "Mesajı Gönder"}

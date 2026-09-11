@@ -65,8 +65,9 @@ export default function Partners() {
             30&rsquo;a Yakın Sigorta Şirketinden Teklif Al
           </h2>
           <p>
-            Türkiye&rsquo;nin önde gelen sigorta şirketlerinin tekliflerini tek
-            ekranda karşılaştırın, size en uygun olanı seçin.
+            Entegrasyon bulunan sigorta şirketlerinden gelen fiyat ve teminat
+            seçeneklerini tek ekranda karşılaştırın; ihtiyacınıza uygun teklifi
+            seçin.
           </p>
         </div>
 

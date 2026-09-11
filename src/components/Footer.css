@@ -156,6 +156,23 @@
   color: var(--ink-400);
 }
 
+.footer__legal {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 720px;
+  margin-bottom: 12px;
+  padding: 0 8px;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--ink-400);
+}
+
+.footer__legal span:first-child {
+  font-weight: 600;
+  color: var(--ink-500);
+}
+
 .footer__credits {
   display: flex;
   align-items: center;

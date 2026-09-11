@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { COMPANY } from "../data/company";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
 import kolayKarsilastirmaIcon from "../assets/icons/kolay-karsilastirma.svg";
 import uzmanDestekIcon from "../assets/icons/uzman-destek.svg";
@@ -14,7 +15,6 @@ const BRANCHES = [
   "DASK",
   "Konut",
   "Seyahat",
-  "İş Yeri",
 ];
 
 const REASONS = [
@@ -33,12 +33,12 @@ const REASONS = [
   {
     num: "03",
     title: "Hızlı süreç",
-    text: "Talebinizi iletin, teklifinizi kısa sürede alın.",
+    text: "Bilgilerinizi girin, entegre şirketlerden gelen anlık teklifleri karşılaştırın.",
     icon: hizliSurecIcon,
   },
   {
     num: "04",
-    title: "Poliçe Sonrası",
+    title: "Poliçe sonrası",
     text: "Yenileme ve hasar süreçlerinde destek almaya devam edin.",
     icon: policeSonrasiIcon,
   },
@@ -93,13 +93,17 @@ export default function AboutPage() {
             Sigortayı daha{" "}
             <span className="about__hero-highlight">anlaşılır</span>,{" "}
             <span className="about__hero-highlight">hızlı</span> ve{" "}
-            <span className="about__hero-highlight">güvenilir</span> hale
+            <span className="about__hero-highlight">güvenilir</span> hâle
             getiriyoruz.
           </h1>
           <p className="about__lead">
-            <strong>sigortauzmani.net</strong>, farklı sigorta şirketlerinin
-            tekliflerini tek noktada değerlendirmenize ve ihtiyacınıza uygun
-            poliçeyi kolayca seçmenize yardımcı olur.
+            <strong>sigortauzmani.net</strong>,{" "}
+            {COMPANY.unvan} tarafından işletilen dijital sigorta
+            platformudur. Anlaşmalı sigorta şirketlerinden gelen fiyat ve teminat
+            seçeneklerini tek noktada karşılaştırmanızı kolaylaştırır. Entegre
+            şirketlerde çevrim içi satın alma için doğrudan sigorta şirketinin
+            ödeme ekranına yönlendirilirsiniz; diğer şirketlerde işleminiz
+            WhatsApp temsilcimizle devam eder.
           </p>
 
           <ul className="about__branches" aria-label="Hizmet verdiğimiz branşlar">
@@ -167,8 +171,8 @@ export default function AboutPage() {
           <div className="about__cta-glow" aria-hidden="true" />
           <h2>Size uygun poliçeyi birlikte bulalım</h2>
           <p>
-            Talebinizi iletin, uzman ekibimiz kısa sürede sizinle iletişime
-            geçsin.
+            Formu doldurun; entegre şirketlerden gelen anlık teklifleri
+            karşılaştırın. Gerekirse WhatsApp temsilcimizden destek alın.
           </p>
           <div className="about__cta-actions">
             <Link to="/#urunler" className="about__cta-btn">

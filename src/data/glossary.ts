@@ -50,7 +50,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "mini-onarim",
-    term: "Mini Onarım",
+    term: "Mini onarım",
     shortDefinition:
       "Küçük çizik, göçük ve cam hasarlarının hasarsızlık indirimini bozmadan onarılması hizmeti.",
     definition:
@@ -61,7 +61,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "ikame-arac",
-    term: "İkame Araç",
+    term: "İkame araç",
     shortDefinition:
       "Hasar onarımı süresince sigortalıya verilen geçici yedek araç hizmeti.",
     definition:
@@ -72,7 +72,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "rayic-bedel",
-    term: "Rayiç Bedel",
+    term: "Rayiç bedel",
     shortDefinition:
       "Bir malın piyasa koşullarına göre belirlenen güncel değeri.",
     definition:
@@ -127,7 +127,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "ferdi-kaza",
-    term: "Ferdi Kaza",
+    term: "Ferdi kaza",
     shortDefinition:
       "Kaza sonucu ölüm, sakatlık ve tedavi masraflarını güvence altına alan sigorta.",
     definition:
@@ -142,7 +142,7 @@ export const glossaryTerms: GlossaryTerm[] = [
     shortDefinition:
       "Sigorta sözleşmesinin şartlarını içeren resmi belge.",
     definition:
-      "Poliçe, sigortacı ile sigortalı arasındaki sözleşmenin yazılı belgesidir. Teminatlar, muafiyetler, süre, prim, istisnalar ve tarafların yükümlülükleri poliçede yer alır. Sözleşme, primin ödenmesi ve poliçenin düzenlenmesiyle yürürlüğe girer. Hasar anında hak talebi poliçe koşullarına göre değerlendirilir; bu nedenle genel şartlar ve özel şartlar dikkatle okunmalıdır.",
+      "Poliçe, sigortacı ile sigortalı arasındaki sözleşmenin yazılı belgesidir. Teminatlar, muafiyetler, süre, prim, istisnalar ve tarafların yükümlülükleri poliçede yer alır. Poliçenin başlangıç ve bitiş tarihleri, primin ödeme koşulları ve teminatların yürürlüğe giriş şartları poliçede belirtilir. Bu nedenle yalnızca poliçenin düzenlenmiş olmasına bakılmamalı; başlangıç tarihi ve ödeme koşulları da kontrol edilmelidir. Hasar anında hak talebi poliçe koşullarına göre değerlendirilir.",
     category: "genel",
     related: ["zeyilname", "teminat", "prim"],
   },
@@ -168,7 +168,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "trafik-sigortasi",
-    term: "Trafik Sigortası",
+    term: "Trafik sigortası",
     shortDefinition:
       "Üçüncü kişilere verilen zararları karşılayan zorunlu mali sorumluluk sigortası.",
     definition:
@@ -188,7 +188,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "hasarsizlik",
-    term: "Hasarsızlık İndirimi",
+    term: "Hasarsızlık indirimi",
     shortDefinition:
       "Hasarsız geçen yıllara bağlı olarak uygulanan prim indirimi.",
     definition:
@@ -198,7 +198,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "eksik-sigorta",
-    term: "Eksik Sigorta",
+    term: "Eksik sigorta",
     shortDefinition:
       "Sigorta bedelinin malın gerçek değerinden düşük olması durumu.",
     definition:
@@ -208,7 +208,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "asiri-sigorta",
-    term: "Aşkın (Aşırı) Sigorta",
+    term: "Aşkın sigorta",
     shortDefinition:
       "Sigorta bedelinin malın gerçek değerinden yüksek olması.",
     definition:
@@ -238,7 +238,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "beyan",
-    term: "Beyan Yükümlülüğü",
+    term: "Beyan yükümlülüğü",
     shortDefinition:
       "Sigortalının riskle ilgili doğru ve eksiksiz bilgi verme zorunluluğu.",
     definition:
@@ -258,7 +258,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "konut-sigortasi",
-    term: "Konut Sigortası",
+    term: "Konut sigortası",
     shortDefinition:
       "Bina ve eşyayı yangın, hırsızlık, su baskını gibi risklere karşı koruyan ihtiyari sigorta.",
     definition:
@@ -268,9 +268,9 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "tamamlayici-saglik",
-    term: "Tamamlayıcı Sağlık Sigortası (TSS)",
+    term: "Tamamlayıcı sağlık sigortası (TSS)",
     shortDefinition:
-      "SGK anlaşmalı özel hastanelerde fark ücretlerini karşılayan sağlık sigortası.",
+      "SGK ile anlaşmalı özel hastanelerde fark ücretlerini karşılayan sağlık sigortası.",
     definition:
       "Tamamlayıcı sağlık sigortası, Sosyal Güvenlik Kurumu anlaşmalı özel hastanelerde oluşabilecek fark ücretlerini poliçe limitleri dahilinde karşılar. Ayakta ve yatarak tedavi paketleri bulunur. Bekleme süreleri, ağ kapsamı ve coğrafi sınırlar ürünler arasında değişir. TSS, özel sağlık sigortasına göre genellikle daha uygun primlidir.",
     category: "saglik",
@@ -278,7 +278,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "ozel-saglik",
-    term: "Özel Sağlık Sigortası",
+    term: "Özel sağlık sigortası",
     shortDefinition:
       "Özel hastane ve kliniklerde geniş kapsamlı tedavi güvencesi sunan sigorta.",
     definition:
@@ -288,7 +288,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "seyahat-saglik",
-    term: "Seyahat Sağlık Sigortası",
+    term: "Seyahat sağlık sigortası",
     shortDefinition:
       "Yurt içi veya yurt dışı seyahatte ani hastalık ve kaza masraflarını karşılayan poliçe.",
     definition:
@@ -298,7 +298,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "yesil-kart",
-    term: "Yeşil Kart",
+    term: "Yeşil kart",
     shortDefinition:
       "Yurt dışında araç kullanırken üçüncü şahıs sorumluluğunu belgeleyen uluslararası sigorta.",
     definition:
@@ -308,7 +308,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "agir-kusur",
-    term: "Ağır Kusur",
+    term: "Ağır kusur",
     shortDefinition:
       "Hasarda tazminatı etkileyebilecek ciddi ihmal veya kural ihlali.",
     definition:
@@ -318,7 +318,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "hasar-dosyasi",
-    term: "Hasar Dosyası",
+    term: "Hasar dosyası",
     shortDefinition:
       "Hasar ihbarından ödeme veya red kararına kadar tutulan resmi süreç kaydı.",
     definition:
@@ -338,7 +338,7 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "anlasmali-servis",
-    term: "Anlaşmalı Servis",
+    term: "Anlaşmalı servis",
     shortDefinition:
       "Sigorta şirketinin özel koşullarla çalıştığı yetkili onarım ağı.",
     definition:
@@ -352,13 +352,13 @@ export const glossaryTerms: GlossaryTerm[] = [
     shortDefinition:
       "Poliçe süresinin bitiminde aynı veya güncellenmiş koşullarla devam edilmesi.",
     definition:
-      "Yenileme, poliçe vadesi sonunda teminatın sürdürülmesidir. Prim; hasar geçmişi, tarife ve enflasyon etkisine göre yeniden hesaplanır. Sağlık sigortalarında yenileme garantisi kritik bir haktır. Erken yenileme araştırması, teminatsız kalma riskini azaltır ve daha iyi teklif bulmayı kolaylaştırır.",
+      "Yenileme, poliçe vadesi sonunda teminatın sürdürülmesidir. Prim; hasar geçmişi, tarife ve enflasyon etkisine göre yeniden hesaplanır. Sağlık sigortalarında yenileme garantisi kritik bir haktır. Yenileme tekliflerini vade tarihinden önce karşılaştırmak, teminatsız kalma riskini azaltır ve seçenekleri değerlendirmeyi kolaylaştırır.",
     category: "genel",
     related: ["prim", "hasarsizlik", "police"],
   },
   {
     slug: "iptal",
-    term: "Poliçe İptali",
+    term: "Poliçe iptali",
     shortDefinition:
       "Sözleşmenin vade dolmadan sona erdirilmesi ve prim iade kuralları.",
     definition:
@@ -378,13 +378,23 @@ export const glossaryTerms: GlossaryTerm[] = [
   },
   {
     slug: "broker",
-    term: "Sigorta Brokeri",
+    term: "Sigorta brokeri",
     shortDefinition:
-      "Sigortalıyı temsil ederek şirketler arasında bağımsız teklif karşılaştıran uzman.",
+      "Sigorta yaptırmak isteyen kişiyi temsil ederek şirket seçiminde bağımsız ve tarafsız davranan yetkili sigorta aracısı.",
     definition:
-      "Sigorta brokeri, müşterinin menfaatini gözeterek birden fazla sigorta şirketinden teklif toplayan, teminatları karşılaştıran ve satış sonrası hasar/destek süreçlerinde yanında olan bağımsız bir aracıdır. Acenteden farkı, tek bir şirkete bağlı olmamasıdır. Doğru broker seçimi, hem fiyat hem teminat kalitesinde avantaj sağlar.",
+      "Sigorta brokeri, sigorta yaptırmak isteyen kişiyi temsil ederek sigorta şirketlerinin seçiminde bağımsız ve tarafsız davranan, teklif ve sözleşme süreçlerine aracılık eden yetkili sigorta aracısıdır. Bir acentenin birden fazla sigorta şirketiyle çalışabilmesi, onu broker yapmaz.",
     category: "genel",
-    related: ["police", "teminat", "prim"],
+    related: ["sigorta-acentesi", "police", "teminat"],
+  },
+  {
+    slug: "sigorta-acentesi",
+    term: "Sigorta acentesi",
+    shortDefinition:
+      "Sigorta şirketi adına sözleşmelere aracılık eden veya yetkisi kapsamında poliçe düzenleyen sigorta aracısı.",
+    definition:
+      "Sigorta acentesi, anlaşmalı olduğu sigorta şirketlerinin ürünlerinin tanıtılması, teklif alınması ve yetkisi kapsamındaki poliçe işlemlerinin yürütülmesinde aracılık eder. Acenteler birden fazla sigorta şirketiyle çalışabilir. GROSS SİGORTA ARACILIK HİZMETLERİ LİMİTED ŞİRKETİ resmî sigorta acentesidir; sigortauzmani.net ise bu acente tarafından işletilen dijital sigorta platformudur.",
+    category: "genel",
+    related: ["broker", "police", "teminat"],
   },
 ];
 

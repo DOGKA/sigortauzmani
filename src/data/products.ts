@@ -20,9 +20,9 @@ export const products: Product[] = [
   {
     slug: "trafik-sigortasi",
     title: "Trafik Sigortası",
-    seoTitle: "Trafik Sigortası Fiyatları 2026 için Teklif Al",
+    seoTitle: "Trafik Sigortası 2026 Fiyatları ve Teklifleri | Sigorta Uzmanı",
     metaDescription:
-      "2026 zorunlu trafik sigortası fiyatlarını 30'a yakın şirket arasında karşılaştırın. Plaka ve ruhsat bilgisiyle dakikalar içinde ücretsiz teklif alın.",
+      "2026 trafik sigortası fiyatlarını 30'a yakın sigorta şirketi arasında karşılaştırın; plaka ve ruhsat bilgilerinizle anlık teklif alın.",
     serviceType: "Zorunlu Trafik Sigortası",
     seoBullets: [
       "2026 trafik sigortası fiyatlarını farklı sigorta şirketleri arasında karşılaştırın.",
@@ -34,9 +34,9 @@ export const products: Product[] = [
   {
     slug: "kasko",
     title: "Kasko",
-    seoTitle: "Kasko Fiyatları 2026 için Teklif Al",
+    seoTitle: "Kasko Sigortası 2026 Fiyatları ve Teklifleri | Sigorta Uzmanı",
     metaDescription:
-      "2026 kasko fiyatlarını ve teminat kapsamlarını karşılaştırın. Dar, genişletilmiş ve tam kasko tekliflerini tek formla ücretsiz alın.",
+      "2026 kasko tekliflerinde fiyat, teminat, muafiyet ve ek hizmetleri karşılaştırın; uygun seçeneklerde çevrim içi satın alma adımına geçin.",
     serviceType: "Kasko Sigortası",
     seoBullets: [
       "2026 kasko fiyatlarını ve farklı şirketlerin teminat seçeneklerini karşılaştırın.",
@@ -49,9 +49,9 @@ export const products: Product[] = [
     slug: "kisa-sureli-trafik",
     title: "Kısa Süreli Trafik",
     badge: "Yeni",
-    seoTitle: "Kısa Süreli Trafik Sigortası Fiyatları 2026 için Teklif Al",
+    seoTitle: "Kısa Süreli Trafik Sigortası 2026 Fiyatları | Sigorta Uzmanı",
     metaDescription:
-      "Kısa süreli (geçici) trafik sigortası fiyatlarını karşılaştırın. Noter satışı ve devir işlemleri için plaka ve ruhsat bilgisiyle dakikalar içinde teklif alın.",
+      "2026 kısa süreli trafik sigortası fiyatlarını karşılaştırın; plaka ve ruhsat bilgilerinizle teklif alın.",
     serviceType: "Kısa Süreli Zorunlu Trafik Sigortası",
     seoBullets: [
       "Kısa süreli trafik sigortası fiyatlarını farklı sigorta şirketleri arasında karşılaştırın.",
@@ -63,9 +63,9 @@ export const products: Product[] = [
   {
     slug: "tamamlayici-saglik",
     title: "Tamamlayıcı Sağlık",
-    seoTitle: "Tamamlayıcı Sağlık Sigortası Fiyatları 2026 için Teklif Al",
+    seoTitle: "Tamamlayıcı Sağlık Sigortası 2026 Fiyatları | Sigorta Uzmanı",
     metaDescription:
-      "2026 tamamlayıcı sağlık sigortası (TSS) fiyatlarını ve anlaşmalı hastane ağlarını karşılaştırın. SGK fark ücretlerine karşı ücretsiz teklif alın.",
+      "SGK ile anlaşmalı özel hastanelerde poliçe kapsamındaki fark ücretleri için 2026 tamamlayıcı sağlık sigortası tekliflerini ve hastane ağlarını karşılaştırın.",
     serviceType: "Tamamlayıcı Sağlık Sigortası",
     seoBullets: [
       "2026 tamamlayıcı sağlık sigortası fiyatlarını ve anlaşmalı hastane ağlarını karşılaştırın.",
@@ -77,23 +77,23 @@ export const products: Product[] = [
   {
     slug: "seyahat-saglik",
     title: "Seyahat Sağlık",
-    seoTitle: "Seyahat Sağlık Sigortası Fiyatları 2026 için Teklif Al",
+    seoTitle: "Seyahat Sağlık Sigortası 2026 Fiyatları | Sigorta Uzmanı",
     metaDescription:
-      "2026 seyahat sağlık sigortası fiyatlarını ülke ve süreye göre karşılaştırın. Schengen vizesine uygun teminatlı poliçeler için ücretsiz teklif alın.",
+      "Gideceğiniz ülke ve seyahat süresine göre 2026 seyahat sağlık sigortası tekliflerini karşılaştırın; vize koşullarına uygun kapsamı kontrol edin.",
     serviceType: "Seyahat Sağlık Sigortası",
     seoBullets: [
       "2026 seyahat sağlık sigortası fiyatlarını gideceğiniz ülke ve seyahat süresine göre karşılaştırın.",
       "Yurt dışında acil tedavi, hastane, ambulans ve tıbbi nakil giderlerine karşı korunun.",
-      "Schengen vizesine uygun teminat limitlerine sahip seyahat poliçelerini inceleyin.",
+      "Vize başvurusu için poliçenin güncel konsolosluk koşullarını karşıladığını kontrol edin.",
       "Tek seyahat veya yıllık çoklu seyahat seçenekleri için hızlıca teklif alın.",
     ],
   },
   {
     slug: "imm",
     title: "İMM",
-    seoTitle: "İMM Sigortası Fiyatları 2026 için Teklif Al",
+    seoTitle: "İMM Sigortası 2026 Fiyatları ve Teklifleri | Sigorta Uzmanı",
     metaDescription:
-      "2026 İMM (İhtiyari Mali Mesuliyet) sigortası fiyatlarını karşılaştırın. Trafik sigortası limitini aşan zararlar için ücretsiz teklif alın.",
+      "Trafik sigortası limitlerini aşan sorumluluklar için 2026 İMM tekliflerini ve teminat limitlerini karşılaştırın.",
     serviceType: "İhtiyari Mali Mesuliyet Sigortası",
     seoBullets: [
       "2026 İMM sigortası fiyatlarını ve yüksek teminat limitlerini karşılaştırın.",
@@ -105,23 +105,23 @@ export const products: Product[] = [
   {
     slug: "ozel-saglik",
     title: "Özel Sağlık",
-    seoTitle: "Özel Sağlık Sigortası Fiyatları 2026 için Teklif Al",
+    seoTitle: "Özel Sağlık Sigortası 2026 Fiyatları | Sigorta Uzmanı",
     metaDescription:
-      "2026 özel sağlık sigortası fiyatlarını, hastane ağlarını ve poliçe kapsamlarını karşılaştırın. Yatarak ve ayakta tedavi için ücretsiz teklif alın.",
+      "Yatarak ve ayakta tedavi seçenekleri ile anlaşmalı hastane ağlarını karşılaştırarak 2026 özel sağlık sigortası teklifi alın.",
     serviceType: "Özel Sağlık Sigortası",
     seoBullets: [
       "2026 özel sağlık sigortası fiyatlarını, hastane ağlarını ve poliçe kapsamlarını karşılaştırın.",
       "SGK şartı olmadan yatarak ve ayakta tedavi seçeneklerinden yararlanın.",
-      "Primler; yaş, sağlık beyanı, ikamet ili ve tercih edilen kurum ağına göre hesaplanır.",
+      "Primler; yaş, ikamet ili ve tercih edilen kurum ağına göre hesaplanır.",
       "İhtiyacınıza uygun limit, katılım payı ve yurt dışı teminatlarıyla teklif alın.",
     ],
   },
   {
     slug: "dask",
     title: "DASK",
-    seoTitle: "DASK Fiyatları 2026 için Teklif Al",
+    seoTitle: "DASK 2026 Fiyatları ve Teklifleri | Sigorta Uzmanı",
     metaDescription:
-      "2026 DASK fiyatını adres, brüt metrekare ve yapı tarzına göre hesaplatın. Zorunlu Deprem Sigortası poliçenizi ücretsiz teklifle oluşturun veya yenileyin.",
+      "Adres, brüt metrekare ve yapı bilgilerinizi girerek 2026 Zorunlu Deprem Sigortası teklifinizi oluşturun veya poliçenizi yenileyin.",
     serviceType: "Zorunlu Deprem Sigortası (DASK)",
     seoBullets: [
       "2026 DASK fiyatını adres, brüt metrekare, yapı tarzı ve deprem riskine göre hesaplatın.",
@@ -133,9 +133,9 @@ export const products: Product[] = [
   {
     slug: "yesil-kart",
     title: "Yeşil Kart",
-    seoTitle: "Yeşil Kart Sigortası Fiyatları 2026 için Teklif Al",
+    seoTitle: "Yeşil Kart Sigortası 2026 Fiyatları | Sigorta Uzmanı",
     metaDescription:
-      "2026 Yeşil Kart Sigortası fiyatlarını araç türü ve süreye göre öğrenin. Aracınızla yurt dışına çıkmadan önce 15 gün-1 yıl arası poliçe teklifi alın.",
+      "Aracınızla yurt dışına çıkmadan önce, seyahat sürenize uygun 2026 Yeşil Kart Sigortası tekliflerini karşılaştırın.",
     serviceType: "Yeşil Kart Sigortası",
     seoBullets: [
       "2026 Yeşil Kart Sigortası fiyatlarını araç türü ve poliçe süresine göre öğrenin.",
@@ -147,9 +147,9 @@ export const products: Product[] = [
   {
     slug: "konut",
     title: "Konut Sigortası",
-    seoTitle: "Konut Sigortası Fiyatları 2026 için Teklif Al",
+    seoTitle: "Konut Sigortası 2026 Fiyatları ve Teklifleri | Sigorta Uzmanı",
     metaDescription:
-      "2026 konut sigortası fiyatlarını karşılaştırın. Yangın, su basması, hırsızlık ve doğal afet teminatlarıyla eviniz için ücretsiz teklif alın.",
+      "Yangın, su baskını, hırsızlık ve poliçe kapsamındaki doğal afet teminatlarını karşılaştırarak 2026 konut sigortası teklifi alın.",
     serviceType: "Konut Sigortası",
     seoBullets: [
       "2026 konut sigortası fiyatlarını farklı sigorta şirketleri arasında karşılaştırın.",

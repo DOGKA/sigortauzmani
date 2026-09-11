@@ -185,7 +185,7 @@ export default function MobileMenu({ id, open, onClose }: MobileMenuProps) {
               className="mobile-menu__cta"
               onClick={onClose}
             >
-              <strong>Poliçe İptal</strong>
+              <strong>Poliçe İptal İşlemleri</strong>
             </Link>
           </div>
 

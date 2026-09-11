@@ -76,7 +76,7 @@ export default function PolicyCancelPage() {
 
   const validateStep1 = () => {
     const next: Record<string, string> = {};
-    if (!brans) next.brans = "Branş seçin.";
+    if (!brans) next.brans = "Poliçe türü seçin.";
     if (adSoyad.trim().length < 3) next.adSoyad = "Ad soyad girin.";
     if (!isValidMobilePhone(phone)) next.phone = "Geçerli bir cep telefonu girin.";
 
@@ -86,7 +86,8 @@ export default function PolicyCancelPage() {
     } else if (idDigits.length === 10) {
       if (!isValidVkn(idDigits)) next.kimlik = "Geçerli bir vergi kimlik no girin.";
     } else {
-      next.kimlik = "TCKN (11 hane) veya Vergi No (10 hane) girin.";
+      next.kimlik =
+        "T.C. kimlik numarası (11 hane) veya vergi kimlik numarası (10 hane) girin.";
     }
 
     if (!isValidPlate(plate)) {
@@ -241,11 +242,12 @@ export default function PolicyCancelPage() {
               </button>
             </nav>
             <p className="iptal__info">
-              Web sitemizden yalnızca araç satışı nedeniyle poliçe iptal talepleri
-              alınmaktadır. Diğer iptaller için{" "}
-              <a href="tel:+908503020032">0850 302 00 32</a> numarasını
-              arayabilirsiniz. İptal sürecini poliçe iptal takip bölümünden
-              bilgilerinizi doldurarak görüntüleyebilirsiniz.
+              Web sitemiz üzerinden yalnızca araç satışı nedeniyle poliçe iptal
+              talebi alınmaktadır. Diğer iptal nedenleri için{" "}
+              <a href="tel:+908503020032">0850 302 00 32</a> numaralı danışma
+              hattımızı arayabilirsiniz. Daha önce oluşturduğunuz talebin
+              durumunu &ldquo;Poliçe İptal Takip&rdquo; bölümünden
+              görüntüleyebilirsiniz.
             </p>
           </aside>
 
@@ -423,7 +425,7 @@ export default function PolicyCancelPage() {
                   <section className="iptal__panel" aria-label="Temel Bilgiler">
                     <div className="iptal__fields">
                       <label className="iptal__field">
-                        <span>İptal Etmek İstediğin Poliçeler</span>
+                        <span>İptal etmek istediğiniz poliçe türü</span>
                         <select
                           value={brans}
                           onChange={(e) => {
@@ -431,7 +433,7 @@ export default function PolicyCancelPage() {
                             clearError("brans");
                           }}
                         >
-                          <option value="">Branş</option>
+                          <option value="">Poliçe türü seçin</option>
                           {BRANS_OPTIONS.map((opt) => (
                             <option key={opt.value} value={opt.value}>
                               {opt.label}
@@ -478,7 +480,9 @@ export default function PolicyCancelPage() {
                       </label>
 
                       <label className="iptal__field">
-                        <span>TCKN veya Vergi Kimlik No</span>
+                        <span>
+                          Ruhsat sahibinin T.C. kimlik / vergi kimlik numarası
+                        </span>
                         <input
                           type="text"
                           value={kimlik}
@@ -486,7 +490,7 @@ export default function PolicyCancelPage() {
                             setKimlik(e.target.value.replace(/\D/g, "").slice(0, 11));
                             clearError("kimlik");
                           }}
-                          placeholder="Ruhsat Sahibi TC No veya Vergi No"
+                          placeholder="11 veya 10 haneli numara"
                           inputMode="numeric"
                         />
                         {errors.kimlik && (

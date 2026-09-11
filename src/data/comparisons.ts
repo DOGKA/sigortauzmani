@@ -81,7 +81,8 @@ export const comparisons: Comparison[] = [
     seoTitle: "Trafik Sigortası vs Kasko Farkları 2026 | Karşılaştırma",
     seoDescription:
       "Trafik sigortası ile kasko arasındaki farklar: teminatlar, fiyat, cam, sel, dolu, hırsızlık ve kimler yaptırmalı. 2026 güncel karşılaştırma.",
-    summary: "En popüler karşılaştırma. Zorunlu trafik sigortası karşı tarafı; kasko kendi aracınızı güvenceye alır.",
+    summary:
+      "Zorunlu trafik sigortası, kusurunuz oranında üçüncü kişilere verdiğiniz ve poliçe kapsamına giren zararları yasal limitler içinde karşılar; kasko ise poliçe teminatları kapsamında kendi aracınızı korur.",
     heroTitle: "Trafik Sigortası ile Kasko Arasındaki Farklar Nelerdir?",
     heroIntro: [
       "Zorunlu trafik sigortası, Karayolları Trafik Kanunu uyarınca her motorlu araç sahibinin yaptırmak zorunda olduğu ve kazada karşı tarafa verilen bedeni ve maddi zararları poliçe limitleri dahilinde karşılayan bir sorumluluk sigortasıdır. Kasko ise çarpma, çarpılma, yangın, hırsızlık ve doğal afet gibi risklere karşı aracınızın kendisini güvence altına alan isteğe bağlı bir mal sigortasıdır.",
@@ -215,7 +216,8 @@ export const comparisons: Comparison[] = [
     seoTitle: "İMM vs Yüksek Teminatlı İMM 2026 Limitleri",
     seoDescription:
       "İMM neden gerekli, 2026 teminat limitleri ve yüksek teminatlı İMM kimler için önemli?",
-    summary: "Neden gerekli, 2026 limitleri ve kimler için kritik olduğunu karşılaştırın.",
+    summary:
+      "İMM'nin neden gerekli olduğunu, 2026 teminat limitlerini ve kimler için önemli olduğunu karşılaştırın.",
     heroTitle: "İMM ile Yüksek Teminatlı İMM Karşılaştırması: 2026 Limitleri",
     heroIntro: [
       "İhtiyari Mali Mesuliyet (İMM) sigortası, zorunlu trafik sigortası limitlerinin aşıldığı kazalarda devreye girerek aradaki tazminat farkını karşılayan ek bir sorumluluk teminatıdır. Yüksek teminatlı İMM ise bu güvenceyi çok daha yüksek, bazı ürünlerde limitsize yakın tutarlara taşır.",
@@ -273,7 +275,7 @@ export const comparisons: Comparison[] = [
     badge: "En çok aranan",
     rows: [
       { label: "SGK gerekir mi?", left: "Evet", right: "Hayır" },
-      { label: "Hastane ağı", left: "SGK anlaşmalı özel hastaneler", right: "Şirketin özel anlaşmalı ağı" },
+      { label: "Hastane ağı", left: "SGK ile anlaşmalı özel hastaneler", right: "Şirketin özel anlaşmalı ağı" },
       { label: "Yurt dışı", left: "Genelde sınırlı / yok", right: "Pakete göre dahil olabilir" },
       { label: "İlaç", left: "Sınırlı / pakete göre", right: "Pakete göre daha geniş" },
       { label: "Doğum", left: "Ek teminat / bekleme süresi", right: "Pakete göre, bekleme süresi olabilir" },

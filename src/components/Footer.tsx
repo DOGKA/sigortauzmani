@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import AmbientBackdrop from "./AmbientBackdrop";
 import { useCookieConsent } from "../lib/cookies/context";
+import { companyRegistrySummary, COMPANY } from "../data/company";
 import { ROUTES } from "../lib/seo/routes";
 import "./Footer.css";
 
@@ -37,7 +38,7 @@ const columns: {
     links: [
       { label: "Hakkımızda", to: "/hakkimizda" },
       { label: "Teklif Al", to: "/#urunler" },
-      { label: "Poliçe İptal", to: "/police-iptal" },
+      { label: "Poliçe İptal İşlemleri", to: "/police-iptal" },
       { label: "İletişim", to: "/iletisim" },
     ],
   },
@@ -73,18 +74,18 @@ export default function Footer() {
               </span>
             </Link>
             <p>
-              30&apos;a yakın sigorta şirketinden teklifleri karşılaştırıyor,
-              ihtiyacınıza uygun teminat ve fiyat seçeneklerini sunuyoruz. Poliçe
-              öncesinde ve sonrasında yanınızdayız.
+              30&apos;a yakın sigorta şirketinden gelen fiyat ve teminat
+              seçeneklerini karşılaştırmanızı kolaylaştırıyor, poliçe öncesinde
+              ve sonrasında destek sunuyoruz.
             </p>
-            <a href="tel:+908503020032" className="footer__phone">
+            <a href={`tel:${COMPANY.telefonE164}`} className="footer__phone">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path
                   d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
                   fill="currentColor"
                 />
               </svg>
-              +90 850 302 00 32
+              {COMPANY.telefon}
             </a>
           </div>
 
@@ -113,6 +114,11 @@ export default function Footer() {
         </div>
 
         <div className="footer__bottom">
+          <div className="footer__legal">
+            {companyRegistrySummary().map((line) => (
+              <span key={line}>{line}</span>
+            ))}
+          </div>
           <div className="footer__credits">
             <span>© 2026 Sigorta Uzmanı.</span>
             <span>

@@ -201,7 +201,7 @@ export const staticPages: StaticPageSeo[] = [
     title: "Hakkımızda",
     description:
       "Sigorta Uzmanı; 30'a yakın sigorta şirketinin tekliflerini tek noktada karşılaştırmanızı sağlayan bir sigorta acentesidir. Teklif, poliçe, yenileme ve hasar süreçlerinde yanınızdayız.",
-    h1: "Sigortayı daha anlaşılır, hızlı ve güvenilir hale getiriyoruz.",
+    h1: "Sigortayı daha anlaşılır, hızlı ve güvenilir hâle getiriyoruz.",
     intro: [
       "sigortauzmani.net, farklı sigorta şirketlerinin tekliflerini tek noktada değerlendirmenize ve ihtiyacınıza uygun poliçeyi kolayca seçmenize yardımcı olur.",
       "Uzman ekibimiz; teklif aşamasından poliçe düzenlenmesine, yenileme işlemlerinden hasar sürecine kadar yanınızda olur. Amacımız yalnızca poliçe sunmak değil; doğru seçenekleri anlaşılır biçimde paylaşarak güvenle karar vermenizi sağlamaktır.",
@@ -216,7 +216,7 @@ export const staticPages: StaticPageSeo[] = [
         items: [
           "Kolay karşılaştırma — Farklı şirketlerin seçeneklerini tek noktada değerlendirin.",
           "Uzman destek — İhtiyacınıza uygun sigortayı danışman desteğiyle seçin.",
-          "Hızlı süreç — Talebinizi iletin, teklifinizi kısa sürede alın.",
+          "Hızlı süreç — Bilgilerinizi girin, entegre şirketlerden gelen anlık teklifleri karşılaştırın.",
           "Poliçe sonrası — Yenileme ve hasar süreçlerinde destek almaya devam edin.",
         ],
       },

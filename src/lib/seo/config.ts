@@ -8,14 +8,15 @@
 export const SITE_URL = "https://sigortauzmani.net";
 
 export const SITE_NAME = "Sigorta Uzmanı";
-export const SITE_LEGAL_NAME = "Sigorta Uzmanı Sigorta Aracılık Hizmetleri";
+export const SITE_LEGAL_NAME =
+  "GROSS SİGORTA ARACILIK HİZMETLERİ LİMİTED ŞİRKETİ";
 export const SITE_LOCALE = "tr_TR";
 export const SITE_LANG = "tr";
 
 export const SITE_TAGLINE = "Doğru sigorta. Uygun fiyat. Hızlı destek.";
 
 export const SITE_DESCRIPTION =
-  "30'a yakın sigorta şirketinin trafik, kasko, İMM, DASK, konut ve sağlık sigortası tekliflerini karşılaştırın. Ücretsiz danışmanlık, hızlı teklif, poliçe sonrası destek.";
+  "30'a yakın sigorta şirketinden gelen trafik, kasko, İMM, DASK, konut ve sağlık sigortası tekliflerini karşılaştırın; uygun ürünlerde çevrim içi satın alın.";
 
 export const CONTACT_PHONE = "+908503020032";
 export const CONTACT_PHONE_DISPLAY = "0850 302 00 32";

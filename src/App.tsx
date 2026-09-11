@@ -2,6 +2,7 @@ import {
   BrowserRouter,
   Routes,
   Route,
+  Navigate,
   useLocation,
   useParams,
   useSearchParams,
@@ -169,6 +170,15 @@ export default function App() {
             <Suspense fallback={<PageLoader />}>
               <BlogPage />
             </Suspense>
+          }
+        />
+        <Route
+          path="/blog/trafik-sigortasi-yenilemesi-gecikirse-ne-olur"
+          element={
+            <Navigate
+              to="/blog/trafik-sigortasi-gecikirse-ne-olur-cezasi-ve-riskleri-2026"
+              replace
+            />
           }
         />
         <Route

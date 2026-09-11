@@ -9,6 +9,7 @@
  * Tarayıcı ve Edge ortamlarının ikisinden de import edilir; DOM API kullanmaz.
  */
 
+import { COMPANY } from "../../data/company";
 import {
   CONTACT_COUNTRY,
   CONTACT_EMAIL,
@@ -62,6 +63,19 @@ export function organizationSchema(): JsonLd {
     image: { "@id": `${SITE_URL}/#logo` },
     telephone: CONTACT_PHONE,
     email: CONTACT_EMAIL,
+    taxID: COMPANY.vergiKimlikNo,
+    identifier: [
+      {
+        "@type": "PropertyValue",
+        name: "MERSİS No",
+        value: COMPANY.mersis,
+      },
+      {
+        "@type": "PropertyValue",
+        name: "TOBB Sigorta Acenteleri Levha No",
+        value: COMPANY.tobb,
+      },
+    ],
     priceRange: "₺₺",
     areaServed: {
       "@type": "Country",

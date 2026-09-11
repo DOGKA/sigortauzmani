@@ -66,6 +66,11 @@
       "permanent": true
     },
     {
+      "source": "/blog/trafik-sigortasi-yenilemesi-gecikirse-ne-olur",
+      "destination": "/blog/trafik-sigortasi-gecikirse-ne-olur-cezasi-ve-riskleri-2026",
+      "permanent": true
+    },
+    {
       "source": "/sikca-sorulan-sorular",
       "destination": "/#sss",
       "permanent": true

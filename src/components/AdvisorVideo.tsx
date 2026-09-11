@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import "./AdvisorVideo.css";
 
 const DEFAULT_TRANSCRIPT =
-  "Merhaba, ben yapay zekâ destekli sigorta danışmanınızım. Size en uygun sigorta tekliflerini hazırlayabilmem için birkaç kısa bilgiye ihtiyacım olacak. Tüm süreç yaklaşık doksan saniye sürecek. Bilgileriniz güvenli bir şekilde işlenecek ve yalnızca teklif oluşturma amacıyla kullanılacaktır. Hazırsanız başlayalım.";
+  "Merhaba, ben Sigorta Uzmanı dijital teklif asistanıyım. Bilgilerinizi birkaç kısa adımda paylaşarak entegrasyon bulunan sigorta şirketlerinden gelen anlık fiyat ve teminat seçeneklerini karşılaştırabilirsiniz. Çevrim içi satın alma desteklenen ürünlerde doğrudan sigorta şirketinin ödeme ekranına yönlendirilirsiniz; diğerlerinde süreciniz WhatsApp temsilcimizle devam eder. Hazırsanız başlayalım.";
 
 interface AdvisorVideoProps {
   /** Her değiştiğinde video ve konuşma balonu baştan oynatılır (form adımı). */

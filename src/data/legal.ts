@@ -2,6 +2,7 @@
  * Yasal metinler. İletişim bilgileri SEO config ile aynı kaynaktan gelir.
  */
 
+import { KVKK_SORUMLU, kvkkVeriSorumlusuLines } from "./company";
 import { ROUTES } from "../lib/seo/routes";
 
 export interface LegalSection {
@@ -26,17 +27,6 @@ export interface LegalDocument {
 
 const KVKK_UPDATED = "1 Eylül 2026";
 
-/** Veri sorumlusu bilgileri — tamamlandığında güncellenecek. */
-const KVKK_SORUMLU = {
-  unvan: "[TAM TİCARET UNVANI]",
-  adres: "[AÇIK POSTA ADRESİ]",
-  kep: "[KEP ADRESİ]",
-  eposta: "[KVKK E-POSTA ADRESİ]",
-  telefon: "[TELEFON NUMARASI]",
-  tobb: "[TOBB SİGORTA ACENTELERİ LEVHA NUMARASI]",
-  mersis: "[MERSİS / TİCARET SİCİLİ BİLGİSİ]",
-} as const;
-
 export const legalDocuments: LegalDocument[] = [
   {
     path: ROUTES.kvkk,
@@ -52,12 +42,7 @@ export const legalDocuments: LegalDocument[] = [
         heading: "1. Veri sorumlusu",
         paragraphs: [
           `6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) kapsamında kişisel verileriniz, veri sorumlusu sıfatıyla ${KVKK_SORUMLU.unvan} (“Şirket”) tarafından işlenmektedir.`,
-          `Adres: ${KVKK_SORUMLU.adres}`,
-          `KEP: ${KVKK_SORUMLU.kep}`,
-          `KVKK e-posta adresi: ${KVKK_SORUMLU.eposta}`,
-          `Telefon: ${KVKK_SORUMLU.telefon}`,
-          `TOBB Sigorta Acenteleri Levha No: ${KVKK_SORUMLU.tobb}`,
-          `MERSİS / Ticaret Sicili: ${KVKK_SORUMLU.mersis}`,
+          ...kvkkVeriSorumlusuLines(),
         ],
       },
       {
@@ -178,9 +163,9 @@ export const legalDocuments: LegalDocument[] = [
         closing: [
           "haklarına sahipsiniz.",
           "Başvurularınızı aşağıdaki kanallardan iletebilirsiniz:",
-          `Posta: ${KVKK_SORUMLU.adres}`,
           `KEP: ${KVKK_SORUMLU.kep}`,
           `Kayıtlı e-posta adresiniz üzerinden: ${KVKK_SORUMLU.eposta}`,
+          `Güvenli elektronik imza veya mobil imza ile imzaladığınız başvurular: ${KVKK_SORUMLU.eposta}`,
           "Başvurunuz, talebin niteliğine göre en kısa sürede ve en geç otuz gün içinde sonuçlandırılır. Başvuru yöntemleri ve gerekli bilgiler için KVKK Başvuru Formu sayfasını kullanabilirsiniz.",
         ],
       },
@@ -312,9 +297,9 @@ export const legalDocuments: LegalDocument[] = [
       {
         heading: "Başvuru kanalları",
         paragraphs: [
-          `Posta adresi: ${KVKK_SORUMLU.adres}`,
           `KEP adresi: ${KVKK_SORUMLU.kep}`,
           `Şirket sisteminde kayıtlı e-posta adresiniz üzerinden: ${KVKK_SORUMLU.eposta}`,
+          `Güvenli elektronik imza veya mobil imza ile imzaladığınız başvurular: ${KVKK_SORUMLU.eposta}`,
         ],
       },
       {

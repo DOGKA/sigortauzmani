@@ -363,6 +363,35 @@
   margin-top: 4px;
 }
 
+.contact__kvkk-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-600);
+  cursor: pointer;
+}
+
+.contact__kvkk-check input {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.contact__kvkk-check a {
+  color: var(--brand-600);
+  font-weight: 650;
+}
+
+.contact__kvkk-error {
+  margin: -6px 0 0;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 500;
+  color: #e5484d;
+}
+
 .contact__submit {
   height: 54px;
   border: 0;

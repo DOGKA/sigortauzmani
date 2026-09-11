@@ -39,7 +39,8 @@ const slides = [
     eyebrow: "Tamamlayıcı Sağlık Sigortası",
     titleLine1: "Sağlığınız için.",
     titleLine2: "Bütçenizi yormadan.",
-    subtitle: "SGK anlaşmalı özel hastanelerde avantajlı sağlık güvencesi.",
+    subtitle:
+      "SGK ile anlaşmalı özel hastanelerde, poliçe kapsamındaki fark ücretlerine karşı güvence seçeneklerini değerlendirin.",
     image: tamamlayiciSaglikSlider,
     alt: "Birbirine destek olan kenetlenmiş eller",
     cta: "Tamamlayıcı Sağlık Teklifi Al",
@@ -99,7 +100,7 @@ const slides = [
     eyebrow: "Yeşil Kart Sigortası",
     titleLine1: "Sınırlar değişir.",
     titleLine2: "Güvenceniz sürer.",
-    subtitle: "Yurt dışı araç kullanımınız için gerekli sigortayı hazırlayın.",
+    subtitle: "Aracınızı yurt dışında kullanırken gerekli olan sigorta için teklif alın.",
     image: yesilKartSlider,
     alt: "Dağ manzaralı yolda ilerleyen beyaz otomobil",
     cta: "Yeşil Kart Teklifi Al",
@@ -143,7 +144,11 @@ export default function InsuranceSlider() {
           <div>
             <span className="insurance-slider__eyebrow">Sizin için seçtik</span>
             <h2 id="insurance-slider-title">Hayatın Her Anında Yanınızdayız</h2>
-            <p>İhtiyacınıza uygun güvenceyi bulun, teklifinizi dakikalar içinde alın.</p>
+            <p>
+              Entegre sigorta şirketlerinden gelen anlık fiyat ve teminat seçeneklerini
+              karşılaştırın; seçiminize göre çevrim içi satın alma adımına veya WhatsApp
+              temsilcimize geçin.
+            </p>
           </div>
 
           <div className="insurance-slider__controls">
