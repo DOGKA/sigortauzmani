@@ -49,7 +49,7 @@ export default function BlogPopularList({
                   )}
                   <span className="blog-popular__views">
                     <Eye aria-hidden="true" />
-                    {post.viewCount.toLocaleString("tr-TR")}
+                    {post.viewCount.toLocaleString("tr-TR")} görüntülenme
                   </span>
                 </span>
               </span>

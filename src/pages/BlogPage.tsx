@@ -1,5 +1,6 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import BlogIndexSkeleton from "../components/blog/BlogIndexSkeleton";
 import BlogPageClient from "../components/blog/BlogPageClient";
 import type { BlogSort } from "../components/blog/BlogFilterBar";
 import { fetchBlogCards, type BlogCard } from "../lib/blog/api";
@@ -13,24 +14,30 @@ export default function BlogPage() {
   const [searchParams] = useSearchParams();
   const [posts, setPosts] = useState<BlogCard[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadPosts = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchBlogCards();
+      setPosts(data);
+    } catch {
+      setError("Yazılar yüklenemedi, yeniden deneyin.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadPosts();
+  }, [loadPosts]);
 
   // Liste yüklendikçe ItemList düğümü de güncellenir; yazılar gelmeden
   // yalnızca temel sayfa grafiği yayınlanır.
   useStaticPageSeo(ROUTES.blog, {
     extra: posts.length ? [blogListNode(posts)] : undefined,
   });
-
-  useEffect(() => {
-    let active = true;
-    fetchBlogCards().then((data) => {
-      if (!active) return;
-      setPosts(data);
-      setLoading(false);
-    });
-    return () => {
-      active = false;
-    };
-  }, []);
 
   const categories = useMemo(() => {
     const counts = new Map<string, number>();
@@ -62,8 +69,13 @@ export default function BlogPage() {
       </header>
 
       {loading ? (
-        <div className="page-loader" role="status" aria-label="Yazılar yükleniyor">
-          <span className="page-loader__spinner" />
+        <BlogIndexSkeleton />
+      ) : error ? (
+        <div className="blog-empty blog-empty--error" role="alert">
+          <h2 className="blog-empty__title">{error}</h2>
+          <button type="button" className="blog-empty__reset" onClick={() => void loadPosts()}>
+            Yeniden dene
+          </button>
         </div>
       ) : (
         <BlogPageClient

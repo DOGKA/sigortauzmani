@@ -79,10 +79,7 @@ export async function fetchBlogCards(): Promise<BlogCard[]> {
     .select("id, slug, title, excerpt, category, view_count, published_at, reading_time")
     .order("published_at", { ascending: false, nullsFirst: false });
 
-  if (error) {
-    console.error("Blog yazıları alınamadı:", error.message);
-    return [];
-  }
+  if (error) throw error;
   return (data as BlogCardRow[]).map(toCard);
 }
 

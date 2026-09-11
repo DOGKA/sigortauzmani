@@ -111,7 +111,7 @@ export default function BlogPostRow({
           {viewCount > 0 && (
             <span className="blog-row__meta-item">
               <Eye aria-hidden="true" />
-              {viewCount.toLocaleString("tr-TR")}
+              {viewCount.toLocaleString("tr-TR")} görüntülenme
             </span>
           )}
 
