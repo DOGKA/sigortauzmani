@@ -1,5 +1,5 @@
 /**
- * Resmî şirket bilgileri — KVKK, footer, iletişim ve schema için tek kaynak.
+ * Resmî şirket bilgileri — KVKK, iletişim ve schema için tek kaynak.
  *
  * Açık posta adresi bilinçli olarak yayınlanmıyor; başvuru ve tebligat KEP ile
  * şirket sisteminde kayıtlı e-posta üzerinden yürütülüyor.
@@ -40,17 +40,5 @@ export function kvkkVeriSorumlusuLines(): string[] {
     `Ticaret Sicil / Dosya No: ${COMPANY.ticaretSicil}`,
     `Vergi Kimlik No: ${COMPANY.vergiKimlikNo}`,
     `Vergi Dairesi: ${COMPANY.vergiDairesi}`,
-  ];
-}
-
-/** Footer ve iletişim sayfası için kısa kayıt özeti. */
-export function companyRegistrySummary(): string[] {
-  return [
-    COMPANY.unvan,
-    `TOBB Levha No: ${COMPANY.tobb}`,
-    `MERSİS No: ${COMPANY.mersis}`,
-    `Ticaret Sicil / Dosya No: ${COMPANY.ticaretSicil}`,
-    `Vergi Kimlik No: ${COMPANY.vergiKimlikNo} · ${COMPANY.vergiDairesi} VD`,
-    `KEP: ${COMPANY.kep}`,
   ];
 }

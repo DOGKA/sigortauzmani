@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import AmbientBackdrop from "./AmbientBackdrop";
 import { useCookieConsent } from "../lib/cookies/context";
-import { companyRegistrySummary, COMPANY } from "../data/company";
+import { COMPANY } from "../data/company";
 import { ROUTES } from "../lib/seo/routes";
 import "./Footer.css";
 
@@ -114,11 +114,6 @@ export default function Footer() {
         </div>
 
         <div className="footer__bottom">
-          <div className="footer__legal">
-            {companyRegistrySummary().map((line) => (
-              <span key={line}>{line}</span>
-            ))}
-          </div>
           <div className="footer__credits">
             <span>© 2026 Sigorta Uzmanı.</span>
             <span>
