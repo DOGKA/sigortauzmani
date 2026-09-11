@@ -3,8 +3,14 @@ import type { IptalBrans, IptalStatus } from "./iptal-types";
 
 export type { IptalBrans, IptalStatus } from "./iptal-types";
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
+/** Vite `import.meta.env` — Edge/API tsconfig'inde `vite/client` olmadığı için daraltılır. */
+function readViteEnv(name: string): string | undefined {
+  const env = (import.meta as { env?: Record<string, string | undefined> }).env;
+  return env?.[name];
+}
+
+const supabaseUrl = readViteEnv("VITE_SUPABASE_URL");
+const supabaseAnonKey = readViteEnv("VITE_SUPABASE_ANON_KEY");
 
 let supabase: SupabaseClient | null = null;
 
@@ -202,7 +208,7 @@ export async function createTalep(talep: TalepInsert): Promise<TalepSonuc> {
 }
 
 async function sendTalepNotificationEmail(talep: TalepInsert) {
-  const notifyUrl = import.meta.env.VITE_NOTIFY_API_URL as string | undefined;
+  const notifyUrl = readViteEnv("VITE_NOTIFY_API_URL");
   if (!notifyUrl) return;
 
   try {
@@ -338,7 +344,7 @@ export async function lookupIptalTakip(
 }
 
 async function sendIptalNotificationEmail(iptal: IptalTalepInsert) {
-  const notifyUrl = import.meta.env.VITE_NOTIFY_API_URL as string | undefined;
+  const notifyUrl = readViteEnv("VITE_NOTIFY_API_URL");
   if (!notifyUrl) return;
 
   try {
@@ -428,7 +434,7 @@ async function sendIletisimNotificationEmail(
   iletisim: IletisimTalepInsert,
   file?: File | null,
 ) {
-  const notifyUrl = import.meta.env.VITE_NOTIFY_API_URL as string | undefined;
+  const notifyUrl = readViteEnv("VITE_NOTIFY_API_URL");
   if (!notifyUrl) return;
 
   const formData = new FormData();
