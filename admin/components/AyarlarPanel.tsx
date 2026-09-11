@@ -60,9 +60,12 @@ export default function AyarlarPanel() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ kind: "ok" | "error"; text: string } | null>(null);
+  // Yükleme hatası her sekmede görünür; kaydetme sonucu yalnızca alt çubukta.
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
+    setLoadError(null);
     try {
       const [settingsResponse, legalResponse] = await Promise.all([
         fetch("/api/ayarlar"),
@@ -72,12 +75,12 @@ export default function AyarlarPanel() {
       const legalBody = await readJson<{ documents: LegalDocument[] }>(legalResponse);
 
       if (settingsResponse.ok && settingsBody.settings) setSettings(settingsBody.settings);
-      else setMessage({ kind: "error", text: settingsBody.error ?? "Ayarlar alınamadı." });
+      else setLoadError(settingsBody.error ?? "Ayarlar alınamadı.");
 
       if (legalResponse.ok) setDocuments(legalBody.documents ?? []);
-      else setMessage({ kind: "error", text: legalBody.error ?? "Yasal belgeler alınamadı." });
+      else setLoadError(legalBody.error ?? "Yasal belgeler alınamadı.");
     } catch {
-      setMessage({ kind: "error", text: "Sunucuya ulaşılamadı. Bağlantıyı kontrol edin." });
+      setLoadError("Sunucuya ulaşılamadı. Bağlantıyı kontrol edin.");
     } finally {
       setLoading(false);
     }
@@ -131,6 +134,23 @@ export default function AyarlarPanel() {
           <p className="mt-1 text-sm text-slate-500">{TABS.find((item) => item.id === tab)?.description}</p>
         </header>
         <div className="space-y-5 p-6">
+          {loadError && (
+            <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm leading-6 text-red-700">
+              <p className="font-semibold">Sunucu ayarları okuyamadı</p>
+              <p className="mt-1">{loadError}</p>
+              <p className="mt-2 text-xs text-red-600">
+                Bu ortamda <code>SUPABASE_SERVICE_ROLE_KEY</code> tanımlı değilse veya{" "}
+                <code>schema_settings.sql</code> çalıştırılmadıysa bu hata görülür.
+              </p>
+              <button
+                type="button"
+                onClick={() => void load()}
+                className="mt-3 rounded-xl border border-red-200 bg-white px-3.5 py-2 text-sm font-semibold text-red-700"
+              >
+                Yeniden dene
+              </button>
+            </div>
+          )}
           {tab === "notifications" && <Notifications settings={settings} setSettings={setSettings} />}
           {tab === "analytics" && <Analytics settings={settings} setSettings={setSettings} />}
           {tab === "legal" && <Legal documents={documents} reload={load} />}
@@ -172,6 +192,29 @@ function Field({ label, value, onChange, placeholder = "", type = "text" }: {
         onChange={(event) => onChange(event.target.value)}
         className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm outline-none transition focus:border-sky-400 focus:ring-3 focus:ring-sky-100"
       />
+    </label>
+  );
+}
+
+function TextArea({ label, value, onChange, hint, rows = 5, placeholder = "" }: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  hint?: string;
+  rows?: number;
+  placeholder?: string;
+}) {
+  return (
+    <label className="block">
+      <span className="mb-1.5 block text-sm font-medium text-slate-700">{label}</span>
+      <textarea
+        value={value}
+        rows={rows}
+        placeholder={placeholder}
+        onChange={(event) => onChange(event.target.value)}
+        className="w-full rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm leading-6 outline-none transition focus:border-sky-400 focus:ring-3 focus:ring-sky-100"
+      />
+      {hint && <span className="mt-1 block text-xs leading-5 text-slate-400">{hint}</span>}
     </label>
   );
 }
@@ -316,12 +359,109 @@ function Products({ settings, setSettings }: PanelProps) {
   );
 }
 
+/**
+ * Sürüm içeriği veritabanında JSON tutulur; panelde düz metin olarak düzenlenir.
+ * Paragraflar boş satırla, madde listeleri satır sonuyla ayrılır.
+ */
+type SectionDraft = {
+  heading: string;
+  paragraphs: string;
+  items: string;
+  closing: string;
+};
+
+type ContentDraft = {
+  h1: string;
+  eyebrow: string;
+  updatedAt: string;
+  summary: string;
+  intro: string;
+  sections: SectionDraft[];
+  /** Formda karşılığı olmayan alanlar kaydederken kaybolmasın. */
+  extra: Record<string, unknown>;
+};
+
+const EMPTY_SECTION: SectionDraft = { heading: "", paragraphs: "", items: "", closing: "" };
+
+function asText(value: unknown) {
+  return typeof value === "string" ? value : "";
+}
+
+function asParagraphText(value: unknown) {
+  return Array.isArray(value) ? value.filter((item) => typeof item === "string").join("\n\n") : "";
+}
+
+function asLineText(value: unknown) {
+  return Array.isArray(value) ? value.filter((item) => typeof item === "string").join("\n") : "";
+}
+
+/** Boş satırla ayrılmış metni paragraf listesine çevirir; paragraf içi satır sonu boşluk olur. */
+function toParagraphs(value: string) {
+  return value
+    .split(/\n{2,}/)
+    .map((block) => block.replace(/\s*\n\s*/g, " ").trim())
+    .filter(Boolean);
+}
+
+function toLines(value: string) {
+  return value
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+}
+
+function toDraft(content: unknown): ContentDraft {
+  const raw = (content && typeof content === "object" ? content : {}) as Record<string, unknown>;
+  const { h1, eyebrow, updatedAt, summary, intro, sections, ...extra } = raw;
+  return {
+    h1: asText(h1),
+    eyebrow: asText(eyebrow),
+    updatedAt: asText(updatedAt),
+    summary: asText(summary),
+    intro: asParagraphText(intro),
+    sections: (Array.isArray(sections) ? sections : []).map((section) => {
+      const item = (section && typeof section === "object" ? section : {}) as Record<string, unknown>;
+      return {
+        heading: asText(item.heading),
+        paragraphs: asParagraphText(item.paragraphs),
+        items: asLineText(item.items),
+        closing: asParagraphText(item.closing),
+      };
+    }),
+    extra,
+  };
+}
+
+function toContent(draft: ContentDraft) {
+  return {
+    ...draft.extra,
+    h1: draft.h1.trim(),
+    eyebrow: draft.eyebrow.trim(),
+    updatedAt: draft.updatedAt.trim(),
+    summary: draft.summary.trim(),
+    intro: toParagraphs(draft.intro),
+    sections: draft.sections
+      .filter((section) => Object.values(section).some((value) => value.trim()))
+      .map((section) => {
+        const paragraphs = toParagraphs(section.paragraphs);
+        const items = toLines(section.items);
+        const closing = toParagraphs(section.closing);
+        return {
+          heading: section.heading.trim(),
+          ...(paragraphs.length ? { paragraphs } : {}),
+          ...(items.length ? { items } : {}),
+          ...(closing.length ? { closing } : {}),
+        };
+      }),
+  };
+}
+
 function Legal({ documents, reload }: { documents: LegalDocument[]; reload: () => Promise<void> }) {
   const [selectedId, setSelectedId] = useState(documents[0]?.id ?? "");
   const selected = documents.find((item) => item.id === selectedId) ?? documents[0];
   const latest = selected?.versions.slice().sort((a, b) => b.version - a.version)[0];
-  const latestContent = latest ? JSON.stringify(latest.content, null, 2) : "{}";
-  const [content, setContent] = useState(latestContent);
+  const latestContent = JSON.stringify(latest?.content ?? {});
+  const [draft, setDraft] = useState<ContentDraft>(() => toDraft(latest?.content));
   const [status, setStatus] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [newDocument, setNewDocument] = useState({
@@ -331,8 +471,25 @@ function Legal({ documents, reload }: { documents: LegalDocument[]; reload: () =
     description: "",
   });
   // Sürüm kimliği değişmeden içerik güncellenebildiği için (yerinde güncelleme)
-  // metin alanı içeriğin kendisine bağlanır.
-  useEffect(() => setContent(latestContent), [latestContent]);
+  // form içeriğin kendisine bağlanır.
+  useEffect(() => setDraft(toDraft(JSON.parse(latestContent))), [latestContent]);
+
+  const updateSection = (index: number, patch: Partial<SectionDraft>) =>
+    setDraft((current) => ({
+      ...current,
+      sections: current.sections.map((section, position) =>
+        position === index ? { ...section, ...patch } : section,
+      ),
+    }));
+
+  const moveSection = (index: number, delta: number) =>
+    setDraft((current) => {
+      const target = index + delta;
+      if (target < 0 || target >= current.sections.length) return current;
+      const sections = [...current.sections];
+      [sections[index], sections[target]] = [sections[target], sections[index]];
+      return { ...current, sections };
+    });
 
   async function createDocument() {
     const response = await fetch("/api/ayarlar/yasal", {
@@ -380,7 +537,7 @@ function Legal({ documents, reload }: { documents: LegalDocument[]; reload: () =
           documentId: selected.id,
           versionId: latest?.id,
           status: nextStatus,
-          content: JSON.parse(content),
+          content: toContent(draft),
         }),
       });
       const body = await readJson(response);
@@ -391,7 +548,7 @@ function Legal({ documents, reload }: { documents: LegalDocument[]; reload: () =
       );
       if (response.ok) await reload();
     } catch {
-      setStatus("İçerik geçerli JSON olmalıdır.");
+      setStatus("Sunucuya ulaşılamadı. Bağlantıyı kontrol edin.");
     }
   }
   return (
@@ -429,10 +586,81 @@ function Legal({ documents, reload }: { documents: LegalDocument[]; reload: () =
             <span className="ml-auto rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-500">{selected.locale.toUpperCase()}</span>
             <button type="button" onClick={() => void deleteDocument()} className="text-xs font-semibold text-red-500">Sil</button>
           </div>
-          <label className="block">
-            <span className="mb-1.5 block text-sm font-medium text-slate-700">Sürüm içeriği (JSON)</span>
-            <textarea value={content} onChange={(event) => setContent(event.target.value)} rows={16} className="w-full rounded-xl border border-slate-200 p-3 font-mono text-xs leading-5 outline-none focus:border-sky-400" />
-          </label>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Field label="Sayfa başlığı" value={draft.h1} onChange={(h1) => setDraft((current) => ({ ...current, h1 }))} />
+            <Field label="Üst etiket" value={draft.eyebrow} placeholder="Yasal metinler" onChange={(eyebrow) => setDraft((current) => ({ ...current, eyebrow }))} />
+            <Field label="Güncellenme tarihi" value={draft.updatedAt} placeholder="11 Eylül 2026" onChange={(updatedAt) => setDraft((current) => ({ ...current, updatedAt }))} />
+          </div>
+          <TextArea
+            label="Özet"
+            value={draft.summary}
+            rows={3}
+            hint="Arama sonuçlarında ve sayfa girişinde görünen kısa açıklama."
+            onChange={(summary) => setDraft((current) => ({ ...current, summary }))}
+          />
+          <TextArea
+            label="Giriş paragrafları"
+            value={draft.intro}
+            rows={4}
+            hint="Bölümlerden önce gösterilir. Paragrafları boş satırla ayırın. Boş bırakabilirsiniz."
+            onChange={(intro) => setDraft((current) => ({ ...current, intro }))}
+          />
+
+          <div className="space-y-4 border-t border-slate-100 pt-5">
+            <div className="flex items-center gap-3">
+              <p className="text-sm font-semibold text-slate-700">Bölümler</p>
+              <span className="text-xs text-slate-400">{draft.sections.length} bölüm</span>
+              <button
+                type="button"
+                onClick={() => setDraft((current) => ({ ...current, sections: [...current.sections, EMPTY_SECTION] }))}
+                className="ml-auto rounded-xl border border-sky-200 px-3.5 py-2 text-sm font-semibold text-sky-700"
+              >
+                Bölüm ekle
+              </button>
+            </div>
+
+            {draft.sections.map((section, index) => (
+              <div key={index} className="space-y-3 rounded-xl border border-slate-200 p-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-slate-400">{index + 1}. bölüm</span>
+                  <button type="button" onClick={() => moveSection(index, -1)} disabled={index === 0} className="ml-auto text-xs font-semibold text-slate-500 disabled:opacity-30">Yukarı</button>
+                  <button type="button" onClick={() => moveSection(index, 1)} disabled={index === draft.sections.length - 1} className="text-xs font-semibold text-slate-500 disabled:opacity-30">Aşağı</button>
+                  <button
+                    type="button"
+                    onClick={() => setDraft((current) => ({ ...current, sections: current.sections.filter((_, position) => position !== index) }))}
+                    className="text-xs font-semibold text-red-500"
+                  >
+                    Sil
+                  </button>
+                </div>
+                <Field label="Başlık" value={section.heading} onChange={(heading) => updateSection(index, { heading })} />
+                <TextArea
+                  label="Paragraflar"
+                  value={section.paragraphs}
+                  rows={6}
+                  hint="Paragrafları boş satırla ayırın."
+                  onChange={(paragraphs) => updateSection(index, { paragraphs })}
+                />
+                <TextArea
+                  label="Madde listesi"
+                  value={section.items}
+                  rows={4}
+                  hint="Her satır bir madde olarak listelenir. Gerekmiyorsa boş bırakın."
+                  onChange={(items) => updateSection(index, { items })}
+                />
+                {(section.items.trim() || section.closing.trim()) && (
+                  <TextArea
+                    label="Madde sonrası paragraflar"
+                    value={section.closing}
+                    rows={3}
+                    hint="Madde listesinin altında gösterilir."
+                    onChange={(closing) => updateSection(index, { closing })}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={() => void action("draft")} className="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600">Yeni taslak sürüm</button>
             <button type="button" onClick={() => void action("published")} className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white">Yayımla</button>
