@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import { sendConfiguredEmail } from "./send-configured";
 
 export interface IptalEmailPayload {
   iptal_no: string;
@@ -56,27 +56,12 @@ export function buildIptalEmailHtml(iptal: IptalEmailPayload) {
 }
 
 export async function sendIptalNotificationEmail(iptal: IptalEmailPayload) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const to = "sigorta@sigortauzmani.net";
-  const from =
-    process.env.RESEND_FROM_EMAIL ??
-    "Sigorta Uzmanı <onboarding@resend.dev>";
-
-  if (!apiKey) {
-    throw new Error("RESEND_API_KEY tanımlı değil");
-  }
-
-  const resend = new Resend(apiKey);
   const bransLabel = iptal.brans_label || iptal.brans;
 
-  const { error } = await resend.emails.send({
-    from,
-    to,
+  return sendConfiguredEmail({
+    kind: "iptal",
+    reference: iptal.iptal_no,
     subject: `Poliçe İptal Talebi: ${iptal.iptal_no} — ${bransLabel}`,
     html: buildIptalEmailHtml(iptal),
   });
-
-  if (error) {
-    throw new Error(error.message);
-  }
 }

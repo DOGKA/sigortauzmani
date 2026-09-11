@@ -23,12 +23,20 @@ import {
 } from "../src/data/comparisons";
 import { HOME_FAQ_ITEMS } from "../src/data/faq";
 import { getProduct, products } from "../src/data/products";
+import { LOCALES, LOCALE_META } from "../src/lib/i18n/locales";
+import {
+  isTrOnlyPage,
+  localizedPath,
+  parsePath,
+  type PageKey,
+} from "../src/lib/i18n/paths";
+import { MESSAGES } from "../src/lib/i18n/messages";
+import { localizedProduct } from "../src/lib/i18n/products";
 import { calculateReadingTime, createExcerpt, prepareBlogContent } from "../src/lib/blog/content";
 import {
   DEFAULT_OG_IMAGE_PATH,
   ROBOTS_INDEX,
   ROBOTS_NOINDEX,
-  SITE_LOCALE,
   SITE_NAME,
   absoluteUrl,
   ogImageUrl,
@@ -466,32 +474,95 @@ async function renderBlogPost(slug: string): Promise<RenderedPage | "error" | nu
 }
 
 async function resolve(path: string): Promise<RenderedPage | "error"> {
-  const clean = path.replace(/\/+$/, "") || "/";
+  const parsed = parsePath(path);
+  const locale = parsed.locale;
+  const messages = MESSAGES[locale];
 
-  if (clean === ROUTES.home) return renderHome();
-  if (clean === ROUTES.comparisonHub) return renderComparisonHub();
-  if (clean === ROUTES.glossary) return renderGlossary();
-  if (clean === ROUTES.blog) return renderBlogIndex();
-
-  const staticPage = getStaticPage(clean);
-  if (staticPage) return renderStaticPage(staticPage);
-
-  const quoteMatch = /^\/teklif\/([^/]+)$/.exec(clean);
-  if (quoteMatch) return renderQuote(decodeURIComponent(quoteMatch[1])) ?? renderNotFound(clean);
-
-  const comparisonMatch = /^\/karsilastirma\/([^/]+)$/.exec(clean);
-  if (comparisonMatch) {
-    return renderComparison(decodeURIComponent(comparisonMatch[1])) ?? renderNotFound(clean);
+  if (parsed.page === "home") {
+    const home = renderHome();
+    return localizeRendered(home, locale, "home");
+  }
+  if (parsed.page === "comparisonHub") {
+    return localizeRendered(renderComparisonHub(), locale, "comparisonHub");
+  }
+  if (parsed.page === "glossary") return localizeRendered(renderGlossary(), locale, "glossary");
+  if (parsed.page === "blog") {
+    if (locale !== "tr") return renderNotFound(parsed.pathname);
+    return localizeRendered(await renderBlogIndex(), locale, "blog");
   }
 
-  const blogMatch = /^\/blog\/([^/]+)$/.exec(clean);
-  if (blogMatch) {
-    const post = await renderBlogPost(decodeURIComponent(blogMatch[1]));
+  if (parsed.page === "quote" && parsed.internalSlug) {
+    const page = renderQuote(parsed.internalSlug);
+    if (!page) return renderNotFound(parsed.pathname);
+    const copy = localizedProduct(getProduct(parsed.internalSlug)!, locale);
+    const localized = {
+      ...page,
+      path: localizedPath(locale, "quote", { slug: parsed.internalSlug }),
+      title: copy.seoTitle,
+      description: copy.metaDescription,
+      h1: copy.seoTitle,
+    };
+    return localized;
+  }
+
+  if (parsed.page === "comparison" && parsed.slug) {
+    const page = renderComparison(parsed.slug);
+    return page
+      ? { ...page, path: localizedPath(locale, "comparison", { slug: parsed.slug }) }
+      : renderNotFound(parsed.pathname);
+  }
+
+  if (parsed.page === "blogPost" && parsed.slug) {
+    if (locale !== "tr") return renderNotFound(parsed.pathname);
+    const post = await renderBlogPost(parsed.slug);
     if (post === "error") return "error";
-    return post ?? renderNotFound(clean);
+    return post
+      ? { ...post, path: localizedPath(locale, "blogPost", { slug: parsed.slug }) }
+      : renderNotFound(parsed.pathname);
   }
 
-  return renderNotFound(clean);
+  const trPath =
+    parsed.page !== "unknown"
+      ? localizedPath("tr", parsed.page, { slug: parsed.slug })
+      : parsed.pathname;
+  const staticPage = getStaticPage(trPath);
+  if (staticPage) {
+    const rendered = renderStaticPage(staticPage);
+    if (parsed.page === "about") {
+      rendered.h1 = `${messages.about.h1Before}${messages.about.h1Words.join(" ")}${messages.about.h1After}`;
+    }
+    if (parsed.page === "contact") {
+      rendered.h1 = messages.contact.h1;
+    }
+    if (parsed.page === "policyCancel") {
+      rendered.h1 = messages.cancel.h1;
+    }
+    rendered.path = parsed.pathname;
+    if (locale !== "tr" && ["kvkk", "privacy", "cookies", "kvkkApplication"].includes(parsed.page)) {
+      rendered.bodyHtml = `<p><em>${escapeHtml(messages.legal.disclaimer)}</em></p>\n${rendered.bodyHtml}`;
+    }
+    return rendered;
+  }
+
+  return renderNotFound(parsed.pathname);
+}
+
+function localizeRendered(
+  page: RenderedPage,
+  locale: ReturnType<typeof parsePath>["locale"],
+  key: PageKey,
+): RenderedPage {
+  const messages = MESSAGES[locale];
+  const path = localizedPath(locale, key);
+  if (key === "home") {
+    return {
+      ...page,
+      path,
+      h1: `${messages.hero.titleBefore} · ${messages.hero.compare} · ${messages.hero.staySafe}`,
+      description: messages.hero.subtitle,
+    };
+  }
+  return { ...page, path };
 }
 
 /* ── Belge ────────────────────────────────────────────────────────── */
@@ -529,7 +600,25 @@ footer ul{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:8px 16px}
 @media(min-width:720px){h1{font-size:34px}}
 `.trim();
 
+function hreflangLinks(path: string): string {
+  const parsed = parsePath(path);
+  if (parsed.page === "unknown") return "";
+  const page = parsed.page;
+  const slug = page === "quote" ? parsed.internalSlug : parsed.slug;
+  const locales = isTrOnlyPage(page) ? (["tr"] as const) : LOCALES;
+  const links = locales.map(
+    (locale) =>
+      `<link rel="alternate" hreflang="${locale}" href="${escapeHtml(absoluteUrl(localizedPath(locale, page, { slug })))}" />`,
+  );
+  links.push(
+    `<link rel="alternate" hreflang="x-default" href="${escapeHtml(absoluteUrl(localizedPath("tr", page, { slug })))}" />`,
+  );
+  return links.join("\n    ");
+}
+
 function renderDocument(page: RenderedPage): string {
+  const parsed = parsePath(page.path);
+  const meta = LOCALE_META[parsed.locale];
   const title = withBrand(page.title);
   const url = absoluteUrl(page.path);
   const articleMeta = [
@@ -550,7 +639,7 @@ function renderDocument(page: RenderedPage): string {
     .join("\n    ");
 
   return `<!doctype html>
-<html lang="tr">
+<html lang="${meta.htmlLang}" dir="${meta.dir}">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -558,9 +647,10 @@ function renderDocument(page: RenderedPage): string {
     <meta name="description" content="${escapeHtml(page.description)}" />
     <meta name="robots" content="${escapeHtml(page.robots ?? ROBOTS_INDEX)}" />
     <link rel="canonical" href="${escapeHtml(url)}" />
+    ${hreflangLinks(page.path)}
     <meta property="og:type" content="${page.type ?? "website"}" />
     <meta property="og:site_name" content="${escapeHtml(SITE_NAME)}" />
-    <meta property="og:locale" content="${SITE_LOCALE}" />
+    <meta property="og:locale" content="${meta.ogLocale}" />
     <meta property="og:title" content="${escapeHtml(title)}" />
     <meta property="og:description" content="${escapeHtml(page.description)}" />
     <meta property="og:url" content="${escapeHtml(url)}" />

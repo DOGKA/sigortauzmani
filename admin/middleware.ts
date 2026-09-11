@@ -22,6 +22,7 @@ export async function middleware(request: NextRequest) {
   }
 
   let response = NextResponse.next({ request });
+  response.headers.set("X-Robots-Tag", "noindex, nofollow");
 
   try {
     const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {

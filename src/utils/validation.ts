@@ -1,3 +1,9 @@
+import { normalizeDigits } from "../lib/i18n/format";
+
+function digitsOnly(value: string): string {
+  return normalizeDigits(value).replace(/\D/g, "");
+}
+
 // T.C. Kimlik Numarası resmi doğrulama algoritması:
 // - 11 hane, ilk hane 0 olamaz
 // - 10. hane = ((1,3,5,7,9. hanelerin toplamı × 7) − (2,4,6,8. hanelerin toplamı)) mod 10
@@ -86,7 +92,7 @@ export function kimlikNoHatasi(kimlikNo: string): string {
  * numara gönderilmeden önce her zaman buradan geçmeli.
  */
 export function normalizeMobilePhone(value: string): string {
-  let digits = value.replace(/\D/g, "");
+  let digits = digitsOnly(value);
   if (digits.length === 12 && digits.startsWith("90")) digits = digits.slice(2);
   if (digits.length === 11 && digits.startsWith("0")) digits = digits.slice(1);
   return digits;
@@ -98,7 +104,7 @@ export function isValidMobilePhone(value: string): boolean {
 
 // Telefon girişini "05XX XXX XX XX" biçiminde maskeler.
 export function formatPhoneInput(value: string): string {
-  const digits = value.replace(/\D/g, "").slice(0, 11);
+  const digits = digitsOnly(value).slice(0, 11);
   const parts = [
     digits.slice(0, 4),
     digits.slice(4, 7),

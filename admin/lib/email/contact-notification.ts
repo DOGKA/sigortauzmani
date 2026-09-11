@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import { sendConfiguredEmail } from "./send-configured";
 
 export type ContactPriority = "normal" | "oncelikli" | "acil";
 
@@ -75,23 +75,13 @@ export function buildContactEmailHtml(payload: ContactEmailPayload) {
 export async function sendContactNotificationEmail(
   payload: ContactEmailPayload,
 ) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from =
-    process.env.RESEND_FROM_EMAIL ??
-    "Sigorta Uzmanı <onboarding@resend.dev>";
-
-  if (!apiKey) throw new Error("RESEND_API_KEY tanımlı değil");
-
-  const resend = new Resend(apiKey);
   const priority = PRIORITY_LABELS[payload.oncelik].toLocaleUpperCase("tr-TR");
-  const { error } = await resend.emails.send({
-    from,
-    to: "sigorta@sigortauzmani.net",
+  return sendConfiguredEmail({
+    kind: "iletisim",
+    reference: payload.iletisim_no,
     replyTo: payload.email,
     subject: `[${priority}] Yeni İletişim Mesajı — ${payload.konu}`,
     html: buildContactEmailHtml(payload),
     attachments: payload.attachment ? [payload.attachment] : undefined,
   });
-
-  if (error) throw new Error(error.message);
 }

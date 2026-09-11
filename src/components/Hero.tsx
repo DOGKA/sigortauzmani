@@ -1,10 +1,19 @@
 import { Link } from "react-router-dom";
 import { heroProducts } from "../data/products";
 import { productIcons } from "../data/productIcons";
+import { useSiteSettings } from "../lib/settings/context";
+import { useLocale, useT } from "../lib/i18n/context";
+import { localizedProduct } from "../lib/i18n/products";
 import AmbientBackdrop from "./AmbientBackdrop";
 import "./Hero.css";
 
 export default function Hero() {
+  const { isProductEnabled } = useSiteSettings();
+  const { locale, quoteHref } = useLocale();
+  const t = useT();
+  const visibleProducts = heroProducts
+    .filter((product) => isProductEnabled(product.slug))
+    .map((product) => localizedProduct(product, locale));
   return (
     <section className="hero">
       <div className="hero__bg" aria-hidden="true">
@@ -14,18 +23,16 @@ export default function Hero() {
 
       <div className="hero__content">
         <h1 className="hero__title">
-          Teklif Al <span className="hero__title-dot">·</span> Karşılaştır{" "}
-          <span className="hero__title-dot">·</span> Güvende Kal
+          {t.hero.titleBefore} <span className="hero__title-dot">·</span> {t.hero.compare}{" "}
+          <span className="hero__title-dot">·</span> {t.hero.staySafe}
         </h1>
-        <p className="hero__subtitle">
-          Doğru sigorta. Uygun fiyat. Hızlı destek
-        </p>
+        <p className="hero__subtitle">{t.hero.subtitle}</p>
 
         <div className="hero__cards" id="urunler">
-          {heroProducts.map((product, i) => (
+          {visibleProducts.map((product, i) => (
             <Link
               key={product.slug}
-              to={`/teklif/${product.slug}`}
+              to={quoteHref(product.slug)}
               className="product-card"
               style={{ animationDelay: `${i * 60}ms` }}
             >

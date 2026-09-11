@@ -1,20 +1,17 @@
 import { useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getProduct } from "../data/products";
+import { useInternalProductSlug, useLocale, useT } from "../lib/i18n/context";
+import { localizedProduct } from "../lib/i18n/products";
 import { productIcons } from "../data/productIcons";
 import AdvisorVideo from "../components/AdvisorVideo";
 import QuoteKvkkNotu from "../components/QuoteKvkkNotu";
 import SaglikAcikRiza from "../components/SaglikAcikRiza";
 import TalepBasariEkrani from "../components/TalepBasariEkrani";
-import {
-  isSaglikUrunu,
-  SAGLIK_RIZA_HATA,
-  type SaglikRizaSecimi,
-} from "../data/saglikRiza";
+import { isSaglikUrunu, type SaglikRizaSecimi } from "../data/saglikRiza";
 import { getQuoteKvkkGovde, QUOTE_KVKK_SURUM } from "../data/quoteKvkk";
 import { ROBOTS_NOINDEX, pageOgImageUrl } from "../lib/seo/config";
 import { productServiceNode } from "../lib/seo/nodes/product";
-import { ROUTES } from "../lib/seo/routes";
 import { pageGraph } from "../lib/seo/schema";
 import { useJsonLd } from "../lib/seo/useJsonLd";
 import { useSeo } from "../lib/seo/useSeo";
@@ -25,14 +22,12 @@ import {
   isValidKimlikNo,
   isValidMobilePhone,
   isValidPlate,
-  kimlikNoHatasi,
   kisiTipiCikar,
 } from "../utils/validation";
 import { createTalep, generateTalepNo } from "../lib/supabase";
 import "./QuotePage.css";
 
 const TOTAL_STEPS = 2;
-const STEP_TITLES = ["Kimlik bilgileri", "Teklif detayları"] as const;
 const VEHICLE_PRODUCT_SLUGS = new Set([
   "kasko",
   "trafik-sigortasi",
@@ -41,8 +36,6 @@ const VEHICLE_PRODUCT_SLUGS = new Set([
   "yesil-kart",
 ]);
 const SECOND_STEP_VIDEO = "/advisor-2.mp4";
-const SECOND_STEP_TRANSCRIPT =
-  "Teşekkür ederim. Son adıma geçiyoruz. Lütfen kalan iki bilgiyi de paylaşın. Ardından sizin için en uygun sigorta tekliflerini hazırlayacağım.";
 
 const INSURED_FOR_LABELS: Record<string, string> = {
   self: "Kendim",
@@ -51,8 +44,11 @@ const INSURED_FOR_LABELS: Record<string, string> = {
 };
 
 export default function QuotePage() {
-  const { slug } = useParams<{ slug: string }>();
-  const product = slug ? getProduct(slug) : undefined;
+  const slug = useInternalProductSlug();
+  const { locale, href, quoteHref } = useLocale();
+  const t = useT();
+  const found = slug ? getProduct(slug) : undefined;
+  const product = found ? localizedProduct(found, locale) : undefined;
   const [insuredFor, setInsuredFor] = useState("self");
   const [step, setStep] = useState(1);
   const [kimlikNo, setKimlikNo] = useState("");
@@ -82,7 +78,7 @@ export default function QuotePage() {
       return next;
     });
 
-  const productPath = product ? ROUTES.quote(product.slug) : "";
+  const productPath = product ? quoteHref(product.slug) : "";
 
   useSeo(
     product
@@ -92,7 +88,7 @@ export default function QuotePage() {
           path: productPath,
           image: pageOgImageUrl(product.seoTitle, product.title),
         }
-      : { title: "Ürün bulunamadı", description: "", path: "/", robots: ROBOTS_NOINDEX },
+      : { title: t.quote.notFound, description: "", path: href("home"), robots: ROBOTS_NOINDEX },
   );
 
   useJsonLd(
@@ -102,10 +98,10 @@ export default function QuotePage() {
           name: product.seoTitle,
           description: product.metaDescription,
           breadcrumb: [
-            { name: "Ana Sayfa", path: ROUTES.home },
+            { name: t.quote.home, path: href("home") },
             { name: product.title },
           ],
-          extra: [productServiceNode(product)],
+          extra: [productServiceNode(product, productPath)],
         })
       : null,
   );
@@ -113,9 +109,9 @@ export default function QuotePage() {
   if (!product) {
     return (
       <div className="quote quote--not-found">
-        <h1>Ürün bulunamadı</h1>
-        <Link to="/" className="quote__back">
-          Ana Sayfaya dön
+        <h1>{t.quote.notFound}</h1>
+        <Link to={href("home")} className="quote__back">
+          {t.quote.homeBack}
         </Link>
       </div>
     );
@@ -149,15 +145,21 @@ export default function QuotePage() {
   const validateStep1 = () => {
     const next: Record<string, string> = {};
     if (!isValidKimlikNo(kimlikNo)) {
-      next.kimlik = kimlikNoHatasi(kimlikNo);
+      const tip = kisiTipiCikar(kimlikNo);
+      next.kimlik =
+        tip === "sirket"
+          ? t.quote.vknError
+          : tip === "yabanci"
+            ? t.quote.yknError
+            : t.quote.tcknError;
     }
     if (usesIdentityPhoneStep && !isValidMobilePhone(phone)) {
-      next.phone = "Geçerli bir cep telefonu girin (05XX XXX XX XX).";
+      next.phone = t.quote.phoneError;
     }
     // Rıza vermemek akışı durdurmuyor; yalnızca seçimin yapılmış olması
     // isteniyor ki sessiz bir varsayılan rıza sayılmasın.
     if (isHealthProduct && !saglikRiza) {
-      next.saglikRiza = SAGLIK_RIZA_HATA;
+      next.saglikRiza = t.quote.consentError;
     }
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -167,21 +169,21 @@ export default function QuotePage() {
     const next: Record<string, string> = {};
     // Vergi kimlik numarası girildiyse doğum tarihi alanı zaten gizli.
     if (entityType !== "sirket" && !birthDate) {
-      next.birthDate = "Doğum tarihinizi girin.";
+      next.birthDate = t.quote.birthError;
     }
     if (isVehicleProduct) {
       if (hasPlate) {
         if (!isValidPlate(plate)) {
-          next.plate = "Geçerli bir plaka girin (örn. 06 TC 001).";
-        }
-        if (!isValidDocumentSerial(documentSerial)) {
-          next.documentSerial = "Belge seri no 2 harf ve 6 rakam olmalı (örn. AA999999).";
-        }
-      } else if (!isValidChassisNo(chassisNo)) {
-        next.chassisNo = "Geçerli bir şasi numarası girin (17 karakter).";
+                        next.plate = t.quote.plateError;
+                        }
+                        if (!isValidDocumentSerial(documentSerial)) {
+                          next.documentSerial = t.quote.serialError;
+                        }
+                      } else if (!isValidChassisNo(chassisNo)) {
+                        next.chassisNo = t.quote.chassisError;
       }
     } else if (isHealthProduct && !isValidMobilePhone(phone)) {
-      next.phone = "Geçerli bir cep telefonu girin (05XX XXX XX XX).";
+      next.phone = t.quote.phoneError;
     }
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -208,9 +210,10 @@ export default function QuotePage() {
       motor_no: isVehicleProduct && !hasPlate ? engineNo || null : null,
       sasi_no: isVehicleProduct && !hasPlate ? chassisNo || null : null,
       saglik_acik_riza: isHealthProduct ? saglikRiza === "veriyorum" : null,
+      locale,
       ...(getQuoteKvkkGovde(product.slug)
         ? {
-            kvkk_surum: QUOTE_KVKK_SURUM,
+            kvkk_surum: `${QUOTE_KVKK_SURUM}:${locale}`,
             kvkk_gosterildi_at: kvkkGosterildiAt,
           }
         : {}),
@@ -247,7 +250,7 @@ export default function QuotePage() {
 
       <div className="quote__inner">
         <nav className="quote__breadcrumb">
-          <Link to="/">Ana Sayfa</Link>
+          <Link to={href("home")}>{t.quote.home}</Link>
           <span>/</span>
           <span className="quote__breadcrumb-current">{product.title}</span>
         </nav>
@@ -265,12 +268,14 @@ export default function QuotePage() {
                 <AdvisorVideo
                   replayKey={step}
                   videoSrc={step === 2 ? SECOND_STEP_VIDEO : undefined}
-                  transcript={step === 2 ? SECOND_STEP_TRANSCRIPT : undefined}
+                  transcript={step === 2 ? t.quote.advisorNext : undefined}
                 />
 
                 <div className="quote__steps">
                   <div className="quote__steps-head">
-                    <span className="quote__step-title">{STEP_TITLES[step - 1]}</span>
+                    <span className="quote__step-title">
+                      {step === 1 ? t.quote.identity : t.quote.details}
+                    </span>
                     {step > 1 && (
                       <button
                         type="button"
@@ -286,7 +291,7 @@ export default function QuotePage() {
                             strokeLinejoin="round"
                           />
                         </svg>
-                        Geri
+                        {t.quote.back}
                       </button>
                     )}
                   </div>
@@ -311,21 +316,21 @@ export default function QuotePage() {
                   >
                     {!usesIdentityPhoneStep ? (
                       <label className="quote__field">
-                        <span>Sigortalanacak Kişi/Kişiler</span>
+                        <span>{t.quote.insuredPeople}</span>
                         <select
                           className="quote__input quote__select"
                           value={insuredFor}
                           onChange={(event) => setInsuredFor(event.target.value)}
                         >
-                          <option value="self">Kendim</option>
-                          <option value="spouse">Eşim</option>
-                          <option value="children">Çocuğum</option>
+                          <option value="self">{t.quote.insuredSelf}</option>
+                          <option value="spouse">{t.quote.insuredSpouse}</option>
+                          <option value="children">{t.quote.insuredChild}</option>
                         </select>
                       </label>
                     ) : null}
 
                     <label className="quote__field">
-                      <span>T.C. kimlik / vergi kimlik numarası</span>
+                      <span>{t.quote.kimlikLabel}</span>
                       <input
                         type="text"
                         className={`quote__input ${errors.kimlik ? "quote__input--error" : ""}`}
@@ -340,10 +345,7 @@ export default function QuotePage() {
                           clearError("kimlik");
                         }}
                       />
-                      <span className="quote__hint">
-                        Şirket adına teklif alıyorsanız vergi kimlik numarasını
-                        girin.
-                      </span>
+                      <span className="quote__hint">{t.quote.kimlikHint}</span>
                       {errors.kimlik && (
                         <span className="quote__error">{errors.kimlik}</span>
                       )}
@@ -354,7 +356,7 @@ export default function QuotePage() {
                         <input
                           type="tel"
                           className={`quote__input ${errors.phone ? "quote__input--error" : ""}`}
-                          placeholder="Cep Telefonu (05XX XXX XX XX)"
+                          placeholder={`${t.quote.phone} (05XX XXX XX XX)`}
                           value={phone}
                           onChange={(event) => {
                             setPhone(formatPhoneInput(event.target.value));
@@ -381,7 +383,7 @@ export default function QuotePage() {
                     ) : null}
 
                     <button type="submit" className="quote__submit">
-                      Devam et
+                      {t.quote.continueEt}
                     </button>
                   </form>
                 )}
@@ -399,26 +401,26 @@ export default function QuotePage() {
                         <div
                           className="quote__toggle"
                           role="group"
-                          aria-label="Plaka durumu"
+                          aria-label={t.quote.plateStatus}
                         >
                           <button
                             type="button"
                             className={`quote__toggle-option ${hasPlate ? "quote__toggle-option--active" : ""}`}
                             onClick={() => switchHasPlate(true)}
                           >
-                            Plaka Var
+                            {t.quote.hasPlate}
                           </button>
                           <button
                             type="button"
                             className={`quote__toggle-option ${!hasPlate ? "quote__toggle-option--active" : ""}`}
                             onClick={() => switchHasPlate(false)}
                           >
-                            Plaka Yok
+                            {t.quote.noPlate}
                           </button>
                         </div>
 
                         <div className="quote__field quote__field--full">
-                          <span>Araç Bilgileri</span>
+                          <span>{t.quote.vehicleInfo}</span>
                           {hasPlate ? (
                           <>
                             <div
@@ -446,7 +448,7 @@ export default function QuotePage() {
                                 }}
                                 maxLength={10}
                                 autoComplete="off"
-                                aria-label="Plaka"
+                                aria-label={t.quote.plate}
                                 placeholder="06 TC 001"
                               />
                               <span className="quote__vehicle-divider" aria-hidden="true" />
@@ -465,7 +467,7 @@ export default function QuotePage() {
                                 }}
                                 maxLength={8}
                                 autoComplete="off"
-                                aria-label="Belge seri numarası"
+                                aria-label={t.quote.documentSerial}
                                 placeholder="AA999999"
                               />
                             </div>
@@ -480,7 +482,7 @@ export default function QuotePage() {
                               className="quote__serial-help"
                               onClick={() => setSerialHelpOpen(true)}
                             >
-                              Ruhsat seri numaramı bulamıyorum?
+                              {t.quote.findSerial}
                             </button>
                           </>
                         ) : (
@@ -499,8 +501,8 @@ export default function QuotePage() {
                               }}
                               maxLength={20}
                               autoComplete="off"
-                              aria-label="Motor numarası"
-                              placeholder="Motor No"
+                              aria-label={t.quote.engineNo}
+                              placeholder={t.quote.enginePlaceholder}
                             />
                             <input
                               type="text"
@@ -517,8 +519,8 @@ export default function QuotePage() {
                               }}
                               maxLength={17}
                               autoComplete="off"
-                              aria-label="Şasi numarası"
-                              placeholder="Şasi No (17 karakter)"
+                              aria-label={t.quote.chassisNo}
+                              placeholder={t.quote.chassisPlaceholder}
                             />
                             {errors.chassisNo && (
                               <span className="quote__error">{errors.chassisNo}</span>
@@ -528,7 +530,7 @@ export default function QuotePage() {
                               className="quote__serial-help"
                               onClick={() => setVehicleNoHelpOpen(true)}
                             >
-                              Motor ve Şasi numaramı bulamıyorum
+                              {t.quote.findEngineChassis}
                             </button>
                           </>
                         )}
@@ -536,7 +538,7 @@ export default function QuotePage() {
 
                         {showBirthDate && (
                           <label className="quote__field quote__field--full">
-                            <span>Doğum Tarihi</span>
+                            <span>{t.quote.birthDate}</span>
                             <input
                               type="date"
                               className={`quote__input ${errors.birthDate ? "quote__input--error" : ""}`}
@@ -556,7 +558,7 @@ export default function QuotePage() {
                       <>
                         {showBirthDate && (
                           <label className="quote__field">
-                            <span>Doğum Tarihi</span>
+                            <span>{t.quote.birthDate}</span>
                             <input
                               type="date"
                               className={`quote__input ${errors.birthDate ? "quote__input--error" : ""}`}
@@ -572,7 +574,7 @@ export default function QuotePage() {
                           </label>
                         )}
                         <label className="quote__field">
-                          <span>Telefon Numarası</span>
+                          <span>{t.quote.phone}</span>
                           <input
                             type="tel"
                             className={`quote__input ${errors.phone ? "quote__input--error" : ""}`}
@@ -590,7 +592,7 @@ export default function QuotePage() {
                       </>
                     ) : showBirthDate ? (
                       <label className="quote__field quote__field--full">
-                        <span>Doğum Tarihi</span>
+                        <span>{t.quote.birthDate}</span>
                         <input
                           type="date"
                           className={`quote__input ${errors.birthDate ? "quote__input--error" : ""}`}
@@ -608,13 +610,12 @@ export default function QuotePage() {
                       // Vergi kimlik numarasıyla gelen talepte bu adımda
                       // sorulacak başka bir alan kalmıyor.
                       <p className="quote__field quote__field--full quote__hint">
-                        Şirket adına açılan talepte doğum tarihi istenmiyor.
-                        Teklifinizi oluşturmak için devam edebilirsiniz.
+                        {t.quote.companyNoBirth}
                       </p>
                     )}
 
                     <button type="submit" className="quote__submit">
-                      Teklifleri Gör
+                      {t.quote.seeQuotes}
                     </button>
                   </form>
                 )}
@@ -643,7 +644,7 @@ export default function QuotePage() {
           className="quote__modal-overlay"
           role="dialog"
           aria-modal="true"
-          aria-label="Ruhsat seri numarası nerede?"
+          aria-label={t.quote.serialHelpAria}
           onClick={() => setSerialHelpOpen(false)}
         >
           <div
@@ -654,7 +655,7 @@ export default function QuotePage() {
               type="button"
               className="quote__modal-close"
               onClick={() => setSerialHelpOpen(false)}
-              aria-label="Kapat"
+              aria-label={t.quote.close}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path
@@ -666,11 +667,11 @@ export default function QuotePage() {
               </svg>
             </button>
             <h3 className="quote__modal-title">
-              Ruhsat seri numaranızı nerede bulabilirsiniz?
+              {t.quote.serialHelpTitle}
             </h3>
             <img
               src="/ruhsat-seri.jpg"
-              alt="Araç ruhsatında seri numarasının yeri"
+              alt={t.quote.serialHelpAlt}
               className="quote__modal-image"
             />
           </div>
@@ -682,7 +683,7 @@ export default function QuotePage() {
           className="quote__modal-overlay"
           role="dialog"
           aria-modal="true"
-          aria-label="Motor ve şasi numarası nerede?"
+          aria-label={t.quote.vehicleNoHelpAria}
           onClick={() => setVehicleNoHelpOpen(false)}
         >
           <div
@@ -693,7 +694,7 @@ export default function QuotePage() {
               type="button"
               className="quote__modal-close"
               onClick={() => setVehicleNoHelpOpen(false)}
-              aria-label="Kapat"
+              aria-label={t.quote.close}
             >
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path
@@ -705,14 +706,13 @@ export default function QuotePage() {
               </svg>
             </button>
             <h3 className="quote__modal-title">
-              Motor ve Şasi numaranızı nerede bulabilirsiniz?
+              {t.quote.vehicleNoHelpTitle}
             </h3>
             <p className="quote__modal-text">
-              Bu bilgileri, aracınızı satın alırken bayinin düzenlediği
-              proforma faturada bulabilirsiniz.
+              {t.quote.vehicleNoHelpP1}
             </p>
             <p className="quote__modal-text">
-              Proforma faturanızı bayinizden talep edebilirsiniz.
+              {t.quote.vehicleNoHelpP2}
             </p>
           </div>
         </div>

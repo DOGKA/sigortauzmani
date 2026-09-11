@@ -21,8 +21,8 @@ import {
   normalizeIlKodu,
 } from "../../lib/io/constants";
 import type { Il, Ulke } from "../../lib/io/types";
+import { useT } from "../../lib/i18n/context";
 import IlerlemePaneli from "./IlerlemePaneli";
-import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
 import type { SeyahatDurumu } from "./flowState";
 
 function bugun(): string {
@@ -46,6 +46,7 @@ export default function SeyahatAdimi({
   calisiyor,
   hata,
 }: Props) {
+  const t = useT();
   const [hatalar, setHatalar] = useState<Record<string, string>>({});
   const [ulkeler, setUlkeler] = useState<Ulke[]>([]);
   const [iller, setIller] = useState<Il[]>([]);
@@ -75,19 +76,19 @@ export default function SeyahatAdimi({
   const dogrula = () => {
     const next: Record<string, string> = {};
     if (!durum.gidilenYer) {
-      next.gidilenYer = yurtIci ? "Gidilecek ili seçin." : "Gidilecek ülkeyi seçin.";
+      next.gidilenYer = yurtIci ? t.flow.travel.errCity : t.flow.travel.errCountry;
     }
-    if (!durum.gidisTarihi) next.gidisTarihi = "Gidiş tarihini seçin.";
-    if (!durum.donusTarihi) next.donusTarihi = "Dönüş tarihini seçin.";
+    if (!durum.gidisTarihi) next.gidisTarihi = t.flow.travel.errDepart;
+    if (!durum.donusTarihi) next.donusTarihi = t.flow.travel.errReturn;
     if (
       durum.gidisTarihi &&
       durum.donusTarihi &&
       durum.donusTarihi < durum.gidisTarihi
     ) {
-      next.donusTarihi = "Dönüş tarihi gidiş tarihinden önce olamaz.";
+      next.donusTarihi = t.flow.travel.errReturnBefore;
     }
     if (durum.gidisTarihi && durum.gidisTarihi < bugun()) {
-      next.gidisTarihi = "Gidiş tarihi bugünden önce olamaz.";
+      next.gidisTarihi = t.flow.travel.errDepartPast;
     }
     setHatalar(next);
     return Object.keys(next).length === 0;
@@ -100,11 +101,11 @@ export default function SeyahatAdimi({
 
   return (
     <div className="flow__card">
-      <h2 className="flow__card-title">Seyahat bilgileri</h2>
+      <h2 className="flow__card-title">{t.flow.travelTitle}</h2>
 
       <div className="flow__grid">
         <label className="flow__field">
-          <span className="flow__label">Seyahat bölgesi</span>
+          <span className="flow__label">{t.flow.travel.region}</span>
           <select
             className="flow__input"
             value={durum.kapsam}
@@ -115,7 +116,11 @@ export default function SeyahatAdimi({
           >
             {SEYAHAT_KAPSAMLARI.map((secenek) => (
               <option key={secenek.value} value={secenek.value}>
-                {secenek.label}
+                {secenek.value === "A"
+                  ? t.flow.travel.scopeSchengen
+                  : secenek.value === "T"
+                    ? t.flow.travel.scopeWorld
+                    : t.flow.travel.scopeDomestic}
               </option>
             ))}
           </select>
@@ -123,14 +128,14 @@ export default function SeyahatAdimi({
 
         <label className="flow__field">
           <span className="flow__label">
-            {yurtIci ? "Gidilecek il" : "Gidilecek ülke"}
+            {yurtIci ? t.flow.travel.city : t.flow.travel.country}
           </span>
           <select
             className={`flow__input${hatalar.gidilenYer ? " flow__input--error" : ""}`}
             value={durum.gidilenYer}
             onChange={(event) => onDegis({ gidilenYer: event.target.value })}
           >
-            <option value="">Seçin</option>
+            <option value="">{t.flow.select}</option>
             {yurtIci
               ? iller.map((il) => (
                   <option key={il.IlKodu} value={normalizeIlKodu(il.IlKodu)}>
@@ -149,7 +154,7 @@ export default function SeyahatAdimi({
         </label>
 
         <label className="flow__field">
-          <span className="flow__label">Plan</span>
+          <span className="flow__label">{t.flow.travel.plan}</span>
           <select
             className="flow__input"
             value={durum.planSecimi}
@@ -157,14 +162,14 @@ export default function SeyahatAdimi({
           >
             {SEYAHAT_PLANLARI.map((secenek) => (
               <option key={secenek.value} value={secenek.value}>
-                {secenek.label}
+                {secenek.value === "1" ? t.flow.travel.planNarrow : t.flow.travel.planWide}
               </option>
             ))}
           </select>
         </label>
 
         <label className="flow__field">
-          <span className="flow__label">Seyahat sebebi</span>
+          <span className="flow__label">{t.flow.travel.reason}</span>
           <select
             className="flow__input"
             value={durum.seyahatSebebi}
@@ -172,14 +177,18 @@ export default function SeyahatAdimi({
           >
             {SEYAHAT_SEBEPLERI.map((secenek) => (
               <option key={secenek.value} value={secenek.value}>
-                {secenek.label}
+                {secenek.value === "1"
+                  ? t.flow.travel.reasonTourist
+                  : secenek.value === "2"
+                    ? t.flow.travel.reasonEducation
+                    : t.flow.travel.reasonBusiness}
               </option>
             ))}
           </select>
         </label>
 
         <label className="flow__field">
-          <span className="flow__label">Gidiş tarihi</span>
+          <span className="flow__label">{t.flow.travel.depart}</span>
           <input
             type="date"
             className={`flow__input${hatalar.gidisTarihi ? " flow__input--error" : ""}`}
@@ -193,7 +202,7 @@ export default function SeyahatAdimi({
         </label>
 
         <label className="flow__field">
-          <span className="flow__label">Dönüş tarihi</span>
+          <span className="flow__label">{t.flow.travel.return}</span>
           <input
             type="date"
             className={`flow__input${hatalar.donusTarihi ? " flow__input--error" : ""}`}
@@ -211,15 +220,15 @@ export default function SeyahatAdimi({
 
       {calisiyor ? (
         <IlerlemePaneli
-          baslik="Teklifleriniz hazırlanıyor"
-          mesajlar={TEKLIF_HAZIRLIK_MESAJLARI}
+          baslik={t.flow.preparing}
+          mesajlar={[...t.flow.preparingMsgs]}
           tahminiSaniye={20}
         />
       ) : null}
 
       <div className="flow__actions">
         <button type="button" className="flow__ghost" onClick={onGeri}>
-          Geri
+          {t.quote.back}
         </button>
         <button
           type="button"
@@ -227,7 +236,7 @@ export default function SeyahatAdimi({
           onClick={devamEt}
           disabled={calisiyor}
         >
-          {calisiyor ? "Teklifler çalışıyor…" : "Teklif çalış"}
+          {calisiyor ? t.flow.running : t.flow.runQuote}
         </button>
       </div>
     </div>

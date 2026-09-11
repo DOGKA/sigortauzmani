@@ -38,6 +38,8 @@ export interface TalepInsert {
   kvkk_surum?: string | null;
   /** Metnin kullanıcıya gösterildiği an (ISO). */
   kvkk_gosterildi_at?: string | null;
+  /** Müşteri arayüz dili; IO kodları çevrilmez. */
+  locale?: string | null;
 }
 
 export type TalepSonuc = { ok: true } | { ok: false; error: string };
@@ -155,6 +157,7 @@ export async function createTalep(talep: TalepInsert): Promise<TalepSonuc> {
     saglik_acik_riza,
     kvkk_surum,
     kvkk_gosterildi_at,
+    locale,
     ...temel
   } = talep;
   const genis = {
@@ -164,9 +167,14 @@ export async function createTalep(talep: TalepInsert): Promise<TalepSonuc> {
     ...(typeof saglik_acik_riza === "boolean" ? { saglik_acik_riza } : {}),
     ...(kvkk_surum ? { kvkk_surum } : {}),
     ...(kvkk_gosterildi_at ? { kvkk_gosterildi_at } : {}),
+    ...(locale ? { locale } : {}),
   };
 
   let { error } = await client.from("talepler").insert(genis);
+  if (error && /locale/i.test(error.message ?? "") && locale) {
+    const { locale: _omit, ...withoutLocale } = genis;
+    ({ error } = await client.from("talepler").insert(withoutLocale));
+  }
   if (error && sutunYok(error)) {
     // Eski şemaya düşerken sirket_adi ve gosterilen_prim feda edilebilir;
     // uyum kayıtları edilemez. Açık rıza düşerse kayıt rıza hiç sorulmamış,

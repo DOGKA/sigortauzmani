@@ -3,6 +3,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useVurgu, VURGU_SATIR_SINIFI } from "@/lib/bildirim/useVurgu";
+import BulkActions from "@/components/BulkActions";
+import { deleteBulk, downloadCsv } from "@/lib/bulk-actions";
+import { useBulkSelection } from "@/lib/useBulkSelection";
 import {
   IPTAL_BRANS_LABELS,
   IPTAL_STATUS_LABELS,
@@ -46,6 +49,7 @@ export default function IptalTalepleriTable() {
   const [error, setError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<IptalStatus | "all">("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const supabase = useMemo(() => createClient(), []);
   const { vurguId, vurguRef } = useVurgu(setExpandedId);
 
@@ -113,10 +117,62 @@ export default function IptalTalepleriTable() {
   const filtered = items.filter(
     (t) => statusFilter === "all" || t.status === statusFilter,
   );
+  const selection = useBulkSelection(filtered.map((item) => item.id));
+
+  const exportCsv = () => {
+    const rows = selection.selectedCount
+      ? filtered.filter((item) => selection.selectedIds.has(item.id))
+      : filtered;
+    downloadCsv(
+      "iptal-talepleri",
+      [
+        { key: "iptal_no", label: "İptal No" },
+        { key: "brans", label: "Branş" },
+        { key: "ad_soyad", label: "Ad Soyad" },
+        { key: "phone", label: "Telefon" },
+        { key: "tckn", label: "T.C. Kimlik No" },
+        { key: "vergi_no", label: "Vergi No" },
+        { key: "plate", label: "Plaka" },
+        { key: "status", label: "Durum" },
+        { key: "admin_note", label: "Admin Notu" },
+        { key: "created_at", label: "Oluşturulma Tarihi" },
+        { key: "updated_at", label: "Güncellenme Tarihi" },
+      ],
+      rows,
+    );
+  };
+
+  const deleteSelected = async () => {
+    const ids = selection.selectedVisibleIds;
+    if (
+      !ids.length ||
+      !window.confirm(
+        `${ids.length} iptal talebi ve bağlı belgeleri kalıcı olarak silinecek. Devam edilsin mi?`,
+      )
+    ) {
+      return;
+    }
+    setDeleting(true);
+    setError(null);
+    try {
+      await deleteBulk("iptal-talepleri", ids);
+      setItems((current) => current.filter((item) => !ids.includes(item.id)));
+      selection.remove(ids);
+      if (expandedId && ids.includes(expandedId)) setExpandedId(null);
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "İptal talepleri silinemedi.",
+      );
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white">
-      <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 px-5 py-4">
+      <div className="flex items-center gap-3 overflow-x-auto border-b border-slate-200 px-5 py-4">
         <select
           value={statusFilter}
           onChange={(e) =>
@@ -140,6 +196,18 @@ export default function IptalTalepleriTable() {
         </button>
 
         <span className="text-sm text-slate-400">{filtered.length} talep</span>
+        <div className="shrink-0">
+          <BulkActions
+            selectedCount={selection.selectedCount}
+            visibleCount={filtered.length}
+            allSelected={selection.allSelected}
+            busy={deleting}
+            itemLabel="talep"
+            onToggleAll={selection.toggleAll}
+            onExport={exportCsv}
+            onDelete={() => void deleteSelected()}
+          />
+        </div>
       </div>
 
       {error && (
@@ -152,6 +220,7 @@ export default function IptalTalepleriTable() {
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-400">
+              <th className="w-10 px-3 py-3.5" />
               <th className="px-5 py-3.5 font-semibold">İptal No</th>
               <th className="px-4 py-3.5 font-semibold">Branş</th>
               <th className="px-4 py-3.5 font-semibold">Ad Soyad</th>
@@ -164,13 +233,13 @@ export default function IptalTalepleriTable() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={7} className="px-5 py-14 text-center text-slate-400">
+                <td colSpan={8} className="px-5 py-14 text-center text-slate-400">
                   Yükleniyor...
                 </td>
               </tr>
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-5 py-14 text-center text-slate-400">
+                <td colSpan={8} className="px-5 py-14 text-center text-slate-400">
                   Gösterilecek iptal talebi yok.
                 </td>
               </tr>
@@ -188,6 +257,8 @@ export default function IptalTalepleriTable() {
                   onStatusChange={(s) => void updateStatus(item.id, s)}
                   onSaveNote={(note) => saveNote(item.id, note)}
                   onOpenBelge={() => void openBelge(item.belge_path)}
+                  selected={selection.selectedIds.has(item.id)}
+                  onSelect={() => selection.toggle(item.id)}
                 />
               ))
             )}
@@ -207,6 +278,8 @@ function IptalRow({
   onStatusChange,
   onSaveNote,
   onOpenBelge,
+  selected,
+  onSelect,
 }: {
   item: IptalTalep;
   expanded: boolean;
@@ -216,6 +289,8 @@ function IptalRow({
   onStatusChange: (status: IptalStatus) => void;
   onSaveNote: (note: string) => Promise<boolean>;
   onOpenBelge: () => void;
+  selected: boolean;
+  onSelect: () => void;
 }) {
   const [note, setNote] = useState(item.admin_note ?? "");
   const [savingNote, setSavingNote] = useState(false);
@@ -245,6 +320,15 @@ function IptalRow({
           onToggle();
         }}
       >
+        <td className="w-10 px-3 py-3.5" onClick={(e) => e.stopPropagation()}>
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onSelect}
+            aria-label={`${item.iptal_no} iptal talebini seç`}
+            className="size-4 rounded border-slate-300 accent-sky-600"
+          />
+        </td>
         <td className="px-5 py-3.5 font-semibold text-slate-800">
           {item.iptal_no}
         </td>
@@ -283,7 +367,7 @@ function IptalRow({
       </tr>
       {expanded && (
         <tr className="border-b border-slate-100 bg-slate-50/80">
-          <td colSpan={7} className="px-5 py-5">
+          <td colSpan={8} className="px-5 py-5">
             <div className="grid gap-4 md:grid-cols-2">
               <dl className="grid grid-cols-[140px_1fr] gap-y-2 text-sm">
                 <dt className="text-slate-400">Telefon</dt>

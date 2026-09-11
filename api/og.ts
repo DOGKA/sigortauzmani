@@ -191,7 +191,7 @@ export async function GET(request: Request): Promise<Response> {
   const resvg = new Resvg(svg, {
     fitTo: { mode: "width", value: WIDTH },
     font: {
-      loadSystemFonts: false,
+      loadSystemFonts: true,
       fontFiles,
       defaultFontFamily: FONT_FAMILY,
     },

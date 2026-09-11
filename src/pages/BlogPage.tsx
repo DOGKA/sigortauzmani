@@ -5,12 +5,14 @@ import BlogPageClient from "../components/blog/BlogPageClient";
 import type { BlogSort } from "../components/blog/BlogFilterBar";
 import { fetchBlogCards, type BlogCard } from "../lib/blog/api";
 import { blogListNode } from "../lib/seo/nodes/blog";
-import { ROUTES } from "../lib/seo/routes";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
+import { useLocale } from "../lib/i18n/context";
+import TurkishContentNotice from "../components/TurkishContentNotice";
 import "../styles/blog.css";
 import "../styles/blog-tokens.css";
 
 export default function BlogPage() {
+  const { href } = useLocale();
   const [searchParams] = useSearchParams();
   const [posts, setPosts] = useState<BlogCard[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,7 +37,7 @@ export default function BlogPage() {
 
   // Liste yüklendikçe ItemList düğümü de güncellenir; yazılar gelmeden
   // yalnızca temel sayfa grafiği yayınlanır.
-  useStaticPageSeo(ROUTES.blog, {
+  useStaticPageSeo(href("blog"), {
     extra: posts.length ? [blogListNode(posts)] : undefined,
   });
 
@@ -60,6 +62,7 @@ export default function BlogPage() {
   return (
     <main className="blog-shell">
       <header className="blog-masthead">
+        <TurkishContentNotice />
         <span className="blog-masthead__eyebrow">Sigorta Uzmanı Blog</span>
         <h1 className="blog-masthead__title">Sigorta, teminat ve poliçe rehberi</h1>
         <p className="blog-masthead__description">

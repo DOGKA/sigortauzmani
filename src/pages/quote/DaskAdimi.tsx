@@ -25,9 +25,9 @@ import {
   YAPI_TARZLARI,
   insaaYillari,
 } from "../../lib/io/constants";
+import { useT } from "../../lib/i18n/context";
 import AdresSecici from "./AdresSecici";
 import IlerlemePaneli from "./IlerlemePaneli";
-import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
 import type { DaskDurumu } from "./flowState";
 
 interface Props {
@@ -47,6 +47,7 @@ export default function DaskAdimi({
   calisiyor,
   hata,
 }: Props) {
+  const t = useT();
   const [hatalar, setHatalar] = useState<Record<string, string>>({});
 
   const dogrula = () => {
@@ -87,7 +88,7 @@ export default function DaskAdimi({
 
   return (
     <div className="flow__card">
-      <h2 className="flow__card-title">Bina bilgileri</h2>
+      <h2 className="flow__card-title">{t.flow.daskTitle}</h2>
 
       <div className="flow__toggle" role="group" aria-label="DASK poliçe durumu">
         <button
@@ -347,15 +348,15 @@ export default function DaskAdimi({
 
       {calisiyor ? (
         <IlerlemePaneli
-          baslik="Teklifleriniz hazırlanıyor"
-          mesajlar={TEKLIF_HAZIRLIK_MESAJLARI}
+          baslik={t.flow.preparing}
+          mesajlar={[...t.flow.preparingMsgs]}
           tahminiSaniye={20}
         />
       ) : null}
 
       <div className="flow__actions">
         <button type="button" className="flow__ghost" onClick={onGeri}>
-          Geri
+          {t.quote.back}
         </button>
         <button
           type="button"
@@ -363,7 +364,7 @@ export default function DaskAdimi({
           onClick={devamEt}
           disabled={calisiyor}
         >
-          {calisiyor ? "Teklifler çalışıyor…" : "Teklif çalış"}
+          {calisiyor ? t.flow.running : t.flow.runQuote}
         </button>
       </div>
     </div>

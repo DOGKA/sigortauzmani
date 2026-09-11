@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import { useLocale, useT } from "../lib/i18n/context";
 import trafikSlider from "../assets/sliders/trafik-sigortasi.png";
 import kaskoSlider from "../assets/sliders/kasko.png";
 import tamamlayiciSaglikSlider from "../assets/sliders/tamamlayici-saglik.png";
@@ -111,6 +112,8 @@ const slides = [
 export default function InsuranceSlider() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [loadedCount, setLoadedCount] = useState(INITIAL_LOADED);
+  const { quoteHref, dir } = useLocale();
+  const t = useT();
 
   const revealFromScroll = useCallback(() => {
     const track = trackRef.current;
@@ -131,7 +134,7 @@ export default function InsuranceSlider() {
 
     const card = track.querySelector<HTMLElement>(".insurance-slider__card");
     track.scrollBy({
-      left: direction * ((card?.offsetWidth ?? track.clientWidth) + 18),
+      left: direction * (dir === "rtl" ? -1 : 1) * ((card?.offsetWidth ?? track.clientWidth) + 18),
       behavior: "smooth",
     });
   };
@@ -142,20 +145,16 @@ export default function InsuranceSlider() {
       <div className="insurance-slider__inner">
         <div className="insurance-slider__heading">
           <div>
-            <span className="insurance-slider__eyebrow">Sizin için seçtik</span>
-            <h2 id="insurance-slider-title">Hayatın Her Anında Yanınızdayız</h2>
-            <p>
-              Entegre sigorta şirketlerinden gelen anlık fiyat ve teminat seçeneklerini
-              karşılaştırın; seçiminize göre çevrim içi satın alma adımına veya WhatsApp
-              temsilcimize geçin.
-            </p>
+            <span className="insurance-slider__eyebrow">{t.slider.eyebrow}</span>
+            <h2 id="insurance-slider-title">{t.slider.title}</h2>
+            <p>{t.slider.lead}</p>
           </div>
 
           <div className="insurance-slider__controls">
             <button
               type="button"
               onClick={() => move(-1)}
-              aria-label="Önceki sigorta seçeneği"
+              aria-label={t.slider.prev}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="m15 18-6-6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -164,7 +163,7 @@ export default function InsuranceSlider() {
             <button
               type="button"
               onClick={() => move(1)}
-              aria-label="Sonraki sigorta seçeneği"
+              aria-label={t.slider.next}
             >
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="m9 18 6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -174,8 +173,17 @@ export default function InsuranceSlider() {
         </div>
 
         <div className="insurance-slider__track" ref={trackRef} onScroll={revealFromScroll}>
-          {slides.map((slide, index) => (
-            <Link className="insurance-slider__card" to={slide.to} key={slide.eyebrow}>
+          {slides.map((slide, index) => {
+            const slug = slide.to.replace("/teklif/", "");
+            const copy = t.slides[slug] ?? {
+              eyebrow: slide.eyebrow,
+              line1: slide.titleLine1,
+              line2: slide.titleLine2,
+              subtitle: slide.subtitle,
+              cta: slide.cta,
+            };
+            return (
+            <Link className="insurance-slider__card" to={quoteHref(slug)} key={slide.eyebrow}>
               {index < loadedCount && (
                 <img
                   src={slide.image}
@@ -185,21 +193,22 @@ export default function InsuranceSlider() {
                 />
               )}
               <span className="insurance-slider__content">
-                <span className="insurance-slider__badge">{slide.eyebrow}</span>
+                <span className="insurance-slider__badge">{copy.eyebrow}</span>
                 <strong>
-                  {slide.titleLine1}
-                  <em>{slide.titleLine2}</em>
+                  {copy.line1}
+                  <em>{copy.line2}</em>
                 </strong>
-                <span>{slide.subtitle}</span>
+                <span>{copy.subtitle}</span>
                 <span className="insurance-slider__cta">
-                  {slide.cta}
+                  {copy.cta}
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path d="m9 18 6-6-6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </span>
               </span>
             </Link>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

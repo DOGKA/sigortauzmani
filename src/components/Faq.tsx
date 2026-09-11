@@ -1,24 +1,22 @@
 import { useState } from "react";
-import { HOME_FAQ_ITEMS } from "../data/faq";
+import { useT } from "../lib/i18n/context";
 import "./Faq.css";
 
 export default function Faq() {
+  const t = useT();
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
     <section className="faq" id="sss" aria-labelledby="faq-title">
       <div className="faq__inner">
         <div className="faq__heading">
-          <span className="faq__eyebrow">Sıkça sorulan sorular</span>
-          <h2 id="faq-title">Sigorta Uzmanı Hakkında Merak Ettikleriniz</h2>
-          <p>
-            Yanıtını bulamadığınız sorular için danışma hattımızdan bize
-            ulaşabilirsiniz.
-          </p>
+          <span className="faq__eyebrow">{t.faq.eyebrow}</span>
+          <h2 id="faq-title">{t.faq.title}</h2>
+          <p>{t.faq.lead}</p>
         </div>
 
         <div className="faq__list">
-          {HOME_FAQ_ITEMS.map((item, index) => {
+          {t.faq.items.map((item, index) => {
             const isOpen = openIndex === index;
             return (
               <div

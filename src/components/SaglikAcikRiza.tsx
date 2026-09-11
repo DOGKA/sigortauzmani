@@ -5,14 +5,10 @@
  */
 
 import { useId } from "react";
-import {
-  SAGLIK_RIZA_BASLIK,
-  SAGLIK_RIZA_HATA,
-  SAGLIK_RIZA_METNI,
-  SAGLIK_RIZA_RET_NOTU,
-  SAGLIK_RIZA_SECENEKLERI,
-  type SaglikRizaSecimi,
-} from "../data/saglikRiza";
+import { COMPANY } from "../data/company";
+import type { SaglikRizaSecimi } from "../data/saglikRiza";
+import { interpolate } from "../lib/i18n/format";
+import { useT } from "../lib/i18n/context";
 import "./SaglikAcikRiza.css";
 
 interface Props {
@@ -22,18 +18,25 @@ interface Props {
 }
 
 export default function SaglikAcikRiza({ deger, onDegis, hata = false }: Props) {
+  const t = useT();
   const grupAdi = useId();
+  const secenekler = [
+    { value: "veriyorum" as const, label: t.quote.consentYes },
+    { value: "vermiyorum" as const, label: t.quote.consentNo },
+  ];
 
   return (
     <div className="saglik-kvkk">
       <fieldset
         className={`saglik-kvkk__riza${hata ? " saglik-kvkk__riza--hata" : ""}`}
       >
-        <legend>{SAGLIK_RIZA_BASLIK}</legend>
-        <p className="saglik-kvkk__riza-metin">{SAGLIK_RIZA_METNI}</p>
+        <legend>{t.quote.consentTitle}</legend>
+        <p className="saglik-kvkk__riza-metin">
+          {interpolate(t.quote.consentBody, { company: COMPANY.unvan })}
+        </p>
 
         <div className="saglik-kvkk__secenekler">
-          {SAGLIK_RIZA_SECENEKLERI.map((secenek) => (
+          {secenekler.map((secenek) => (
             <label key={secenek.value} className="saglik-kvkk__secenek">
               <input
                 type="radio"
@@ -48,12 +51,12 @@ export default function SaglikAcikRiza({ deger, onDegis, hata = false }: Props) 
         </div>
 
         {deger === "vermiyorum" ? (
-          <p className="saglik-kvkk__not">{SAGLIK_RIZA_RET_NOTU}</p>
+          <p className="saglik-kvkk__not">{t.quote.consentDeclineNote}</p>
         ) : null}
 
         {hata ? (
           <p className="saglik-kvkk__hata" role="alert">
-            {SAGLIK_RIZA_HATA}
+            {t.quote.consentError}
           </p>
         ) : null}
       </fieldset>

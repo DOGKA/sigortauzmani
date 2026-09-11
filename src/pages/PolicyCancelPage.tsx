@@ -2,7 +2,6 @@ import { useId, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   IPTAL_BRANS_LABELS,
-  IPTAL_STATUS_LABELS,
   type IptalBrans,
   type IptalTakipResult,
   createIptalTalep,
@@ -18,27 +17,21 @@ import {
   isValidVkn,
 } from "../utils/validation";
 import FormKvkkNotu from "../components/FormKvkkNotu";
+import { localizeIptalError } from "../lib/i18n/cancel";
+import { interpolate, localeTag } from "../lib/i18n/format";
+import { useLocale, useT } from "../lib/i18n/context";
+import { CONTACT_PHONE_DISPLAY } from "../lib/seo/config";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
 import "./PolicyCancelPage.css";
 
 type Tab = "basvuru" | "takip";
 type Step = 1 | 2 | "success";
 
-const BRANS_OPTIONS = (
-  Object.keys(IPTAL_BRANS_LABELS) as IptalBrans[]
-).map((value) => ({ value, label: IPTAL_BRANS_LABELS[value] }));
-
-function formatTakipDate(iso: string) {
-  return new Date(iso).toLocaleString("tr-TR", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
+const BRANS_KEYS = Object.keys(IPTAL_BRANS_LABELS) as IptalBrans[];
 
 export default function PolicyCancelPage() {
+  const { locale, href } = useLocale();
+  const t = useT();
   const [tab, setTab] = useState<Tab>("basvuru");
   const [step, setStep] = useState<Step>(1);
   const [brans, setBrans] = useState<IptalBrans | "">("");
@@ -61,7 +54,7 @@ export default function PolicyCancelPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const fileInputId = useId();
 
-  useStaticPageSeo("/police-iptal");
+  useStaticPageSeo(href("policyCancel"));
 
   const plate = `${plateCity}${plateLetters}${plateNumbers}`.toUpperCase();
 
@@ -76,22 +69,21 @@ export default function PolicyCancelPage() {
 
   const validateStep1 = () => {
     const next: Record<string, string> = {};
-    if (!brans) next.brans = "Poliçe türü seçin.";
-    if (adSoyad.trim().length < 3) next.adSoyad = "Ad soyad girin.";
-    if (!isValidMobilePhone(phone)) next.phone = "Geçerli bir cep telefonu girin.";
+    if (!brans) next.brans = t.cancel.errPolicy;
+    if (adSoyad.trim().length < 3) next.adSoyad = t.cancel.errName;
+    if (!isValidMobilePhone(phone)) next.phone = t.cancel.errPhone;
 
     const idDigits = kimlik.replace(/\D/g, "");
     if (idDigits.length === 11) {
-      if (!isValidTckn(idDigits)) next.kimlik = "Geçerli bir T.C. kimlik no girin.";
+      if (!isValidTckn(idDigits)) next.kimlik = t.cancel.errTckn;
     } else if (idDigits.length === 10) {
-      if (!isValidVkn(idDigits)) next.kimlik = "Geçerli bir vergi kimlik no girin.";
+      if (!isValidVkn(idDigits)) next.kimlik = t.cancel.errVkn;
     } else {
-      next.kimlik =
-        "T.C. kimlik numarası (11 hane) veya vergi kimlik numarası (10 hane) girin.";
+      next.kimlik = t.cancel.errId;
     }
 
     if (!isValidPlate(plate)) {
-      next.plate = "Geçerli bir plaka girin.";
+      next.plate = t.cancel.errPlate;
     }
 
     setErrors(next);
@@ -106,7 +98,7 @@ export default function PolicyCancelPage() {
 
   const onSubmit = async () => {
     if (!file) {
-      setErrors({ file: "Noter satış sözleşmesini yükleyin." });
+      setErrors({ file: t.cancel.errFile });
       return;
     }
     if (!brans) return;
@@ -118,7 +110,7 @@ export default function PolicyCancelPage() {
     const no = generateIptalNo();
     const upload = await uploadIptalBelge(no, file);
     if ("error" in upload) {
-      setSubmitError(upload.error);
+      setSubmitError(localizeIptalError(upload.error, t.cancel));
       setSubmitting(false);
       return;
     }
@@ -138,7 +130,7 @@ export default function PolicyCancelPage() {
     setSubmitting(false);
 
     if (result.ok === false) {
-      setSubmitError(result.error);
+      setSubmitError(localizeIptalError(result.error, t.cancel));
       return;
     }
 
@@ -153,7 +145,7 @@ export default function PolicyCancelPage() {
     const result = await lookupIptalTakip(code);
     setTakipLoading(false);
     if (result.ok === false) {
-      setTakipError(result.error);
+      setTakipError(localizeIptalError(result.error, t.cancel));
       return;
     }
     setTakipResult(result.data);
@@ -214,22 +206,22 @@ export default function PolicyCancelPage() {
       </div>
 
       <div className="iptal__shell">
-        <nav className="iptal__breadcrumb" aria-label="Sayfa konumu">
-          <Link to="/">Ana Sayfa</Link>
+        <nav className="iptal__breadcrumb" aria-label={t.cancel.breadcrumb}>
+          <Link to={href("home")}>{t.legal.home}</Link>
           <span aria-hidden="true">/</span>
-          <span>Poliçe İptal İşlemleri</span>
+          <span>{t.cancel.h1}</span>
         </nav>
 
         <div className="iptal__card">
           <aside className="iptal__sidebar">
-            <h1>Poliçe İptal İşlemleri</h1>
-            <nav className="iptal__side-nav" aria-label="İptal işlemleri">
+            <h1>{t.cancel.h1}</h1>
+            <nav className="iptal__side-nav" aria-label={t.cancel.sideNav}>
               <button
                 type="button"
                 className={tab === "basvuru" ? "is-active" : ""}
                 onClick={() => setTab("basvuru")}
               >
-                Poliçe İptal Başvuru
+                {t.cancel.applyTitle}
                 {tab === "basvuru" && <span aria-hidden="true">›</span>}
               </button>
               <button
@@ -237,28 +229,33 @@ export default function PolicyCancelPage() {
                 className={tab === "takip" ? "is-active" : ""}
                 onClick={() => setTab("takip")}
               >
-                Poliçe İptal Takip
+                {t.cancel.trackTitle}
                 {tab === "takip" && <span aria-hidden="true">›</span>}
               </button>
             </nav>
             <p className="iptal__info">
-              Web sitemiz üzerinden yalnızca araç satışı nedeniyle poliçe iptal
-              talebi alınmaktadır. Diğer iptal nedenleri için{" "}
-              <a href="tel:+908503020032">0850 302 00 32</a> numaralı danışma
-              hattımızı arayabilirsiniz. Daha önce oluşturduğunuz talebin
-              durumunu &ldquo;Poliçe İptal Takip&rdquo; bölümünden
-              görüntüleyebilirsiniz.
+              {(() => {
+                const text = interpolate(t.cancel.intro, {
+                  phone: CONTACT_PHONE_DISPLAY,
+                  track: t.cancel.trackTitle,
+                });
+                const [before, after] = text.split(CONTACT_PHONE_DISPLAY);
+                return (
+                  <>
+                    {before}
+                    <a href="tel:+908503020032">{CONTACT_PHONE_DISPLAY}</a>
+                    {after}
+                  </>
+                );
+              })()}
             </p>
           </aside>
 
           <div className="iptal__content">
             {tab === "takip" ? (
               <section className="iptal__takip" aria-labelledby="takip-title">
-                <h2 id="takip-title">Poliçe İptal Takip</h2>
-                <p>
-                  Başvuru sonunda aldığınız iptal takip numarasını girerek
-                  talebinizin güncel durumunu görüntüleyin.
-                </p>
+                <h2 id="takip-title">{t.cancel.trackTitle}</h2>
+                <p>{t.cancel.trackLead}</p>
                 <form
                   className="iptal__takip-form"
                   onSubmit={(e) => {
@@ -267,7 +264,7 @@ export default function PolicyCancelPage() {
                   }}
                 >
                   <label className="iptal__field">
-                    <span>İptal Takip Numarası</span>
+                    <span>{t.cancel.trackNo}</span>
                     <input
                       type="text"
                       value={takipCode}
@@ -285,7 +282,7 @@ export default function PolicyCancelPage() {
                     className="iptal__btn"
                     disabled={takipLoading || takipCode.trim().length < 8}
                   >
-                    {takipLoading ? "Sorgulanıyor…" : "Sorgula"}
+                    {takipLoading ? t.cancel.querying : t.cancel.query}
                   </button>
                 </form>
 
@@ -298,48 +295,57 @@ export default function PolicyCancelPage() {
                 {takipResult && (
                   <div className="iptal__takip-result">
                     <div className="iptal__takip-status">
-                      <span>Durum</span>
+                      <span>{t.cancel.status}</span>
                       <strong
                         className={`iptal__takip-badge iptal__takip-badge--${takipResult.status}`}
                       >
-                        {IPTAL_STATUS_LABELS[takipResult.status]}
+                        {t.cancel.statuses[takipResult.status]}
                       </strong>
                     </div>
                     <dl className="iptal__takip-dl">
                       <div>
-                        <dt>Takip No</dt>
+                        <dt>{t.cancel.trackNoShort}</dt>
                         <dd>{takipResult.iptal_no}</dd>
                       </div>
                       <div>
-                        <dt>İptal Konusu</dt>
-                        <dd>{IPTAL_BRANS_LABELS[takipResult.brans]}</dd>
+                        <dt>{t.cancel.subject}</dt>
+                        <dd>{t.cancel.brans[takipResult.brans]}</dd>
                       </div>
                       <div>
-                        <dt>Ad Soyad</dt>
+                        <dt>{t.cancel.fullName}</dt>
                         <dd>{takipResult.ad_soyad_masked}</dd>
                       </div>
                       <div>
-                        <dt>Telefon</dt>
+                        <dt>{t.cancel.phone}</dt>
                         <dd>{takipResult.phone_masked}</dd>
                       </div>
                       <div>
-                        <dt>Plaka</dt>
+                        <dt>{t.cancel.plate}</dt>
                         <dd>{takipResult.plate_masked}</dd>
                       </div>
                       <div>
-                        <dt>Başvuru Tarihi</dt>
-                        <dd>{formatTakipDate(takipResult.created_at)}</dd>
+                        <dt>{t.cancel.appliedAt}</dt>
+                        <dd>
+                          {new Date(takipResult.created_at).toLocaleString(
+                            localeTag(locale),
+                            {
+                              day: "2-digit",
+                              month: "2-digit",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            },
+                          )}
+                        </dd>
                       </div>
                     </dl>
                     {takipResult.aciklama && (
                       <aside className="iptal__takip-note-box" role="note">
-                        <strong>Bilgilendirme</strong>
+                        <strong>{t.cancel.notice}</strong>
                         <p>{takipResult.aciklama}</p>
                       </aside>
                     )}
-                    <p className="iptal__takip-privacy">
-                      Kimlik numarası güvenlik nedeniyle gösterilmez.
-                    </p>
+                    <p className="iptal__takip-privacy">{t.cancel.idHidden}</p>
                   </div>
                 )}
               </section>
@@ -348,14 +354,11 @@ export default function PolicyCancelPage() {
                 <div className="iptal__success-icon" aria-hidden="true">
                   ✓
                 </div>
-                <h2 id="success-title">Başvurunuz alındı</h2>
-                <p>
-                  Poliçe iptal talebiniz işleme alındı. Takip numaranızı not
-                  edin; süreç tamamlandığında sizinle iletişime geçilecektir.
-                </p>
+                <h2 id="success-title">{t.cancel.received}</h2>
+                <p>{t.cancel.receivedLead}</p>
                 <div className="iptal__success-code">
                   <div>
-                    <span>İptal Takip Numaranız</span>
+                    <span>{t.cancel.yourTrackNo}</span>
                     <strong>{iptalNo}</strong>
                   </div>
                   <button
@@ -363,12 +366,10 @@ export default function PolicyCancelPage() {
                     className={`iptal__copy-btn ${iptalNoCopied ? "is-copied" : ""}`}
                     onClick={() => void copyIptalNo()}
                     aria-label={
-                      iptalNoCopied
-                        ? "İptal takip numarası kopyalandı"
-                        : "İptal takip numarasını kopyala"
+                      iptalNoCopied ? t.cancel.copiedAria : t.cancel.copyAria
                     }
                   >
-                    {iptalNoCopied ? "Kopyalandı" : "Kopyala"}
+                    {iptalNoCopied ? t.cancel.copied : t.cancel.copy}
                   </button>
                 </div>
                 <div className="iptal__actions">
@@ -377,10 +378,10 @@ export default function PolicyCancelPage() {
                     className="iptal__btn"
                     onClick={() => goToTakip(iptalNo ?? undefined)}
                   >
-                    Talebi Takip Et
+                    {t.cancel.follow}
                   </button>
                   <button type="button" className="iptal__btn iptal__btn--ghost" onClick={resetForm}>
-                    Yeni Başvuru
+                    {t.cancel.newApply}
                   </button>
                 </div>
               </section>
@@ -394,7 +395,7 @@ export default function PolicyCancelPage() {
                     onClick={() => step === 2 && setStep(1)}
                   >
                     <span className="iptal__step-num">1</span>
-                    Temel Bilgiler
+                    {t.cancel.basics}
                   </button>
                   <button
                     type="button"
@@ -403,17 +404,17 @@ export default function PolicyCancelPage() {
                     disabled={step !== 2}
                   >
                     <span className="iptal__step-num">2</span>
-                    Noter Satış Sözleşmesi
+                    {t.cancel.deed}
                   </button>
                 </div>
 
                 <div className="iptal__progress">
                   <p className="iptal__progress-line">
-                    <span className="iptal__progress-count">Adım {step}/2</span>
+                    <span className="iptal__progress-count">
+                      {interpolate(t.cancel.stepOf, { step: String(step) })}
+                    </span>
                     <span aria-hidden="true">·</span>
-                    <strong>
-                      {step === 1 ? "Temel Bilgiler" : "Noter Satış Sözleşmesi"}
-                    </strong>
+                    <strong>{step === 1 ? t.cancel.basics : t.cancel.deed}</strong>
                   </p>
                   <span className="iptal__progress-bar" aria-hidden="true">
                     <i className="is-done" />
@@ -422,10 +423,10 @@ export default function PolicyCancelPage() {
                 </div>
 
                 {step === 1 && (
-                  <section className="iptal__panel" aria-label="Temel Bilgiler">
+                  <section className="iptal__panel" aria-label={t.cancel.basics}>
                     <div className="iptal__fields">
                       <label className="iptal__field">
-                        <span>İptal etmek istediğiniz poliçe türü</span>
+                        <span>{t.cancel.policyType}</span>
                         <select
                           value={brans}
                           onChange={(e) => {
@@ -433,10 +434,10 @@ export default function PolicyCancelPage() {
                             clearError("brans");
                           }}
                         >
-                          <option value="">Poliçe türü seçin</option>
-                          {BRANS_OPTIONS.map((opt) => (
-                            <option key={opt.value} value={opt.value}>
-                              {opt.label}
+                          <option value="">{t.cancel.policyPlaceholder}</option>
+                          {BRANS_KEYS.map((value) => (
+                            <option key={value} value={value}>
+                              {t.cancel.brans[value]}
                             </option>
                           ))}
                         </select>
@@ -446,7 +447,7 @@ export default function PolicyCancelPage() {
                       </label>
 
                       <label className="iptal__field">
-                        <span>Ad Soyad</span>
+                        <span>{t.cancel.fullName}</span>
                         <input
                           type="text"
                           value={adSoyad}
@@ -454,7 +455,7 @@ export default function PolicyCancelPage() {
                             setAdSoyad(e.target.value);
                             clearError("adSoyad");
                           }}
-                          placeholder="Ruhsat sahibi ad soyad"
+                          placeholder={t.cancel.namePlaceholder}
                           autoComplete="name"
                         />
                         {errors.adSoyad && (
@@ -463,7 +464,7 @@ export default function PolicyCancelPage() {
                       </label>
 
                       <label className="iptal__field">
-                        <span>Cep Telefonu</span>
+                        <span>{t.cancel.phone}</span>
                         <input
                           type="tel"
                           value={phone}
@@ -480,9 +481,7 @@ export default function PolicyCancelPage() {
                       </label>
 
                       <label className="iptal__field">
-                        <span>
-                          Ruhsat sahibinin T.C. kimlik / vergi kimlik numarası
-                        </span>
+                        <span>{t.cancel.ownerId}</span>
                         <input
                           type="text"
                           value={kimlik}
@@ -490,7 +489,7 @@ export default function PolicyCancelPage() {
                             setKimlik(e.target.value.replace(/\D/g, "").slice(0, 11));
                             clearError("kimlik");
                           }}
-                          placeholder="11 veya 10 haneli numara"
+                          placeholder={t.cancel.ownerIdPlaceholder}
                           inputMode="numeric"
                         />
                         {errors.kimlik && (
@@ -499,7 +498,7 @@ export default function PolicyCancelPage() {
                       </label>
 
                       <div className="iptal__field">
-                        <span>Araç Plaka No</span>
+                        <span>{t.cancel.plateNo}</span>
                         <div className="iptal__plate">
                           <input
                             type="text"
@@ -512,7 +511,7 @@ export default function PolicyCancelPage() {
                             }}
                             placeholder="34"
                             inputMode="numeric"
-                            aria-label="İl kodu"
+                            aria-label={t.cancel.cityCode}
                           />
                           <input
                             type="text"
@@ -527,7 +526,7 @@ export default function PolicyCancelPage() {
                               clearError("plate");
                             }}
                             placeholder="ABC"
-                            aria-label="Harfler"
+                            aria-label={t.cancel.letters}
                           />
                           <input
                             type="text"
@@ -540,7 +539,7 @@ export default function PolicyCancelPage() {
                             }}
                             placeholder="123"
                             inputMode="numeric"
-                            aria-label="Rakamlar"
+                            aria-label={t.cancel.digits}
                           />
                         </div>
                         {errors.plate && (
@@ -557,19 +556,15 @@ export default function PolicyCancelPage() {
                         className="iptal__btn"
                         onClick={onContinueStep1}
                       >
-                        Devam
+                        {t.cancel.continue}
                       </button>
                     </div>
                   </section>
                 )}
 
                 {step === 2 && (
-                  <section className="iptal__panel" aria-label="Noter Satış Sözleşmesi">
-                    <p className="iptal__panel-lead">
-                      Bu aşamada noter satış belgesini sisteme yüklemeniz
-                      gerekiyor. Dosya yükle diyerek bilgisayarınızdan veya
-                      telefonunuzdan fotoğraf / PDF seçebilirsiniz.
-                    </p>
+                  <section className="iptal__panel" aria-label={t.cancel.deed}>
+                    <p className="iptal__panel-lead">{t.cancel.deedLead}</p>
 
                     <div className="iptal__upload">
                       <input
@@ -589,14 +584,15 @@ export default function PolicyCancelPage() {
                           <>
                             <strong>{file.name}</strong>
                             <span>
-                              {(file.size / (1024 * 1024)).toFixed(2)} MB — değiştirmek
-                              için tıklayın
+                              {interpolate(t.cancel.replaceFile, {
+                                size: (file.size / (1024 * 1024)).toFixed(2),
+                              })}
                             </span>
                           </>
                         ) : (
                           <>
-                            <strong>Dosya Yükle</strong>
-                            <span>PDF, JPG veya PNG · en fazla 10 MB</span>
+                            <strong>{t.cancel.upload}</strong>
+                            <span>{t.cancel.uploadHint}</span>
                           </>
                         )}
                       </label>
@@ -618,7 +614,7 @@ export default function PolicyCancelPage() {
                         onClick={() => setStep(1)}
                         disabled={submitting}
                       >
-                        Geri
+                        {t.cancel.back}
                       </button>
                       <button
                         type="button"
@@ -626,7 +622,7 @@ export default function PolicyCancelPage() {
                         onClick={() => void onSubmit()}
                         disabled={submitting || !file}
                       >
-                        {submitting ? "Gönderiliyor…" : "Başvuruyu Gönder"}
+                        {submitting ? t.cancel.submitting : t.cancel.submit}
                       </button>
                     </div>
                   </section>

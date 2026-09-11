@@ -33,8 +33,8 @@ import {
   isValidDocumentSerial,
   isValidPlate,
 } from "../../utils/validation";
+import { useT } from "../../lib/i18n/context";
 import IlerlemePaneli from "./IlerlemePaneli";
-import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
 import { kimlikNoOf, type AracDurumu, type KimlikDurumu, type UrunGereksinimi } from "./flowState";
 
 interface Props {
@@ -72,6 +72,7 @@ export default function AracAdimi({
   calisiyor,
   hata,
 }: Props) {
+  const t = useT();
   const [hatalar, setHatalar] = useState<Record<string, string>>({});
   const [iller, setIller] = useState<Il[]>([]);
   const [markalar, setMarkalar] = useState<Marka[]>([]);
@@ -248,7 +249,7 @@ export default function AracAdimi({
 
   return (
     <div className="flow__card">
-      <h2 className="flow__card-title">Araç bilgileri</h2>
+      <h2 className="flow__card-title">{t.flow.vehicleTitle}</h2>
 
       {gereksinim.meslekGerekli ? (
         <label className="flow__field flow__field--full">
@@ -561,15 +562,15 @@ export default function AracAdimi({
 
       {calisiyor ? (
         <IlerlemePaneli
-          baslik="Teklifleriniz hazırlanıyor"
-          mesajlar={TEKLIF_HAZIRLIK_MESAJLARI}
+          baslik={t.flow.preparing}
+          mesajlar={[...t.flow.preparingMsgs]}
           tahminiSaniye={20}
         />
       ) : null}
 
       <div className="flow__actions">
         <button type="button" className="flow__ghost" onClick={onGeri}>
-          Geri
+          {t.quote.back}
         </button>
         <button
           type="button"
@@ -577,7 +578,7 @@ export default function AracAdimi({
           onClick={teklifCalis}
           disabled={calisiyor}
         >
-          {calisiyor ? "Teklifler çalışıyor…" : "Teklif çalış"}
+          {calisiyor ? t.flow.running : t.flow.runQuote}
         </button>
       </div>
     </div>

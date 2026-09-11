@@ -10,9 +10,11 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
 import AdvisorVideo from "../components/AdvisorVideo";
 import TalepBasariEkrani from "../components/TalepBasariEkrani";
+import { useInternalProductSlug, useLocale, useT } from "../lib/i18n/context";
+import { localizedProduct } from "../lib/i18n/products";
 import { getProduct } from "../data/products";
 import { getQuoteKvkkGovde, QUOTE_KVKK_SURUM } from "../data/quoteKvkk";
 import { isSaglikUrunu } from "../data/saglikRiza";
@@ -20,7 +22,6 @@ import { IoError, primleriBekle, teklifOlustur } from "../lib/io/client";
 import type { SatinAlmaSonuc, SirketTeklifi, TeklifPayload } from "../lib/io/types";
 import { createTalep, generateTalepNo } from "../lib/supabase";
 import { ROBOTS_NOINDEX, pageOgImageUrl } from "../lib/seo/config";
-import { ROUTES } from "../lib/seo/routes";
 import { useSeo } from "../lib/seo/useSeo";
 import AracAdimi from "./quote/AracAdimi";
 import BelgeButonu from "./quote/BelgeButonu";
@@ -52,18 +53,9 @@ import {
 } from "./quote/flowState";
 import "./QuoteFlowPage.css";
 
-const ADIM_ETIKETLERI: Record<Adim, string> = {
-  kimlik: "Kimlik",
-  detay: "Detaylar",
-  fiyatlar: "Teklifler",
-  sonuc: "Poliçe",
-};
-
 const ADIM_SIRASI: Adim[] = ["kimlik", "detay", "fiyatlar", "sonuc"];
 
 const DETAY_VIDEO = "/advisor-2.mp4";
-const DETAY_METIN =
-  "Teşekkür ederim. Son adıma geçiyoruz. Lütfen kalan iki bilgiyi de paylaşın. Ardından sizin için en uygun sigorta tekliflerini hazırlayacağım.";
 
 interface SecilenTeklif {
   bransNo: number;
@@ -79,8 +71,11 @@ interface TalepBasarisi {
 }
 
 export default function QuoteFlowPage() {
-  const { slug } = useParams<{ slug: string }>();
-  const product = slug ? getProduct(slug) : undefined;
+  const slug = useInternalProductSlug();
+  const { locale, href, quoteHref } = useLocale();
+  const t = useT();
+  const found = slug ? getProduct(slug) : undefined;
+  const product = found ? localizedProduct(found, locale) : undefined;
   const gereksinim = slug ? urunGereksinimi(slug) : null;
 
   const [adim, setAdim] = useState<Adim>("kimlik");
@@ -119,7 +114,7 @@ export default function QuoteFlowPage() {
   // eldeki tekliflerle devam edebilir.
   const fiyatGeldi = useRef(false);
 
-  const productPath = product ? ROUTES.quote(product.slug) : "/";
+  const productPath = product ? quoteHref(product.slug) : href("home");
 
   useSeo(
     product
@@ -132,7 +127,7 @@ export default function QuoteFlowPage() {
           robots: ROBOTS_NOINDEX,
         }
       : {
-          title: "Ürün bulunamadı",
+          title: t.quote.notFound,
           description: "",
           path: "/",
           robots: ROBOTS_NOINDEX,
@@ -371,9 +366,10 @@ export default function QuoteFlowPage() {
       saglik_acik_riza: isSaglikUrunu(product.slug)
         ? kimlik.saglikRiza === "veriyorum"
         : null,
+      locale,
       ...(getQuoteKvkkGovde(product.slug)
         ? {
-            kvkk_surum: QUOTE_KVKK_SURUM,
+            kvkk_surum: `${QUOTE_KVKK_SURUM}:${locale}`,
             kvkk_gosterildi_at: kvkkGosterildiAt,
           }
         : {}),
@@ -419,9 +415,9 @@ export default function QuoteFlowPage() {
   if (!product || !gereksinim) {
     return (
       <div className="flow flow--empty">
-        <h1>Ürün bulunamadı</h1>
-        <Link to="/" className="flow__primary">
-          Ana Sayfaya dön
+        <h1>{t.quote.notFound}</h1>
+        <Link to={href("home")} className="flow__primary">
+          {t.quote.homeBack}
         </Link>
       </div>
     );
@@ -433,8 +429,8 @@ export default function QuoteFlowPage() {
     return (
       <div className="flow">
         <div className="flow__inner">
-          <nav className="flow__breadcrumb" aria-label="Sayfa yolu">
-            <Link to="/">Ana Sayfa</Link>
+          <nav className="flow__breadcrumb" aria-label={t.quote.breadcrumb}>
+            <Link to={href("home")}>{t.quote.home}</Link>
             <span aria-hidden="true">/</span>
             <span>{product.title}</span>
           </nav>
@@ -451,12 +447,18 @@ export default function QuoteFlowPage() {
   }
 
   const aktifIndex = ADIM_SIRASI.indexOf(adim);
+  const adimEtiketleri: Record<Adim, string> = {
+    kimlik: t.quote.identityStep,
+    detay: t.quote.detailsStep,
+    fiyatlar: t.quote.offers,
+    sonuc: t.quote.policy,
+  };
 
   return (
     <div className="flow">
       <div className="flow__inner">
-        <nav className="flow__breadcrumb" aria-label="Sayfa yolu">
-          <Link to="/">Ana Sayfa</Link>
+        <nav className="flow__breadcrumb" aria-label={t.quote.breadcrumb}>
+          <Link to={href("home")}>{t.quote.home}</Link>
           <span aria-hidden="true">/</span>
           <span>{product.title}</span>
         </nav>
@@ -471,7 +473,7 @@ export default function QuoteFlowPage() {
                 className={`flow__step${index <= aktifIndex ? " flow__step--active" : ""}`}
               >
                 <span className="flow__step-no">{index + 1}</span>
-                <span className="flow__step-label">{ADIM_ETIKETLERI[deger]}</span>
+                <span className="flow__step-label">{adimEtiketleri[deger]}</span>
               </li>
             ))}
           </ol>
@@ -481,30 +483,24 @@ export default function QuoteFlowPage() {
           <AdvisorVideo
             replayKey={aktifIndex}
             videoSrc={adim === "detay" ? DETAY_VIDEO : undefined}
-            transcript={adim === "detay" ? DETAY_METIN : undefined}
+            transcript={adim === "detay" ? t.quote.advisorNext : undefined}
           />
         ) : null}
 
         {geriDonus ? (
           <div className="flow__card">
-            <h2 className="flow__card-title">
-              Şu anda anında teklif alınamıyor
-            </h2>
+            <h2 className="flow__card-title">{t.flow.instantUnavailable}</h2>
             <p className="flow__card-sub">{geriDonus}</p>
-            <p className="flow__fallback-text">
-              Bilgilerinizi bırakırsanız uzmanlarımız sizin için teklifleri
-              hazırlayıp en kısa sürede arar. Girdiğiniz bilgiler kaybolmadı,
-              formda yeniden girmeniz gerekecek.
-            </p>
+            <p className="flow__fallback-text">{t.flow.fallbackText}</p>
             <div className="flow__actions">
-              <Link to="/" className="flow__ghost">
-                Ana Sayfaya dön
+              <Link to={href("home")} className="flow__ghost">
+                {t.quote.homeBack}
               </Link>
               <Link
                 to={`${productPath}?form=manuel`}
                 className="flow__primary"
               >
-                Teklif formuna geç
+                {t.flow.toManual}
               </Link>
             </div>
           </div>
@@ -595,25 +591,23 @@ export default function QuoteFlowPage() {
 
         {!geriDonus && adim === "sonuc" && satinAlma ? (
           <div className="flow__card">
-            <h2 className="flow__card-title">Poliçeniz hazır</h2>
-            <p className="flow__card-sub">
-              Ödemeniz alındı ve poliçeniz düzenlendi.
-            </p>
+            <h2 className="flow__card-title">{t.flow.policyReady}</h2>
+            <p className="flow__card-sub">{t.flow.paymentReceived}</p>
 
             <dl className="flow__ozet">
               {satinAlma.policeNo ? (
                 <>
-                  <dt>Poliçe numarası</dt>
+                  <dt>{t.flow.policyNo}</dt>
                   <dd>{satinAlma.policeNo}</dd>
                 </>
               ) : null}
               {oturumNo ? (
                 <>
-                  <dt>İşlem numarası</dt>
+                  <dt>{t.flow.txnNo}</dt>
                   <dd>{oturumNo}</dd>
                 </>
               ) : null}
-              <dt>Ödenen kart</dt>
+              <dt>{t.flow.paidCard}</dt>
               <dd>**** {satinAlma.kartSon4}</dd>
             </dl>
 
@@ -628,7 +622,7 @@ export default function QuoteFlowPage() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Poliçeyi indir
+                  {t.flow.downloadPolicy}
                 </a>
               ) : oturumId && satinAlinan ? (
                 <BelgeButonu
@@ -637,7 +631,7 @@ export default function QuoteFlowPage() {
                   teklifId={satinAlinan.teklifId}
                   sirketTeklifId={satinAlinan.teklif.Id}
                   tip="police"
-                  etiket="Poliçeyi indir"
+                  etiket={t.flow.downloadPolicy}
                 />
               ) : null}
 
@@ -648,7 +642,7 @@ export default function QuoteFlowPage() {
                   target="_blank"
                   rel="noreferrer"
                 >
-                  Ödeme makbuzunu indir
+                  {t.flow.downloadReceipt}
                 </a>
               ) : oturumId && satinAlinan ? (
                 <BelgeButonu
@@ -657,14 +651,14 @@ export default function QuoteFlowPage() {
                   teklifId={satinAlinan.teklifId}
                   sirketTeklifId={satinAlinan.teklif.Id}
                   tip="makbuz"
-                  etiket="Ödeme makbuzunu indir"
+                  etiket={t.flow.downloadReceipt}
                 />
               ) : null}
             </div>
 
             <div className="flow__actions">
-              <Link to="/" className="flow__ghost">
-                Ana Sayfaya dön
+              <Link to={href("home")} className="flow__ghost">
+                {t.quote.homeBack}
               </Link>
             </div>
           </div>

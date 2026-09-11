@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
-import { CATEGORY_LABELS, type Comparison } from "../data/comparisons";
+import type { Comparison } from "../data/comparisons";
+import { localizedComparison } from "../lib/i18n/comparison-copy";
+import { useLocale, useT } from "../lib/i18n/context";
 import "./ComparisonDuelCard.css";
 
 export default function ComparisonDuelCard({
@@ -10,9 +12,13 @@ export default function ComparisonDuelCard({
   /** Kategori etiketi yalnızca karışık listelerde ("Tümü") anlamlıdır */
   showCategory?: boolean;
 }) {
+  const { locale, href } = useLocale();
+  const t = useT();
+  const copy = localizedComparison(comparison, locale);
+
   return (
     <Link
-      to={`/karsilastirma/${comparison.slug}`}
+      to={href("comparison", { slug: comparison.slug })}
       className="cmp-hub__duel-card"
     >
       <span className="cmp-hub__duel-border" aria-hidden="true" />
@@ -21,28 +27,27 @@ export default function ComparisonDuelCard({
         {showCategory && (
           <div className="cmp-hub__duel-top">
             <span className="cmp-hub__duel-category">
-              {CATEGORY_LABELS[comparison.category]}
+              {t.compare.categories[comparison.category]}
             </span>
           </div>
         )}
 
         <div className="cmp-hub__duel-arena">
-          <strong className="cmp-hub__duel-name">{comparison.left.name}</strong>
-          <span className="cmp-hub__duel-sr">ile</span>
+          <strong className="cmp-hub__duel-name">{copy.left.name}</strong>
+          <span className="cmp-hub__duel-sr">{t.compare.vs}</span>
           <span className="cmp-hub__duel-divider" aria-hidden="true" />
           <strong className="cmp-hub__duel-name cmp-hub__duel-name--alt">
-            {comparison.right.name}
+            {copy.right.name}
           </strong>
         </div>
 
-        <p className="cmp-hub__duel-summary">{comparison.summary}</p>
+        <p className="cmp-hub__duel-summary">{copy.summary}</p>
       </div>
 
-      {/* Hover'da yandan kapanan "garaj kapısı" paneli */}
       <span className="cmp-hub__duel-door" aria-hidden="true">
         <span className="cmp-hub__duel-door-panel">
-          <span className="cmp-hub__duel-door-q">Hangisi size uygun?</span>
-          <span className="cmp-hub__duel-door-cta">Farkları gör</span>
+          <span className="cmp-hub__duel-door-q">{t.compare.whichFits}</span>
+          <span className="cmp-hub__duel-door-cta">{t.compare.seeDiffs}</span>
         </span>
       </span>
     </Link>

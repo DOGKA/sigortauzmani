@@ -2,20 +2,12 @@ import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { COMPANY } from "../data/company";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
+import { useLocale, useT } from "../lib/i18n/context";
 import kolayKarsilastirmaIcon from "../assets/icons/kolay-karsilastirma.svg";
 import uzmanDestekIcon from "../assets/icons/uzman-destek.svg";
 import hizliSurecIcon from "../assets/icons/hizli-surec.svg";
 import policeSonrasiIcon from "../assets/icons/police-sonrasi.svg";
 import "./AboutPage.css";
-
-const BRANCHES = [
-  "Trafik",
-  "Kasko",
-  "Sağlık",
-  "DASK",
-  "Konut",
-  "Seyahat",
-];
 
 const REASONS = [
   {
@@ -46,8 +38,10 @@ const REASONS = [
 
 export default function AboutPage() {
   const rootRef = useRef<HTMLElement>(null);
+  const { href } = useLocale();
+  const t = useT();
 
-  useStaticPageSeo("/hakkimizda");
+  useStaticPageSeo(href("about"));
 
   useEffect(() => {
     const root = rootRef.current;
@@ -82,32 +76,26 @@ export default function AboutPage() {
 
       <div className="about__inner">
         <nav className="about__breadcrumb" aria-label="Sayfa konumu">
-          <Link to="/">Ana Sayfa</Link>
+          <Link to={href("home")}>{t.about.home}</Link>
           <span aria-hidden="true">/</span>
-          <span className="about__breadcrumb-current">Hakkımızda</span>
+          <span className="about__breadcrumb-current">{t.about.crumb}</span>
         </nav>
 
         {/* ── Hero ─────────────────────────────────── */}
         <section className="about__hero">
           <h1>
-            Sigortayı daha{" "}
-            <span className="about__hero-highlight">anlaşılır</span>,{" "}
-            <span className="about__hero-highlight">hızlı</span> ve{" "}
-            <span className="about__hero-highlight">güvenilir</span> hâle
-            getiriyoruz.
+            {t.about.h1Before}
+            <span className="about__hero-highlight">{t.about.h1Words[0]}</span>,{" "}
+            <span className="about__hero-highlight">{t.about.h1Words[1]}</span>,{" "}
+            <span className="about__hero-highlight">{t.about.h1Words[2]}</span>
+            {t.about.h1After}
           </h1>
           <p className="about__lead">
-            <strong>sigortauzmani.net</strong>,{" "}
-            {COMPANY.unvan} tarafından işletilen dijital sigorta
-            platformudur. Anlaşmalı sigorta şirketlerinden gelen fiyat ve teminat
-            seçeneklerini tek noktada karşılaştırmanızı kolaylaştırır. Entegre
-            şirketlerde çevrim içi satın alma için doğrudan sigorta şirketinin
-            ödeme ekranına yönlendirilirsiniz; diğer şirketlerde işleminiz
-            WhatsApp temsilcimizle devam eder.
+            <strong>sigortauzmani.net</strong> — {t.about.lead} {COMPANY.unvan}.
           </p>
 
-          <ul className="about__branches" aria-label="Hizmet verdiğimiz branşlar">
-            {BRANCHES.map((branch, i) => (
+          <ul className="about__branches" aria-label={t.about.crumb}>
+            {t.about.branches.map((branch, i) => (
               <li
                 key={branch}
                 className="about__branch"
@@ -118,29 +106,22 @@ export default function AboutPage() {
             ))}
           </ul>
 
-          <p className="about__lead about__lead--secondary">
-            Uzman ekibimiz; teklif aşamasından poliçe düzenlenmesine, yenileme
-            işlemlerinden hasar sürecine kadar yanınızda olur. Amacımız
-            yalnızca poliçe sunmak değil; doğru seçenekleri anlaşılır biçimde
-            paylaşarak güvenle karar vermenizi sağlamaktır.
-          </p>
+          <p className="about__lead about__lead--secondary">{t.about.lead2}</p>
         </section>
 
         {/* ── Slogan bandı ─────────────────────────── */}
         <section className="about__motto" data-reveal aria-label="Sloganımız">
-          <div className="about__motto-item">Doğru sigorta.</div>
+          <div className="about__motto-item">{t.about.motto[0]}</div>
           <span className="about__motto-divider" aria-hidden="true" />
-          <div className="about__motto-item">Uygun fiyat.</div>
+          <div className="about__motto-item">{t.about.motto[1]}</div>
           <span className="about__motto-divider" aria-hidden="true" />
-          <div className="about__motto-item">Hızlı destek.</div>
+          <div className="about__motto-item">{t.about.motto[2]}</div>
         </section>
 
         {/* ── Neden biz ────────────────────────────── */}
         <section className="about__why" aria-labelledby="why-title">
           <div className="about__why-head" data-reveal>
-            <h2 id="why-title">
-              Neden <span>sigortauzmani.net</span>?
-            </h2>
+            <h2 id="why-title">{t.about.whyTitle}</h2>
           </div>
 
           <ul className="about__why-grid">
@@ -158,9 +139,9 @@ export default function AboutPage() {
                   <span className="about__why-icon" aria-hidden="true">
                     <img src={reason.icon} alt="" />
                   </span>
-                  <h3>{reason.title}</h3>
+                  <h3>{t.about.reasons[i]?.title ?? reason.title}</h3>
                 </div>
-                <p>{reason.text}</p>
+                <p>{t.about.reasons[i]?.text ?? reason.text}</p>
               </li>
             ))}
           </ul>
@@ -169,14 +150,11 @@ export default function AboutPage() {
         {/* ── CTA ──────────────────────────────────── */}
         <section className="about__cta" data-reveal aria-label="Teklif alın">
           <div className="about__cta-glow" aria-hidden="true" />
-          <h2>Size uygun poliçeyi birlikte bulalım</h2>
-          <p>
-            Formu doldurun; entegre şirketlerden gelen anlık teklifleri
-            karşılaştırın. Gerekirse WhatsApp temsilcimizden destek alın.
-          </p>
+          <h2>{t.about.ctaTitle}</h2>
+          <p>{t.about.ctaLead}</p>
           <div className="about__cta-actions">
-            <Link to="/#urunler" className="about__cta-btn">
-              Hemen Teklif Al
+            <Link to={`${href("home")}#urunler`} className="about__cta-btn">
+              {t.about.cta}
             </Link>
             <a href="tel:+908503020032" className="about__cta-btn about__cta-btn--ghost">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">

@@ -10,7 +10,7 @@ interface NavItem {
   href: string;
   label: string;
   icon: React.ReactNode;
-  disabled?: boolean;
+  beta?: boolean;
   /** Dolu ise bu bölümün okunmamış bildirim sayısı rozet olarak gösterilir. */
   kaynak?: BildirimKaynagi;
 }
@@ -77,6 +77,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     href: "/musteriler",
     label: "Müşteriler",
+    beta: true,
     icon: (
       <svg {...iconProps}>
         <circle cx="9" cy="8" r="3.5" />
@@ -88,6 +89,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     href: "/yenilemeler",
     label: "Yenilemeler",
+    beta: true,
     icon: (
       <svg {...iconProps}>
         <path d="M21 12a9 9 0 1 1-2.6-6.3" />
@@ -98,6 +100,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     href: "/hasar-dosyalari",
     label: "Hasar Dosyaları",
+    beta: true,
     icon: (
       <svg {...iconProps}>
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" />
@@ -117,7 +120,8 @@ const NAV_ITEMS: NavItem[] = [
   },
   {
     href: "/acenteler",
-    label: "Acenteler / Partnerler",
+    label: "Acenteler",
+    beta: true,
     icon: (
       <svg {...iconProps}>
         <path d="M3 21h18M5 21V8l7-5 7 5v13" />
@@ -138,6 +142,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     href: "/ayarlar",
     label: "Ayarlar",
+    beta: true,
     icon: (
       <svg {...iconProps}>
         <circle cx="12" cy="12" r="3" />
@@ -145,6 +150,11 @@ const NAV_ITEMS: NavItem[] = [
       </svg>
     ),
   },
+];
+
+const NAV_GROUPS = [
+  { label: "Yönetim", items: NAV_ITEMS.filter((item) => !item.beta) },
+  { label: "Yakında", items: NAV_ITEMS.filter((item) => item.beta) },
 ];
 
 export default function Sidebar() {
@@ -172,38 +182,49 @@ export default function Sidebar() {
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4">
-        <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-white/35">
-          Yönetim
-        </p>
-        <ul className="space-y-1">
-          {NAV_ITEMS.map((item) => {
-            const active = pathname.startsWith(item.href);
-            const okunmamis = item.kaynak ? kaynakSayilari[item.kaynak] : 0;
-            return (
-              <li key={item.href}>
-                <Link
-                  href={item.href}
-                  className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
-                    active
-                      ? "bg-gradient-to-r from-sky-500/20 to-blue-600/10 text-sky-300"
-                      : "text-white/60 hover:bg-white/5 hover:text-white"
-                  }`}
-                >
-                  {item.icon}
-                  {item.label}
-                  {okunmamis > 0 && (
-                    <span
-                      className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[11px] font-bold text-white"
-                      aria-label={`${okunmamis} okunmamış`}
+        {NAV_GROUPS.map((group, groupIndex) => (
+          <div key={group.label} className={groupIndex ? "mt-5" : ""}>
+            <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-white/35">
+              {group.label}
+            </p>
+            <ul className="space-y-1">
+              {group.items.map((item) => {
+                const active = pathname.startsWith(item.href);
+                const okunmamis = item.kaynak
+                  ? kaynakSayilari[item.kaynak]
+                  : 0;
+                return (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition ${
+                        active
+                          ? "bg-gradient-to-r from-sky-500/20 to-blue-600/10 text-sky-300"
+                          : "text-white/60 hover:bg-white/5 hover:text-white"
+                      }`}
                     >
-                      {okunmamis > 99 ? "99+" : okunmamis}
-                    </span>
-                  )}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+                      {item.icon}
+                      <span>{item.label}</span>
+                      {item.beta && (
+                        <span className="ml-auto rounded-full border border-sky-300/20 bg-sky-400/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-sky-300">
+                          Beta
+                        </span>
+                      )}
+                      {okunmamis > 0 && (
+                        <span
+                          className="ml-auto flex h-5 min-w-5 items-center justify-center rounded-full bg-rose-500 px-1.5 text-[11px] font-bold text-white"
+                          aria-label={`${okunmamis} okunmamış`}
+                        >
+                          {okunmamis > 99 ? "99+" : okunmamis}
+                        </span>
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
       </nav>
 
       <div className="border-t border-white/10 p-4 text-[11px] leading-relaxed text-white/35">

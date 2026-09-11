@@ -2,60 +2,58 @@ import { Link } from "react-router-dom";
 import AmbientBackdrop from "./AmbientBackdrop";
 import { useCookieConsent } from "../lib/cookies/context";
 import { COMPANY } from "../data/company";
-import { ROUTES } from "../lib/seo/routes";
+import { useLocale, useT } from "../lib/i18n/context";
+import { localizedProducts } from "../lib/i18n/products";
+import { useSiteSettings } from "../lib/settings/context";
 import "./Footer.css";
-
-const columns: {
-  title: string;
-  links: { label: string; to?: string; action?: "cookies" }[];
-}[] = [
-  {
-    title: "Ürünlerimiz",
-    links: [
-      { label: "Trafik Sigortası", to: "/teklif/trafik-sigortasi" },
-      { label: "Kasko Sigortası", to: "/teklif/kasko" },
-      { label: "İMM Sigortası", to: "/teklif/imm" },
-      { label: "Yeşil Kart Sigortası", to: "/teklif/yesil-kart" },
-      { label: "Tamamlayıcı Sağlık Sigortası", to: "/teklif/tamamlayici-saglik" },
-      { label: "Özel Sağlık Sigortası", to: "/teklif/ozel-saglik" },
-      { label: "Seyahat Sağlık Sigortası", to: "/teklif/seyahat-saglik" },
-      { label: "Konut Sigortası", to: "/teklif/konut" },
-      { label: "DASK", to: "/teklif/dask" },
-    ],
-  },
-  {
-    title: "Bilgi Merkezi",
-    links: [
-      { label: "Blog", to: "/blog" },
-      { label: "Sıkça Sorulan Sorular", to: "/#sss" },
-      { label: "Sigorta Sözlüğü", to: "/sigorta-sozlugu" },
-      { label: "Karşılaştırma Merkezi", to: "/karsilastirma" },
-      { label: "Risk Haritası", to: "/risk-haritasi" },
-    ],
-  },
-  {
-    title: "Hızlı Bağlantılar",
-    links: [
-      { label: "Hakkımızda", to: "/hakkimizda" },
-      { label: "Teklif Al", to: "/#urunler" },
-      { label: "Poliçe İptal İşlemleri", to: "/police-iptal" },
-      { label: "İletişim", to: "/iletisim" },
-    ],
-  },
-  {
-    title: "Yasal",
-    links: [
-      { label: "KVKK Aydınlatma Metni", to: ROUTES.kvkk },
-      { label: "Gizlilik Politikası", to: ROUTES.privacy },
-      { label: "Çerez Politikası", to: ROUTES.cookies },
-      { label: "Çerez Tercihleri", action: "cookies" as const },
-      { label: "KVKK Başvuru Formu", to: ROUTES.kvkkBasvuru },
-    ],
-  },
-];
 
 export default function Footer() {
   const { openPreferences } = useCookieConsent();
+  const { locale, href, quoteHref } = useLocale();
+  const t = useT();
+  const { isProductEnabled } = useSiteSettings();
+  const productLinks = localizedProducts(locale)
+    .filter((product) => isProductEnabled(product.slug))
+    .map((product) => ({
+      label: product.title,
+      to: quoteHref(product.slug),
+    }));
+
+  const columns: {
+    title: string;
+    links: { label: string; to?: string; action?: "cookies" }[];
+  }[] = [
+    { title: t.footer.products, links: productLinks },
+    {
+      title: t.footer.knowledge,
+      links: [
+        ...(locale === "tr" ? [{ label: t.nav.blog, to: href("blog") }] : []),
+        { label: t.footer.faq, to: `${href("home")}#sss` },
+        { label: t.footer.glossary, to: href("glossary") },
+        { label: t.footer.comparison, to: href("comparisonHub") },
+        { label: t.footer.riskMap, to: href("riskMap") },
+      ],
+    },
+    {
+      title: t.footer.quick,
+      links: [
+        { label: t.nav.about, to: href("about") },
+        { label: t.footer.getQuote, to: `${href("home")}#urunler` },
+        { label: t.nav.cancel, to: href("policyCancel") },
+        { label: t.contact.reachUs, to: href("contact") },
+      ],
+    },
+    {
+      title: t.footer.legal,
+      links: [
+        { label: t.legal.home === "Home" ? "KVKK notice" : locale === "ar" ? "إشعار KVKK" : locale === "fa" ? "اطلاعیه KVKK" : "KVKK Aydınlatma Metni", to: href("kvkk") },
+        { label: locale === "en" ? "Privacy policy" : locale === "ar" ? "سياسة الخصوصية" : locale === "fa" ? "سیاست حریم خصوصی" : "Gizlilik Politikası", to: href("privacy") },
+        { label: t.cookies.link, to: href("cookies") },
+        { label: t.footer.cookiePrefs, action: "cookies" },
+        { label: locale === "en" ? "KVKK application" : locale === "ar" ? "طلب KVKK" : locale === "fa" ? "درخواست KVKK" : "KVKK Başvuru Formu", to: href("kvkkApplication") },
+      ],
+    },
+  ];
 
   return (
     <footer className="footer">
@@ -67,17 +65,13 @@ export default function Footer() {
       <div className="footer__inner">
         <div className="footer__top">
           <div className="footer__brand">
-            <Link to="/" className="footer__brand-link">
+            <Link to={href("home")} className="footer__brand-link">
               <img src="/sigortauzmani-logo.svg" alt="Sigorta Uzmanı" />
               <span>
                 sigorta<strong>uzmanı</strong>
               </span>
             </Link>
-            <p>
-              30&apos;a yakın sigorta şirketinden gelen fiyat ve teminat
-              seçeneklerini karşılaştırmanızı kolaylaştırıyor, poliçe öncesinde
-              ve sonrasında destek sunuyoruz.
-            </p>
+            <p>{t.footer.blurb}</p>
             <a href={`tel:${COMPANY.telefonE164}`} className="footer__phone">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path
@@ -95,7 +89,7 @@ export default function Footer() {
                 <h3>{column.title}</h3>
                 <ul>
                   {column.links.map((link) => (
-                    <li key={link.label}>
+                    <li key={`${link.label}-${link.to ?? link.action}`}>
                       {link.action === "cookies" ? (
                         <button type="button" onClick={openPreferences}>
                           {link.label}
@@ -115,14 +109,10 @@ export default function Footer() {
 
         <div className="footer__bottom">
           <div className="footer__credits">
-            <span>© 2026 Sigorta Uzmanı.</span>
+            <span>{t.footer.copyright}</span>
             <span>
               Powered by{" "}
-              <a
-                href="https://juststack.co/"
-                target="_blank"
-                rel="noreferrer"
-              >
+              <a href="https://juststack.co/" target="_blank" rel="noreferrer">
                 Juststack Software &amp; Tech
               </a>
             </span>

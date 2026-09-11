@@ -1,23 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import {
-  CATEGORY_LABELS,
-  type Comparison,
-  comparisons,
-  getComparison,
-} from "../data/comparisons";
+import { type Comparison, comparisons, getComparison } from "../data/comparisons";
 import ComparisonDuelCard from "../components/ComparisonDuelCard";
+import { localizedComparison } from "../lib/i18n/comparison-copy";
+import { useLocale, useT } from "../lib/i18n/context";
+import { interpolate, localeTag } from "../lib/i18n/format";
 import { pageOgImageUrl } from "../lib/seo/config";
 import { comparisonNodes } from "../lib/seo/nodes/comparison";
-import { ROUTES } from "../lib/seo/routes";
 import { pageGraph } from "../lib/seo/schema";
 import { useJsonLd } from "../lib/seo/useJsonLd";
 import { useSeo } from "../lib/seo/useSeo";
 import "./ComparisonPage.css";
 
-function usePageMeta(comparison: Comparison | undefined) {
-  const path = comparison ? ROUTES.comparison(comparison.slug) : "";
-
+function usePageMeta(comparison: Comparison | undefined, path: string, ogType: string) {
   useSeo(
     comparison
       ? {
@@ -25,7 +20,7 @@ function usePageMeta(comparison: Comparison | undefined) {
           description: comparison.seoDescription,
           path,
           type: "article",
-          image: pageOgImageUrl(comparison.shortTitle, "Karşılaştırma"),
+          image: pageOgImageUrl(comparison.shortTitle, ogType),
         }
       : null,
   );
@@ -37,8 +32,6 @@ function usePageMeta(comparison: Comparison | undefined) {
           name: comparison.seoTitle,
           description: comparison.seoDescription,
           breadcrumb: [
-            { name: "Ana Sayfa", path: ROUTES.home },
-            { name: "Karşılaştırma Merkezi", path: ROUTES.comparisonHub },
             { name: comparison.shortTitle },
           ],
           extra: comparisonNodes(comparison),
@@ -52,10 +45,14 @@ type CellTone = "yes" | "no" | "partial" | "neutral";
 
 function classifyCell(text: string): CellTone {
   const t = text.toLocaleLowerCase("tr-TR").trim();
-  if (/^(hayır|yok|kapsam dışı)/.test(t)) return "no";
-  if (/^(evet|var|zorunlu)/.test(t)) return "yes";
   if (
-    /(pakete göre|ek teminat|ek hizmet|ek paket|eklenebilir|sunulabilir|genelde dahil|sınırlı|isteğe bağlı|alınabilir|deprem kaynaklı)/.test(
+    /^(hayır|yok|kapsam dışı|no\b|not covered|لا|خارج التغطية|خیر|ندارد|خارج از پوشش)/.test(t)
+  ) {
+    return "no";
+  }
+  if (/^(evet|var|zorunlu|yes|compulsory|نعم|إلزامي|بله|اجباری)/.test(t)) return "yes";
+  if (
+    /(pakete göre|ek teminat|ek hizmet|ek paket|eklenebilir|sunulabilir|genelde dahil|sınırlı|isteğe bağlı|alınabilir|deprem kaynaklı|depending on pack|usually included|extra cover|may be offered|اختياري|باقة|معمولاً|بسته به)/.test(
       t,
     )
   ) {
@@ -91,7 +88,9 @@ function TssCalculator({
   examFeeHint: number;
   visitsBreakEvenHint: number;
 }) {
-  // Girdi ham string tutulur; sayıya çevirip state'e yazmak "01000" gibi kalıntılar bırakıyordu.
+  const t = useT();
+  const { locale } = useLocale();
+  const numberLocale = localeTag(locale);
   const [premiumInput, setPremiumInput] = useState(
     String(examFeeHint * visitsBreakEvenHint),
   );
@@ -99,22 +98,20 @@ function TssCalculator({
   const annualPremium = Math.max(0, Number(premiumInput) || 0);
   const examFee = Math.max(0, Number(feeInput) || 0);
   const visits = examFee > 0 ? annualPremium / examFee : 0;
-  const visitsLabel = (Math.round(visits * 10) / 10).toLocaleString("tr-TR");
+  const visitsLabel = (Math.round(visits * 10) / 10).toLocaleString(numberLocale);
   const sampleVisits = [2, 4, 6, 8, 12];
+  const money = (n: number) => `${n.toLocaleString(numberLocale)} ₺`;
 
   return (
     <section className="cmp__calc" aria-labelledby="calc-title">
       <div className="cmp__section-head">
-        <h2 id="calc-title">Ne zaman kâra geçersiniz?</h2>
-        <p>
-          Yıllık TSS primi ile özel muayene fark ücretinizi girin; yaklaşık
-          kaç ziyarette dengeye geldiğinizi görün.
-        </p>
+        <h2 id="calc-title">{t.compare.calcTitle}</h2>
+        <p>{t.compare.calcLead}</p>
       </div>
 
       <div className="cmp__calc-grid">
         <label>
-          <span>Yıllık TSS primi (₺)</span>
+          <span>{t.compare.calcPremium}</span>
           <input
             type="number"
             min={0}
@@ -124,7 +121,7 @@ function TssCalculator({
           />
         </label>
         <label>
-          <span>Ortalama özel muayene farkı (₺)</span>
+          <span>{t.compare.calcFee}</span>
           <input
             type="number"
             min={0}
@@ -137,32 +134,23 @@ function TssCalculator({
 
       <div className="cmp__calc-result">
         {annualPremium <= 0 || examFee <= 0 ? (
-          <p>Hesaplamak için yıllık prim ve muayene farkı girin.</p>
+          <p>{t.compare.calcNeedValues}</p>
         ) : visits < 1 ? (
-          <p>
-            Yıllık priminiz tek bir muayene farkından bile düşük;{" "}
-            <strong>daha ilk muayenede</strong> kâra geçersiniz.
-          </p>
+          <p>{t.compare.calcFirstVisit}</p>
         ) : (
-          <p>
-            Yılda yaklaşık <strong>{visitsLabel} kez</strong> özel muayeneye
-            giderseniz priminizi amorti edersiniz.
-          </p>
+          <p>{interpolate(t.compare.calcAmortize, { n: visitsLabel })}</p>
         )}
-        <p className="cmp__calc-note">
-          Bu hesap yalnızca ayakta muayene farkını baz alır. Ameliyat ve yatarak
-          tedavi riski TSS’nin asıl değeridir.
-        </p>
+        <p className="cmp__calc-note">{t.compare.calcNote}</p>
       </div>
 
       <div className="cmp__calc-table-wrap">
         <table className="cmp__calc-table">
           <thead>
             <tr>
-              <th>Yıllık ziyaret</th>
-              <th>Cebinden ödeme</th>
-              <th>TSS ile (prim)</th>
-              <th>Fark</th>
+              <th>{t.compare.calcVisits}</th>
+              <th>{t.compare.calcOutOfPocket}</th>
+              <th>{t.compare.calcWithTss}</th>
+              <th>{t.compare.calcDiff}</th>
             </tr>
           </thead>
           <tbody>
@@ -171,12 +159,12 @@ function TssCalculator({
               const diff = outOfPocket - annualPremium;
               return (
                 <tr key={v}>
-                  <td>{v} kez</td>
-                  <td>{outOfPocket.toLocaleString("tr-TR")} ₺</td>
-                  <td>{annualPremium.toLocaleString("tr-TR")} ₺</td>
+                  <td>{interpolate(t.compare.calcTimes, { n: v })}</td>
+                  <td>{money(outOfPocket)}</td>
+                  <td>{money(annualPremium)}</td>
                   <td className={diff > 0 ? "is-gain" : diff < 0 ? "is-loss" : ""}>
                     {diff > 0 ? "+" : ""}
-                    {diff.toLocaleString("tr-TR")} ₺
+                    {money(diff)}
                   </td>
                 </tr>
               );
@@ -190,11 +178,15 @@ function TssCalculator({
 
 export default function ComparisonPage() {
   const { slug } = useParams<{ slug: string }>();
-  const comparison = slug ? getComparison(slug) : undefined;
+  const { locale, href, quoteHref } = useLocale();
+  const t = useT();
+  const raw = slug ? getComparison(slug) : undefined;
+  const comparison = raw ? localizedComparison(raw, locale) : undefined;
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const relatedTrackRef = useRef<HTMLUListElement>(null);
+  const path = comparison ? href("comparison", { slug: comparison.slug }) : "";
 
-  usePageMeta(comparison);
+  usePageMeta(comparison, path, t.compare.ogType);
 
   useEffect(() => {
     if (!comparison) return;
@@ -202,7 +194,7 @@ export default function ComparisonPage() {
   }, [comparison]);
 
   if (!comparison) {
-    return <Navigate to="/karsilastirma" replace />;
+    return <Navigate to={href("comparisonHub")} replace />;
   }
 
   // Aynı kategorideki diğer karşılaştırmalar carousel'de gösterilir.
@@ -233,17 +225,17 @@ export default function ComparisonPage() {
       </div>
 
       <div className="cmp__inner">
-        <nav className="cmp__breadcrumb" aria-label="Sayfa konumu">
-          <Link to="/">Ana Sayfa</Link>
+        <nav className="cmp__breadcrumb" aria-label={t.quote.breadcrumb}>
+          <Link to={href("home")}>{t.quote.home}</Link>
           <span aria-hidden="true">/</span>
-          <Link to="/karsilastirma">Karşılaştırma Merkezi</Link>
+          <Link to={href("comparisonHub")}>{t.footer.comparison}</Link>
           <span aria-hidden="true">/</span>
           <span className="cmp__breadcrumb-current">{comparison.shortTitle}</span>
         </nav>
 
         <header className="cmp__hero">
           <span className="cmp__eyebrow">
-            {CATEGORY_LABELS[comparison.category]}
+            {t.compare.categories[comparison.category]}
           </span>
 
           <h1 className="cmp__hero-title">{comparison.heroTitle}</h1>
@@ -257,23 +249,23 @@ export default function ComparisonPage() {
 
         {comparison.sameThingNote && (
           <aside className="cmp__same" role="note">
-            <strong>Önemli:</strong> {comparison.sameThingNote}
+            <strong>{t.compare.important}:</strong> {comparison.sameThingNote}
           </aside>
         )}
 
         <section className="cmp__table-section" aria-labelledby="table-title">
           <div className="cmp__section-head">
-            <h2 id="table-title">Teminatlar</h2>
-            <p>Yan yana temel farklar.</p>
+            <h2 id="table-title">{t.compare.covers}</h2>
+            <p>{t.compare.coversLead}</p>
             <span className="cmp__table-mobile-hint" aria-hidden="true">
-              Tabloyu yana kaydırarak tüm farkları inceleyin
+              {t.compare.swipeHint}
             </span>
           </div>
           <div className="cmp__table-wrap">
             <table className="cmp__table">
               <thead>
                 <tr>
-                  <th scope="col">Özellik</th>
+                  <th scope="col">{t.compare.feature}</th>
                   <th scope="col">{comparison.left.name}</th>
                   <th scope="col">{comparison.right.name}</th>
                 </tr>
@@ -297,24 +289,26 @@ export default function ComparisonPage() {
 
         <section className="cmp__proscons" aria-labelledby="pros-title">
           <div className="cmp__section-head">
-            <h2 id="pros-title">Avantajlar & dezavantajlar</h2>
+            <h2 id="pros-title">{t.compare.proscons}</h2>
           </div>
           <div className="cmp__proscons-grid">
             {(
               [
                 {
+                  key: "left",
                   name: comparison.left.name,
                   pros: comparison.advantages.left,
                   cons: comparison.disadvantages.left,
                 },
                 {
+                  key: "right",
                   name: comparison.right.name,
                   pros: comparison.advantages.right,
                   cons: comparison.disadvantages.right,
                 },
               ] as const
             ).map((side) => (
-              <div className="cmp__col" key={side.name}>
+              <div className="cmp__col" key={side.key}>
                 <h3>{side.name}</h3>
                 <ul className="cmp__pros-list">
                   {side.pros.map((item) => (
@@ -343,7 +337,7 @@ export default function ComparisonPage() {
 
         <section className="cmp__who" aria-labelledby="who-title">
           <div className="cmp__section-head">
-            <h2 id="who-title">Kimler için?</h2>
+            <h2 id="who-title">{t.compare.who}</h2>
           </div>
           <div className="cmp__who-grid">
             <div>
@@ -366,11 +360,11 @@ export default function ComparisonPage() {
 
         <section className="cmp__verdict" aria-labelledby="verdict-title">
           <div className="cmp__verdict-card">
-            <h2 id="verdict-title">Tavsiyemiz</h2>
+            <h2 id="verdict-title">{t.compare.verdict}</h2>
             <p className="cmp__verdict-text">{comparison.verdict}</p>
             <p className="cmp__verdict-rec">{comparison.recommendationText}</p>
-            <Link to={`/teklif/${ctaSlug}`} className="cmp__cta">
-              Teklif Al
+            <Link to={quoteHref(ctaSlug)} className="cmp__cta">
+              {t.compare.getQuote}
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path
                   d="M5 12h14M13 6l6 6-6 6"
@@ -386,7 +380,7 @@ export default function ComparisonPage() {
 
         <section className="cmp__faq" aria-labelledby="faq-title">
           <div className="cmp__section-head">
-            <h2 id="faq-title">Sık sorulan sorular</h2>
+            <h2 id="faq-title">{t.compare.faqs}</h2>
           </div>
           <div className="cmp__faq-list">
             {comparison.faqs.map((faq, index) => {
@@ -415,10 +409,11 @@ export default function ComparisonPage() {
           <section className="cmp__related" aria-labelledby="related-title">
             <div className="cmp__section-head cmp__section-head--row">
               <div>
-                <h2 id="related-title">İlgili karşılaştırmalar</h2>
+                <h2 id="related-title">{t.compare.related}</h2>
                 <p>
-                  {CATEGORY_LABELS[comparison.category]} kategorisindeki diğer
-                  içerikler.
+                  {interpolate(t.compare.relatedLead, {
+                    category: t.compare.categories[comparison.category],
+                  })}
                 </p>
               </div>
               {related.length > 3 && (
@@ -426,7 +421,7 @@ export default function ComparisonPage() {
                   <button
                     type="button"
                     onClick={() => scrollRelated(-1)}
-                    aria-label="Önceki karşılaştırmalar"
+                    aria-label={t.compare.prev}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path
@@ -441,7 +436,7 @@ export default function ComparisonPage() {
                   <button
                     type="button"
                     onClick={() => scrollRelated(1)}
-                    aria-label="Sonraki karşılaştırmalar"
+                    aria-label={t.compare.next}
                   >
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                       <path
@@ -475,10 +470,10 @@ export default function ComparisonPage() {
         )}
 
         <p className="cmp__back">
-          <Link to="/karsilastirma">← Tüm karşılaştırmalara dön</Link>
+          <Link to={href("comparisonHub")}>← {t.compare.catalog}</Link>
           {" · "}
           <span>
-            {comparisons.length} içerik · Karşılaştırma Merkezi
+            {comparisons.length} · {t.footer.comparison}
           </span>
         </p>
       </div>

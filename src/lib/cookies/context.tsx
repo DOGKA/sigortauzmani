@@ -10,6 +10,7 @@ import {
 import { applyOptionalConsents } from "./apply";
 import { readConsent, writeConsent } from "./storage";
 import type { CookieConsentRecord, CookiePreferences } from "./types";
+import { useSiteSettings } from "../settings/context";
 
 const EMPTY_PREFERENCES: CookiePreferences = {
   analytics: false,
@@ -45,12 +46,11 @@ function draftFromConsent(consent: CookieConsentRecord | null): CookiePreference
 }
 
 function persist(preferences: CookiePreferences): CookieConsentRecord {
-  const record = writeConsent(preferences);
-  applyOptionalConsents(record);
-  return record;
+  return writeConsent(preferences);
 }
 
 export function CookieConsentProvider({ children }: { children: ReactNode }) {
+  const { settings } = useSiteSettings();
   const [consent, setConsent] = useState<CookieConsentRecord | null>(() =>
     readConsent(),
   );
@@ -61,8 +61,8 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    applyOptionalConsents(consent);
-  }, [consent]);
+    applyOptionalConsents(consent, settings.analytics);
+  }, [consent, settings.analytics]);
 
   const rejectOptional = useCallback(() => {
     const record = persist(EMPTY_PREFERENCES);

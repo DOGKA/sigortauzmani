@@ -1,4 +1,5 @@
 import "./Partners.css";
+import { useT } from "../lib/i18n/context";
 
 const PARTNERS = [
   { file: "aksigorta.png", name: "Aksigorta" },
@@ -56,19 +57,14 @@ function MarqueeRow({
 }
 
 export default function Partners() {
+  const t = useT();
   return (
     <section className="partners" aria-labelledby="partners-title">
       <div className="partners__inner">
         <div className="partners__heading">
-          <span className="partners__eyebrow">Güçlü iş ortaklıkları</span>
-          <h2 id="partners-title">
-            30&rsquo;a Yakın Sigorta Şirketinden Teklif Al
-          </h2>
-          <p>
-            Entegrasyon bulunan sigorta şirketlerinden gelen fiyat ve teminat
-            seçeneklerini tek ekranda karşılaştırın; ihtiyacınıza uygun teklifi
-            seçin.
-          </p>
+          <span className="partners__eyebrow">{t.partners.eyebrow}</span>
+          <h2 id="partners-title">{t.partners.title}</h2>
+          <p>{t.partners.lead}</p>
         </div>
 
         <div className="partners__marquee">

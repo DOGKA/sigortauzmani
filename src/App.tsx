@@ -3,15 +3,35 @@ import {
   Routes,
   Route,
   Navigate,
+  Outlet,
   useLocation,
-  useParams,
   useSearchParams,
 } from "react-router-dom";
-import { Suspense, lazy, useEffect } from "react";
+import { Suspense, lazy, useEffect, type ReactNode } from "react";
 import CookieConsent from "./components/cookies/CookieConsent";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import UnavailablePage from "./components/UnavailablePage";
 import { CookieConsentProvider } from "./lib/cookies/context";
+import {
+  SiteSettingsProvider,
+  useSiteSettings,
+} from "./lib/settings/context";
+import { trackAnalyticsPageView } from "./lib/cookies/apply";
+import {
+  LocaleProvider,
+  useInternalProductSlug,
+  useLocale,
+  useT,
+} from "./lib/i18n/context";
+import { LOCALES, type Locale } from "./lib/i18n/locales";
+import {
+  LEGAL_PAGE_KEYS,
+  MAINTENANCE_ALLOWED_PAGES,
+  localizedPath,
+  parsePath,
+  type PageKey,
+} from "./lib/i18n/paths";
 import HomePage from "./pages/HomePage";
 import { isOtomatikUrun } from "./lib/io/constants";
 
@@ -37,7 +57,6 @@ function ScrollToTop() {
       window.scrollTo(0, 0);
       return;
     }
-    // Lazy sayfalardan gelindiğinde hedef henüz DOM'da olmayabilir
     const id = hash.slice(1);
     let tries = 0;
     let frame = 0;
@@ -55,27 +74,41 @@ function ScrollToTop() {
   return null;
 }
 
+function AnalyticsRouteTracker() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    trackAnalyticsPageView(pathname);
+  }, [pathname]);
+  return null;
+}
+
 function PageLoader() {
+  const t = useT();
   return (
-    <div className="page-loader" role="status" aria-label="Sayfa yükleniyor">
+    <div className="page-loader" role="status" aria-label={t.nav.loading}>
       <span className="page-loader__spinner" />
     </div>
   );
 }
 
-/**
- * Tam otomasyona açılan ürünler self servis teklif akışına, kalanlar mevcut
- * lead formuna gider. Tek rota altında ayrıldı ki /teklif/:slug adresleri ve
- * vercel.json'daki eski SEO yönlendirmeleri değişmesin.
- *
- * `?form=manuel` self servisi atlayıp lead formunu açar: sigorta servisi
- * kapalıyken ya da kapasite dolduğunda akış kullanıcıyı buraya düşürüyor,
- * böylece talep kaybedilmiyor.
- */
+function Lazy({ children }: { children: ReactNode }) {
+  return <Suspense fallback={<PageLoader />}>{children}</Suspense>;
+}
+
 function QuoteRoute() {
-  const { slug } = useParams<{ slug: string }>();
+  const slug = useInternalProductSlug();
   const [searchParams] = useSearchParams();
+  const { isProductEnabled } = useSiteSettings();
+  const t = useT();
   const manuel = searchParams.get("form") === "manuel";
+  if (slug && !isProductEnabled(slug)) {
+    return (
+      <UnavailablePage
+        title={t.quote.unavailableTitle}
+        message={t.quote.unavailableMessage}
+      />
+    );
+  }
   return slug && isOtomatikUrun(slug) && !manuel ? (
     <QuoteFlowPage />
   ) : (
@@ -83,10 +116,169 @@ function QuoteRoute() {
   );
 }
 
+function MaintenanceGate() {
+  const { pathname } = useLocation();
+  const { settings } = useSiteSettings();
+  const { href } = useLocale();
+  const t = useT();
+  const page = parsePath(pathname).page;
+  if (
+    settings.maintenance.enabled &&
+    !MAINTENANCE_ALLOWED_PAGES.has(page)
+  ) {
+    return (
+      <UnavailablePage
+        title={settings.maintenance.title}
+        message={settings.maintenance.message}
+        contactTo={href("contact")}
+        contactLabel={t.unavailable.contact}
+      />
+    );
+  }
+  return <Outlet />;
+}
+
+function Shell({ locale }: { locale: Locale }) {
+  return (
+    <LocaleProvider locale={locale}>
+      <CookieConsentProvider>
+        <AnalyticsRouteTracker />
+        <ScrollToTop />
+        <Header />
+        <MaintenanceGate />
+        <Footer />
+        <CookieConsent />
+      </CookieConsentProvider>
+    </LocaleProvider>
+  );
+}
+
+function pagePath(locale: Locale, page: PageKey, slug?: string) {
+  return localizedPath(locale, page, slug ? { slug } : undefined);
+}
+
+function localeRoutes(locale: Locale) {
+  return (
+    <Route key={locale} element={<Shell locale={locale} />}>
+      <Route path={pagePath(locale, "home")} element={<HomePage />} />
+      <Route
+        path={pagePath(locale, "quote", ":slug")}
+        element={
+          <Lazy>
+            <QuoteRoute />
+          </Lazy>
+        }
+      />
+      <Route
+        path={pagePath(locale, "riskMap")}
+        element={
+          <Lazy>
+            <RiskMapPage />
+          </Lazy>
+        }
+      />
+      <Route
+        path={pagePath(locale, "glossary")}
+        element={
+          <Lazy>
+            <GlossaryPage />
+          </Lazy>
+        }
+      />
+      <Route
+        path={pagePath(locale, "comparisonHub")}
+        element={
+          <Lazy>
+            <ComparisonHubPage />
+          </Lazy>
+        }
+      />
+      <Route
+        path={pagePath(locale, "comparison", ":slug")}
+        element={
+          <Lazy>
+            <ComparisonPage />
+          </Lazy>
+        }
+      />
+      <Route
+        path={pagePath(locale, "policyCancel")}
+        element={
+          <Lazy>
+            <PolicyCancelPage />
+          </Lazy>
+        }
+      />
+      <Route
+        path={pagePath(locale, "about")}
+        element={
+          <Lazy>
+            <AboutPage />
+          </Lazy>
+        }
+      />
+      <Route
+        path={pagePath(locale, "contact")}
+        element={
+          <Lazy>
+            <ContactPage />
+          </Lazy>
+        }
+      />
+      {locale === "tr" ? (
+        <>
+          <Route
+            path={pagePath(locale, "blog")}
+            element={
+              <Lazy>
+                <BlogPage />
+              </Lazy>
+            }
+          />
+          <Route
+            path="/blog/trafik-sigortasi-yenilemesi-gecikirse-ne-olur"
+            element={
+              <Navigate
+                to="/blog/trafik-sigortasi-gecikirse-ne-olur-cezasi-ve-riskleri-2026"
+                replace
+              />
+            }
+          />
+          <Route
+            path={pagePath(locale, "blogPost", ":slug")}
+            element={
+              <Lazy>
+                <BlogPostPage />
+              </Lazy>
+            }
+          />
+        </>
+      ) : null}
+      {LEGAL_PAGE_KEYS.map((page) => (
+        <Route
+          key={page}
+          path={pagePath(locale, page)}
+          element={
+            <Lazy>
+              <LegalPage />
+            </Lazy>
+          }
+        />
+      ))}
+      <Route
+        path={locale === "tr" ? "*" : `${pagePath(locale, "home")}/*`}
+        element={
+          <Lazy>
+            <NotFoundPage />
+          </Lazy>
+        }
+      />
+    </Route>
+  );
+}
+
 export default function App() {
   useEffect(() => {
-    // Prefetch the most-clicked lazy page so navigation feels instant
-    // requestIdleCallback yoksa (eski Safari) kısa bir gecikmeyle yükle
     const idle =
       window.requestIdleCallback?.bind(window) ??
       ((cb: () => void) => window.setTimeout(cb, 1500));
@@ -95,144 +287,12 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <CookieConsentProvider>
-        <ScrollToTop />
-        <Header />
+      <SiteSettingsProvider>
         <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route
-          path="/teklif/:slug"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <QuoteRoute />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/risk-haritasi"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <RiskMapPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/sigorta-sozlugu"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <GlossaryPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/karsilastirma"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <ComparisonHubPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/karsilastirma/:slug"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <ComparisonPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/police-iptal"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <PolicyCancelPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/hakkimizda"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <AboutPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/iletisim"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <ContactPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/blog"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <BlogPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/blog/trafik-sigortasi-yenilemesi-gecikirse-ne-olur"
-          element={
-            <Navigate
-              to="/blog/trafik-sigortasi-gecikirse-ne-olur-cezasi-ve-riskleri-2026"
-              replace
-            />
-          }
-        />
-        <Route
-          path="/blog/:slug"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <BlogPostPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/kvkk"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <LegalPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/gizlilik-politikasi"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <LegalPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/cerez-politikasi"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <LegalPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="/kvkk-basvuru"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <LegalPage />
-            </Suspense>
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <Suspense fallback={<PageLoader />}>
-              <NotFoundPage />
-            </Suspense>
-          }
-        />
+          {LOCALES.filter((locale) => locale !== "tr").map(localeRoutes)}
+          {localeRoutes("tr")}
         </Routes>
-        <Footer />
-        <CookieConsent />
-      </CookieConsentProvider>
+      </SiteSettingsProvider>
     </BrowserRouter>
   );
 }

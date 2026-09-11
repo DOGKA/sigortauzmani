@@ -11,6 +11,9 @@ import {
 import { formatPrim, paraKodu } from "@/lib/format";
 import { useVurgu, VURGU_SATIR_SINIFI } from "@/lib/bildirim/useVurgu";
 import { buildTalepWhatsAppUrl } from "@/lib/whatsapp";
+import BulkActions from "@/components/BulkActions";
+import { deleteBulk, downloadCsv } from "@/lib/bulk-actions";
+import { useBulkSelection } from "@/lib/useBulkSelection";
 
 const STATUS_STYLES: Record<TalepStatus, string> = {
   yeni: "bg-sky-100 text-sky-700",
@@ -50,6 +53,7 @@ export default function TaleplerTable() {
   const [statusFilter, setStatusFilter] = useState<TalepStatus | "all">("all");
   const [productFilter, setProductFilter] = useState<string>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const supabase = useMemo(() => createClient(), []);
   const { vurguId, vurguRef } = useVurgu(setExpandedId);
 
@@ -97,11 +101,65 @@ export default function TaleplerTable() {
       (statusFilter === "all" || t.status === statusFilter) &&
       (productFilter === "all" || t.product_title === productFilter),
   );
+  const selection = useBulkSelection(filtered.map((talep) => talep.id));
+
+  const exportCsv = () => {
+    const rows = selection.selectedCount
+      ? filtered.filter((talep) => selection.selectedIds.has(talep.id))
+      : filtered;
+    downloadCsv(
+      "talepler",
+      [
+        { key: "talep_no", label: "Talep No" },
+        { key: "product_title", label: "Sigorta Türü" },
+        { key: "sirket_adi", label: "Şirket" },
+        { key: "entity_type", label: "Sigortalı Türü" },
+        { key: "tckn", label: "T.C. Kimlik No" },
+        { key: "vergi_no", label: "Vergi No" },
+        { key: "phone", label: "Telefon" },
+        { key: "birth_date", label: "Doğum Tarihi" },
+        { key: "plate", label: "Plaka" },
+        { key: "gosterilen_prim", label: "Gösterilen Prim" },
+        { key: "contact_pref", label: "İletişim Tercihi" },
+        { key: "contact_date", label: "İletişim Tarihi" },
+        { key: "contact_time", label: "İletişim Saati" },
+        { key: "status", label: "Durum" },
+        { key: "created_at", label: "Oluşturulma Tarihi" },
+      ],
+      rows,
+    );
+  };
+
+  const deleteSelected = async () => {
+    const ids = selection.selectedVisibleIds;
+    if (
+      !ids.length ||
+      !window.confirm(
+        `${ids.length} talep kalıcı olarak silinecek. Bu işlem geri alınamaz. Devam edilsin mi?`,
+      )
+    ) {
+      return;
+    }
+    setDeleting(true);
+    setError(null);
+    try {
+      await deleteBulk("talepler", ids);
+      setTalepler((current) => current.filter((item) => !ids.includes(item.id)));
+      selection.remove(ids);
+      if (expandedId && ids.includes(expandedId)) setExpandedId(null);
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error ? deleteError.message : "Talepler silinemedi.",
+      );
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white">
       {/* Filtreler */}
-      <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 px-5 py-4">
+      <div className="flex items-center gap-3 overflow-x-auto border-b border-slate-200 px-5 py-4">
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as TalepStatus | "all")}
@@ -147,6 +205,18 @@ export default function TaleplerTable() {
         <span className="text-sm text-slate-400">
           {filtered.length} talep
         </span>
+        <div className="shrink-0">
+          <BulkActions
+            selectedCount={selection.selectedCount}
+            visibleCount={filtered.length}
+            allSelected={selection.allSelected}
+            busy={deleting}
+            itemLabel="talep"
+            onToggleAll={selection.toggleAll}
+            onExport={exportCsv}
+            onDelete={() => void deleteSelected()}
+          />
+        </div>
       </div>
 
       {error && (
@@ -160,6 +230,7 @@ export default function TaleplerTable() {
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-400">
+              <th className="w-10 px-3 py-3.5" />
               <th className="px-5 py-3.5 font-semibold">Talep No</th>
               <th className="px-4 py-3.5 font-semibold">Sigorta Türü</th>
               <th className="px-4 py-3.5 font-semibold">Şirket</th>
@@ -173,13 +244,13 @@ export default function TaleplerTable() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={8} className="px-5 py-14 text-center text-slate-400">
+                <td colSpan={9} className="px-5 py-14 text-center text-slate-400">
                   Yükleniyor...
                 </td>
               </tr>
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={8} className="px-5 py-14 text-center text-slate-400">
+                <td colSpan={9} className="px-5 py-14 text-center text-slate-400">
                   Gösterilecek talep yok.
                 </td>
               </tr>
@@ -195,6 +266,8 @@ export default function TaleplerTable() {
                     setExpandedId((id) => (id === talep.id ? null : talep.id))
                   }
                   onStatusChange={(s) => void updateStatus(talep.id, s)}
+                  selected={selection.selectedIds.has(talep.id)}
+                  onSelect={() => selection.toggle(talep.id)}
                 />
               ))
             )}
@@ -212,6 +285,8 @@ function TalepRow({
   satirRef,
   onToggle,
   onStatusChange,
+  selected,
+  onSelect,
 }: {
   talep: Talep;
   expanded: boolean;
@@ -219,6 +294,8 @@ function TalepRow({
   satirRef?: (dugum: HTMLTableRowElement | null) => void;
   onToggle: () => void;
   onStatusChange: (status: TalepStatus) => void;
+  selected: boolean;
+  onSelect: () => void;
 }) {
   const whatsappUrl = buildTalepWhatsAppUrl(talep);
 
@@ -231,6 +308,15 @@ function TalepRow({
         }`}
         onClick={onToggle}
       >
+        <td className="w-10 px-3 py-3.5" onClick={(e) => e.stopPropagation()}>
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onSelect}
+            aria-label={`${talep.talep_no} talebini seç`}
+            className="size-4 rounded border-slate-300 accent-sky-600"
+          />
+        </td>
         <td className="px-5 py-3.5 font-mono text-[13px] font-semibold text-sky-600">
           {talep.talep_no}
         </td>
@@ -286,7 +372,7 @@ function TalepRow({
 
       {expanded && (
         <tr className="border-b border-slate-100 bg-slate-50/60">
-          <td colSpan={8} className="px-5 py-4">
+          <td colSpan={9} className="px-5 py-4">
             <dl className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:grid-cols-3 lg:grid-cols-4">
               <DetailItem label="Şirket" value={talep.sirket_adi ?? null} />
               <DetailItem

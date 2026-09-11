@@ -23,6 +23,9 @@ import {
   type TeklifFiyati,
   type TeklifOturumu,
 } from "@/lib/types";
+import BulkActions from "@/components/BulkActions";
+import { deleteBulk, downloadCsv } from "@/lib/bulk-actions";
+import { useBulkSelection } from "@/lib/useBulkSelection";
 
 const STATUS_STYLES: Record<OturumStatus, string> = {
   baslatildi: "bg-slate-100 text-slate-600",
@@ -48,6 +51,7 @@ export default function TeklifGecmisiTable() {
   const [statusFilter, setStatusFilter] = useState<OturumStatus | "all">("all");
   const [bransFilter, setBransFilter] = useState<string>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const supabase = useMemo(() => createClient(), []);
 
   const load = useCallback(async () => {
@@ -88,11 +92,70 @@ export default function TeklifGecmisiTable() {
       (statusFilter === "all" || o.status === statusFilter) &&
       (bransFilter === "all" || String(o.brans_no) === bransFilter),
   );
+  const selection = useBulkSelection(filtered.map((oturum) => oturum.id));
+
+  const exportCsv = () => {
+    const rows = selection.selectedCount
+      ? filtered.filter((oturum) => selection.selectedIds.has(oturum.id))
+      : filtered;
+    downloadCsv(
+      "teklif-gecmisi",
+      [
+        { key: "oturum_no", label: "İşlem No" },
+        { key: "product_slug", label: "Ürün" },
+        { key: "brans_no", label: "Branş No" },
+        { key: "entity_type", label: "Sigortalı Türü" },
+        { key: "ad_soyad", label: "Ad Soyad" },
+        { key: "tckn", label: "T.C. Kimlik No" },
+        { key: "vergi_no", label: "Vergi No" },
+        { key: "phone", label: "Telefon" },
+        { key: "birth_date", label: "Doğum Tarihi" },
+        { key: "plate", label: "Plaka" },
+        { key: "adres_kodu", label: "Adres Kodu" },
+        { key: "status", label: "Durum" },
+        { key: "hata_mesaji", label: "Hata Mesajı" },
+        { key: "form_data", label: "Form Verisi" },
+        { key: "created_at", label: "Oluşturulma Tarihi" },
+        { key: "updated_at", label: "Güncellenme Tarihi" },
+      ],
+      rows,
+    );
+  };
+
+  const deleteSelected = async () => {
+    const ids = selection.selectedVisibleIds;
+    if (
+      !ids.length ||
+      !window.confirm(
+        `${ids.length} teklif oturumu, bağlı fiyatlar ve satın alma kayıtları kalıcı olarak silinecek. Devam edilsin mi?`,
+      )
+    ) {
+      return;
+    }
+    setDeleting(true);
+    setError(null);
+    try {
+      await deleteBulk("teklif-gecmisi", ids);
+      setOturumlar((current) =>
+        current.filter((item) => !ids.includes(item.id)),
+      );
+      selection.remove(ids);
+      if (expandedId && ids.includes(expandedId)) setExpandedId(null);
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Teklif geçmişi silinemedi.",
+      );
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <div className="rounded-2xl border border-slate-200 bg-white">
       {/* Filtreler */}
-      <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 px-5 py-4">
+      <div className="flex items-center gap-3 overflow-x-auto border-b border-slate-200 px-5 py-4">
         <select
           value={statusFilter}
           onChange={(e) =>
@@ -144,6 +207,18 @@ export default function TeklifGecmisiTable() {
         </button>
 
         <span className="text-sm text-slate-400">{filtered.length} oturum</span>
+        <div className="shrink-0">
+          <BulkActions
+            selectedCount={selection.selectedCount}
+            visibleCount={filtered.length}
+            allSelected={selection.allSelected}
+            busy={deleting}
+            itemLabel="oturum"
+            onToggleAll={selection.toggleAll}
+            onExport={exportCsv}
+            onDelete={() => void deleteSelected()}
+          />
+        </div>
       </div>
 
       {error && (
@@ -157,6 +232,7 @@ export default function TeklifGecmisiTable() {
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-400">
+              <th className="w-10 px-3 py-3.5" />
               <th className="px-5 py-3.5 font-semibold">İşlem No</th>
               <th className="px-4 py-3.5 font-semibold">Branş</th>
               <th className="px-4 py-3.5 font-semibold">Sigortalı</th>
@@ -171,7 +247,7 @@ export default function TeklifGecmisiTable() {
             {loading ? (
               <tr>
                 <td
-                  colSpan={8}
+                  colSpan={9}
                   className="px-5 py-14 text-center text-slate-400"
                 >
                   Yükleniyor...
@@ -180,7 +256,7 @@ export default function TeklifGecmisiTable() {
             ) : filtered.length === 0 ? (
               <tr>
                 <td
-                  colSpan={8}
+                  colSpan={9}
                   className="px-5 py-14 text-center text-slate-400"
                 >
                   Gösterilecek oturum yok.
@@ -195,6 +271,8 @@ export default function TeklifGecmisiTable() {
                   onToggle={() =>
                     setExpandedId((id) => (id === oturum.id ? null : oturum.id))
                   }
+                  selected={selection.selectedIds.has(oturum.id)}
+                  onSelect={() => selection.toggle(oturum.id)}
                 />
               ))
             )}
@@ -209,10 +287,14 @@ function OturumRow({
   oturum,
   expanded,
   onToggle,
+  selected,
+  onSelect,
 }: {
   oturum: TeklifOturumu;
   expanded: boolean;
   onToggle: () => void;
+  selected: boolean;
+  onSelect: () => void;
 }) {
   return (
     <>
@@ -220,6 +302,15 @@ function OturumRow({
         className="cursor-pointer border-b border-slate-100 transition hover:bg-slate-50"
         onClick={onToggle}
       >
+        <td className="w-10 px-3 py-3.5" onClick={(e) => e.stopPropagation()}>
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onSelect}
+            aria-label={`${oturum.oturum_no} teklif oturumunu seç`}
+            className="size-4 rounded border-slate-300 accent-sky-600"
+          />
+        </td>
         <td className="px-5 py-3.5 font-mono text-[13px] font-semibold text-sky-600">
           {oturum.oturum_no}
         </td>
@@ -265,7 +356,7 @@ function OturumRow({
 
       {expanded && (
         <tr className="border-b border-slate-100 bg-slate-50/60">
-          <td colSpan={8} className="px-5 py-4">
+          <td colSpan={9} className="px-5 py-4">
             <dl className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:grid-cols-3 lg:grid-cols-4">
               <DetailItem
                 label="Sigortalı Türü"

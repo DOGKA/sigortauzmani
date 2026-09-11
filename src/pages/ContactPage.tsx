@@ -11,6 +11,7 @@ import FormKvkkNotu from "../components/FormKvkkNotu";
 import { CONTACT_EMAIL } from "../lib/seo/config";
 import { ROUTES } from "../lib/seo/routes";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
+import { useLocale } from "../lib/i18n/context";
 import "./ContactPage.css";
 
 const MAX_FILE_BYTES = 5 * 1024 * 1024;
@@ -27,6 +28,7 @@ type FormErrors = Partial<
 
 export default function ContactPage() {
   const fileInputId = useId();
+  const { href } = useLocale();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -41,7 +43,7 @@ export default function ContactPage() {
   const [referenceNo, setReferenceNo] = useState<string | null>(null);
   const [kvkkOkundu, setKvkkOkundu] = useState(false);
 
-  useStaticPageSeo("/iletisim");
+  useStaticPageSeo(href("contact"));
 
   const clearError = (key: keyof FormErrors) => {
     setErrors((current) => {

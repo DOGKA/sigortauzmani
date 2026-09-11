@@ -10,8 +10,8 @@ import {
   sortTermsAz,
 } from "../data/glossary";
 import { glossaryTermSetNode } from "../lib/seo/nodes/glossary";
-import { ROUTES } from "../lib/seo/routes";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
+import { useLocale } from "../lib/i18n/context";
 import "./GlossaryPage.css";
 
 type CategoryFilter = "all" | GlossaryCategory;
@@ -24,11 +24,12 @@ function normalizeSearch(value: string): string {
 }
 
 export default function GlossaryPage() {
+  const { href } = useLocale();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<CategoryFilter>("genel");
   const [openSlug, setOpenSlug] = useState<string | null>(null);
 
-  useStaticPageSeo(ROUTES.glossary, { extra: [glossaryTermSetNode()] });
+  useStaticPageSeo(href("glossary"), { extra: [glossaryTermSetNode()] });
 
   useEffect(() => {
     const hash = window.location.hash.replace("#", "");

@@ -239,9 +239,9 @@ export const legalDocuments: LegalDocument[] = [
     path: ROUTES.cookies,
     title: "Çerez ve Benzeri Teknolojiler Politikası",
     description:
-      "sigortauzmani.net çerez ve benzeri teknolojiler politikası. Mevcut kullanım, üçüncü taraf bağlantıları ve tercih yönetimi.",
+      "sigortauzmani.net çerez ve benzeri teknolojiler politikası. Google analiz araçları, kullanılan veriler ve tercih yönetimi.",
     h1: "Çerez ve Benzeri Teknolojiler Politikası",
-    updatedAt: KVKK_UPDATED,
+    updatedAt: "11 Eylül 2026",
     eyebrow: "Yasal metinler",
     intro: [],
     sections: [
@@ -255,32 +255,41 @@ export const legalDocuments: LegalDocument[] = [
         heading: "2. Mevcut kullanım",
         paragraphs: [
           "Sitenin güvenli şekilde çalışması, form adımlarının yürütülmesi ve kötüye kullanımın önlenmesi için kesinlikle gerekli teknik kayıtlar kullanılabilir. Bu kayıtlar pazarlama amacıyla kullanılmaz.",
-          "Analiz, tercih ve pazarlama teknolojileri yalnızca çerez tercih banner’ında veya tercih merkezinde onay vermeniz hâlinde çalıştırılır. Onay vermeden zorunlu olmayan araçlar yüklenmez.",
+          "Analiz, tercih ve pazarlama teknolojileri yalnızca çerez tercih banner’ında veya tercih merkezinde ilgili kategoriye onay vermeniz hâlinde çalıştırılır. Onay vermeden zorunlu olmayan araçlar yüklenmez.",
           "Tercihleriniz tarayıcınızda saklanır; footer’daki “Çerez Tercihleri” bağlantısından dilediğiniz zaman değiştirebilirsiniz.",
         ],
       },
       {
-        heading: "3. Üçüncü taraf bağlantıları",
+        heading: "3. Analiz hizmeti",
+        paragraphs: [
+          "Analiz kategorisine onay verirseniz, yönetim ayarlarında etkin olan tek sağlayıcı olarak Google Analytics 4 veya Google Tag Manager yüklenebilir. Bu araçlar ziyaret edilen sayfa yolu, ziyaret zamanı, yaklaşık konum, cihaz, tarayıcı ve etkileşim bilgileri gibi çevrim içi tanımlayıcılarla ilişkili kullanım verilerini Google’a iletebilir.",
+          "Google Analytics 4 kullanıldığında _ga ve _ga_<ölçüm-kodu> gibi analiz çerezleri kullanılabilir; bu çerezlerin olağan saklama süresi en fazla iki yıldır. Google Tag Manager bir etiket yönetim aracıdır; kendi başına analiz çerezi yerleştirmese de yalnızca onay verdiğiniz analiz kategorisi kapsamında yapılandırılmış etiketleri çalıştırabilir.",
+          "Google, verileri yurt dışındaki sunucularında işleyebilir. Aktarımlar uygulanabilir mevzuattaki şartlar ve uygun güvenceler çerçevesinde gerçekleştirilir. Ayrıntılar Google’ın gizlilik ve veri kullanımı açıklamalarında yer alır.",
+          "Google Consent Mode v2 başlangıçta analiz ve reklam depolamasını reddedilmiş olarak ayarlar. Analiz onayı verdiğinizde yalnızca analiz depolaması etkinleştirilir; pazarlama onayı ayrı olsa dahi bu sürümde reklam etiketleri yüklenmez. Onayınızı geri çektiğinizde analiz depolaması yeniden reddedilir ve yeni analiz olayları gönderilmez.",
+        ],
+      },
+      {
+        heading: "4. Üçüncü taraf bağlantıları",
         paragraphs: [
           "Web sitesinde telefon, e-posta, WhatsApp veya başka bir üçüncü taraf hizmetine yönlendiren bağlantılar bulunabilir. Bu bağlantıyı seçmeniz hâlinde ilgili hizmet sağlayıcının kendi gizlilik ve çerez kuralları uygulanır.",
         ],
       },
       {
-        heading: "4. Tercihlerin yönetilmesi",
+        heading: "5. Tercihlerin yönetilmesi",
         paragraphs: [
           "Tarayıcınızın ayarlarını kullanarak çerezleri görüntüleyebilir, silebilir veya engelleyebilirsiniz. Kesinlikle gerekli teknolojilerin engellenmesi hâlinde sitenin bazı temel işlevleri çalışmayabilir.",
-          "İleride zorunlu olmayan analiz veya pazarlama teknolojileri kullanılmaya başlanırsa bu politika güncellenecek; kullanıcıya “Zorunlu olmayanları reddet”, “Tercihleri yönet” ve “Tümünü kabul et” seçenekleri eşit görünürlükte sunulacaktır. Kullanıcı kabul etmeden zorunlu olmayan teknolojiler çalıştırılmayacaktır.",
+          "Banner ve tercih merkezinde “Zorunlu olmayanları reddet”, “Tercihleri yönet” ve “Tümünü kabul et” seçenekleri sunulur. Analiz onayınızı geri çekmeniz, daha önce tarayıcınıza yazılmış çerezleri otomatik olarak silmeyebilir; bunları tarayıcı ayarlarınızdan silebilirsiniz.",
         ],
       },
       {
-        heading: "5. İletişim",
+        heading: "6. İletişim",
         paragraphs: [
           `Çerez ve benzeri teknolojilerle ilgili sorularınızı ${KVKK_SORUMLU.eposta} adresine iletebilirsiniz.`,
         ],
       },
     ],
     summary:
-      "Çerez ve benzeri teknolojiler politikası: mevcut kullanım, üçüncü taraf bağlantıları, tercih yönetimi ve iletişim.",
+      "Çerez ve benzeri teknolojiler politikası: Google analiz araçları, kullanılan veriler, yurt dışı aktarım ve tercih yönetimi.",
   },
   {
     path: ROUTES.kvkkBasvuru,

@@ -1,4 +1,4 @@
-import { Resend } from "resend";
+import { sendConfiguredEmail } from "./send-configured";
 
 export interface TalepEmailPayload {
   talep_no: string;
@@ -71,26 +71,10 @@ export function buildTalepEmailHtml(talep: TalepEmailPayload) {
 }
 
 export async function sendTalepNotificationEmail(talep: TalepEmailPayload) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const to = "sigorta@sigortauzmani.net";
-  const from =
-    process.env.RESEND_FROM_EMAIL ??
-    "Sigorta Uzmanı <onboarding@resend.dev>";
-
-  if (!apiKey) {
-    throw new Error("RESEND_API_KEY tanımlı değil");
-  }
-
-  const resend = new Resend(apiKey);
-
-  const { error } = await resend.emails.send({
-    from,
-    to,
+  return sendConfiguredEmail({
+    kind: "talep",
+    reference: talep.talep_no,
     subject: `Yeni Talep: ${talep.talep_no} — ${talep.product_title}`,
     html: buildTalepEmailHtml(talep),
   });
-
-  if (error) {
-    throw new Error(error.message);
-  }
 }

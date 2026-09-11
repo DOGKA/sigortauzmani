@@ -1,20 +1,21 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
-  CATEGORY_LABELS,
   CATEGORY_ORDER,
   type ComparisonCategory,
   comparisons,
 } from "../data/comparisons";
 import ComparisonDuelCard from "../components/ComparisonDuelCard";
 import { comparisonListNode } from "../lib/seo/nodes/comparison";
-import { ROUTES } from "../lib/seo/routes";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
+import { useLocale, useT } from "../lib/i18n/context";
 import "./ComparisonHubPage.css";
 
 type CategoryFilter = ComparisonCategory | "all";
 
 export default function ComparisonHubPage() {
+  const { href } = useLocale();
+  const t = useT();
   const [category, setCategory] = useState<CategoryFilter>("arac");
 
   const visible = useMemo(() => {
@@ -36,7 +37,7 @@ export default function ComparisonHubPage() {
     return map;
   }, []);
 
-  useStaticPageSeo(ROUTES.comparisonHub, { extra: [comparisonListNode()] });
+  useStaticPageSeo(href("comparisonHub"), { extra: [comparisonListNode()] });
 
   return (
     <main className="cmp-hub">
@@ -46,30 +47,27 @@ export default function ComparisonHubPage() {
       </div>
 
       <div className="cmp-hub__inner">
-        <nav className="cmp-hub__breadcrumb" aria-label="Sayfa konumu">
-          <Link to="/">Ana Sayfa</Link>
+        <nav className="cmp-hub__breadcrumb" aria-label={t.quote.breadcrumb}>
+          <Link to={href("home")}>{t.quote.home}</Link>
           <span aria-hidden="true">/</span>
-          <span className="cmp-hub__breadcrumb-current">Karşılaştırma Merkezi</span>
+          <span className="cmp-hub__breadcrumb-current">{t.footer.comparison}</span>
         </nav>
 
         <header className="cmp-hub__hero">
-          <span className="cmp-hub__eyebrow">Bilgi merkezi</span>
-          <h1>Sigorta Karşılaştırma Merkezi</h1>
-          <p>
-            Hangi sigorta sizin için doğru? Kategori seçin, merak ettiğiniz
-            karşılaştırmayı açın; teminatları yan yana görüp teklif alın.
-          </p>
+          <span className="cmp-hub__eyebrow">{t.compare.hubEyebrow}</span>
+          <h1>{t.compare.hubTitle}</h1>
+          <p>{t.compare.hubLead}</p>
         </header>
 
         <section className="cmp-hub__catalog" aria-labelledby="catalog-title">
           <h2 id="catalog-title" className="cmp-hub__sr-only">
-            Karşılaştırmalar
+            {t.compare.catalog}
           </h2>
 
           <div
             className="cmp-hub__chips"
             role="tablist"
-            aria-label="Kategori filtresi"
+            aria-label={t.compare.categoryFilter}
           >
             <span className="cmp-hub__chips-pin">
               <button
@@ -79,7 +77,7 @@ export default function ComparisonHubPage() {
                 className={`cmp-hub__chip ${category === "all" ? "is-active" : ""}`}
                 onClick={() => setCategory("all")}
               >
-                Tümü
+                {t.compare.all}
                 <span className="cmp-hub__chip-count">{comparisons.length}</span>
               </button>
             </span>
@@ -93,7 +91,7 @@ export default function ComparisonHubPage() {
                   className={`cmp-hub__chip ${category === cat ? "is-active" : ""}`}
                   onClick={() => setCategory(cat)}
                 >
-                  {CATEGORY_LABELS[cat]}
+                  {t.compare.categories[cat]}
                   <span className="cmp-hub__chip-count">
                     {counts.get(cat) ?? 0}
                   </span>

@@ -1,54 +1,47 @@
-import { Link } from "react-router-dom";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { ROBOTS_NOINDEX } from "../lib/seo/config";
-import { ROUTES } from "../lib/seo/routes";
+import { useLocale, useT } from "../lib/i18n/context";
 import { useSeo } from "../lib/seo/useSeo";
 import "./NotFoundPage.css";
 
-const SUGGESTIONS = [
-  { label: "Teklif al", to: "/#urunler" },
-  { label: "Sigorta karşılaştırma", to: ROUTES.comparisonHub },
-  { label: "Sigorta sözlüğü", to: ROUTES.glossary },
-  { label: "Blog", to: ROUTES.blog },
-  { label: "Poliçe iptal", to: ROUTES.policyCancel },
-  { label: "İletişim", to: ROUTES.contact },
-];
-
-/**
- * Eşleşmeyen adresler için. Vercel SPA rewrite'ı her yola 200 döndürdüğü
- * için bu sayfa `noindex` işaretler ve arama motorlarının boş adresleri
- * dizine almasını engeller.
- */
 export default function NotFoundPage() {
   const { pathname } = useLocation();
+  const { href, locale } = useLocale();
+  const t = useT();
 
   useSeo({
-    title: "Sayfa bulunamadı",
-    description: "Aradığınız sayfa taşınmış veya kaldırılmış olabilir.",
+    title: t.notfound.title,
+    description: t.notfound.text,
     path: pathname,
     robots: ROBOTS_NOINDEX,
   });
+
+  const suggestions = [
+    { label: t.nav.quote, to: `${href("home")}#urunler` },
+    { label: t.nav.compare, to: href("comparisonHub") },
+    { label: t.footer.glossary, to: href("glossary") },
+    ...(locale === "tr" ? [{ label: t.nav.blog, to: href("blog") }] : []),
+    { label: t.nav.cancel, to: href("policyCancel") },
+    { label: t.contact.reachUs, to: href("contact") },
+  ];
 
   return (
     <main className="notfound">
       <div className="notfound__inner">
         <p className="notfound__code">404</p>
-        <h1 className="notfound__title">Bu sayfayı bulamadık</h1>
-        <p className="notfound__text">
-          Aradığınız adres taşınmış, adı değişmiş veya hiç var olmamış olabilir.
-          Aşağıdaki bölümlerden devam edebilirsiniz.
-        </p>
+        <h1 className="notfound__title">{t.notfound.title}</h1>
+        <p className="notfound__text">{t.notfound.text}</p>
 
-        <nav className="notfound__links" aria-label="Öne çıkan bölümler">
-          {SUGGESTIONS.map((item) => (
+        <nav className="notfound__links" aria-label={t.nav.explore}>
+          {suggestions.map((item) => (
             <Link key={item.to} to={item.to} className="notfound__link">
               {item.label}
             </Link>
           ))}
         </nav>
 
-        <Link to={ROUTES.home} className="notfound__home">
-          Ana sayfaya dön
+        <Link to={href("home")} className="notfound__home">
+          {t.notfound.home}
         </Link>
       </div>
     </main>

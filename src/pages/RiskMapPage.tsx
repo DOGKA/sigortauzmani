@@ -10,8 +10,8 @@ import {
   provinceRiskByName,
   stars,
 } from "../data/provinceRisks";
-import { ROUTES } from "../lib/seo/routes";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
+import { useLocale } from "../lib/i18n/context";
 import "./RiskMapPage.css";
 
 const GEOJSON_URL = "/data/turkey-provinces.geojson";
@@ -37,6 +37,7 @@ function riskColorExpression(activeRisk: RiskKey): maplibregl.ExpressionSpecific
 }
 
 export default function RiskMapPage() {
+  const { href } = useLocale();
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<Map | null>(null);
   const [activeRisk, setActiveRisk] = useState<RiskKey>("earthquake");
@@ -45,7 +46,7 @@ export default function RiskMapPage() {
   const activeRiskRef = useRef(activeRisk);
   activeRiskRef.current = activeRisk;
 
-  useStaticPageSeo(ROUTES.riskMap);
+  useStaticPageSeo(href("riskMap"));
 
   const legendLevels = useMemo(
     () => ([1, 2, 3, 4, 5] as RiskLevel[]).map((level) => ({

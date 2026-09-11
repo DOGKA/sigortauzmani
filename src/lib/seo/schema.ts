@@ -22,6 +22,8 @@ import {
   SITE_URL,
   absoluteUrl,
 } from "./config";
+import { LOCALE_META } from "../i18n/locales";
+import { parsePath } from "../i18n/paths";
 
 export type JsonLd = Record<string, unknown>;
 
@@ -92,7 +94,16 @@ export function organizationSchema(): JsonLd {
         telephone: CONTACT_PHONE,
         email: CONTACT_EMAIL,
         contactType: "customer service",
-        availableLanguage: ["Turkish", "tr"],
+        availableLanguage: [
+      "Turkish",
+      "English",
+      "Arabic",
+      "Persian",
+      "tr",
+      "en",
+      "ar",
+      "fa",
+    ],
         areaServed: CONTACT_COUNTRY,
       },
     ],
@@ -157,13 +168,15 @@ export interface WebPageInput {
 
 export function webPageSchema(input: WebPageInput): JsonLd {
   const url = absoluteUrl(input.path);
+  const parsed = parsePath(input.path);
+  const inLanguage = LOCALE_META[parsed.locale].htmlLang;
   const node: JsonLd = {
     "@type": input.type ?? "WebPage",
     "@id": `${url}#webpage`,
     url,
     name: input.name,
     description: input.description,
-    inLanguage: SITE_LANG,
+    inLanguage,
     isPartOf: { "@id": WEBSITE_ID },
     about: { "@id": ORGANIZATION_ID },
     publisher: { "@id": ORGANIZATION_ID },

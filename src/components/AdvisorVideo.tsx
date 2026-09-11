@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { useT } from "../lib/i18n/context";
 import "./AdvisorVideo.css";
-
-const DEFAULT_TRANSCRIPT =
-  "Merhaba, ben Sigorta Uzmanı dijital teklif asistanıyım. Bilgilerinizi birkaç kısa adımda paylaşarak entegrasyon bulunan sigorta şirketlerinden gelen anlık fiyat ve teminat seçeneklerini karşılaştırabilirsiniz. Çevrim içi satın alma desteklenen ürünlerde doğrudan sigorta şirketinin ödeme ekranına yönlendirilirsiniz; diğerlerinde süreciniz WhatsApp temsilcimizle devam eder. Hazırsanız başlayalım.";
 
 interface AdvisorVideoProps {
   /** Her değiştiğinde video ve konuşma balonu baştan oynatılır (form adımı). */
@@ -14,8 +12,10 @@ interface AdvisorVideoProps {
 export default function AdvisorVideo({
   replayKey,
   videoSrc = "/advisor.mp4",
-  transcript = DEFAULT_TRANSCRIPT,
+  transcript,
 }: AdvisorVideoProps) {
+  const t = useT();
+  const spoken = transcript ?? t.quote.advisorIntro;
   const videoRef = useRef<HTMLVideoElement>(null);
   const isFirstRunRef = useRef(true);
   const [muted, setMuted] = useState(true);
@@ -74,13 +74,13 @@ export default function AdvisorVideo({
           onClick={toggleMute}
           aria-pressed={!muted}
         >
-          {muted ? "Sesli dinle" : "Sesi kapat"}
+          {muted ? t.quote.listen : t.quote.mute}
         </button>
       </div>
 
       <div className="advisor__bubble">
         <p className="advisor__bubble-text" key={replayKey}>
-          {transcript}
+          {spoken}
         </p>
       </div>
     </div>

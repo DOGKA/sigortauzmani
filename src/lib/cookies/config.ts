@@ -1,5 +1,5 @@
 /** Metin veya kategori yapısı değişince artırın; kayıtlı tercihler geçersiz sayılır. */
-export const CONSENT_TEXT_VERSION = "2026-09-v1";
+export const CONSENT_TEXT_VERSION = "2026-09-v2";
 
 export const CONSENT_STORAGE_KEY = "su-cookie-consent";
 
@@ -19,7 +19,7 @@ export const PREFERENCE_LABELS = {
   analytics: {
     title: "Analiz",
     description:
-      "Site kullanımını anonim veya pseudonim biçimde ölçmek, performansı iyileştirmek.",
+      "Onayınızla Google Analytics 4 veya Google Tag Manager üzerinden sayfa ziyaretlerini ölçmek ve performansı iyileştirmek.",
   },
   preferences: {
     title: "Tercih",

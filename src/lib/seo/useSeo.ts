@@ -17,6 +17,8 @@ import {
   absoluteUrl,
   withBrand,
 } from "./config";
+import { LOCALES, LOCALE_META } from "../i18n/locales";
+import { localizedPath, parsePath, isTrOnlyPage } from "../i18n/paths";
 
 export interface SeoInput {
   /** Marka soneki otomatik eklenir; başlık zaten markayı içeriyorsa eklenmez. */
@@ -37,7 +39,7 @@ export interface SeoInput {
 
 type TagSpec =
   | { kind: "meta"; attr: "name" | "property"; key: string; content: string }
-  | { kind: "link"; rel: string; href: string };
+  | { kind: "link"; rel: string; href: string; hreflang?: string };
 
 const MANAGED = "data-seo";
 
@@ -47,13 +49,19 @@ function buildTags(input: SeoInput): TagSpec[] {
   const image = input.image ?? absoluteUrl(DEFAULT_OG_IMAGE_PATH);
   const type = input.type ?? "website";
 
+  const parsed = parsePath(input.path);
+  const ogLocale =
+    parsed.locale !== "tr"
+      ? LOCALE_META[parsed.locale].ogLocale
+      : SITE_LOCALE;
+
   const tags: TagSpec[] = [
     { kind: "meta", attr: "name", key: "description", content: input.description },
     { kind: "meta", attr: "name", key: "robots", content: input.robots ?? ROBOTS_INDEX },
     { kind: "link", rel: "canonical", href: url },
     { kind: "meta", attr: "property", key: "og:type", content: type },
     { kind: "meta", attr: "property", key: "og:site_name", content: SITE_NAME },
-    { kind: "meta", attr: "property", key: "og:locale", content: SITE_LOCALE },
+    { kind: "meta", attr: "property", key: "og:locale", content: ogLocale },
     { kind: "meta", attr: "property", key: "og:title", content: title },
     { kind: "meta", attr: "property", key: "og:description", content: input.description },
     { kind: "meta", attr: "property", key: "og:url", content: url },
@@ -115,6 +123,35 @@ function buildTags(input: SeoInput): TagSpec[] {
     tags.push({ kind: "meta", attr: "property", key: "article:tag", content: tag });
   });
 
+  if (parsed.page !== "unknown") {
+    const slug =
+      parsed.page === "quote" ? parsed.internalSlug : parsed.slug;
+    const locales = isTrOnlyPage(parsed.page) ? (["tr"] as const) : LOCALES;
+    for (const locale of locales) {
+      tags.push({
+        kind: "link",
+        rel: "alternate",
+        hreflang: locale,
+        href: absoluteUrl(localizedPath(locale, parsed.page, { slug })),
+      });
+    }
+    tags.push({
+      kind: "link",
+      rel: "alternate",
+      hreflang: "x-default",
+      href: absoluteUrl(localizedPath("tr", parsed.page, { slug })),
+    });
+    for (const locale of locales) {
+      if (locale === parsed.locale) continue;
+      tags.push({
+        kind: "meta",
+        attr: "property",
+        key: "og:locale:alternate",
+        content: LOCALE_META[locale].ogLocale,
+      });
+    }
+  }
+
   return tags;
 }
 
@@ -138,6 +175,7 @@ export function applySeo(input: SeoInput): void {
       const element = document.createElement("link");
       element.setAttribute("rel", spec.rel);
       element.setAttribute("href", spec.href);
+      if (spec.hreflang) element.setAttribute("hreflang", spec.hreflang);
       element.setAttribute(MANAGED, "");
       fragment.appendChild(element);
     }

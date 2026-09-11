@@ -34,9 +34,25 @@ html {
   scroll-behavior: smooth;
 }
 
-body {
-  min-height: 100vh;
+html[dir="rtl"] {
+  font-family: "Noto Naskh Arabic", "Noto Sans Arabic", "Geeza Pro", "Arabic UI Text",
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
+
+html[dir="rtl"] .header__phone {
+  align-items: flex-start;
+}
+
+html[dir="rtl"] .mobile-menu__chevron,
+html[dir="rtl"] .insurance-slider__cta svg {
+  transform: scaleX(-1);
+}
+
+html[dir="rtl"] input,
+html[dir="rtl"] textarea {
+  text-align: start;
+}
+
 
 a {
   color: inherit;

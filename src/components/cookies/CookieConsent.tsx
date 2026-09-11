@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
-import { BANNER, PREFERENCE_LABELS } from "../../lib/cookies/config";
 import { useCookieConsent } from "../../lib/cookies/context";
-import { ROUTES } from "../../lib/seo/routes";
+import { useLocale, useT } from "../../lib/i18n/context";
 import "./CookieConsent.css";
 
 export default function CookieConsent() {
@@ -16,35 +15,39 @@ export default function CookieConsent() {
     closePanel,
     saveDraft,
   } = useCookieConsent();
+  const t = useT();
+  const { href } = useLocale();
 
   if (!bannerOpen && !panelOpen) return null;
+
+  const labels = {
+    analytics: { title: t.cookies.analyticsTitle, description: t.cookies.analyticsDesc },
+    preferences: { title: t.cookies.preferencesTitle, description: t.cookies.preferencesDesc },
+    marketing: { title: t.cookies.marketingTitle, description: t.cookies.marketingDesc },
+  } as const;
 
   return (
     <>
       {bannerOpen && !panelOpen && (
-        <div
-          className="cookie-banner"
-          role="region"
-          aria-label={BANNER.title}
-        >
+        <div className="cookie-banner" role="region" aria-label={t.cookies.title}>
           <div className="cookie-banner__inner">
             <div className="cookie-banner__copy">
-              <h2>{BANNER.title}</h2>
+              <h2>{t.cookies.title}</h2>
               <p>
-                {BANNER.bodyBeforeLink}
-                <Link to={ROUTES.cookies}>{BANNER.linkLabel}</Link>
-                {BANNER.bodyAfterLink}
+                {t.cookies.bodyBefore}
+                <Link to={href("cookies")}>{t.cookies.link}</Link>
+                {t.cookies.bodyAfter}
               </p>
             </div>
             <div className="cookie-banner__actions">
               <button type="button" className="cookie-btn" onClick={rejectOptional}>
-                {BANNER.reject}
+                {t.cookies.reject}
               </button>
               <button type="button" className="cookie-btn" onClick={openPanel}>
-                {BANNER.manage}
+                {t.cookies.manage}
               </button>
               <button type="button" className="cookie-btn" onClick={acceptAll}>
-                {BANNER.accept}
+                {t.cookies.accept}
               </button>
             </div>
           </div>
@@ -64,38 +67,29 @@ export default function CookieConsent() {
               type="button"
               className="cookie-panel__close"
               onClick={closePanel}
-              aria-label="Kapat"
+              aria-label={t.cookies.close}
             >
               ×
             </button>
-            <h2 id="cookie-panel-title">{BANNER.title}</h2>
-            <p className="cookie-panel__lead">
-              Zorunlu teknolojiler site güvenliği ve temel işlevler için her zaman
-              etkindir. Aşağıdaki kategorileri açıp kapatabilirsiniz.
-            </p>
+            <h2 id="cookie-panel-title">{t.cookies.title}</h2>
+            <p className="cookie-panel__lead">{t.cookies.lead}</p>
 
             <ul className="cookie-panel__list">
               <li className="cookie-panel__item cookie-panel__item--locked">
                 <div>
-                  <strong>{PREFERENCE_LABELS.necessary.title}</strong>
-                  <p>{PREFERENCE_LABELS.necessary.description}</p>
+                  <strong>{t.cookies.necessaryTitle}</strong>
+                  <p>{t.cookies.necessaryDesc}</p>
                 </div>
                 <span className="cookie-panel__always" aria-hidden="true">
-                  Her zaman açık
+                  {t.cookies.alwaysOn}
                 </span>
               </li>
 
-              {(
-                [
-                  ["analytics", PREFERENCE_LABELS.analytics],
-                  ["preferences", PREFERENCE_LABELS.preferences],
-                  ["marketing", PREFERENCE_LABELS.marketing],
-                ] as const
-              ).map(([key, meta]) => (
+              {(["analytics", "preferences", "marketing"] as const).map((key) => (
                 <li key={key} className="cookie-panel__item">
                   <div>
-                    <strong>{meta.title}</strong>
-                    <p>{meta.description}</p>
+                    <strong>{labels[key].title}</strong>
+                    <p>{labels[key].description}</p>
                   </div>
                   <label className="cookie-panel__toggle">
                     <input
@@ -106,29 +100,29 @@ export default function CookieConsent() {
                       }
                     />
                     <span className="cookie-panel__switch" aria-hidden="true" />
-                    <span className="sr-only">{meta.title}</span>
+                    <span className="sr-only">{labels[key].title}</span>
                   </label>
                 </li>
               ))}
             </ul>
 
             <p className="cookie-panel__policy">
-              Ayrıntılar için{" "}
-              <Link to={ROUTES.cookies} onClick={closePanel}>
-                Çerez Politikası
+              {t.cookies.policyLead}
+              <Link to={href("cookies")} onClick={closePanel}>
+                {t.cookies.link}
               </Link>
-              &rsquo;nı inceleyebilirsiniz.
+              {t.cookies.policyAfter}
             </p>
 
             <div className="cookie-panel__actions">
               <button type="button" className="cookie-btn" onClick={rejectOptional}>
-                {BANNER.reject}
+                {t.cookies.reject}
               </button>
               <button type="button" className="cookie-btn" onClick={saveDraft}>
-                Seçimi kaydet
+                {t.cookies.save}
               </button>
               <button type="button" className="cookie-btn" onClick={acceptAll}>
-                {BANNER.accept}
+                {t.cookies.accept}
               </button>
             </div>
           </div>

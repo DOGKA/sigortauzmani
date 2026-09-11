@@ -28,7 +28,7 @@ import { IoError, sorguMernis } from "../../lib/io/client";
 import { okuAdSoyad, okuAdresKodu, okuDogumTarihi } from "../../lib/io/okuma";
 import QuoteKvkkNotu from "../../components/QuoteKvkkNotu";
 import SaglikAcikRiza from "../../components/SaglikAcikRiza";
-import { isSaglikUrunu, SAGLIK_RIZA_HATA } from "../../data/saglikRiza";
+import { isSaglikUrunu } from "../../data/saglikRiza";
 import {
   formatPhoneInput,
   isValidForeignId,
@@ -37,6 +37,8 @@ import {
   isValidVkn,
   kisiTipiCikar,
 } from "../../utils/validation";
+import { normalizeDigits } from "../../lib/i18n/format";
+import { useT } from "../../lib/i18n/context";
 import type { KimlikDurumu } from "./flowState";
 import { kimlikNoOf } from "./flowState";
 
@@ -61,6 +63,7 @@ export default function KimlikAdimi({
   onDegis,
   onDevam,
 }: Props) {
+  const t = useT();
   const [hatalar, setHatalar] = useState<Record<string, string>>({});
   const [sorguluyor, setSorguluyor] = useState(false);
   const [uyari, setUyari] = useState("");
@@ -72,25 +75,25 @@ export default function KimlikAdimi({
       // söylenmeli; tip yalnızca girilen değerden çıkarılabiliyor.
       next.kimlik =
         durum.entityType === "sirket"
-          ? "Geçerli bir Vergi Kimlik Numarası girin (10 hane)."
+          ? t.quote.vknError
           : durum.entityType === "yabanci"
-            ? "Yabancı Kimlik Numarası 99 ile başlayan 11 hane olmalı."
-            : "T.C. Kimlik Numarası 11 hane, Vergi Kimlik Numarası 10 hane olmalı.";
+            ? t.quote.yknError
+            : t.quote.tcknError;
     }
     if (!isValidMobilePhone(durum.phone)) {
-      next.phone = "Geçerli bir cep telefonu girin (05XX XXX XX XX).";
+      next.phone = t.quote.phoneError;
     }
     // Şirketlerde alan zaten gizli; zorunlu tutmak görünmeyen bir hataya
     // yol açardı. Şahıslarda ise her zaman isteniyor: MERNİS kapalı olduğu
     // için doğum tarihini başka hiçbir kaynaktan alamıyoruz ve teklif
     // gövdesi bu alanı taşıyor.
     if (durum.entityType !== "sirket" && !durum.birthDate) {
-      next.birthDate = "Doğum tarihinizi girin.";
+      next.birthDate = t.quote.birthError;
     }
     // Rıza vermemek akışı durdurmuyor; yalnızca seçimin yapılmış olması
     // isteniyor ki sessiz bir varsayılan rıza sayılmasın.
     if (isSaglikUrunu(productSlug) && !durum.saglikRiza) {
-      next.saglikRiza = SAGLIK_RIZA_HATA;
+      next.saglikRiza = t.quote.consentError;
     }
     setHatalar(next);
     return Object.keys(next).length === 0;
@@ -143,16 +146,12 @@ export default function KimlikAdimi({
         return;
       }
 
-      setUyari(
-        "Kaydınız bulunamadı. Kimlik numaranızı kontrol edin veya bilgilerinizi kendiniz girerek devam edin.",
-      );
+      setUyari(t.quote.notFoundRecord);
     } catch (error) {
       setUyari(
         `${
-          error instanceof IoError
-            ? error.message
-            : "Kimlik bilgileri doğrulanamadı."
-        } Yine de devam edebilirsiniz.`,
+          error instanceof IoError ? error.message : t.quote.verifyFailed
+        } ${t.quote.stillContinue}`,
       );
       onDegis({ mernisTamam: false });
     } finally {
@@ -163,7 +162,7 @@ export default function KimlikAdimi({
   const kimlikDegeri = kimlikNoOf(durum);
 
   const kimlikYaz = (value: string) => {
-    const kimlikNo = value.replace(/\D/g, "").slice(0, 11);
+    const kimlikNo = normalizeDigits(value).replace(/\D/g, "").slice(0, 11);
     const tip = kisiTipiCikar(kimlikNo);
     onDegis({
       entityType: tip,
@@ -183,15 +182,12 @@ export default function KimlikAdimi({
 
   return (
     <div className="flow__card">
-      <h2 className="flow__card-title">Kimlik bilgileri</h2>
-      <p className="flow__card-sub">
-        Bilgileriniz, entegrasyon bulunan sigorta şirketlerinden anlık teklif
-        almak için kullanılır.
-      </p>
+      <h2 className="flow__card-title">{t.quote.identity}</h2>
+      <p className="flow__card-sub">{t.quote.identityLead}</p>
 
       <div className="flow__grid">
         <label className="flow__field">
-          <span className="flow__label">T.C. kimlik / vergi kimlik numarası</span>
+          <span className="flow__label">{t.quote.kimlikLabel}</span>
           <input
             className={`flow__input${hatalar.kimlik ? " flow__input--error" : ""}`}
             inputMode="numeric"
@@ -200,16 +196,14 @@ export default function KimlikAdimi({
             value={kimlikDegeri}
             onChange={(event) => kimlikYaz(event.target.value)}
           />
-          <span className="flow__hint">
-            Şirket adına teklif alıyorsanız vergi kimlik numarasını girin.
-          </span>
+          <span className="flow__hint">{t.quote.kimlikHint}</span>
           {hatalar.kimlik ? (
             <span className="flow__error">{hatalar.kimlik}</span>
           ) : null}
         </label>
 
         <label className="flow__field">
-          <span className="flow__label">Cep telefonu</span>
+          <span className="flow__label">{t.quote.phone}</span>
           <input
             className={`flow__input${hatalar.phone ? " flow__input--error" : ""}`}
             inputMode="tel"
@@ -227,7 +221,7 @@ export default function KimlikAdimi({
 
         {dogumTarihiGoster ? (
           <label className="flow__field">
-            <span className="flow__label">Doğum tarihi</span>
+            <span className="flow__label">{t.quote.birthDate}</span>
             <input
               type="date"
               className={`flow__input${hatalar.birthDate ? " flow__input--error" : ""}`}
@@ -264,7 +258,7 @@ export default function KimlikAdimi({
       <div className="flow__actions">
         {uyari ? (
           <button type="button" className="flow__ghost" onClick={onDevam}>
-            Yine de devam et
+            {t.quote.continueAnyway}
           </button>
         ) : null}
         <button
@@ -274,10 +268,10 @@ export default function KimlikAdimi({
           disabled={sorguluyor}
         >
           {sorguluyor
-            ? "Bilgiler getiriliyor…"
+            ? t.quote.loading
             : uyari
-              ? "Tekrar dene"
-              : "Devam et"}
+              ? t.quote.retry
+              : t.quote.continueEt}
         </button>
       </div>
     </div>

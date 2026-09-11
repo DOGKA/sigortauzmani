@@ -14,32 +14,26 @@
  */
 
 import { useState } from "react";
+import { useLocale, useT } from "../../lib/i18n/context";
+import { formatDateTime, interpolate, localizeInstallment } from "../../lib/i18n/format";
+import type { Locale } from "../../lib/i18n/locales";
 import BelgeButonu from "./BelgeButonu";
 import BilgiNotu from "./BilgiNotu";
 import IlerlemePaneli from "./IlerlemePaneli";
-import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
 import { BRANS_ADLARI, type BransSonucu } from "./flowState";
 import { formatPrim } from "./paraBirimi";
 import { satinAlinabilirSirket } from "../../lib/io/satinAlFiltre";
 import type { SirketTeklifi } from "../../lib/io/types";
-
-const ZAMAN_BICIMI = new Intl.DateTimeFormat("tr-TR", {
-  day: "2-digit",
-  month: "2-digit",
-  year: "numeric",
-  hour: "2-digit",
-  minute: "2-digit",
-});
 
 function teklifAnahtari(bransNo: number, sirket: SirketTeklifi): string {
   return `${bransNo}-${sirket.Id}-${sirket.TeklifNo}`;
 }
 
 /** Teklifin alındığı an; `alindiAt` istemcide işaretleniyor. */
-function teklifZamani(sirket: SirketTeklifi): string | null {
+function teklifZamani(sirket: SirketTeklifi, locale: Locale): string | null {
   if (typeof sirket.alindiAt !== "string") return null;
   const tarih = new Date(sirket.alindiAt);
-  return Number.isNaN(tarih.getTime()) ? null : ZAMAN_BICIMI.format(tarih);
+  return Number.isNaN(tarih.getTime()) ? null : formatDateTime(sirket.alindiAt, locale);
 }
 
 /** En düşük primli teklif; kartlarda "en uygun" etiketi için. */
@@ -73,6 +67,20 @@ export default function FiyatListesi({
   onTeklifIste,
   onGeri,
 }: Props) {
+  const t = useT();
+  const { locale } = useLocale();
+  const bransAdi = (bransNo: number) =>
+    bransNo === 0
+      ? t.flow.brans.trafik
+      : bransNo === 1
+        ? t.flow.brans.kasko
+        : bransNo === 2
+          ? t.flow.brans.dask
+          : bransNo === 6
+            ? t.flow.brans.travel
+            : bransNo === 22
+              ? t.flow.brans.imm
+              : BRANS_ADLARI[bransNo] ?? String(bransNo);
   const [gonderiliyor, setGonderiliyor] = useState<string | null>(null);
   const [hatalar, setHatalar] = useState<Record<string, string>>({});
 
@@ -111,30 +119,25 @@ export default function FiyatListesi({
 
   return (
     <div className="flow__card flow__card--wide">
-      <h2 className="flow__card-title">Teklifler</h2>
+      <h2 className="flow__card-title">{t.quote.offers}</h2>
 
       {!hepsiTamam ? (
         <IlerlemePaneli
-          baslik="Teklifleriniz hazırlanıyor"
-          mesajlar={TEKLIF_HAZIRLIK_MESAJLARI}
-          not="Teklifler geldikçe aşağıdaki listeye eklenir. Bu işlem genellikle bir dakikadan kısa sürer; sayfada kalmanız yeterli."
+          baslik={t.flow.preparing}
+          mesajlar={[...t.flow.preparingMsgs]}
+          not={t.flow.preparingNot}
         />
       ) : null}
 
       {hepsiTamam && toplamTeklif === 0 ? (
         <div className="flow__empty">
-          <p>
-            Şu anda bu bilgilerle anında satın alınabilir teklif çıkmadı.
-            Ekibimiz sizin için manuel olarak çalışabilir.
-          </p>
+          <p>{t.flow.offers.empty}</p>
         </div>
       ) : null}
 
       {hepsiTamam && toplamOtorizasyon > 0 ? (
         <p className="flow__hint">
-          {toplamOtorizasyon} şirket fiyatı için sigorta şirketinin ayrıca onayı
-          gerekiyor, bu yüzden burada listelenmiyor. Bu teklifleri isterseniz
-          ekibimiz sizin için takip edebilir.
+          {interpolate(t.flow.offers.authorization, { n: toplamOtorizasyon })}
         </p>
       ) : null}
 
@@ -146,12 +149,12 @@ export default function FiyatListesi({
           <section key={sonuc.bransNo} className="flow__brans">
             {sonuclar.length > 1 ? (
               <h3 className="flow__brans-title">
-                {BRANS_ADLARI[sonuc.bransNo] ?? `Branş ${sonuc.bransNo}`}
+                {bransAdi(sonuc.bransNo)}
               </h3>
             ) : null}
 
             {sirali.length === 0 && sonuc.tamamlandi ? (
-              <p className="flow__hint">Bu üründe teklif gelmedi.</p>
+              <p className="flow__hint">{t.flow.offers.none}</p>
             ) : null}
 
             <ul className="flow__teklifler">
@@ -163,7 +166,7 @@ export default function FiyatListesi({
                 );
                 const anahtar = teklifAnahtari(sonuc.bransNo, sirket);
                 const bekliyor = gonderiliyor === anahtar;
-                const zaman = teklifZamani(sirket);
+                const zaman = teklifZamani(sirket, locale);
 
                 return (
                   <li
@@ -173,7 +176,7 @@ export default function FiyatListesi({
                     <div className="flow__teklif-sirket">
                       <span className="flow__teklif-ad">{sirket.SirketAdi}</span>
                       {sirket.Id === enUygun ? (
-                        <span className="flow__badge">En uygun</span>
+                        <span className="flow__badge">{t.flow.offers.best}</span>
                       ) : null}
                       {oturumId ? (
                         <BelgeButonu
@@ -183,7 +186,7 @@ export default function FiyatListesi({
                           teklifId={sonuc.teklifId}
                           sirketTeklifId={sirket.Id}
                           tip="teklif"
-                          etiket="Teklif PDF'i"
+                          etiket={t.flow.offers.pdf}
                           gorunum="ikon"
                         />
                       ) : null}
@@ -195,13 +198,13 @@ export default function FiyatListesi({
                         </strong>
                         {sirket.Taksit ? (
                           <span className="flow__teklif-taksit">
-                            {sirket.Taksit}
+                            {localizeInstallment(sirket.Taksit, t.flow.offers)}
                           </span>
                         ) : null}
                       </span>
                       {zaman ? (
                         <span className="flow__teklif-zaman">
-                          Teklif zamanı: {zaman}
+                          {t.flow.offers.quoteTime}: {zaman}
                         </span>
                       ) : null}
                     </div>
@@ -213,7 +216,7 @@ export default function FiyatListesi({
                           onSatinAl(sonuc.bransNo, sonuc.teklifId, sirket)
                         }
                       >
-                        Satın al
+                        {t.flow.offers.buy}
                       </button>
                     ) : (
                       <div className="flow__teklif-aksiyon">
@@ -223,7 +226,7 @@ export default function FiyatListesi({
                           disabled={bekliyor || Boolean(gonderiliyor)}
                           onClick={() => void teklifIste(sonuc.bransNo, sirket)}
                         >
-                          {bekliyor ? "Gönderiliyor…" : "Teklif iste"}
+                          {bekliyor ? t.flow.offers.sending : t.flow.offers.request}
                         </button>
                         {hatalar[anahtar] ? (
                           <span className="flow__teklif-hata">
@@ -241,16 +244,12 @@ export default function FiyatListesi({
       })}
 
       {toplamTeklif > 0 ? (
-        <BilgiNotu>
-          Listelenen tutarlar sigorta şirketlerinden gelen tekliflerdir ve
-          poliçe değildir. Sigorta şirketi, poliçeleştirme sırasında yaptığı
-          son kontrole göre teklifi güncelleyebilir veya kabul etmeyebilir.
-        </BilgiNotu>
+        <BilgiNotu>{t.flow.offers.disclaimer}</BilgiNotu>
       ) : null}
 
       <div className="flow__actions">
         <button type="button" className="flow__ghost" onClick={onGeri}>
-          Bilgileri düzenle
+          {t.flow.editDetails}
         </button>
       </div>
     </div>

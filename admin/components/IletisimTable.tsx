@@ -3,6 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useVurgu, VURGU_SATIR_SINIFI } from "@/lib/bildirim/useVurgu";
+import BulkActions from "@/components/BulkActions";
+import { deleteBulk, downloadCsv } from "@/lib/bulk-actions";
+import { useBulkSelection } from "@/lib/useBulkSelection";
 import {
   ILETISIM_ONCELIK_LABELS,
   ILETISIM_STATUS_LABELS,
@@ -45,6 +48,7 @@ export default function IletisimTable() {
   const [priorityFilter, setPriorityFilter] =
     useState<IletisimOncelik | "all">("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const supabase = useMemo(() => createClient(), []);
   const { vurguId, vurguRef } = useVurgu(setExpandedId);
 
@@ -100,10 +104,60 @@ export default function IletisimTable() {
       (statusFilter === "all" || item.status === statusFilter) &&
       (priorityFilter === "all" || item.oncelik === priorityFilter),
   );
+  const selection = useBulkSelection(filtered.map((item) => item.id));
+
+  const exportCsv = () => {
+    const rows = selection.selectedCount
+      ? filtered.filter((item) => selection.selectedIds.has(item.id))
+      : filtered;
+    downloadCsv(
+      "iletisim-mesajlari",
+      [
+        { key: "iletisim_no", label: "İletişim No" },
+        { key: "ad_soyad", label: "Ad Soyad" },
+        { key: "email", label: "E-posta" },
+        { key: "konu", label: "Konu" },
+        { key: "oncelik", label: "Öncelik" },
+        { key: "mesaj", label: "Mesaj" },
+        { key: "status", label: "Durum" },
+        { key: "created_at", label: "Oluşturulma Tarihi" },
+        { key: "updated_at", label: "Güncellenme Tarihi" },
+      ],
+      rows,
+    );
+  };
+
+  const deleteSelected = async () => {
+    const ids = selection.selectedVisibleIds;
+    if (
+      !ids.length ||
+      !window.confirm(
+        `${ids.length} iletişim kaydı ve bağlı belgeleri kalıcı olarak silinecek. Devam edilsin mi?`,
+      )
+    ) {
+      return;
+    }
+    setDeleting(true);
+    setError(null);
+    try {
+      await deleteBulk("iletisim", ids);
+      setItems((current) => current.filter((item) => !ids.includes(item.id)));
+      selection.remove(ids);
+      if (expandedId && ids.includes(expandedId)) setExpandedId(null);
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "İletişim kayıtları silinemedi.",
+      );
+    } finally {
+      setDeleting(false);
+    }
+  };
 
   return (
     <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
-      <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 px-5 py-4">
+      <div className="flex items-center gap-3 overflow-x-auto border-b border-slate-200 px-5 py-4">
         <select
           value={statusFilter}
           onChange={(event) =>
@@ -139,6 +193,18 @@ export default function IletisimTable() {
         <span className="ml-auto text-xs font-medium text-slate-400">
           {filtered.length} kayıt
         </span>
+        <div className="shrink-0">
+          <BulkActions
+            selectedCount={selection.selectedCount}
+            visibleCount={filtered.length}
+            allSelected={selection.allSelected}
+            busy={deleting}
+            itemLabel="kayıt"
+            onToggleAll={selection.toggleAll}
+            onExport={exportCsv}
+            onDelete={() => void deleteSelected()}
+          />
+        </div>
       </div>
 
       {error && (
@@ -160,6 +226,7 @@ export default function IletisimTable() {
           <table className="w-full min-w-[900px] text-left text-sm">
             <thead className="bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
               <tr>
+                <th className="w-10 px-3 py-3.5" />
                 <th className="px-5 py-3.5">Tarih / No</th>
                 <th className="px-4 py-3.5">Gönderen</th>
                 <th className="px-4 py-3.5">Konu</th>
@@ -185,6 +252,8 @@ export default function IletisimTable() {
                   onOpenDocument={() =>
                     item.belge_path && void openDocument(item.belge_path)
                   }
+                  selected={selection.selectedIds.has(item.id)}
+                  onSelect={() => selection.toggle(item.id)}
                 />
               ))}
             </tbody>
@@ -203,6 +272,8 @@ function ContactRow({
   onToggle,
   onStatusChange,
   onOpenDocument,
+  selected,
+  onSelect,
 }: {
   item: IletisimTalep;
   expanded: boolean;
@@ -211,6 +282,8 @@ function ContactRow({
   onToggle: () => void;
   onStatusChange: (status: IletisimStatus) => void;
   onOpenDocument: () => void;
+  selected: boolean;
+  onSelect: () => void;
 }) {
   return (
     <>
@@ -228,6 +301,15 @@ function ContactRow({
           onToggle();
         }}
       >
+        <td className="w-10 px-3 py-4" onClick={(e) => e.stopPropagation()}>
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onSelect}
+            aria-label={`${item.iletisim_no} iletişim kaydını seç`}
+            className="size-4 rounded border-slate-300 accent-sky-600"
+          />
+        </td>
         <td className="px-5 py-4">
           <div className="font-medium text-slate-700">
             {formatDateTime(item.created_at)}
@@ -274,7 +356,7 @@ function ContactRow({
       </tr>
       {expanded && (
         <tr>
-          <td colSpan={6} className="bg-slate-50/70 px-5 py-5">
+          <td colSpan={7} className="bg-slate-50/70 px-5 py-5">
             <div className="grid gap-5 lg:grid-cols-[1fr_240px]">
               <div>
                 <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-400">

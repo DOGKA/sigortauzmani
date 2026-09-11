@@ -8,8 +8,9 @@
  */
 
 import { useState } from "react";
+import { useT } from "../../lib/i18n/context";
+import { interpolate, localizeInstallment } from "../../lib/i18n/format";
 import IlerlemePaneli from "./IlerlemePaneli";
-import { ODEME_MESAJLARI } from "./beklemeMetinleri";
 import { odemeUrlEtiketi, odemeUrlOku } from "./odemeUrl";
 import { formatPrim } from "./paraBirimi";
 import { IoError, satinAl } from "../../lib/io/client";
@@ -51,6 +52,7 @@ export default function OdemeModali({
   onKapat,
   onBasarili,
 }: Props) {
+  const t = useT();
   const [asama, setAsama] = useState<Asama>("onay");
   const [kartSahibi, setKartSahibi] = useState("");
   const [kimlik, setKimlik] = useState(kimlikNo);
@@ -72,7 +74,9 @@ export default function OdemeModali({
           {formatPrim(teklif.Prim, bransNo)}
         </strong>
         {teklif.Taksit ? (
-          <span className="flow__modal-taksit">{teklif.Taksit}</span>
+          <span className="flow__modal-taksit">
+            {localizeInstallment(teklif.Taksit, t.flow.offers)}
+          </span>
         ) : null}
       </span>
     </div>
@@ -84,9 +88,7 @@ export default function OdemeModali({
     if (odemeUrl) {
       const yeniSekme = window.open(odemeUrl, "_blank", "noopener,noreferrer");
       if (!yeniSekme) {
-        setHata(
-          "Ödeme ekranı açılamadı. Tarayıcınızın açılır pencere engelini kapatıp tekrar deneyin.",
-        );
+        setHata(t.flow.pay.popupBlocked);
         return;
       }
       onKapat();
@@ -101,19 +103,19 @@ export default function OdemeModali({
 
     const rakamlar = kartNo.replace(/\D/g, "");
     if (!kartSahibi.trim()) {
-      setHata("Kart sahibinin adını girin.");
+      setHata(t.flow.pay.errName);
       return;
     }
     if (rakamlar.length < 15) {
-      setHata("Kart numarasını eksiksiz girin.");
+      setHata(t.flow.pay.errCard);
       return;
     }
     if (!ay || !yil) {
-      setHata("Son kullanma tarihini seçin.");
+      setHata(t.flow.pay.errExpiry);
       return;
     }
     if (cvv.length < 3) {
-      setHata("Güvenlik kodunu girin.");
+      setHata(t.flow.pay.errCvv);
       return;
     }
 
@@ -147,7 +149,7 @@ export default function OdemeModali({
       setHata(
         error instanceof IoError
           ? error.message
-          : "Ödeme tamamlanamadı. Lütfen tekrar deneyin.",
+          : t.flow.pay.errFail,
       );
     } finally {
       setGonderiliyor(false);
@@ -160,15 +162,15 @@ export default function OdemeModali({
         className="flow__overlay"
         role="dialog"
         aria-modal="true"
-        aria-label="Ödeme"
+        aria-label={t.flow.pay.title}
       >
         <div className="flow__modal">
           {ozet}
           <IlerlemePaneli
-            baslik="Ödemeniz işleniyor"
-            mesajlar={ODEME_MESAJLARI}
+            baslik={t.flow.pay.processing}
+            mesajlar={[...t.flow.pay.msgs]}
             tahminiSaniye={25}
-            not="Lütfen bu ekranı kapatmayın. İşlem tamamlandığında poliçeniz ve makbuzunuz görüntülenecek."
+            not={t.flow.pay.processingNot}
           />
         </div>
       </div>
@@ -188,7 +190,7 @@ export default function OdemeModali({
             type="button"
             className="flow__modal-close"
             onClick={onKapat}
-            aria-label="Kapat"
+            aria-label={t.flow.close}
           >
             ×
           </button>
@@ -196,22 +198,22 @@ export default function OdemeModali({
           {ozet}
 
           <h2 className="flow__modal-title" id="odeme-onay-baslik">
-            Ödemeye geçin
+            {t.flow.pay.goPay}
           </h2>
           <p className="flow__modal-lead">
             {odemeUrl
-              ? `${teklif.SirketAdi} ödeme sayfası yeni sekmede açılacak.`
-              : `Ödemeyi ${teklif.SirketAdi} üzerinden tamamlayacaksınız.`}
+              ? interpolate(t.flow.pay.leadExternal, { company: teklif.SirketAdi })
+              : interpolate(t.flow.pay.leadInternal, { company: teklif.SirketAdi })}
           </p>
 
           <ul className="flow__modal-noktalar">
-            <li>Kart bilgilerinizi sonraki ekranda girersiniz.</li>
-            <li>Kart numaranız ve CVV burada saklanmaz.</li>
+            <li>{t.flow.pay.bullet1}</li>
+            <li>{t.flow.pay.bullet2}</li>
           </ul>
 
           {odemeUrl ? (
             <p className="flow__modal-note">
-              Bağlantı: <strong>{odemeUrlEtiketi(odemeUrl)}</strong>
+              {t.flow.pay.link}: <strong>{odemeUrlEtiketi(odemeUrl)}</strong>
             </p>
           ) : null}
 
@@ -222,7 +224,7 @@ export default function OdemeModali({
             className="flow__primary flow__primary--block"
             onClick={odemeEkraninaGec}
           >
-            {odemeUrl ? "Ödeme sayfasını aç" : "Ödemeye geç"}
+            {odemeUrl ? t.flow.pay.openPage : t.flow.pay.goToPay}
           </button>
         </div>
       </div>
@@ -230,27 +232,24 @@ export default function OdemeModali({
   }
 
   return (
-    <div className="flow__overlay" role="dialog" aria-modal="true" aria-label="Ödeme">
+    <div className="flow__overlay" role="dialog" aria-modal="true" aria-label={t.flow.pay.title}>
       <div className="flow__modal">
         <button
           type="button"
           className="flow__modal-close"
           onClick={onKapat}
-          aria-label="Kapat"
+          aria-label={t.flow.close}
         >
           ×
         </button>
 
         {ozet}
 
-        <p className="flow__modal-lead">
-          Kart bilgileriniz sigorta şirketinin sanal POS’una iletilir; burada
-          saklanmaz.
-        </p>
+        <p className="flow__modal-lead">{t.flow.pay.cardLead}</p>
 
         <div className="flow__grid">
           <label className="flow__field flow__field--full">
-            <span className="flow__label">Kart sahibi adı soyadı</span>
+            <span className="flow__label">{t.flow.pay.cardholder}</span>
             <input
               className="flow__input"
               autoComplete="cc-name"
@@ -260,7 +259,7 @@ export default function OdemeModali({
           </label>
 
           <label className="flow__field flow__field--full">
-            <span className="flow__label">Kimlik numarası</span>
+            <span className="flow__label">{t.flow.pay.idNo}</span>
             <input
               className="flow__input"
               inputMode="numeric"
@@ -271,7 +270,7 @@ export default function OdemeModali({
           </label>
 
           <label className="flow__field flow__field--full">
-            <span className="flow__label">Kredi kartı numarası</span>
+            <span className="flow__label">{t.flow.pay.cardNo}</span>
             <input
               className="flow__input"
               inputMode="numeric"
@@ -283,14 +282,14 @@ export default function OdemeModali({
           </label>
 
           <label className="flow__field">
-            <span className="flow__label">Ay</span>
+            <span className="flow__label">{t.flow.pay.month}</span>
             <select
               className="flow__input"
               autoComplete="cc-exp-month"
               value={ay}
               onChange={(event) => setAy(event.target.value)}
             >
-              <option value="">Ay</option>
+              <option value="">{t.flow.pay.month}</option>
               {AYLAR.map((deger) => (
                 <option key={deger} value={deger}>
                   {deger}
@@ -300,14 +299,14 @@ export default function OdemeModali({
           </label>
 
           <label className="flow__field">
-            <span className="flow__label">Yıl</span>
+            <span className="flow__label">{t.flow.pay.year}</span>
             <select
               className="flow__input"
               autoComplete="cc-exp-year"
               value={yil}
               onChange={(event) => setYil(event.target.value)}
             >
-              <option value="">Yıl</option>
+              <option value="">{t.flow.pay.year}</option>
               {yilSecenekleri().map((deger) => (
                 <option key={deger} value={deger}>
                   {deger}
@@ -317,7 +316,7 @@ export default function OdemeModali({
           </label>
 
           <label className="flow__field">
-            <span className="flow__label">CVV</span>
+            <span className="flow__label">{t.flow.pay.cvv}</span>
             <input
               className="flow__input"
               inputMode="numeric"
@@ -336,7 +335,7 @@ export default function OdemeModali({
           className="flow__primary flow__primary--block"
           onClick={() => void odemeYap()}
         >
-          Ödemeyi tamamla
+          {t.flow.pay.complete}
         </button>
       </div>
     </div>

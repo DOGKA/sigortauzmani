@@ -6,6 +6,9 @@ import { createClient } from "@/lib/supabase/client";
 import { formatDateTime, formatPrim, maskKimlikNo, paraKodu } from "@/lib/format";
 import { useVurgu, VURGU_SATIR_SINIFI } from "@/lib/bildirim/useVurgu";
 import { BRANS_LABELS, type SatinAlmaKaydi } from "@/lib/types";
+import BulkActions from "@/components/BulkActions";
+import { deleteBulk, downloadCsv } from "@/lib/bulk-actions";
+import { useBulkSelection } from "@/lib/useBulkSelection";
 
 const STATUS_STYLES: Record<SatinAlmaKaydi["status"], string> = {
   basarili: "bg-emerald-100 text-emerald-700",
@@ -36,6 +39,7 @@ export default function PolicelerTable() {
   >("all");
   const [bransFilter, setBransFilter] = useState<string>("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const supabase = useMemo(() => createClient(), []);
   const { vurguId, vurguRef } = useVurgu(setExpandedId);
 
@@ -81,6 +85,7 @@ export default function PolicelerTable() {
       (statusFilter === "all" || k.status === statusFilter) &&
       (bransFilter === "all" || String(k.brans_no) === bransFilter),
   );
+  const selection = useBulkSelection(filtered.map((kayit) => kayit.id));
 
   const basarili = filtered.filter((k) => k.status === "basarili");
   const toplamTry = basarili
@@ -97,10 +102,77 @@ export default function PolicelerTable() {
     .filter(Boolean)
     .join(" · ");
 
+  const exportCsv = () => {
+    const rows = selection.selectedCount
+      ? filtered.filter((kayit) => selection.selectedIds.has(kayit.id))
+      : filtered;
+    downloadCsv(
+      "policeler",
+      [
+        { key: "police_no", label: "Poliçe No" },
+        { key: "brans_no", label: "Branş No" },
+        { key: "sirket_adi", label: "Şirket" },
+        { key: "sirket_kodu", label: "Şirket Kodu" },
+        { key: "sigortali", label: "Sigortalı" },
+        { key: "kimlik_no", label: "Kimlik No" },
+        { key: "telefon", label: "Telefon" },
+        { key: "plaka", label: "Plaka" },
+        { key: "teklif_no", label: "Teklif No" },
+        { key: "prim", label: "Prim" },
+        { key: "taksit", label: "Taksit" },
+        { key: "kart_sahibi", label: "Kart Sahibi" },
+        { key: "kart_son4", label: "Kart Son 4" },
+        { key: "uc_d_secure", label: "3D Secure" },
+        { key: "status", label: "Durum" },
+        { key: "hata_mesaji", label: "Hata Mesajı" },
+        { key: "police_pdf_url", label: "Poliçe Belgesi" },
+        { key: "makbuz_pdf_url", label: "Makbuz Belgesi" },
+        { key: "created_at", label: "Oluşturulma Tarihi" },
+      ],
+      rows.map((kayit) => ({
+        ...kayit,
+        sigortali: kayit.teklif_oturumlari?.ad_soyad,
+        telefon: kayit.teklif_oturumlari?.phone,
+        kimlik_no: kimlikNoOf(kayit),
+        plaka: kayit.teklif_oturumlari?.plate,
+      })),
+    );
+  };
+
+  const deleteSelected = async () => {
+    const ids = selection.selectedVisibleIds;
+    if (
+      !ids.length ||
+      !window.confirm(
+        `${ids.length} poliçe/satın alma kaydı kalıcı olarak silinecek. Bu işlem geri alınamaz. Devam edilsin mi?`,
+      )
+    ) {
+      return;
+    }
+    setDeleting(true);
+    setError(null);
+    try {
+      await deleteBulk("policeler", ids);
+      setKayitlar((current) =>
+        current.filter((item) => !ids.includes(item.id)),
+      );
+      selection.remove(ids);
+      if (expandedId && ids.includes(expandedId)) setExpandedId(null);
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Poliçe kayıtları silinemedi.",
+      );
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <div className="rounded-2xl border border-slate-200 bg-white">
       {/* Filtreler */}
-      <div className="flex flex-wrap items-center gap-3 border-b border-slate-200 px-5 py-4">
+      <div className="flex items-center gap-3 overflow-x-auto border-b border-slate-200 px-5 py-4">
         <select
           value={statusFilter}
           onChange={(e) =>
@@ -153,6 +225,18 @@ export default function PolicelerTable() {
         <span className="text-sm text-slate-400">
           {toplamMetin}
         </span>
+        <div className="shrink-0">
+          <BulkActions
+            selectedCount={selection.selectedCount}
+            visibleCount={filtered.length}
+            allSelected={selection.allSelected}
+            busy={deleting}
+            itemLabel="poliçe"
+            onToggleAll={selection.toggleAll}
+            onExport={exportCsv}
+            onDelete={() => void deleteSelected()}
+          />
+        </div>
       </div>
 
       {error && (
@@ -166,6 +250,7 @@ export default function PolicelerTable() {
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-slate-200 text-xs uppercase tracking-wide text-slate-400">
+              <th className="w-10 px-3 py-3.5" />
               <th className="px-5 py-3.5 font-semibold">Poliçe No</th>
               <th className="px-4 py-3.5 font-semibold">Branş</th>
               <th className="px-4 py-3.5 font-semibold">Şirket</th>
@@ -181,7 +266,7 @@ export default function PolicelerTable() {
             {loading ? (
               <tr>
                 <td
-                  colSpan={9}
+                  colSpan={10}
                   className="px-5 py-14 text-center text-slate-400"
                 >
                   Yükleniyor...
@@ -190,7 +275,7 @@ export default function PolicelerTable() {
             ) : filtered.length === 0 ? (
               <tr>
                 <td
-                  colSpan={9}
+                  colSpan={10}
                   className="px-5 py-14 text-center text-slate-400"
                 >
                   Gösterilecek poliçe yok.
@@ -207,6 +292,8 @@ export default function PolicelerTable() {
                   onToggle={() =>
                     setExpandedId((id) => (id === kayit.id ? null : kayit.id))
                   }
+                  selected={selection.selectedIds.has(kayit.id)}
+                  onSelect={() => selection.toggle(kayit.id)}
                 />
               ))
             )}
@@ -223,12 +310,16 @@ function PoliceRow({
   vurgulu,
   satirRef,
   onToggle,
+  selected,
+  onSelect,
 }: {
   kayit: SatinAlmaKaydi;
   expanded: boolean;
   vurgulu: boolean;
   satirRef?: (dugum: HTMLTableRowElement | null) => void;
   onToggle: () => void;
+  selected: boolean;
+  onSelect: () => void;
 }) {
   const oturum = kayit.teklif_oturumlari;
 
@@ -241,6 +332,15 @@ function PoliceRow({
         }`}
         onClick={onToggle}
       >
+        <td className="w-10 px-3 py-3.5" onClick={(e) => e.stopPropagation()}>
+          <input
+            type="checkbox"
+            checked={selected}
+            onChange={onSelect}
+            aria-label={`${kayit.police_no ?? "Poliçe"} kaydını seç`}
+            className="size-4 rounded border-slate-300 accent-sky-600"
+          />
+        </td>
         <td className="px-5 py-3.5 font-mono text-[13px] font-semibold text-sky-600">
           {kayit.police_no ?? "-"}
         </td>
@@ -291,7 +391,7 @@ function PoliceRow({
 
       {expanded && (
         <tr className="border-b border-slate-100 bg-slate-50/60">
-          <td colSpan={9} className="px-5 py-4">
+          <td colSpan={10} className="px-5 py-4">
             <dl className="grid grid-cols-2 gap-x-8 gap-y-3 text-sm sm:grid-cols-3 lg:grid-cols-4">
               <DetailItem label="İşlem No" value={oturum?.oturum_no ?? null} />
               <DetailItem label="Ürün" value={oturum?.product_slug ?? null} />

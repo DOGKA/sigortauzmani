@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { getQuoteKvkkGovde } from "../data/quoteKvkk";
-import { ROUTES } from "../lib/seo/routes";
+import { isSaglikUrunu } from "../data/saglikRiza";
+import { useLocale, useT } from "../lib/i18n/context";
 import BilgiNotu from "../pages/quote/BilgiNotu";
 
 interface Props {
@@ -13,16 +14,18 @@ export default function QuoteKvkkNotu({
   productSlug,
   variant = "flow",
 }: Props) {
-  const govde = getQuoteKvkkGovde(productSlug);
-  if (!govde) return null;
+  const { href } = useLocale();
+  const t = useT();
+  if (!getQuoteKvkkGovde(productSlug)) return null;
+  const govde = isSaglikUrunu(productSlug) ? t.quote.saglikKvkkBody : t.quote.kvkkBody;
 
   const metin = (
     <>
-      {govde} Ayrıntılı bilgi için{" "}
-      <Link to={ROUTES.kvkk} target="_blank" rel="noreferrer">
-        KVKK Aydınlatma Metni
+      {govde} {t.quote.kvkkMore}{" "}
+      <Link to={href("kvkk")} target="_blank" rel="noreferrer">
+        {t.quote.kvkkLink}
       </Link>
-      &rsquo;ni inceleyebilirsiniz.
+      {t.quote.kvkkAfter}
     </>
   );
 
