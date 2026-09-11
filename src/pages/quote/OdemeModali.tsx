@@ -8,7 +8,6 @@
  */
 
 import { useState } from "react";
-import BilgiNotu from "./BilgiNotu";
 import IlerlemePaneli from "./IlerlemePaneli";
 import { ODEME_MESAJLARI } from "./beklemeMetinleri";
 import { odemeUrlEtiketi, odemeUrlOku } from "./odemeUrl";
@@ -197,19 +196,22 @@ export default function OdemeModali({
           {ozet}
 
           <h2 className="flow__modal-title" id="odeme-onay-baslik">
-            Teklifinizi seçtiniz
+            Ödemeye geçin
           </h2>
-          <p className="flow__modal-text">
-            Ödeme işleminizi tamamlamak için sigorta şirketinin güvenli ödeme
-            ekranına yönlendirileceksiniz. Kart bilgilerinizi yalnızca bu ekranda
-            girersiniz; kart numaranız, son kullanma tarihiniz ve CVV bilginiz
-            Sigorta Uzmanı tarafından görülmez veya saklanmaz.
+          <p className="flow__modal-lead">
+            {odemeUrl
+              ? `${teklif.SirketAdi} ödeme sayfası yeni sekmede açılacak.`
+              : `Ödemeyi ${teklif.SirketAdi} üzerinden tamamlayacaksınız.`}
           </p>
+
+          <ul className="flow__modal-noktalar">
+            <li>Kart bilgilerinizi sonraki ekranda girersiniz.</li>
+            <li>Kart numaranız ve CVV burada saklanmaz.</li>
+          </ul>
 
           {odemeUrl ? (
             <p className="flow__modal-note">
-              Ödeme bağlantısı: <strong>{odemeUrlEtiketi(odemeUrl)}</strong>{" "}
-              (yeni sekmede açılacaktır)
+              Bağlantı: <strong>{odemeUrlEtiketi(odemeUrl)}</strong>
             </p>
           ) : null}
 
@@ -220,7 +222,7 @@ export default function OdemeModali({
             className="flow__primary flow__primary--block"
             onClick={odemeEkraninaGec}
           >
-            Sigorta Şirketinin Ödeme Ekranına Geç
+            {odemeUrl ? "Ödeme sayfasını aç" : "Ödemeye geç"}
           </button>
         </div>
       </div>
@@ -241,9 +243,9 @@ export default function OdemeModali({
 
         {ozet}
 
-        <p className="flow__modal-text">
-          Kart bilgileriniz yalnızca sigorta şirketinin sanal POS altyapısına
-          iletilir; Sigorta Uzmanı tarafından görülmez veya saklanmaz.
+        <p className="flow__modal-lead">
+          Kart bilgileriniz sigorta şirketinin sanal POS’una iletilir; burada
+          saklanmaz.
         </p>
 
         <div className="flow__grid">
@@ -336,11 +338,6 @@ export default function OdemeModali({
         >
           Ödemeyi tamamla
         </button>
-
-        <BilgiNotu>
-          İşlem sonrasında kartınızın yalnızca son dört hanesi kayıtlarınızda
-          görünür.
-        </BilgiNotu>
       </div>
     </div>
   );

@@ -688,16 +688,48 @@
   font-size: 18px;
   font-weight: 700;
   color: var(--ink-900);
-  margin: 0 0 10px;
+  margin: 0 0 6px;
   text-align: center;
 }
 
-.flow__modal-text {
-  font-size: 14px;
-  line-height: 1.55;
-  color: var(--ink-600);
-  margin: 0 0 16px;
+.flow__modal-lead {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--ink-500);
+  margin: 0 0 14px;
   text-align: center;
+}
+
+/* Onay adımındaki uzun paragraf yerine iki kısa, sola hizalı satır. */
+.flow__modal-noktalar {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  list-style: none;
+  background: #f7f9fd;
+  border: 1px solid #e5eaf5;
+  border-radius: 12px;
+}
+
+.flow__modal-noktalar li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-700);
+  text-align: left;
+}
+
+.flow__modal-noktalar li::before {
+  content: "";
+  position: absolute;
+  top: 7px;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--brand-500);
 }
 
 .flow__modal-note {
