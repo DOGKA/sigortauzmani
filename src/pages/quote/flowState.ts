@@ -7,16 +7,14 @@
  * gereklilikler `urunGereksinimleri` ile belirleniyor.
  */
 
+import type { SaglikRizaSecimi } from "../../data/saglikRiza";
 import { OTOMATIK_URUNLER } from "../../lib/io/constants";
 import type { SirketTeklifi } from "../../lib/io/types";
+import type { KisiTipi } from "../../utils/validation";
 
 export type Adim = "kimlik" | "detay" | "fiyatlar" | "sonuc";
 
-/**
- * MERNİS her üç kimlik tipini de otomatik çekiyor; ayrım yalnızca hangi
- * alanın doğrulanacağı ve hangi etiketin gösterileceği için var.
- */
-export type KisiTipi = "sahis" | "yabanci" | "sirket";
+export type { KisiTipi };
 
 export interface KimlikDurumu {
   entityType: KisiTipi;
@@ -49,6 +47,11 @@ export interface KimlikDurumu {
    * değiştiriyor.
    */
   adresKodu: string;
+  /**
+   * Sağlık ürünlerinde alınan açık rıza seçimi. Boş değer "henüz
+   * seçilmedi" demek; rıza hiçbir zaman ön işaretli gelmiyor.
+   */
+  saglikRiza: SaglikRizaSecimi;
 }
 
 export interface AracDurumu {
@@ -220,6 +223,7 @@ export const bosKimlik: KimlikDurumu = {
   mernisTamam: false,
   sigortaliStr: "",
   adresKodu: "",
+  saglikRiza: "",
 };
 
 export const bosArac: AracDurumu = {

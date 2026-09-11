@@ -318,6 +318,32 @@ function TalepRow({
               <DetailItem label="Belge Seri No" value={talep.document_serial} />
               <DetailItem label="Motor No" value={talep.motor_no} />
               <DetailItem label="Şasi No" value={talep.sasi_no} />
+              {/* Rıza yoksa sağlık beyanı istenemez; ekip bunu aramadan
+                  önce görmeli. */}
+              <DetailItem
+                label="Sağlık Verisi Açık Rızası"
+                value={
+                  talep.saglik_acik_riza == null
+                    ? null
+                    : talep.saglik_acik_riza
+                      ? "Verildi"
+                      : "Verilmedi"
+                }
+              />
+              {/* Hangi aydınlatma metninin gösterildiği KVKK başvurularında
+                  kanıt olarak isteniyor. */}
+              <DetailItem
+                label="KVKK Metin Sürümü"
+                value={
+                  talep.kvkk_surum
+                    ? talep.kvkk_gosterildi_at
+                      ? `${talep.kvkk_surum} · ${new Date(
+                          talep.kvkk_gosterildi_at,
+                        ).toLocaleString("tr-TR")}`
+                      : talep.kvkk_surum
+                    : null
+                }
+              />
               <DetailItem label="İletişim Tercihi" value={contactPrefText(talep)} />
               {talep.phone && (
                 <div>

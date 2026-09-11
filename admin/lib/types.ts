@@ -22,6 +22,11 @@ export interface Talep {
   sasi_no: string | null;
   sirket_adi?: string | null;
   gosterilen_prim?: number | null;
+  /** Sağlık ürünlerinde alınan açık rıza; diğer ürünlerde null. */
+  saglik_acik_riza?: boolean | null;
+  /** Formda gösterilen KVKK aydınlatma metninin sürümü ve gösterim anı. */
+  kvkk_surum?: string | null;
+  kvkk_gosterildi_at?: string | null;
   contact_pref: "hemen" | "tarihli";
   contact_date: string | null;
   contact_time: string | null;

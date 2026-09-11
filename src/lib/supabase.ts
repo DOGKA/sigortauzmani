@@ -32,6 +32,12 @@ export interface TalepInsert {
   sasi_no: string | null;
   sirket_adi?: string | null;
   gosterilen_prim?: number | null;
+  /** Sağlık ürünlerinde alınan açık rıza; diğer ürünlerde null. */
+  saglik_acik_riza?: boolean | null;
+  /** Formda gösterilen KVKK aydınlatma metninin sürümü. */
+  kvkk_surum?: string | null;
+  /** Metnin kullanıcıya gösterildiği an (ISO). */
+  kvkk_gosterildi_at?: string | null;
 }
 
 export type TalepSonuc = { ok: true } | { ok: false; error: string };
@@ -47,7 +53,7 @@ export type IptalStatus = "islemde" | "belge_eksik" | "tamamlandi";
 export const IPTAL_BRANS_LABELS: Record<IptalBrans, string> = {
   kasko: "Kasko Poliçesi",
   trafik: "Trafik Poliçesi",
-  imm: "IMM Poliçesi",
+  imm: "İMM Poliçesi",
   kisa_sureli_trafik: "Kısa Süreli Trafik Poliçesi",
 };
 
@@ -143,22 +149,44 @@ export async function createTalep(talep: TalepInsert): Promise<TalepSonuc> {
     return { ok: false, error: "Bağlantı kurulamadı. Lütfen tekrar deneyin." };
   }
 
-  const { sirket_adi, gosterilen_prim, ...temel } = talep;
+  const {
+    sirket_adi,
+    gosterilen_prim,
+    saglik_acik_riza,
+    kvkk_surum,
+    kvkk_gosterildi_at,
+    ...temel
+  } = talep;
   const genis = {
     ...temel,
     ...(sirket_adi ? { sirket_adi } : {}),
     ...(typeof gosterilen_prim === "number" ? { gosterilen_prim } : {}),
+    ...(typeof saglik_acik_riza === "boolean" ? { saglik_acik_riza } : {}),
+    ...(kvkk_surum ? { kvkk_surum } : {}),
+    ...(kvkk_gosterildi_at ? { kvkk_gosterildi_at } : {}),
   };
 
   let { error } = await client.from("talepler").insert(genis);
-  if (error && sutunYok(error) && (sirket_adi || gosterilen_prim != null)) {
-    const yedekBaslik = sirket_adi
-      ? `${temel.product_title} · ${sirket_adi}`
-      : temel.product_title;
-    ({ error } = await client.from("talepler").insert({
-      ...temel,
-      product_title: yedekBaslik,
-    }));
+  if (error && sutunYok(error)) {
+    // Eski şemaya düşerken sirket_adi ve gosterilen_prim feda edilebilir;
+    // uyum kayıtları edilemez. Açık rıza düşerse kayıt rıza hiç sorulmamış,
+    // KVKK sürümü düşerse aydınlatma hiç gösterilmemiş gibi görünürdü.
+    if (typeof saglik_acik_riza === "boolean" || kvkk_surum) {
+      console.error("Uyum kolonları eksik, talep yazılmadı:", error.message);
+      return {
+        ok: false,
+        error: "Talep kaydedilemedi. Lütfen bizimle iletişime geçin.",
+      };
+    }
+    if (sirket_adi || gosterilen_prim != null) {
+      const yedekBaslik = sirket_adi
+        ? `${temel.product_title} · ${sirket_adi}`
+        : temel.product_title;
+      ({ error } = await client.from("talepler").insert({
+        ...temel,
+        product_title: yedekBaslik,
+      }));
+    }
   }
 
   if (error) {

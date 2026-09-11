@@ -15,6 +15,7 @@ export interface TalepEmailPayload {
   sasi_no?: string | null;
   sirket_adi?: string | null;
   gosterilen_prim?: number | null;
+  saglik_acik_riza?: boolean | null;
 }
 
 function formatDate(iso: string | null | undefined) {
@@ -55,6 +56,7 @@ export function buildTalepEmailHtml(talep: TalepEmailPayload) {
           ${talep.entity_type === "sirket" ? row("Vergi No", talep.vergi_no) : row("T.C. Kimlik No", talep.tckn)}
           ${row("Cep Telefonu", talep.phone)}
           ${row("Doğum Tarihi", formatDate(talep.birth_date))}
+          ${typeof talep.saglik_acik_riza === "boolean" ? row("Sağlık Verisi Açık Rızası", talep.saglik_acik_riza ? "Verildi" : "Verilmedi") : ""}
           ${talep.motor_no || talep.sasi_no ? `${row("Motor No", talep.motor_no)}${row("Şasi No", talep.sasi_no)}` : `${row("Plaka", talep.plate)}${row("Belge Seri No", talep.document_serial)}`}
         </table>
         <p style="margin:20px 0 0;padding:14px 16px;background:#f8fafc;border-radius:12px;color:#475569;font-size:13px;line-height:1.6;">

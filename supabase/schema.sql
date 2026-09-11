@@ -19,6 +19,11 @@ create table if not exists public.talepler (
   sasi_no text,
   sirket_adi text,
   gosterilen_prim numeric,
+  -- Sağlık ürünlerinde alınan açık rıza; diğer ürünlerde null kalır.
+  saglik_acik_riza boolean,
+  -- Formda gösterilen KVKK aydınlatma metninin sürümü ve gösterim anı.
+  kvkk_surum text,
+  kvkk_gosterildi_at timestamptz,
   contact_pref text not null default 'hemen'
     check (contact_pref in ('hemen', 'tarihli')),
   contact_date date,
@@ -35,7 +40,10 @@ alter table public.talepler
   add column if not exists motor_no text,
   add column if not exists sasi_no text,
   add column if not exists sirket_adi text,
-  add column if not exists gosterilen_prim numeric;
+  add column if not exists gosterilen_prim numeric,
+  add column if not exists saglik_acik_riza boolean,
+  add column if not exists kvkk_surum text,
+  add column if not exists kvkk_gosterildi_at timestamptz;
 
 create index if not exists talepler_created_at_idx on public.talepler (created_at desc);
 create index if not exists talepler_status_idx on public.talepler (status);

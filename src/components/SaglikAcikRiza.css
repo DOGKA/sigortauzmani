@@ -1,0 +1,73 @@
+.saglik-kvkk {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.saglik-kvkk__riza {
+  margin: 0;
+  padding: 14px 16px 16px;
+  border: 1px solid #d4dcec;
+  border-radius: 12px;
+  background: #f7f9fd;
+}
+
+.saglik-kvkk__riza--hata {
+  border-color: #e5484d;
+  background: #fef6f6;
+}
+
+.saglik-kvkk__riza legend {
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-700);
+}
+
+.saglik-kvkk__riza-metin {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-500);
+}
+
+.saglik-kvkk__secenekler {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+}
+
+.saglik-kvkk__secenek {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 550;
+  color: var(--ink-700);
+  cursor: pointer;
+}
+
+.saglik-kvkk__secenek input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--brand-600);
+  cursor: pointer;
+}
+
+.saglik-kvkk__not {
+  margin: 12px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink-500);
+}
+
+.saglik-kvkk__hata {
+  margin: 10px 0 0;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #e5484d;
+}

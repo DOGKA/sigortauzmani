@@ -35,6 +35,47 @@ export function isValidVkn(value: string): boolean {
   return (10 - (sum % 10)) % 10 === d[9];
 }
 
+/**
+ * MERNİS her üç kimlik tipini de otomatik çekiyor; ayrım yalnızca hangi
+ * alanın doğrulanacağı ve hangi etiketin gösterileceği için var.
+ */
+export type KisiTipi = "sahis" | "yabanci" | "sirket";
+
+/**
+ * Kişi tipi kullanıcıya sorulmuyor, numaranın kendisinden okunuyor:
+ * 10 hane Vergi Kimlik Numarası, 99 ile başlayan 11 hane Yabancı Kimlik
+ * Numarası, kalan 11 hane T.C. Kimlik Numarası.
+ *
+ * T.C. Kimlik Numarası yazılırken onuncu hanede bir an "şirket" görünüyor;
+ * ayrım yalnızca doğum tarihi alanını etkilediği ve alan on birinci hanede
+ * geri geldiği için ayrıca bir gecikme kurgusuna girilmedi.
+ */
+export function kisiTipiCikar(kimlikNo: string): KisiTipi {
+  if (kimlikNo.length === 10) return "sirket";
+  if (kimlikNo.startsWith("99")) return "yabanci";
+  return "sahis";
+}
+
+/** Tipine göre kimlik numarasının geçerliliği. */
+export function isValidKimlikNo(kimlikNo: string): boolean {
+  const tip = kisiTipiCikar(kimlikNo);
+  if (tip === "sirket") return isValidVkn(kimlikNo);
+  if (tip === "yabanci") return isValidForeignId(kimlikNo);
+  return isValidTckn(kimlikNo);
+}
+
+/** Numaranın tipine göre gösterilecek hata mesajı. */
+export function kimlikNoHatasi(kimlikNo: string): string {
+  const tip = kisiTipiCikar(kimlikNo);
+  if (tip === "sirket") {
+    return "Geçerli bir vergi kimlik numarası girin (10 hane).";
+  }
+  if (tip === "yabanci") {
+    return "Yabancı Kimlik Numarası 99 ile başlayan 11 hane olmalı.";
+  }
+  return "T.C. Kimlik Numarası 11 hane, Vergi Kimlik Numarası 10 hane olmalı.";
+}
+
 // Türkiye GSM numarası: 05XX XXX XX XX
 // "+90", "90" veya "0" öneklerini kabul eder, çekirdek numara 5 ile başlayan 10 hane olmalı.
 /**

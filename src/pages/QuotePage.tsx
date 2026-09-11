@@ -4,7 +4,14 @@ import { getProduct } from "../data/products";
 import { productIcons } from "../data/productIcons";
 import AdvisorVideo from "../components/AdvisorVideo";
 import QuoteKvkkNotu from "../components/QuoteKvkkNotu";
+import SaglikAcikRiza from "../components/SaglikAcikRiza";
 import TalepBasariEkrani from "../components/TalepBasariEkrani";
+import {
+  isSaglikUrunu,
+  SAGLIK_RIZA_HATA,
+  type SaglikRizaSecimi,
+} from "../data/saglikRiza";
+import { getQuoteKvkkGovde, QUOTE_KVKK_SURUM } from "../data/quoteKvkk";
 import { ROBOTS_NOINDEX, pageOgImageUrl } from "../lib/seo/config";
 import { productServiceNode } from "../lib/seo/nodes/product";
 import { ROUTES } from "../lib/seo/routes";
@@ -15,27 +22,23 @@ import {
   formatPhoneInput,
   isValidChassisNo,
   isValidDocumentSerial,
+  isValidKimlikNo,
   isValidMobilePhone,
   isValidPlate,
-  isValidTckn,
-  isValidVkn,
+  kimlikNoHatasi,
+  kisiTipiCikar,
 } from "../utils/validation";
 import { createTalep, generateTalepNo } from "../lib/supabase";
 import "./QuotePage.css";
 
 const TOTAL_STEPS = 2;
-const STEP_TITLES = ["Kimlik Bilgileri", "Teklif Detayları"] as const;
+const STEP_TITLES = ["Kimlik bilgileri", "Teklif detayları"] as const;
 const VEHICLE_PRODUCT_SLUGS = new Set([
   "kasko",
   "trafik-sigortasi",
   "kisa-sureli-trafik",
   "imm",
   "yesil-kart",
-]);
-const HEALTH_PRODUCT_SLUGS = new Set([
-  "tamamlayici-saglik",
-  "ozel-saglik",
-  "seyahat-saglik",
 ]);
 const SECOND_STEP_VIDEO = "/advisor-2.mp4";
 const SECOND_STEP_TRANSCRIPT =
@@ -52,9 +55,7 @@ export default function QuotePage() {
   const product = slug ? getProduct(slug) : undefined;
   const [insuredFor, setInsuredFor] = useState("self");
   const [step, setStep] = useState(1);
-  const [entityType, setEntityType] = useState<"sahis" | "sirket">("sahis");
-  const [tckn, setTckn] = useState("");
-  const [vkn, setVkn] = useState("");
+  const [kimlikNo, setKimlikNo] = useState("");
   const [phone, setPhone] = useState("");
   const [birthDate, setBirthDate] = useState("");
   const [hasPlate, setHasPlate] = useState(true);
@@ -64,10 +65,14 @@ export default function QuotePage() {
   const [chassisNo, setChassisNo] = useState("");
   const [serialHelpOpen, setSerialHelpOpen] = useState(false);
   const [vehicleNoHelpOpen, setVehicleNoHelpOpen] = useState(false);
-  const [whyInfoOpen, setWhyInfoOpen] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [talepNo, setTalepNo] = useState("");
+  const [saglikRiza, setSaglikRiza] = useState<SaglikRizaSecimi>("");
+  // Aydınlatma metni formun ilk adımında gösteriliyor; sürümü ve gösterim
+  // anı talep kaydına yazılıyor ki sonradan hangi metnin gösterildiği
+  // kanıtlanabilsin.
+  const [kvkkGosterildiAt] = useState(() => new Date().toISOString());
 
   const clearError = (field: string) =>
     setErrors((prev) => {
@@ -110,26 +115,23 @@ export default function QuotePage() {
       <div className="quote quote--not-found">
         <h1>Ürün bulunamadı</h1>
         <Link to="/" className="quote__back">
-          Anasayfaya dön
+          Ana Sayfaya dön
         </Link>
       </div>
     );
   }
 
   const isVehicleProduct = VEHICLE_PRODUCT_SLUGS.has(product.slug);
-  const isHealthProduct = HEALTH_PRODUCT_SLUGS.has(product.slug);
+  const isHealthProduct = isSaglikUrunu(product.slug);
   /** Kasko tarzı adım 1: TCKN/VKN + telefon (DASK vb. dahil; sağlık hariç) */
   const usesIdentityPhoneStep = isVehicleProduct || !isHealthProduct;
+  // Kişi tipi sorulmuyor, numaranın kendisinden okunuyor. Yabancı kimlik
+  // numarası gerçek kişiye ait olduğu için kayıtta "şahıs" sayılıyor.
+  const kisiTipi = kisiTipiCikar(kimlikNo);
+  const entityType = kisiTipi === "sirket" ? "sirket" : "sahis";
+  /** Vergi kimlik numarası girildiyse doğum tarihi sorulmuyor. */
+  const showBirthDate = entityType !== "sirket";
   const nextStep = () => setStep((s) => Math.min(s + 1, TOTAL_STEPS));
-
-  const switchEntityType = (type: "sahis" | "sirket") => {
-    if (type === entityType) return;
-    setEntityType(type);
-    setTckn("");
-    setVkn("");
-    clearError("tckn");
-    clearError("vkn");
-  };
 
   const switchHasPlate = (value: boolean) => {
     if (value === hasPlate) return;
@@ -146,15 +148,16 @@ export default function QuotePage() {
 
   const validateStep1 = () => {
     const next: Record<string, string> = {};
-    if (entityType === "sahis") {
-      if (!isValidTckn(tckn)) {
-        next.tckn = "Geçerli bir T.C. Kimlik Numarası girin (11 hane).";
-      }
-    } else if (!isValidVkn(vkn)) {
-      next.vkn = "Geçerli bir Vergi Numarası girin (10 hane).";
+    if (!isValidKimlikNo(kimlikNo)) {
+      next.kimlik = kimlikNoHatasi(kimlikNo);
     }
     if (usesIdentityPhoneStep && !isValidMobilePhone(phone)) {
       next.phone = "Geçerli bir cep telefonu girin (05XX XXX XX XX).";
+    }
+    // Rıza vermemek akışı durdurmuyor; yalnızca seçimin yapılmış olması
+    // isteniyor ki sessiz bir varsayılan rıza sayılmasın.
+    if (isHealthProduct && !saglikRiza) {
+      next.saglikRiza = SAGLIK_RIZA_HATA;
     }
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -162,7 +165,8 @@ export default function QuotePage() {
 
   const validateStep2 = () => {
     const next: Record<string, string> = {};
-    if (!birthDate) {
+    // Vergi kimlik numarası girildiyse doğum tarihi alanı zaten gizli.
+    if (entityType !== "sirket" && !birthDate) {
       next.birthDate = "Doğum tarihinizi girin.";
     }
     if (isVehicleProduct) {
@@ -194,8 +198,8 @@ export default function QuotePage() {
         ? (INSURED_FOR_LABELS[insuredFor] ?? insuredFor)
         : null,
       entity_type: entityType,
-      tckn: entityType === "sahis" ? tckn || null : null,
-      vergi_no: entityType === "sirket" ? vkn || null : null,
+      tckn: entityType === "sahis" ? kimlikNo || null : null,
+      vergi_no: entityType === "sirket" ? kimlikNo || null : null,
       phone: phone || null,
       birth_date: birthDate || null,
       plate: isVehicleProduct && hasPlate ? plate || null : null,
@@ -203,6 +207,13 @@ export default function QuotePage() {
         isVehicleProduct && hasPlate ? documentSerial || null : null,
       motor_no: isVehicleProduct && !hasPlate ? engineNo || null : null,
       sasi_no: isVehicleProduct && !hasPlate ? chassisNo || null : null,
+      saglik_acik_riza: isHealthProduct ? saglikRiza === "veriyorum" : null,
+      ...(getQuoteKvkkGovde(product.slug)
+        ? {
+            kvkk_surum: QUOTE_KVKK_SURUM,
+            kvkk_gosterildi_at: kvkkGosterildiAt,
+          }
+        : {}),
     });
     setCompleted(true);
   };
@@ -210,9 +221,7 @@ export default function QuotePage() {
   const startNewQuote = () => {
     setInsuredFor("self");
     setStep(1);
-    setEntityType("sahis");
-    setTckn("");
-    setVkn("");
+    setKimlikNo("");
     setPhone("");
     setBirthDate("");
     setHasPlate(true);
@@ -222,10 +231,10 @@ export default function QuotePage() {
     setChassisNo("");
     setSerialHelpOpen(false);
     setVehicleNoHelpOpen(false);
-    setWhyInfoOpen(false);
     setCompleted(false);
     setErrors({});
     setTalepNo("");
+    setSaglikRiza("");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -238,7 +247,7 @@ export default function QuotePage() {
 
       <div className="quote__inner">
         <nav className="quote__breadcrumb">
-          <Link to="/">Anasayfa</Link>
+          <Link to="/">Ana Sayfa</Link>
           <span>/</span>
           <span className="quote__breadcrumb-current">{product.title}</span>
         </nav>
@@ -300,160 +309,79 @@ export default function QuotePage() {
                     }}
                     noValidate
                   >
-                    <div
-                      className="quote__toggle"
-                      role="group"
-                      aria-label="Sigortalı türü"
-                    >
-                      <button
-                        type="button"
-                        className={`quote__toggle-option ${entityType === "sahis" ? "quote__toggle-option--active" : ""}`}
-                        onClick={() => switchEntityType("sahis")}
-                      >
-                        Şahıs
-                      </button>
-                      <button
-                        type="button"
-                        className={`quote__toggle-option ${entityType === "sirket" ? "quote__toggle-option--active" : ""}`}
-                        onClick={() => switchEntityType("sirket")}
-                      >
-                        Şirket
-                      </button>
-                    </div>
+                    {!usesIdentityPhoneStep ? (
+                      <label className="quote__field">
+                        <span>Sigortalanacak Kişi/Kişiler</span>
+                        <select
+                          className="quote__input quote__select"
+                          value={insuredFor}
+                          onChange={(event) => setInsuredFor(event.target.value)}
+                        >
+                          <option value="self">Kendim</option>
+                          <option value="spouse">Eşim</option>
+                          <option value="children">Çocuğum</option>
+                        </select>
+                      </label>
+                    ) : null}
+
+                    <label className="quote__field">
+                      <span>T.C. kimlik / vergi kimlik numarası</span>
+                      <input
+                        type="text"
+                        className={`quote__input ${errors.kimlik ? "quote__input--error" : ""}`}
+                        inputMode="numeric"
+                        autoComplete="off"
+                        maxLength={11}
+                        value={kimlikNo}
+                        onChange={(event) => {
+                          setKimlikNo(
+                            event.target.value.replace(/\D/g, "").slice(0, 11),
+                          );
+                          clearError("kimlik");
+                        }}
+                      />
+                      <span className="quote__hint">
+                        Şirket adına teklif alıyorsanız vergi kimlik numarasını
+                        girin.
+                      </span>
+                      {errors.kimlik && (
+                        <span className="quote__error">{errors.kimlik}</span>
+                      )}
+                    </label>
 
                     {usesIdentityPhoneStep ? (
-                      <>
-                        {entityType === "sahis" ? (
-                          <div className="quote__field">
-                            <input
-                              type="text"
-                              className={`quote__input ${errors.tckn ? "quote__input--error" : ""}`}
-                              inputMode="numeric"
-                              placeholder="T.C. Kimlik Numarası (XXXXXXXXXXX)"
-                              value={tckn}
-                              onChange={(event) => {
-                                setTckn(event.target.value.replace(/\D/g, "").slice(0, 11));
-                                clearError("tckn");
-                              }}
-                            />
-                            {errors.tckn && (
-                              <span className="quote__error">{errors.tckn}</span>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="quote__field">
-                            <input
-                              type="text"
-                              className={`quote__input ${errors.vkn ? "quote__input--error" : ""}`}
-                              inputMode="numeric"
-                              placeholder="Vergi Numarası (XXXXXXXXXX)"
-                              value={vkn}
-                              onChange={(event) => {
-                                setVkn(event.target.value.replace(/\D/g, "").slice(0, 10));
-                                clearError("vkn");
-                              }}
-                            />
-                            {errors.vkn && (
-                              <span className="quote__error">{errors.vkn}</span>
-                            )}
-                          </div>
+                      <div className="quote__field">
+                        <input
+                          type="tel"
+                          className={`quote__input ${errors.phone ? "quote__input--error" : ""}`}
+                          placeholder="Cep Telefonu (05XX XXX XX XX)"
+                          value={phone}
+                          onChange={(event) => {
+                            setPhone(formatPhoneInput(event.target.value));
+                            clearError("phone");
+                          }}
+                        />
+                        {errors.phone && (
+                          <span className="quote__error">{errors.phone}</span>
                         )}
-                        <div className="quote__field">
-                          <input
-                            type="tel"
-                            className={`quote__input ${errors.phone ? "quote__input--error" : ""}`}
-                            placeholder="Cep Telefonu (05XX XXX XX XX)"
-                            value={phone}
-                            onChange={(event) => {
-                              setPhone(formatPhoneInput(event.target.value));
-                              clearError("phone");
-                            }}
-                          />
-                          {errors.phone && (
-                            <span className="quote__error">{errors.phone}</span>
-                          )}
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <label className="quote__field">
-                          <span>Sigortalanacak Kişi/Kişiler</span>
-                          <select
-                            className="quote__input quote__select"
-                            value={insuredFor}
-                            onChange={(event) => setInsuredFor(event.target.value)}
-                          >
-                            <option value="self">Kendim</option>
-                            <option value="spouse">Eşim</option>
-                            <option value="children">Çocuğum</option>
-                          </select>
-                        </label>
-                        {entityType === "sahis" ? (
-                          <label className="quote__field">
-                            <span>T.C. Kimlik Numarası</span>
-                            <input
-                              type="text"
-                              className={`quote__input ${errors.tckn ? "quote__input--error" : ""}`}
-                              inputMode="numeric"
-                              placeholder="T.C. Kimlik Numarası (XXXXXXXXXXX)"
-                              value={tckn}
-                              onChange={(event) => {
-                                setTckn(event.target.value.replace(/\D/g, "").slice(0, 11));
-                                clearError("tckn");
-                              }}
-                            />
-                            {errors.tckn && (
-                              <span className="quote__error">{errors.tckn}</span>
-                            )}
-                          </label>
-                        ) : (
-                          <label className="quote__field">
-                            <span>Vergi Numarası</span>
-                            <input
-                              type="text"
-                              className={`quote__input ${errors.vkn ? "quote__input--error" : ""}`}
-                              inputMode="numeric"
-                              placeholder="Vergi Numarası (XXXXXXXXXX)"
-                              value={vkn}
-                              onChange={(event) => {
-                                setVkn(event.target.value.replace(/\D/g, "").slice(0, 10));
-                                clearError("vkn");
-                              }}
-                            />
-                            {errors.vkn && (
-                              <span className="quote__error">{errors.vkn}</span>
-                            )}
-                          </label>
-                        )}
-                      </>
-                    )}
-
-                    <button
-                      type="button"
-                      className="quote__why"
-                      onClick={() => setWhyInfoOpen((open) => !open)}
-                      aria-expanded={whyInfoOpen}
-                    >
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-                        <path d="M12 16v-4M12 8h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                      </svg>
-                      Neden bu bilgilere ihtiyacımız var?
-                    </button>
-                    {whyInfoOpen && (
-                      <p className="quote__why-info">
-                        Bu bilgiler yalnızca sigorta şirketlerinin sistemlerinde
-                        size özel teklif sorgulaması yapmak için kullanılır.
-                        Sistemlerimize kaydedilmez, işlem süresince geçici
-                        olarak tutulur; üçüncü kişilerle paylaşılmaz ve KVKK
-                        kapsamında güvenle işlenir.
-                      </p>
-                    )}
+                      </div>
+                    ) : null}
 
                     <QuoteKvkkNotu productSlug={product.slug} variant="quote" />
 
+                    {isHealthProduct ? (
+                      <SaglikAcikRiza
+                        deger={saglikRiza}
+                        onDegis={(deger) => {
+                          setSaglikRiza(deger);
+                          clearError("saglikRiza");
+                        }}
+                        hata={Boolean(errors.saglikRiza)}
+                      />
+                    ) : null}
+
                     <button type="submit" className="quote__submit">
-                      {product.title} Teklifi Al
+                      Devam et
                     </button>
                   </form>
                 )}
@@ -606,39 +534,43 @@ export default function QuotePage() {
                         )}
                         </div>
 
-                        <label className="quote__field quote__field--full">
-                          <span>Doğum Tarihi</span>
-                          <input
-                            type="date"
-                            className={`quote__input ${errors.birthDate ? "quote__input--error" : ""}`}
-                            value={birthDate}
-                            onChange={(event) => {
-                              setBirthDate(event.target.value);
-                              clearError("birthDate");
-                            }}
-                          />
-                          {errors.birthDate && (
-                            <span className="quote__error">{errors.birthDate}</span>
-                          )}
-                        </label>
+                        {showBirthDate && (
+                          <label className="quote__field quote__field--full">
+                            <span>Doğum Tarihi</span>
+                            <input
+                              type="date"
+                              className={`quote__input ${errors.birthDate ? "quote__input--error" : ""}`}
+                              value={birthDate}
+                              onChange={(event) => {
+                                setBirthDate(event.target.value);
+                                clearError("birthDate");
+                              }}
+                            />
+                            {errors.birthDate && (
+                              <span className="quote__error">{errors.birthDate}</span>
+                            )}
+                          </label>
+                        )}
                       </>
                     ) : isHealthProduct ? (
                       <>
-                        <label className="quote__field">
-                          <span>Doğum Tarihi</span>
-                          <input
-                            type="date"
-                            className={`quote__input ${errors.birthDate ? "quote__input--error" : ""}`}
-                            value={birthDate}
-                            onChange={(event) => {
-                              setBirthDate(event.target.value);
-                              clearError("birthDate");
-                            }}
-                          />
-                          {errors.birthDate && (
-                            <span className="quote__error">{errors.birthDate}</span>
-                          )}
-                        </label>
+                        {showBirthDate && (
+                          <label className="quote__field">
+                            <span>Doğum Tarihi</span>
+                            <input
+                              type="date"
+                              className={`quote__input ${errors.birthDate ? "quote__input--error" : ""}`}
+                              value={birthDate}
+                              onChange={(event) => {
+                                setBirthDate(event.target.value);
+                                clearError("birthDate");
+                              }}
+                            />
+                            {errors.birthDate && (
+                              <span className="quote__error">{errors.birthDate}</span>
+                            )}
+                          </label>
+                        )}
                         <label className="quote__field">
                           <span>Telefon Numarası</span>
                           <input
@@ -656,7 +588,7 @@ export default function QuotePage() {
                           )}
                         </label>
                       </>
-                    ) : (
+                    ) : showBirthDate ? (
                       <label className="quote__field quote__field--full">
                         <span>Doğum Tarihi</span>
                         <input
@@ -672,6 +604,13 @@ export default function QuotePage() {
                           <span className="quote__error">{errors.birthDate}</span>
                         )}
                       </label>
+                    ) : (
+                      // Vergi kimlik numarasıyla gelen talepte bu adımda
+                      // sorulacak başka bir alan kalmıyor.
+                      <p className="quote__field quote__field--full quote__hint">
+                        Şirket adına açılan talepte doğum tarihi istenmiyor.
+                        Teklifinizi oluşturmak için devam edebilirsiniz.
+                      </p>
                     )}
 
                     <button type="submit" className="quote__submit">

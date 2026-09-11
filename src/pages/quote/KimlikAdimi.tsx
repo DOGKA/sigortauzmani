@@ -27,30 +27,18 @@ import { useState } from "react";
 import { IoError, sorguMernis } from "../../lib/io/client";
 import { okuAdSoyad, okuAdresKodu, okuDogumTarihi } from "../../lib/io/okuma";
 import QuoteKvkkNotu from "../../components/QuoteKvkkNotu";
+import SaglikAcikRiza from "../../components/SaglikAcikRiza";
+import { isSaglikUrunu, SAGLIK_RIZA_HATA } from "../../data/saglikRiza";
 import {
   formatPhoneInput,
   isValidForeignId,
   isValidMobilePhone,
   isValidTckn,
   isValidVkn,
+  kisiTipiCikar,
 } from "../../utils/validation";
-import type { KimlikDurumu, KisiTipi } from "./flowState";
+import type { KimlikDurumu } from "./flowState";
 import { kimlikNoOf } from "./flowState";
-
-/**
- * Kişi tipi kullanıcıya sorulmuyor, numaranın kendisinden okunuyor:
- * 10 hane Vergi Kimlik Numarası, 99 ile başlayan 11 hane Yabancı Kimlik
- * Numarası, kalan 11 hane T.C. Kimlik Numarası.
- *
- * T.C. Kimlik Numarası yazılırken onuncu hanede bir an "şirket" görünüyor;
- * ayrım yalnızca doğum tarihi alanını etkilediği ve alan on birinci hanede
- * geri geldiği için ayrıca bir gecikme kurgusuna girilmedi.
- */
-function kisiTipiCikar(kimlikNo: string): KisiTipi {
-  if (kimlikNo.length === 10) return "sirket";
-  if (kimlikNo.startsWith("99")) return "yabanci";
-  return "sahis";
-}
 
 function kimlikGecerli(durum: KimlikDurumu): boolean {
   if (durum.entityType === "sahis") return isValidTckn(durum.tckn);
@@ -98,6 +86,11 @@ export default function KimlikAdimi({
     // gövdesi bu alanı taşıyor.
     if (durum.entityType !== "sirket" && !durum.birthDate) {
       next.birthDate = "Doğum tarihinizi girin.";
+    }
+    // Rıza vermemek akışı durdurmuyor; yalnızca seçimin yapılmış olması
+    // isteniyor ki sessiz bir varsayılan rıza sayılmasın.
+    if (isSaglikUrunu(productSlug) && !durum.saglikRiza) {
+      next.saglikRiza = SAGLIK_RIZA_HATA;
     }
     setHatalar(next);
     return Object.keys(next).length === 0;
@@ -192,12 +185,13 @@ export default function KimlikAdimi({
     <div className="flow__card">
       <h2 className="flow__card-title">Kimlik bilgileri</h2>
       <p className="flow__card-sub">
-        Bilgileriniz sigorta şirketlerinden fiyat almak için kullanılır.
+        Bilgileriniz, entegrasyon bulunan sigorta şirketlerinden anlık teklif
+        almak için kullanılır.
       </p>
 
       <div className="flow__grid">
         <label className="flow__field">
-          <span className="flow__label">TCKN / VKN</span>
+          <span className="flow__label">T.C. kimlik / vergi kimlik numarası</span>
           <input
             className={`flow__input${hatalar.kimlik ? " flow__input--error" : ""}`}
             inputMode="numeric"
@@ -207,7 +201,7 @@ export default function KimlikAdimi({
             onChange={(event) => kimlikYaz(event.target.value)}
           />
           <span className="flow__hint">
-            Şirket adına alıyorsanız Vergi Kimlik Numarası girin.
+            Şirket adına teklif alıyorsanız vergi kimlik numarasını girin.
           </span>
           {hatalar.kimlik ? (
             <span className="flow__error">{hatalar.kimlik}</span>
@@ -248,6 +242,22 @@ export default function KimlikAdimi({
       </div>
 
       <QuoteKvkkNotu productSlug={productSlug} />
+
+      {isSaglikUrunu(productSlug) ? (
+        <SaglikAcikRiza
+          deger={durum.saglikRiza}
+          onDegis={(deger) => {
+            onDegis({ saglikRiza: deger });
+            setHatalar((onceki) => {
+              if (!onceki.saglikRiza) return onceki;
+              const kalan = { ...onceki };
+              delete kalan.saglikRiza;
+              return kalan;
+            });
+          }}
+          hata={Boolean(hatalar.saglikRiza)}
+        />
+      ) : null}
 
       {uyari ? <p className="flow__warning">{uyari}</p> : null}
 
