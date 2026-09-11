@@ -14,6 +14,8 @@ import { Link, useParams } from "react-router-dom";
 import AdvisorVideo from "../components/AdvisorVideo";
 import TalepBasariEkrani from "../components/TalepBasariEkrani";
 import { getProduct } from "../data/products";
+import { getQuoteKvkkGovde, QUOTE_KVKK_SURUM } from "../data/quoteKvkk";
+import { isSaglikUrunu } from "../data/saglikRiza";
 import { IoError, primleriBekle, teklifOlustur } from "../lib/io/client";
 import type { SatinAlmaSonuc, SirketTeklifi, TeklifPayload } from "../lib/io/types";
 import { createTalep, generateTalepNo } from "../lib/supabase";
@@ -48,7 +50,6 @@ import {
   type KimlikDurumu,
   type SeyahatDurumu,
 } from "./quote/flowState";
-import { fiyatGosterimi } from "./quote/fiyatlandirma";
 import "./QuoteFlowPage.css";
 
 const ADIM_ETIKETLERI: Record<Adim, string> = {
@@ -83,6 +84,10 @@ export default function QuoteFlowPage() {
   const gereksinim = slug ? urunGereksinimi(slug) : null;
 
   const [adim, setAdim] = useState<Adim>("kimlik");
+  // Aydınlatma metni kimlik adımında gösteriliyor; sürümü ve gösterim anı
+  // talep kaydına yazılıyor ki sonradan hangi metnin gösterildiği
+  // kanıtlanabilsin.
+  const [kvkkGosterildiAt] = useState(() => new Date().toISOString());
   const [kimlik, setKimlik] = useState<KimlikDurumu>(bosKimlik);
   const [arac, setArac] = useState<AracDurumu>(bosArac);
   const [seyahat, setSeyahat] = useState<SeyahatDurumu>(bosSeyahat);
@@ -156,7 +161,17 @@ export default function QuoteFlowPage() {
             harita.set(`${mevcut.Id}-${mevcut.TeklifNo}`, mevcut);
           }
           for (const yeni of sirketler) {
-            harita.set(`${yeni.Id}-${yeni.TeklifNo}`, yeni);
+            const anahtar = `${yeni.Id}-${yeni.TeklifNo}`;
+            // Teklif zamanı ilk görüldüğü anda sabitleniyor; sonraki turlar
+            // aynı satırı tekrar döndürdüğünde tarih ileri kaymamalı.
+            const oncekiZaman = harita.get(anahtar)?.alindiAt;
+            harita.set(anahtar, {
+              ...yeni,
+              alindiAt:
+                typeof oncekiZaman === "string"
+                  ? oncekiZaman
+                  : new Date().toISOString(),
+            });
           }
           return {
             ...sonuc,
@@ -318,7 +333,6 @@ export default function QuoteFlowPage() {
       return { ok: false, error: "Ürün bulunamadı." };
     }
 
-    const gosterim = fiyatGosterimi(teklif.Prim);
     const kaskoEkTeklif = bransNo === 1 && product.slug !== "kasko";
     const talepNo = generateTalepNo();
     const urunAdi = kaskoEkTeklif ? BRANS_ADLARI[1] : product.title;
@@ -353,7 +367,16 @@ export default function QuoteFlowPage() {
           ? arac.sasiNo.trim().toUpperCase() || null
           : null,
       sirket_adi: teklif.SirketAdi ?? null,
-      gosterilen_prim: gosterim?.listeFiyati ?? null,
+      gosterilen_prim: teklif.Prim ?? null,
+      saglik_acik_riza: isSaglikUrunu(product.slug)
+        ? kimlik.saglikRiza === "veriyorum"
+        : null,
+      ...(getQuoteKvkkGovde(product.slug)
+        ? {
+            kvkk_surum: QUOTE_KVKK_SURUM,
+            kvkk_gosterildi_at: kvkkGosterildiAt,
+          }
+        : {}),
     });
 
     if (!sonuc.ok) return sonuc;
@@ -398,7 +421,7 @@ export default function QuoteFlowPage() {
       <div className="flow flow--empty">
         <h1>Ürün bulunamadı</h1>
         <Link to="/" className="flow__primary">
-          Anasayfaya dön
+          Ana Sayfaya dön
         </Link>
       </div>
     );
@@ -419,12 +442,6 @@ export default function QuoteFlowPage() {
           <div className="flow__card flow__card--basari">
             <TalepBasariEkrani
               talepNo={talepBasari.talepNo}
-              urunAdi={talepBasari.urunAdi}
-              whatsappEkSatiri={
-                talepBasari.sirketAdi
-                  ? `İlgilendiğim şirket: ${talepBasari.sirketAdi}`
-                  : undefined
-              }
               onYeniTeklif={akisiSifirla}
             />
           </div>
@@ -481,7 +498,7 @@ export default function QuoteFlowPage() {
             </p>
             <div className="flow__actions">
               <Link to="/" className="flow__ghost">
-                Ana sayfaya dön
+                Ana Sayfaya dön
               </Link>
               <Link
                 to={`${productPath}?form=manuel`}
@@ -647,7 +664,7 @@ export default function QuoteFlowPage() {
 
             <div className="flow__actions">
               <Link to="/" className="flow__ghost">
-                Ana sayfaya dön
+                Ana Sayfaya dön
               </Link>
             </div>
           </div>

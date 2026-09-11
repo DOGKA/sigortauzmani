@@ -9,51 +9,44 @@
  * listeye hiç gelmiyor. Sayısı taşınıyor ki müşteri eksik şirketleri merak
  * etmesin.
  *
- * Satın alınabilir şirketlerde prim şişirilip indirimli gösterilir. Diğer
- * şirketlerde yalnızca şişirilmiş tutar durur ve "Teklif iste" admin
- * talebine düşer.
+ * Gösterilen tutar sigorta şirketinden gelen primin kendisidir; üzerine
+ * hesaplanmış referans fiyat, indirim veya kazanç eklenmez.
  */
 
 import { useState } from "react";
 import BelgeButonu from "./BelgeButonu";
+import BilgiNotu from "./BilgiNotu";
 import IlerlemePaneli from "./IlerlemePaneli";
 import { TEKLIF_HAZIRLIK_MESAJLARI } from "./beklemeMetinleri";
-import { fiyatGosterimi, kartTutari } from "./fiyatlandirma";
 import { BRANS_ADLARI, type BransSonucu } from "./flowState";
 import { formatPrim } from "./paraBirimi";
 import { satinAlinabilirSirket } from "../../lib/io/satinAlFiltre";
 import type { SirketTeklifi } from "../../lib/io/types";
 
+const ZAMAN_BICIMI = new Intl.DateTimeFormat("tr-TR", {
+  day: "2-digit",
+  month: "2-digit",
+  year: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
 function teklifAnahtari(bransNo: number, sirket: SirketTeklifi): string {
   return `${bransNo}-${sirket.Id}-${sirket.TeklifNo}`;
 }
 
-function gosterilenTutar(
-  bransNo: number,
-  sirket: SirketTeklifi,
-  kisaSureli: boolean,
-): number {
-  const gosterim = fiyatGosterimi(sirket.Prim);
-  if (!gosterim) return Infinity;
-  return kartTutari(
-    gosterim,
-    satinAlinabilirSirket(bransNo, sirket.SirketKodu, kisaSureli),
-  );
+/** Teklifin alındığı an; `alindiAt` istemcide işaretleniyor. */
+function teklifZamani(sirket: SirketTeklifi): string | null {
+  if (typeof sirket.alindiAt !== "string") return null;
+  const tarih = new Date(sirket.alindiAt);
+  return Number.isNaN(tarih.getTime()) ? null : ZAMAN_BICIMI.format(tarih);
 }
 
-/** En düşük görünen fiyat; kartlarda "en uygun" etiketi için. */
-function enUygunId(
-  bransNo: number,
-  sirketler: SirketTeklifi[],
-  kisaSureli: boolean,
-): number | null {
+/** En düşük primli teklif; kartlarda "en uygun" etiketi için. */
+function enUygunId(sirketler: SirketTeklifi[]): number | null {
   let enIyi: SirketTeklifi | null = null;
-  let enIyiTutar = Infinity;
   for (const sirket of sirketler) {
-    const tutar = gosterilenTutar(bransNo, sirket, kisaSureli);
-    if (tutar >= enIyiTutar) continue;
-    enIyi = sirket;
-    enIyiTutar = tutar;
+    if (!enIyi || sirket.Prim < enIyi.Prim) enIyi = sirket;
   }
   return enIyi?.Id ?? null;
 }
@@ -146,12 +139,8 @@ export default function FiyatListesi({
       ) : null}
 
       {sonuclar.map((sonuc) => {
-        const enUygun = enUygunId(sonuc.bransNo, sonuc.sirketler, kisaSureli);
-        const sirali = [...sonuc.sirketler].sort(
-          (a, b) =>
-            gosterilenTutar(sonuc.bransNo, a, kisaSureli) -
-            gosterilenTutar(sonuc.bransNo, b, kisaSureli),
-        );
+        const enUygun = enUygunId(sonuc.sirketler);
+        const sirali = [...sonuc.sirketler].sort((a, b) => a.Prim - b.Prim);
 
         return (
           <section key={sonuc.bransNo} className="flow__brans">
@@ -167,7 +156,6 @@ export default function FiyatListesi({
 
             <ul className="flow__teklifler">
               {sirali.map((sirket) => {
-                const gosterim = fiyatGosterimi(sirket.Prim);
                 const satinAl = satinAlinabilirSirket(
                   sonuc.bransNo,
                   sirket.SirketKodu,
@@ -175,6 +163,7 @@ export default function FiyatListesi({
                 );
                 const anahtar = teklifAnahtari(sonuc.bransNo, sirket);
                 const bekliyor = gonderiliyor === anahtar;
+                const zaman = teklifZamani(sirket);
 
                 return (
                   <li
@@ -200,24 +189,9 @@ export default function FiyatListesi({
                       ) : null}
                     </div>
                     <div className="flow__teklif-detay">
-                      {gosterim && satinAl ? (
-                        <span className="flow__teklif-fiyat">
-                          <span className="flow__teklif-liste">
-                            {formatPrim(gosterim.listeFiyati, sonuc.bransNo)}
-                          </span>
-                          <span className="flow__teklif-kazanc">
-                            {formatPrim(gosterim.kazanc, sonuc.bransNo)} kazanç
-                          </span>
-                        </span>
-                      ) : null}
                       <span className="flow__teklif-odenecek">
                         <strong className="flow__teklif-prim">
-                          {formatPrim(
-                            gosterim
-                              ? kartTutari(gosterim, satinAl)
-                              : sirket.Prim,
-                            sonuc.bransNo,
-                          )}
+                          {formatPrim(sirket.Prim, sonuc.bransNo)}
                         </strong>
                         {sirket.Taksit ? (
                           <span className="flow__teklif-taksit">
@@ -225,6 +199,11 @@ export default function FiyatListesi({
                           </span>
                         ) : null}
                       </span>
+                      {zaman ? (
+                        <span className="flow__teklif-zaman">
+                          Teklif zamanı: {zaman}
+                        </span>
+                      ) : null}
                     </div>
                     {satinAl ? (
                       <button
@@ -260,6 +239,14 @@ export default function FiyatListesi({
           </section>
         );
       })}
+
+      {toplamTeklif > 0 ? (
+        <BilgiNotu>
+          Listelenen tutarlar sigorta şirketlerinden gelen tekliflerdir ve
+          poliçe değildir. Sigorta şirketi, poliçeleştirme sırasında yaptığı
+          son kontrole göre teklifi güncelleyebilir veya kabul etmeyebilir.
+        </BilgiNotu>
+      ) : null}
 
       <div className="flow__actions">
         <button type="button" className="flow__ghost" onClick={onGeri}>

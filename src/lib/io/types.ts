@@ -93,6 +93,12 @@ export interface SirketTeklifi {
   Taksit?: string;
   AcenteKodu?: string;
   isWebServis?: boolean;
+  /**
+   * Teklifin arayüze ilk düştüğü an (ISO). IO'dan gelmiyor; polling sırasında
+   * istemcide işaretleniyor ve teklif kartında "teklif zamanı" olarak
+   * gösteriliyor.
+   */
+  alindiAt?: string;
   [key: string]: unknown;
 }
 

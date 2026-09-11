@@ -1,11 +1,11 @@
 /**
  * Anında satın alınabilir şirketler — ürün bazlı izin listesi.
  *
- * Listede olan şirketlerde mevcut kurgu durur: prim şişirilir, indirim
- * (üstü çizili liste + kazanç) gösterilir, buton "Satın al"dır.
+ * Listede olan şirketlerde buton "Satın al"dır ve akış ödeme adımına gider.
+ * Listede olmayanlarda buton "Teklif iste"dir ve admin talebine düşer.
  *
- * Listede olmayanlarda prim yine şişirilir ama indirim uygulanmaz; müşteri
- * yalnızca şişirilmiş tutarı görür ve "Teklif iste" ile admin talebine düşer.
+ * İki durumda da müşteriye sigorta şirketinden gelen primin kendisi
+ * gösterilir; liste dışı olmak fiyatı değiştirmez.
  *
  * Kısa süreli trafik ayrı bir branş değil, aynı branşta `KisaSureli: true`
  * ile çalışıyor; şirket listesi farklı olduğu için bayrakla ayrılıyor.

@@ -1,23 +1,17 @@
 /**
- * Adım 4 — Ödeme.
+ * Satın alma onayı ve ödeme.
  *
- * Partner CRM'indeki ödeme ekranının sadeleştirilmiş hâli. Kaldırılanlar ve
- * nedenleri:
- * - Daini Mürtehin: self serviste her zaman "Yok"; alan gösterilmiyor.
- * - Ödeme Şekli: her zaman Sanal POS; sunucuda sabit gönderiliyor.
- * - 3D Secure anahtarı: Sigorta Gross tarafında çalışmıyor, partner de
- *   kapalı geçiyor. Sunucudaki IO_3DS_ENABLED ile yönetiliyor.
- * - "Onay Al" butonu: müşteri akışında karşılığı yok.
- *
- * Kart bilgileri yalnızca bu bileşenin state'inde tutuluyor; hiçbir yere
- * yazılmıyor, kaydedilmiyor.
+ * Önce seçilen teklif özeti ve sigorta şirketi ödeme ekranına yönlendirme
+ * bilgisi gösterilir. IO yanıtında harici ödeme bağlantısı varsa yeni sekmede
+ * açılır; aksi hâlde kart bilgileri yalnızca bu adımda toplanıp doğrudan
+ * sigorta şirketinin sanal POS altyapısına iletilir (sistemde saklanmaz).
  */
 
 import { useState } from "react";
 import BilgiNotu from "./BilgiNotu";
 import IlerlemePaneli from "./IlerlemePaneli";
 import { ODEME_MESAJLARI } from "./beklemeMetinleri";
-import { fiyatGosterimi } from "./fiyatlandirma";
+import { odemeUrlEtiketi, odemeUrlOku } from "./odemeUrl";
 import { formatPrim } from "./paraBirimi";
 import { IoError, satinAl } from "../../lib/io/client";
 import type { SatinAlmaSonuc, SirketTeklifi } from "../../lib/io/types";
@@ -36,6 +30,8 @@ function yilSecenekleri(): string[] {
 const AYLAR = Array.from({ length: 12 }, (_, index) =>
   String(index + 1).padStart(2, "0"),
 );
+
+type Asama = "onay" | "pos";
 
 interface Props {
   oturumId: string;
@@ -56,6 +52,7 @@ export default function OdemeModali({
   onKapat,
   onBasarili,
 }: Props) {
+  const [asama, setAsama] = useState<Asama>("onay");
   const [kartSahibi, setKartSahibi] = useState("");
   const [kimlik, setKimlik] = useState(kimlikNo);
   const [kartNo, setKartNo] = useState("");
@@ -64,6 +61,41 @@ export default function OdemeModali({
   const [cvv, setCvv] = useState("");
   const [hata, setHata] = useState("");
   const [gonderiliyor, setGonderiliyor] = useState(false);
+
+  const odemeUrl = odemeUrlOku(teklif);
+
+  const ozet = (
+    <div className="flow__modal-head">
+      <span className="flow__modal-sirket">{teklif.SirketAdi}</span>
+
+      <span className="flow__modal-odenecek">
+        <strong className="flow__modal-prim">
+          {formatPrim(teklif.Prim, bransNo)}
+        </strong>
+        {teklif.Taksit ? (
+          <span className="flow__modal-taksit">{teklif.Taksit}</span>
+        ) : null}
+      </span>
+    </div>
+  );
+
+  const odemeEkraninaGec = () => {
+    setHata("");
+
+    if (odemeUrl) {
+      const yeniSekme = window.open(odemeUrl, "_blank", "noopener,noreferrer");
+      if (!yeniSekme) {
+        setHata(
+          "Ödeme ekranı açılamadı. Tarayıcınızın açılır pencere engelini kapatıp tekrar deneyin.",
+        );
+        return;
+      }
+      onKapat();
+      return;
+    }
+
+    setAsama("pos");
+  };
 
   const odemeYap = async () => {
     setHata("");
@@ -123,37 +155,6 @@ export default function OdemeModali({
     }
   };
 
-  const gosterim = fiyatGosterimi(teklif.Prim);
-
-  const ozet = (
-    <div className="flow__modal-head">
-      <span className="flow__modal-sirket">{teklif.SirketAdi}</span>
-
-      {gosterim ? (
-        <span className="flow__teklif-fiyat">
-          <span className="flow__teklif-liste">
-            {formatPrim(gosterim.listeFiyati, bransNo)}
-          </span>
-          <span className="flow__teklif-kazanc">
-            {formatPrim(gosterim.kazanc, bransNo)} kazanç
-          </span>
-        </span>
-      ) : null}
-
-      {/* Ödenecek tutar her zaman en altta ve en büyük punto. */}
-      <span className="flow__modal-odenecek">
-        <strong className="flow__modal-prim">
-          {formatPrim(teklif.Prim, bransNo)}
-        </strong>
-        {teklif.Taksit ? (
-          <span className="flow__modal-taksit">{teklif.Taksit}</span>
-        ) : null}
-      </span>
-    </div>
-  );
-
-  // Ödeme sürerken kapatma ve form alanları gösterilmiyor: mükerrer çekim
-  // riskini doğuracak her etkileşim kapalı kalıyor.
   if (gonderiliyor) {
     return (
       <div
@@ -175,6 +176,57 @@ export default function OdemeModali({
     );
   }
 
+  if (asama === "onay") {
+    return (
+      <div
+        className="flow__overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="odeme-onay-baslik"
+      >
+        <div className="flow__modal">
+          <button
+            type="button"
+            className="flow__modal-close"
+            onClick={onKapat}
+            aria-label="Kapat"
+          >
+            ×
+          </button>
+
+          {ozet}
+
+          <h2 className="flow__modal-title" id="odeme-onay-baslik">
+            Teklifinizi seçtiniz
+          </h2>
+          <p className="flow__modal-text">
+            Ödeme işleminizi tamamlamak için sigorta şirketinin güvenli ödeme
+            ekranına yönlendirileceksiniz. Kart bilgilerinizi yalnızca bu ekranda
+            girersiniz; kart numaranız, son kullanma tarihiniz ve CVV bilginiz
+            Sigorta Uzmanı tarafından görülmez veya saklanmaz.
+          </p>
+
+          {odemeUrl ? (
+            <p className="flow__modal-note">
+              Ödeme bağlantısı: <strong>{odemeUrlEtiketi(odemeUrl)}</strong>{" "}
+              (yeni sekmede açılacaktır)
+            </p>
+          ) : null}
+
+          {hata ? <p className="flow__warning">{hata}</p> : null}
+
+          <button
+            type="button"
+            className="flow__primary flow__primary--block"
+            onClick={odemeEkraninaGec}
+          >
+            Sigorta Şirketinin Ödeme Ekranına Geç
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flow__overlay" role="dialog" aria-modal="true" aria-label="Ödeme">
       <div className="flow__modal">
@@ -188,6 +240,11 @@ export default function OdemeModali({
         </button>
 
         {ozet}
+
+        <p className="flow__modal-text">
+          Kart bilgileriniz yalnızca sigorta şirketinin sanal POS altyapısına
+          iletilir; Sigorta Uzmanı tarafından görülmez veya saklanmaz.
+        </p>
 
         <div className="flow__grid">
           <label className="flow__field flow__field--full">
@@ -275,16 +332,14 @@ export default function OdemeModali({
         <button
           type="button"
           className="flow__primary flow__primary--block"
-          onClick={odemeYap}
+          onClick={() => void odemeYap()}
         >
-          Ödeme yap
+          Ödemeyi tamamla
         </button>
 
         <BilgiNotu>
-          Kart bilgileriniz yalnızca poliçe primini tahsil etmek için sigorta
-          şirketinin sanal POS altyapısına iletilir; sistemlerimizde
-          saklanmaz. İşlem sonrasında kartınızın yalnızca son dört hanesi
-          kayıtlarınızda görünür.
+          İşlem sonrasında kartınızın yalnızca son dört hanesi kayıtlarınızda
+          görünür.
         </BilgiNotu>
       </div>
     </div>
