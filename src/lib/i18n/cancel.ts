@@ -1,4 +1,4 @@
-import type { IptalBrans, IptalStatus } from "../supabase";
+import type { IptalBrans, IptalStatus } from "../iptal-types";
 import type { Locale } from "./locales";
 
 export interface CancelMessages {

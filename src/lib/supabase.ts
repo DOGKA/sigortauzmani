@@ -1,4 +1,7 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { IptalBrans, IptalStatus } from "./iptal-types";
+
+export type { IptalBrans, IptalStatus } from "./iptal-types";
 
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined;
@@ -43,14 +46,6 @@ export interface TalepInsert {
 }
 
 export type TalepSonuc = { ok: true } | { ok: false; error: string };
-
-export type IptalBrans =
-  | "kasko"
-  | "trafik"
-  | "imm"
-  | "kisa_sureli_trafik";
-
-export type IptalStatus = "islemde" | "belge_eksik" | "tamamlandi";
 
 export const IPTAL_BRANS_LABELS: Record<IptalBrans, string> = {
   kasko: "Kasko Poliçesi",
