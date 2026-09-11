@@ -142,7 +142,6 @@ const NAV_ITEMS: NavItem[] = [
   {
     href: "/ayarlar",
     label: "Ayarlar",
-    beta: true,
     icon: (
       <svg {...iconProps}>
         <circle cx="12" cy="12" r="3" />
