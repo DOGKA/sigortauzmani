@@ -8,6 +8,10 @@
  * Trafik akışında aynı araç için Kasko da hazırlanabildiği (CRM dökümanı
  * §2.8) için birden fazla branş tek istekte gönderilebilir; her biri IO'da
  * ayrı bir teklif oluşturur.
+ *
+ * Olağan istek `Kanal: 0` ile gider ve IO kayıtlı teklif varsa onu döndürür.
+ * `yeniTeklif: true` gelirse kayıt kontrolünü atlatan kanal kullanılır ve IO
+ * şirketleri yeniden çalıştırıp yeni TeklifId açar (bkz. `ioYeniTeklifKanal`).
  */
 
 import {
@@ -15,6 +19,7 @@ import {
   ioFetch,
   ioIcHata,
   ioKanal,
+  ioYeniTeklifKanal,
   jsonResponse,
 } from "../_shared/io";
 import {
@@ -26,6 +31,7 @@ import {
 } from "../_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
 import { readEnv } from "../_shared/supabase";
+import { aktifPoliceBitisi, ioTeklifTarihi } from "../_shared/uye";
 
 export const config = { runtime: "edge" };
 
@@ -101,6 +107,12 @@ interface RequestBody {
     plate?: string | null;
     adresKodu?: string | null;
   };
+  /**
+   * Kullanıcı kayıtlı teklifi reddedip yeni teklif istedi ("Hayır, yeni
+   * teklif oluştur" / "Vazgeç"). IO'ya kayıt kontrolünü atlatan kanalla
+   * gidilir; bkz. `ioYeniTeklifKanal`.
+   */
+  yeniTeklif?: boolean;
 }
 
 /**
@@ -162,6 +174,39 @@ function tanzimGecmis(ilkGorulme: string | null): boolean {
   const ms = Date.parse(ilkGorulme);
   if (Number.isNaN(ms)) return false;
   return Date.now() - ms > TEKLIF_GECERLILIK_MS;
+}
+
+/**
+ * İki tarihin eskisi.
+ *
+ * Her iki kaynak da teklifin gerçek açılış anından yeni olabiliyor: kendi
+ * kaydımız teklifi ilk gördüğümüz anı tutuyor (CRM'de daha önce açılmışsa
+ * geç kalıyor), IO'nun alanı ise son işlem anını tutuyor (güncelleme onu
+ * ileri atıyor). Bu yüzden eski olan seçiliyor — teklifin yaşını olduğundan
+ * küçük göstermek satın almayı yanlışlıkla açar, büyük göstermek yalnızca
+ * gereksiz yere yeni teklif sorar.
+ */
+function enEskiTarih(a: string | null, b: string | null): string | null {
+  if (!a) return b;
+  if (!b) return a;
+  const ma = Date.parse(a);
+  const mb = Date.parse(b);
+  if (Number.isNaN(ma)) return b;
+  if (Number.isNaN(mb)) return a;
+  return ma <= mb ? a : b;
+}
+
+/**
+ * Acente defterinde arama anahtarı.
+ *
+ * Araç branşlarında plaka en dar sonucu veriyor: aynı kimlikle on teklif
+ * dönerken plakayla üç teklif döndü. Plaka yoksa kimlik numarasına düşülüyor.
+ */
+function aramaAnahtari(kisi: RequestBody["kisi"]): string | null {
+  const plaka = kisi?.plate?.replace(/\s+/g, "").toUpperCase();
+  if (plaka) return plaka;
+  const kimlik = kisi?.tckn?.trim() || kisi?.vergiNo?.trim();
+  return kimlik || null;
 }
 
 /** Yanıt alan adı uca göre TeklifId / Id olarak değişebiliyor. */
@@ -242,6 +287,8 @@ export default async function handler(request: Request): Promise<Response> {
 
   const kisi = body.kisi ?? {};
   const girdiler = temizOzet(body.girdiler);
+  const yeniTeklif = body.yeniTeklif === true;
+  const kanal = yeniTeklif ? ioYeniTeklifKanal() : ioKanal();
   const oturum = await createOturum({
     session_id: session.id,
     ip_hash: ipHash,
@@ -255,14 +302,17 @@ export default async function handler(request: Request): Promise<Response> {
     birth_date: kisi.birthDate ?? null,
     plate: kisi.plate ?? null,
     adres_kodu: kisi.adresKodu ?? null,
-    form_data: { girdiler, talepler },
+    form_data: { girdiler, talepler, yeniTeklif },
   });
 
+  const arama = aramaAnahtari(kisi);
   const sonuclar: {
     bransNo: number;
     teklifId: number;
     eskiTeklif: boolean;
     teklifTarihi: string | null;
+    /** Aynı branşta yürürlükte olan poliçenin bitiş tarihi; yoksa null. */
+    policeBitisi: string | null;
   }[] = [];
   const hatalar: { bransNo: number; message: string }[] = [];
   /** Yalnızca oturum kaydına yazılıyor; istemciye dönmüyor. */
@@ -274,7 +324,7 @@ export default async function handler(request: Request): Promise<Response> {
       body: {
         ...talep.payload,
         BransNo: talep.bransNo,
-        Kanal: ioKanal(),
+        Kanal: kanal,
       },
     });
 
@@ -294,16 +344,32 @@ export default async function handler(request: Request): Promise<Response> {
       });
       continue;
     }
-    // IO aynı teklifi geri verdiyse tarihi bizim kaydımızda: bu kimliği
-    // daha önce hangi oturumda gördüysek teklif o zaman açılmış.
-    const ilkGorulme = oturum
+    let teklifTarihi = oturum
       ? await teklifIlkGorulme(teklifId, oturum.id)
       : null;
+    let policeBitisi: string | null = null;
+
+    // IO yeni teklif açmak yerine kayıtlı teklifi döndürdüyse ("Teklif
+    // kayıtlıdır. TeklifId ile primleri alabilirsiniz.", HataKodu 1) teklifin
+    // yaşını ve müşterinin yürürlükteki poliçesini acente defterinden
+    // soruyoruz. Kendi kaydımız CRM'de açılmış teklifleri görmüyor, defter
+    // görüyor. Taze tekliflerde sorulacak bir şey olmadığı için iki ek istek
+    // hiç yapılmıyor.
+    if (ioIcHata(result.data).kod === 1 && arama) {
+      const [ioTarih, bitis] = await Promise.all([
+        ioTeklifTarihi(arama, teklifId),
+        aktifPoliceBitisi(arama, talep.bransNo),
+      ]);
+      teklifTarihi = enEskiTarih(teklifTarihi, ioTarih);
+      policeBitisi = bitis;
+    }
+
     sonuclar.push({
       bransNo: talep.bransNo,
       teklifId,
-      eskiTeklif: tanzimGecmis(ilkGorulme),
-      teklifTarihi: ilkGorulme,
+      eskiTeklif: tanzimGecmis(teklifTarihi),
+      teklifTarihi,
+      policeBitisi,
     });
   }
 
@@ -330,7 +396,14 @@ export default async function handler(request: Request): Promise<Response> {
     await updateOturum(oturum.id, {
       status: "sorgu_tamam",
       io_teklif_id: sonuclar[0].teklifId,
-      form_data: { girdiler, talepler, teklifler: sonuclar, hatalar, ioYanitlari },
+      form_data: {
+        girdiler,
+        talepler,
+        yeniTeklif,
+        teklifler: sonuclar,
+        hatalar,
+        ioYanitlari,
+      },
     });
   }
 

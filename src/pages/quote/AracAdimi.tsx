@@ -9,13 +9,14 @@
  * ister, Trafik ise aynı araç için Kasko teklifi de sorar.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   IoError,
   getIller,
   getMarkaTipleri,
   getMarkalar,
   getMeslekler,
+  kayitliTeklifKontrol,
   sorguTramer,
 } from "../../lib/io/client";
 import {
@@ -27,7 +28,13 @@ import {
   modelYillari,
   normalizeIlKodu,
 } from "../../lib/io/constants";
-import type { Il, Marka, MarkaTipi, Meslek } from "../../lib/io/types";
+import type {
+  Il,
+  KayitliTeklifKontrolSonucu,
+  Marka,
+  MarkaTipi,
+  Meslek,
+} from "../../lib/io/types";
 import {
   isValidChassisNo,
   isValidDocumentSerial,
@@ -51,6 +58,7 @@ interface Props {
   onKaskoDaDegis: (deger: boolean) => void;
   onGeri: () => void;
   onTeklifCalis: () => void;
+  onKayitliTeklif: (sonuc: KayitliTeklifKontrolSonucu) => void;
   calisiyor: boolean;
   hata: string;
 }
@@ -69,6 +77,7 @@ export default function AracAdimi({
   onKaskoDaDegis,
   onGeri,
   onTeklifCalis,
+  onKayitliTeklif,
   calisiyor,
   hata,
 }: Props) {
@@ -82,11 +91,75 @@ export default function AracAdimi({
     "bekliyor" | "sorguluyor" | "geldi" | "gelmedi"
   >("bekliyor");
   const [tramerNotu, setTramerNotu] = useState("");
+  const [kayitKontrolEdiliyor, setKayitKontrolEdiliyor] = useState(false);
+  const sonKayitKontrolu = useRef("");
 
   // Kısa süreli poliçe plakalı araç istiyor; YK akışı o üründe hiç açılmıyor.
   useEffect(() => {
     if (gereksinim.kisaSureli && !durum.plakaVar) onDegis({ plakaVar: true });
   }, [gereksinim.kisaSureli, durum.plakaVar, onDegis]);
+
+  // CRM kısa süreli trafik ekranında plaka ve ruhsat tamamlanınca, henüz
+  // teklif çalıştırmadan `TeklifBul` yapıp kayıtlı teklifi soruyor. Aynı
+  // davranış burada 400 ms beklemeyle uygulanıyor; kullanıcı son karakteri
+  // yazarken ara değerlerle istek atılmıyor.
+  useEffect(() => {
+    if (
+      !gereksinim.kisaSureli ||
+      !isValidPlate(durum.plaka) ||
+      !isValidDocumentSerial(durum.tescilBelge)
+    ) {
+      sonKayitKontrolu.current = "";
+      setKayitKontrolEdiliyor(false);
+      return;
+    }
+
+    const plaka = durum.plaka.replace(/\s/g, "").toUpperCase();
+    const kimlikNo = kimlikNoOf(kimlik);
+    const anahtar = `${kimlikNo}:${plaka}:${gereksinim.bransNo}`;
+    if (!kimlikNo || sonKayitKontrolu.current === anahtar) return;
+
+    // Yeni geçerli değer eski, hâlâ sürmekte olan isteğin sonucunu geçersiz
+    // kılsın; aksi halde hızlı plaka değişiminde eski araç için modal açılır.
+    sonKayitKontrolu.current = anahtar;
+    setKayitKontrolEdiliyor(true);
+    const timer = window.setTimeout(() => {
+      void kayitliTeklifKontrol({
+        kimlikNo,
+        plaka,
+        bransNo: gereksinim.bransNo,
+      })
+        .then((sonuc) => {
+          if (
+            sonKayitKontrolu.current === anahtar &&
+            sonuc.bulundu &&
+            sonuc.teklifId !== null
+          ) {
+            onKayitliTeklif(sonuc);
+          }
+        })
+        // Ön kontrol yardımcıdır; servis düşerse normal teklif çağrısı gerçek
+        // hatayı ve kayıtlı teklif bilgisini yine yakalar.
+        .catch(() => undefined)
+        .finally(() => {
+          if (sonKayitKontrolu.current === anahtar) {
+            setKayitKontrolEdiliyor(false);
+          }
+        });
+    }, 400);
+
+    return () => {
+      window.clearTimeout(timer);
+      setKayitKontrolEdiliyor(false);
+    };
+  }, [
+    gereksinim.bransNo,
+    gereksinim.kisaSureli,
+    kimlik,
+    durum.plaka,
+    durum.tescilBelge,
+    onKayitliTeklif,
+  ]);
 
   // Meslek listesi kaskoda zorunlu; diğer branşlarda hiç istenmiyor.
   useEffect(() => {
@@ -576,9 +649,11 @@ export default function AracAdimi({
           type="button"
           className="flow__primary"
           onClick={teklifCalis}
-          disabled={calisiyor}
+          disabled={calisiyor || kayitKontrolEdiliyor}
         >
-          {calisiyor ? t.flow.running : t.flow.runQuote}
+          {calisiyor || kayitKontrolEdiliyor
+            ? t.flow.running
+            : t.flow.runQuote}
         </button>
       </div>
     </div>

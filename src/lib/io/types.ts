@@ -195,10 +195,27 @@ export interface TeklifOlusturSonuc {
      * yapılamıyor; yeni teklif çalıştırılması gerekiyor.
      */
     eskiTeklif?: boolean;
-    /** Teklifin bizde ilk görüldüğü an (ISO). Bilinmiyorsa null. */
+    /**
+     * Teklifin bilinen en eski işlem anı (ISO). Kendi kaydımızla IO'nun
+     * acente defterindeki tarihinin eskisi; ikisi de yoksa null.
+     */
     teklifTarihi?: string | null;
+    /**
+     * Aynı branşta yürürlükte olan poliçenin bitiş tarihi (ISO). Yeni teklifin
+     * neden açılamadığını açıklayan tarih bu: poliçe sürerken şirket sonraki
+     * vade için teklif çalıştırmıyor.
+     */
+    policeBitisi?: string | null;
   }[];
   hatalar: { bransNo: number; message: string }[];
+}
+
+/** Araç bilgileri girilirken yapılan CRM tipi kayıtlı teklif ön kontrolü. */
+export interface KayitliTeklifKontrolSonucu {
+  bulundu: boolean;
+  teklifId: number | null;
+  teklifTarihi: string | null;
+  policeBitisi: string | null;
 }
 
 export interface PrimlerSonuc {

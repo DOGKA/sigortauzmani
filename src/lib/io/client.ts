@@ -14,6 +14,7 @@ import type {
   Il,
   Ilce,
   KartBilgisi,
+  KayitliTeklifKontrolSonucu,
   Marka,
   MarkaTipi,
   Meslek,
@@ -208,6 +209,22 @@ export async function sorguTramer(body: {
   await call("tramer", { method: "POST", body });
 }
 
+/**
+ * CRM'in araç ekranındaki `TeklifBul` kontrolünün güvenli karşılığı.
+ * Sunucu acente defterini tarar; istemciye yalnızca eşleşen teklif tarihi ve
+ * kimliği gelir, müşteri listesi gelmez.
+ */
+export function kayitliTeklifKontrol(body: {
+  kimlikNo: string;
+  plaka: string;
+  bransNo: number;
+}): Promise<KayitliTeklifKontrolSonucu> {
+  return call<KayitliTeklifKontrolSonucu>("kayitli-teklif", {
+    method: "POST",
+    body,
+  });
+}
+
 // ============================================================
 // Teklif
 // ============================================================
@@ -234,6 +251,11 @@ export function teklifOlustur(body: {
   kisi: KisiBilgisi;
   /** Panelde okunacak, kodları etiketlenmiş girdi özeti. */
   girdiler?: { etiket: string; deger: string }[];
+  /**
+   * Kayıtlı teklif reddedildi, IO'da yeni teklif açılsın. Her çağrı yeni
+   * teklif yazdığı için yalnızca kullanıcının açık seçimiyle gönderilir.
+   */
+  yeniTeklif?: boolean;
 }): Promise<TeklifOlusturSonuc> {
   // `api/io/teklif.ts` statik rota olduğu için `[action].ts` yerine ona düşer.
   return call<TeklifOlusturSonuc>("teklif", { method: "POST", body });

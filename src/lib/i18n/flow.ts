@@ -31,9 +31,16 @@ export interface FlowMessages {
     body: string;
     /** Teklif tarihi bilindiğinde kullanılan metin; `{date}` ile. */
     bodyDated: string;
+    /**
+     * Yürürlükteki poliçenin bitişi bilindiğinde gösterilen satır; `{date}`
+     * ile. Yeni teklifin neden açılamadığını açıklayan asıl sebep bu.
+     */
+    activePolicy: string;
     note: string;
     confirm: string;
     cancel: string;
+    /** CRM'deki kayıtlı teklif ön kontrolünün ikinci düğmesi. */
+    declineExisting: string;
     /** Yeni teklif denendi ama şirket kayıtlı teklifi geri verdi. */
     retryFailed: string;
   };
@@ -150,10 +157,13 @@ const TR: FlowMessages = {
       "Bu bilgilerle daha önce teklif çalışılmış. Aynı teklif ile mi devam edilecek?",
     bodyDated:
       "{date} tarihinde bu bilgilerle teklif çalışılmış. Aynı teklif ile mi devam edilecek?",
+    activePolicy:
+      "Bu araç için poliçeniz {date} tarihine kadar yürürlükte. Sigorta şirketleri sonraki dönem için teklif çalıştırmadığından, yeni teklif ancak bitiş tarihine yaklaşınca alınabiliyor.",
     note:
       "Teklifin üzerinden 24 saatten fazla geçtiği için tanzim tarihi değişmek zorunda; sigorta şirketlerinin verdiği primler de değişebilir. Bu yüzden eski teklifin fiyatlarıyla çevrim içi satın alma yapılamıyor. Yeni teklif seçeneğinde şirkete yeniden başvurulur; şirket yeni teklif açmazsa talebiniz ekibimize düşer ve size ulaşırız.",
     confirm: "Evet, devam edeceğim",
     cancel: "Hayır, yeni teklif oluştur",
+    declineExisting: "Vazgeç",
     retryFailed:
       "Sigorta şirketi bu bilgilerle yeni teklif açmadı; mevcut teklif geçerli kalıyor. Talebiniz ekibimize iletildi, en kısa sürede size ulaşacağız.",
   },
@@ -278,10 +288,13 @@ const EN: FlowMessages = {
     body: "A quote was already run with these details. Continue with the same quote?",
     bodyDated:
       "A quote was already run with these details on {date}. Continue with the same quote?",
+    activePolicy:
+      "Your policy for this vehicle stays in force until {date}. Insurers do not run quotes for the following term, so a new quote is only possible as that date approaches.",
     note:
       "More than 24 hours have passed, so the issue date has to change and insurer premiums may change with it. That is why the old quote cannot be bought online. Choosing a new quote asks the insurer again; if the insurer will not open one, your request goes to our team and we will contact you.",
     confirm: "Yes, continue",
     cancel: "No, create a new quote",
+    declineExisting: "Cancel",
     retryFailed:
       "The insurer did not open a new quote with these details, so the existing quote stands. Your request has reached our team and we will contact you shortly.",
   },
@@ -406,10 +419,13 @@ const AR: FlowMessages = {
     body: "سبق أن أُعدّ عرض بهذه البيانات. هل تريدون المتابعة بالعرض نفسه؟",
     bodyDated:
       "سبق أن أُعدّ عرض بهذه البيانات في {date}. هل تريدون المتابعة بالعرض نفسه؟",
+    activePolicy:
+      "بوليصتكم لهذه المركبة سارية حتى {date}. وشركات التأمين لا تُعدّ عروضاً للفترة التالية، لذلك لا يمكن الحصول على عرض جديد إلا عند اقتراب هذا التاريخ.",
     note:
       "مضى أكثر من 24 ساعة، لذلك يجب أن يتغيّر تاريخ الإصدار وقد تتغيّر معه أقساط شركات التأمين. لهذا لا يمكن شراء العرض القديم إلكترونياً. عند اختيار عرض جديد نراجع شركة التأمين مرة أخرى؛ وإن لم تفتح الشركة عرضاً جديداً يُحال طلبكم إلى فريقنا ونتصل بكم.",
     confirm: "نعم، أتابع",
     cancel: "لا، أعدّوا عرضاً جديداً",
+    declineExisting: "إلغاء",
     retryFailed:
       "لم تفتح شركة التأمين عرضاً جديداً بهذه البيانات، لذلك يبقى العرض الحالي سارياً. وصل طلبكم إلى فريقنا وسنتصل بكم قريباً.",
   },
@@ -534,10 +550,13 @@ const FA: FlowMessages = {
     body: "با این اطلاعات پیش‌تر پیشنهاد گرفته شده است. با همان پیشنهاد ادامه می‌دهید؟",
     bodyDated:
       "در تاریخ {date} با این اطلاعات پیشنهاد گرفته شده است. با همان پیشنهاد ادامه می‌دهید؟",
+    activePolicy:
+      "بیمه‌نامه شما برای این خودرو تا {date} اعتبار دارد. شرکت‌های بیمه برای دوره بعدی پیشنهاد صادر نمی‌کنند، بنابراین پیشنهاد جدید تنها با نزدیک شدن به این تاریخ امکان‌پذیر است.",
     note:
       "بیش از ۲۴ ساعت گذشته است؛ بنابراین تاریخ صدور باید تغییر کند و حق بیمه شرکت‌ها هم می‌تواند تغییر کند. به همین دلیل خرید آنلاین با قیمت‌های پیشنهاد قبلی امکان‌پذیر نیست. با انتخاب پیشنهاد جدید دوباره از شرکت بیمه درخواست می‌شود؛ اگر شرکت پیشنهاد جدیدی باز نکند، درخواست شما به تیم ما می‌رسد و با شما تماس می‌گیریم.",
     confirm: "بله، ادامه می‌دهم",
     cancel: "نه، پیشنهاد جدید بگیرید",
+    declineExisting: "انصراف",
     retryFailed:
       "شرکت بیمه با این اطلاعات پیشنهاد جدیدی باز نکرد، بنابراین پیشنهاد فعلی معتبر می‌ماند. درخواست شما به تیم ما رسید و به‌زودی با شما تماس می‌گیریم.",
   },

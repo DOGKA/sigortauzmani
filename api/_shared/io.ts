@@ -61,6 +61,29 @@ export function ioKanal(): number {
 }
 
 /**
+ * "Yeni teklif oluştur" isteğinde gönderilen kanal.
+ *
+ * `Kanal: 0` ile IO aynı kişi ve riziko için kayıtlı teklifi geri veriyor
+ * ("Teklif kayıtlıdır", HataKodu 1); denenen yirmi dokuz alan ve bayrak bunu
+ * aşamadı. `Kanal` sıfırdan farklı olduğunda ise kayıt kontrolü hiç
+ * yapılmıyor: IO doğrudan yeni teklif açıyor, şirketler yeniden çalışıyor ve
+ * güncel primler geliyor (canlıda doğrulandı: 939086 → 952181, primler
+ * değişti, SatinAl true). Yürürlükte poliçe varsa yine HataKodu 11 ile
+ * reddediyor; partner CRM'inin "vazgeç" düğmesi de aynı sonucu veriyor.
+ *
+ * Kayıt kontrolü olmadığı için her çağrı acente defterine yeni teklif yazar
+ * ve şirket servislerini yeniden çalıştırır. Bu yüzden yalnızca kullanıcı
+ * açıkça "yeni teklif" istediğinde kullanılır; olağan akış `ioKanal()` ile
+ * sürer. Döküman kanal değerlerini listelemediği için değer ortamdan
+ * değiştirilebilir bırakıldı; sıfır verilirse kayıtlı teklife düşeceğinden
+ * yalnızca pozitif değer kabul edilir.
+ */
+export function ioYeniTeklifKanal(): number {
+  const parsed = Number(readEnv("IO_KANAL_YENI_TEKLIF"));
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : 1;
+}
+
+/**
  * 3D Secure. Sigorta Gross tarafında bozuk olduğu için varsayılan kapalı;
  * düzeltildiğinde tek env değişikliğiyle açılabilsin diye bayrak bırakıldı.
  */

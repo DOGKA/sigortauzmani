@@ -12,19 +12,25 @@
  * "Evet" fiyatları bilgi olarak gösteriyor ama satın alma kapalı kalıyor:
  * eski teklif üzerinden ödeme şirket tarafında reddediliyor.
  *
- * "Hayır" partner CRM'indeki "vazgeç" ile aynı şeyi yapıyor: IO'ya gidip
- * yeni teklif açmayı deniyor. IO kayıtlı teklifi geri verdiği sürece
- * (denenen on beş alan ve `TekrarCalis` dahil hep öyle oldu) liste
- * tazelenmiyor, sonuç ekranda gösterilip talep ekibe düşüyor. Şirket vade
- * döndüğünde yeni teklif açarsa aynı düğme fiyatları tazeleyecek.
+ * "Hayır" partner CRM'indeki "vazgeç" ile aynı şeyi yapıyor: sunucu IO'ya
+ * kayıt kontrolünü atlatan kanalla gidiyor, şirketler yeniden çalışıyor ve
+ * liste yeni TeklifId'nin güncel primleriyle tazeleniyor. Yürürlükte poliçe
+ * varsa IO yeni teklifi "… vade için teklif çalışıyorsunuz" ile reddediyor;
+ * o mesaj burada gösteriliyor, eldeki liste bozulmuyor.
  */
 
 import { useLocale, useT } from "../../lib/i18n/context";
-import { formatDateTime, interpolate } from "../../lib/i18n/format";
+import {
+  formatDateTime,
+  formatDisplayDate,
+  interpolate,
+} from "../../lib/i18n/format";
 
 interface Props {
   /** Teklifin açıldığı an (ISO). Bilinmiyorsa tarihsiz metin gösterilir. */
   teklifTarihi: string | null;
+  /** Yürürlükteki poliçenin bitiş tarihi (ISO); yoksa satır gösterilmiyor. */
+  policeBitisi: string | null;
   /** Devam: mevcut teklifin fiyatlarıyla ilerle. */
   onDevam: () => void;
   /** Yeni teklif: ekibe talep aç. */
@@ -35,6 +41,7 @@ interface Props {
 
 export default function EskiTeklifModali({
   teklifTarihi,
+  policeBitisi,
   onDevam,
   onYeniTeklif,
   yeniTeklifGonderiliyor,
@@ -47,6 +54,12 @@ export default function EskiTeklifModali({
   // ziyaretçinin teklifin ne kadar eski olduğunu görmesi gerekiyor.
   const gosterilenTarih = teklifTarihi
     ? formatDateTime(teklifTarihi, locale)
+    : null;
+
+  // Poliçe bitişi Türkiye saatiyle gün başı olarak geliyor; gün kısmı
+  // olduğu gibi biçimlendiriliyor ki saat dilimi çevirisi tarihi kaydırmasın.
+  const gosterilenBitis = policeBitisi
+    ? formatDisplayDate(policeBitisi.slice(0, 10), locale)
     : null;
 
   return (
@@ -67,6 +80,13 @@ export default function EskiTeklifModali({
               })
             : t.flow.reworkedDialog.body}
         </p>
+        {gosterilenBitis ? (
+          <p className="flow__modal-lead">
+            {interpolate(t.flow.reworkedDialog.activePolicy, {
+              date: gosterilenBitis,
+            })}
+          </p>
+        ) : null}
         <p className="flow__modal-note">{t.flow.reworkedDialog.note}</p>
         {yeniTeklifHatasi ? (
           <p className="flow__warning">{yeniTeklifHatasi}</p>
