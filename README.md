@@ -54,3 +54,5 @@ npm run dev
 3. Kullanıcı iletişim tercihini seçebilir: **Hemen** veya **Tarih Seç** (tarih + saat aralığı).
 4. Beklemek istemeyen kullanıcı, hazır mesajlı **WhatsApp** bağlantısıyla doğrudan sigorta uzmanına bağlanır (mesajda yalnızca talep numarası yer alır).
 5. Admin panelindeki **Talepler** sayfasından talepler görüntülenir, filtrelenir ve durumları güncellenir (Yeni → Arandı → Teklif Verildi → Tamamlandı / İptal).
+
+Anında teklif akışındaki sayaçlar, tekrar kuralı ve bunların nasıl değiştirileceği için: [docs/teklif-limitleri.md](docs/teklif-limitleri.md).

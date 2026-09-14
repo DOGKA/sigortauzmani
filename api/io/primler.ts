@@ -109,24 +109,19 @@ function satinAlinabilir(sirket: SirketTeklifi): boolean {
 /**
  * Çalışması bir daha tamamlanmayan, ölü teklif mi.
  *
- * IO aynı kişi ve aynı riziko için yeni teklif açmıyor, "Teklif kayıtlıdır."
- * diyip mevcut kaydı geri veriyor. Geri dönen teklif hâlâ sağlıklı olabilir;
- * aylar önce açılmış bir teklif de `TeklifCalisildi: true` ve dolu
- * `SirketSayisi` ile gelebiliyor. Buradaki kontrol o genel durumu değil,
- * tekliflerin bir alt kümesini yakalıyor.
- *
- * Böyle bir teklifte prim sorgusu hiç tamamlanmıyor: çalıştırılacak şirket
- * kalmadığı için `SirketSayisi` 0 geliyor ama `TeklifCalisildi` hiçbir turda
- * true olmuyor, yani polling boşa 90 saniye dönüyor. Dönen satırlar eski
- * çalışmadan kalan önbellek ve `SatinAl` true görünse bile satın almada
- * şirket "Şirket şu an Satın Alma için uygun değildir." (HataKodu 22) diyor.
- * Bu yüzden bu tekliften anında satın alma yapılmıyor.
+ * IO'nun daha önce çalışılmış bir teklifi geri verdiği durumda görülüyordu:
+ * çalıştırılacak şirket kalmadığı için `SirketSayisi` 0 geliyor ama
+ * `TeklifCalisildi` hiçbir turda true olmuyor, yani polling boşa 90 saniye
+ * dönüyor. Teklif akışı artık her seferinde yeni teklif açtığı için bu
+ * duruma düşülmemesi gerekir; kontrol yalnızca polling'i zamanında kesen
+ * bir emniyet olarak duruyor. Satın alma tarafı ayrıca korunuyor: ödeme
+ * öncesi `teklifguncelle` `SatinAl: false` derse kart çekilmiyor.
  *
  * Taze tekliflerde `SirketSayisi` çalıştırılacak şirket sayısını veriyor ve
  * tamamlandığında `TeklifCalisildi` true oluyor; ilk turda henüz hiç şirket
  * çalışmamış olabileceği için `CalisilanSirketSayisi` şartı da aranıyor.
  */
-function eskiTeklifMi(
+function takiliTeklifMi(
   payload: Record<string, unknown>,
   teklifCalisildi: boolean,
   satirSayisi: number,
@@ -197,7 +192,7 @@ export default async function handler(request: Request): Promise<Response> {
   const payload = result.data as Record<string, unknown>;
   const teklifCalisildi = payload?.TeklifCalisildi === true;
   const sirketler = readSirketler(payload);
-  const eskiTeklif = eskiTeklifMi(payload, teklifCalisildi, sirketler.length);
+  const takili = takiliTeklifMi(payload, teklifCalisildi, sirketler.length);
 
   if (oturum && sirketler.length) {
     const fiyatlar: FiyatInput[] = sirketler.map((sirket) => ({
@@ -214,12 +209,12 @@ export default async function handler(request: Request): Promise<Response> {
     await upsertFiyatlar(oturum.id, fiyatlar);
     if (teklifCalisildi) {
       await updateOturum(oturum.id, { status: "teklif_calisti" });
-    } else if (eskiTeklif) {
-      // Panelde neden anında satın alma sunulmadığı görünsün.
+    } else if (takili) {
+      // Panelde polling'in neden erken kesildiği görünsün.
       await updateOturum(oturum.id, {
         status: "teklif_calisti",
         hata_mesaji:
-          "IO daha önce çalışılmış teklifi döndürdü; anında satın alma kapatıldı.",
+          "IO teklifi tamamlanmış işaretlemedi (SirketSayisi 0); polling kesildi.",
       });
     }
   }
@@ -228,13 +223,9 @@ export default async function handler(request: Request): Promise<Response> {
 
   return withCookie(
     jsonResponse({
-      // Eski teklifte `TeklifCalisildi` hiçbir turda true olmuyor; tamamlandı
-      // saymazsak istemci boşuna 90 saniye polling yapıyor.
-      teklifCalisildi: teklifCalisildi || eskiTeklif,
-      // Satırlar listelenmeye devam ediyor ama arayüz bu bayrakla anında
-      // satın almayı kapatıp talep açma yoluna geçiyor: fiyatı hiç
-      // göstermemek müşteriyi çıkışsız bırakırdı.
-      eskiTeklif,
+      // Takılı teklifte `TeklifCalisildi` hiçbir turda true olmuyor;
+      // tamamlandı saymazsak istemci boşuna 90 saniye polling yapıyor.
+      teklifCalisildi: teklifCalisildi || takili,
       // Müşteriye yalnızca satın alınabilir teklifler gidiyor; elenen sayı
       // ekranda "manuel onay bekliyor" notu için taşınıyor.
       otorizasyonSayisi: sirketler.length - listelenecek.length,

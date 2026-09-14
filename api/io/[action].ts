@@ -65,11 +65,14 @@ const ACTIONS: Record<string, ActionDef> = {
   bb: { method: "POST", path: "/api/bb", rateLimit: { limit: 300, windowSeconds: HOUR } },
 
   // --- Sorgular: maliyetli, dar limit ---
+  // Her müşteri akışta bir mernis + bir tramer sorgusu tüketiyor; tavan
+  // teklif ucundaki IP limitiyle (200/saat) aynı tutuluyor ki ekip art arda
+  // farklı müşterilere çalışırken sorgu adımında takılmasın.
   mernis: {
     method: "POST",
     path: "/api/sorgu/mernis",
     injectKanal: true,
-    rateLimit: { limit: 30, windowSeconds: HOUR },
+    rateLimit: { limit: 200, windowSeconds: HOUR },
   },
   // Aracı sigorta şirketi tarafında hazırlıyor; arayüzün tek ihtiyacı
   // sorgunun tutup tutmadığı. Plaka ve ruhsat seri numarasını bilen birine
@@ -79,7 +82,7 @@ const ACTIONS: Record<string, ActionDef> = {
     path: "/api/sorgu/tramer",
     injectKanal: true,
     yanitiGizle: true,
-    rateLimit: { limit: 30, windowSeconds: HOUR },
+    rateLimit: { limit: 200, windowSeconds: HOUR },
   },
   // tescilbelge, dogumtarihi ve dask sorguları bilinçli olarak açılmadı:
   // akışta karşılıkları yok ve plakadan / kimlik numarasından / poliçe

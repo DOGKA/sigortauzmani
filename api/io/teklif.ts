@@ -9,44 +9,113 @@
  * §2.8) için birden fazla branş tek istekte gönderilebilir; her biri IO'da
  * ayrı bir teklif oluşturur.
  *
- * Olağan istek `Kanal: 0` ile gider ve IO kayıtlı teklif varsa onu döndürür.
- * `yeniTeklif: true` gelirse kayıt kontrolünü atlatan kanal kullanılır ve IO
- * şirketleri yeniden çalıştırıp yeni TeklifId açar (bkz. `ioYeniTeklifKanal`).
+ * Her istek IO'da yeni teklif açar (bkz. `ioTeklifKanal`): eski teklifle
+ * devam yolu yok, fiyatlar her seferinde güncel gelir. Yürürlükte poliçesi
+ * olan kişide de çalışır; IO vadeyi poliçe bitişine çeker. Yalnızca vade
+ * IO'nun yenileme penceresinin dışındaysa (örn. bitişe 57 gün varken)
+ * HataKodu 11 "… vade için teklif çalışıyorsunuz" ile reddeder; o mesaj
+ * olduğu gibi istemciye döner. Bu bizim koyduğumuz bir engel değil.
+ *
+ * Tek istisna aynı ziyaretçinin aynı girdiyi kısa sürede yeniden
+ * göndermesi: o zaman IO'ya gidilmez, az önce açılan teklif geri verilir
+ * (bkz. `TEKRAR_PENCERESI_MS`). Bunun dışında oturum başına kısa pencereli
+ * bir sayaç düğme spam'ini kesiyor.
  */
 
 import {
   errorResponse,
   ioFetch,
   ioIcHata,
-  ioKanal,
-  ioYeniTeklifKanal,
+  ioTeklifKanal,
   jsonResponse,
 } from "../_shared/io";
 import {
   createOturum,
   globalRateCheck,
   rateCheck,
-  teklifIlkGorulme,
+  sonTeklifTekrari,
   updateOturum,
 } from "../_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
 import { readEnv } from "../_shared/supabase";
-import { aktifPoliceBitisi, ioTeklifTarihi } from "../_shared/uye";
 
 export const config = { runtime: "edge" };
 
-const MAX_TEKLIF_PER_HOUR = 12;
+/**
+ * IP başına saatlik tavan. Ofis tek bağlantıdan saatte 200 müşteriye kadar
+ * çalışabilsin diye ziyaretçi değil hacim ölçüsü; kişi bazlı spam'i
+ * aşağıdaki dar sayaç kesiyor. mernis / tramer / ön kontrol limitleri
+ * (`[action].ts`, `kayitli-teklif.ts`) bununla aynı tutulmalı, yoksa müşteri
+ * teklife gelemeden sorgu adımında takılır.
+ */
+const MAX_TEKLIF_PER_HOUR = 200;
 const MAX_BRANS_PER_REQUEST = 2;
+
+/**
+ * Kısa pencerede iki ayrı sayaç:
+ *
+ * - Aynı çerez oturumu + aynı kişi/araç: bir alanı değiştirip yeniden
+ *   çalıştırmak (IMM tutarı, kasko ekle/çıkar…) IO'da her seferinde yeni
+ *   teklif açıyor. Anahtar kimlik + plaka olduğu için plakasız branşlar
+ *   (DASK, sağlık, seyahat) aynı kişide tek sayaçta toplanıyor; müşteri
+ *   trafik + sağlık + DASK'ı art arda birkaç varyantla çalıştırabilsin diye
+ *   on. Onun üstü karşılaştırma değil spam.
+ * - Aynı çerez oturumu, toplam: farklı müşterilere art arda çalışan ekip için
+ *   geniş bırakıldı. IP tavanı saatte 200 iken tek bilgisayardan on dakikada
+ *   33 gerekir; 40 bunun üstünde kalır ama botu yine keser.
+ *
+ * Aynı girdinin birebir tekrarı iki sayaca da girmiyor (bkz.
+ * `TEKRAR_PENCERESI_MS`); geri-ileri gezinme kota yemiyor.
+ */
+const MAX_TEKLIF_PER_KISI = 10;
+const MAX_TEKLIF_PER_SESSION = 40;
+const SESSION_WINDOW_SECONDS = 10 * 60;
+
+/**
+ * Aynı oturum + aynı girdi bu süre içinde yeniden gelirse IO'ya gidilmez,
+ * az önce açılan teklif geri verilir. Fiyat ekranından geri gelip hiçbir şeyi
+ * değiştirmeden tekrar "Teklif Çalış"a basmanın karşılığı bu.
+ */
+const TEKRAR_PENCERESI_MS = 30 * 60 * 1000;
+
+async function sha256Kisa(metin: string): Promise<string> {
+  const ozet = await crypto.subtle.digest(
+    "SHA-256",
+    new TextEncoder().encode(metin),
+  );
+  return Array.from(new Uint8Array(ozet), (b) => b.toString(16).padStart(2, "0"))
+    .join("")
+    .slice(0, 32);
+}
+
+/** Girdinin oturum kaydına yazılan kısa özeti; kişisel veri taşımaz. */
+function talepOzeti(talepler: TeklifTalep[]): Promise<string> {
+  return sha256Kisa(JSON.stringify(talepler));
+}
+
+/**
+ * Kişi bazlı sayacın anahtarı: oturum + kimlik + plaka. Kimlik numarası
+ * sayaç tablosuna çıplak yazılmasın diye özetleniyor; oturum kimliği de
+ * karışıma girdiği için iki ziyaretçinin aynı müşteriyi çalıştırması
+ * birbirinin kotasını etkilemiyor.
+ */
+function kisiAnahtari(sessionId: string, kisi: RequestBody["kisi"]): Promise<string> {
+  const kimlik = (kisi?.tckn ?? kisi?.vergiNo ?? "").replace(/\D/g, "");
+  const plaka = (kisi?.plate ?? "").replace(/[^A-Za-z0-9]/g, "").toUpperCase();
+  return sha256Kisa(`kisi:${sessionId}:${kimlik}:${plaka}`);
+}
 
 /**
  * Tüm ziyaretçiler için ortak saatlik tavan. Beklenen iş hacminin çok
  * üstünde bırakıldı; amaç normal trafiği kısmak değil, bot ya da beklenmeyen
  * bir sıçramanın IO'yu boğmasını engellemek. Env'den ayarlanabilir ki
- * kampanya dönemlerinde deploy gerekmeden yükseltilebilsin.
+ * kampanya dönemlerinde deploy gerekmeden yükseltilebilsin. IP tavanı
+ * (200) ile aynı olsaydı ofis tek başına siteyi doldururdu; o yüzden iki
+ * katı.
  */
 function maxTeklifGlobalPerHour(): number {
   const parsed = Number(readEnv("IO_MAX_TEKLIF_GLOBAL_PER_HOUR"));
-  return Number.isFinite(parsed) && parsed > 0 ? parsed : 200;
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 400;
 }
 
 interface TeklifTalep {
@@ -107,12 +176,6 @@ interface RequestBody {
     plate?: string | null;
     adresKodu?: string | null;
   };
-  /**
-   * Kullanıcı kayıtlı teklifi reddedip yeni teklif istedi ("Hayır, yeni
-   * teklif oluştur" / "Vazgeç"). IO'ya kayıt kontrolünü atlatan kanalla
-   * gidilir; bkz. `ioYeniTeklifKanal`.
-   */
-  yeniTeklif?: boolean;
 }
 
 /**
@@ -152,61 +215,6 @@ function ioYanitOzeti(payload: unknown): Record<string, unknown> {
   if (kod !== null) ozet.HataKodu = kod;
   if (mesaj !== null) ozet.HataMesaj = mesaj;
   return ozet;
-}
-
-/**
- * Teklifin tanzim tarihi geçmiş mi (24 saatten eski mi).
- *
- * Aynı gün içinde tanzim tarihi değişmediği için teklif aynı primlerle
- * satın alınabiliyor. 24 saati geçtiğinde tanzim tarihi değişmek zorunda,
- * şirketin fiyatı da değişebiliyor; eski teklif üzerinden satın alma
- * "Şirket şu an Satın Alma için uygun değildir." (HataKodu 22) ile
- * reddediliyor. Böyle bir teklife yeni teklif çalıştırmak gerekiyor.
- *
- * IO tarafı burada yardımcı olmuyor: `primler` eski teklifin satırlarını
- * `SatinAl: true` ve dolu `TeklifNo` ile döndürmeye devam ediyor, yanıtta
- * teklif tarihi de yok. Bu yüzden yaş kendi kaydımızdan hesaplanıyor.
- */
-const TEKLIF_GECERLILIK_MS = 24 * 60 * 60 * 1000;
-
-function tanzimGecmis(ilkGorulme: string | null): boolean {
-  if (!ilkGorulme) return false;
-  const ms = Date.parse(ilkGorulme);
-  if (Number.isNaN(ms)) return false;
-  return Date.now() - ms > TEKLIF_GECERLILIK_MS;
-}
-
-/**
- * İki tarihin eskisi.
- *
- * Her iki kaynak da teklifin gerçek açılış anından yeni olabiliyor: kendi
- * kaydımız teklifi ilk gördüğümüz anı tutuyor (CRM'de daha önce açılmışsa
- * geç kalıyor), IO'nun alanı ise son işlem anını tutuyor (güncelleme onu
- * ileri atıyor). Bu yüzden eski olan seçiliyor — teklifin yaşını olduğundan
- * küçük göstermek satın almayı yanlışlıkla açar, büyük göstermek yalnızca
- * gereksiz yere yeni teklif sorar.
- */
-function enEskiTarih(a: string | null, b: string | null): string | null {
-  if (!a) return b;
-  if (!b) return a;
-  const ma = Date.parse(a);
-  const mb = Date.parse(b);
-  if (Number.isNaN(ma)) return b;
-  if (Number.isNaN(mb)) return a;
-  return ma <= mb ? a : b;
-}
-
-/**
- * Acente defterinde arama anahtarı.
- *
- * Araç branşlarında plaka en dar sonucu veriyor: aynı kimlikle on teklif
- * dönerken plakayla üç teklif döndü. Plaka yoksa kimlik numarasına düşülüyor.
- */
-function aramaAnahtari(kisi: RequestBody["kisi"]): string | null {
-  const plaka = kisi?.plate?.replace(/\s+/g, "").toUpperCase();
-  if (plaka) return plaka;
-  const kimlik = kisi?.tckn?.trim() || kisi?.vergiNo?.trim();
-  return kimlik || null;
 }
 
 /** Yanıt alan adı uca göre TeklifId / Id olarak değişebiliyor. */
@@ -249,7 +257,59 @@ export default async function handler(request: Request): Promise<Response> {
     );
   }
 
-  const allowed = await rateCheck(ipHash, "teklif", MAX_TEKLIF_PER_HOUR, 3600);
+  // Aynı girdi az önce çalıştırıldıysa IO'ya gitmeden o teklif geri veriliyor.
+  // Sayaçlardan önce bakılıyor ki geri-ileri gezinme ziyaretçinin kotasını
+  // yemesin; bu yol yalnızca kendi kaydımızı okur.
+  const talepHash = await talepOzeti(talepler);
+  const tekrar = await sonTeklifTekrari(
+    session.id,
+    talepHash,
+    new Date(Date.now() - TEKRAR_PENCERESI_MS),
+  );
+  if (tekrar) {
+    return withCookie(
+      jsonResponse({
+        oturumId: tekrar.id,
+        oturumNo: tekrar.oturum_no,
+        teklifler: tekrar.teklifler,
+        hatalar: [],
+        tekrar: true,
+      }),
+      session,
+    );
+  }
+
+  // Dar sayaç (aynı kişi) önce: o dolmuşsa geniş sayaçları boşuna
+  // arttırmıyoruz.
+  const kisiAllowed = await rateCheck(
+    await kisiAnahtari(session.id, body.kisi),
+    "teklif_kisi",
+    MAX_TEKLIF_PER_KISI,
+    SESSION_WINDOW_SECONDS,
+  );
+  if (!kisiAllowed) {
+    return withCookie(
+      jsonResponse(
+        {
+          error:
+            "Bu kişi için kısa sürede birden fazla teklif çalıştırdınız. Fiyatlar birkaç dakika içinde değişmez; lütfen biraz sonra tekrar deneyin.",
+          fallback: false,
+        },
+        429,
+      ),
+      session,
+    );
+  }
+
+  const sessionAllowed = await rateCheck(
+    `oturum:${session.id}`,
+    "teklif_oturum",
+    MAX_TEKLIF_PER_SESSION,
+    SESSION_WINDOW_SECONDS,
+  );
+  const allowed =
+    sessionAllowed &&
+    (await rateCheck(ipHash, "teklif", MAX_TEKLIF_PER_HOUR, 3600));
   if (!allowed) {
     return withCookie(
       jsonResponse(
@@ -287,8 +347,7 @@ export default async function handler(request: Request): Promise<Response> {
 
   const kisi = body.kisi ?? {};
   const girdiler = temizOzet(body.girdiler);
-  const yeniTeklif = body.yeniTeklif === true;
-  const kanal = yeniTeklif ? ioYeniTeklifKanal() : ioKanal();
+  const kanal = ioTeklifKanal();
   const oturum = await createOturum({
     session_id: session.id,
     ip_hash: ipHash,
@@ -302,18 +361,10 @@ export default async function handler(request: Request): Promise<Response> {
     birth_date: kisi.birthDate ?? null,
     plate: kisi.plate ?? null,
     adres_kodu: kisi.adresKodu ?? null,
-    form_data: { girdiler, talepler, yeniTeklif },
+    form_data: { girdiler, talepler, kanal, talepHash },
   });
 
-  const arama = aramaAnahtari(kisi);
-  const sonuclar: {
-    bransNo: number;
-    teklifId: number;
-    eskiTeklif: boolean;
-    teklifTarihi: string | null;
-    /** Aynı branşta yürürlükte olan poliçenin bitiş tarihi; yoksa null. */
-    policeBitisi: string | null;
-  }[] = [];
+  const sonuclar: { bransNo: number; teklifId: number }[] = [];
   const hatalar: { bransNo: number; message: string }[] = [];
   /** Yalnızca oturum kaydına yazılıyor; istemciye dönmüyor. */
   const ioYanitlari: Record<string, unknown>[] = [];
@@ -344,33 +395,7 @@ export default async function handler(request: Request): Promise<Response> {
       });
       continue;
     }
-    let teklifTarihi = oturum
-      ? await teklifIlkGorulme(teklifId, oturum.id)
-      : null;
-    let policeBitisi: string | null = null;
-
-    // IO yeni teklif açmak yerine kayıtlı teklifi döndürdüyse ("Teklif
-    // kayıtlıdır. TeklifId ile primleri alabilirsiniz.", HataKodu 1) teklifin
-    // yaşını ve müşterinin yürürlükteki poliçesini acente defterinden
-    // soruyoruz. Kendi kaydımız CRM'de açılmış teklifleri görmüyor, defter
-    // görüyor. Taze tekliflerde sorulacak bir şey olmadığı için iki ek istek
-    // hiç yapılmıyor.
-    if (ioIcHata(result.data).kod === 1 && arama) {
-      const [ioTarih, bitis] = await Promise.all([
-        ioTeklifTarihi(arama, teklifId),
-        aktifPoliceBitisi(arama, talep.bransNo),
-      ]);
-      teklifTarihi = enEskiTarih(teklifTarihi, ioTarih);
-      policeBitisi = bitis;
-    }
-
-    sonuclar.push({
-      bransNo: talep.bransNo,
-      teklifId,
-      eskiTeklif: tanzimGecmis(teklifTarihi),
-      teklifTarihi,
-      policeBitisi,
-    });
+    sonuclar.push({ bransNo: talep.bransNo, teklifId });
   }
 
   // Hiçbiri tutmadıysa istemciye ilk hatayı döneriz; oturum "hata" olarak
@@ -399,7 +424,8 @@ export default async function handler(request: Request): Promise<Response> {
       form_data: {
         girdiler,
         talepler,
-        yeniTeklif,
+        kanal,
+        talepHash,
         teklifler: sonuclar,
         hatalar,
         ioYanitlari,

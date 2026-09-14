@@ -186,46 +186,28 @@ export interface KartBilgisi {
 export interface TeklifOlusturSonuc {
   oturumId: string | null;
   oturumNo: string | null;
-  teklifler: {
-    bransNo: number;
-    teklifId: number;
-    /**
-     * IO yeni teklif açmak yerine 24 saatten eski bir teklifi döndürdü.
-     * Tanzim tarihi değişmek zorunda olduğu için o primlerle satın alma
-     * yapılamıyor; yeni teklif çalıştırılması gerekiyor.
-     */
-    eskiTeklif?: boolean;
-    /**
-     * Teklifin bilinen en eski işlem anı (ISO). Kendi kaydımızla IO'nun
-     * acente defterindeki tarihinin eskisi; ikisi de yoksa null.
-     */
-    teklifTarihi?: string | null;
-    /**
-     * Aynı branşta yürürlükte olan poliçenin bitiş tarihi (ISO). Yeni teklifin
-     * neden açılamadığını açıklayan tarih bu: poliçe sürerken şirket sonraki
-     * vade için teklif çalıştırmıyor.
-     */
-    policeBitisi?: string | null;
-  }[];
+  teklifler: { bransNo: number; teklifId: number }[];
   hatalar: { bransNo: number; message: string }[];
+  /**
+   * Aynı girdi kısa süre önce çalıştırılmıştı; sunucu IO'ya gitmeden o
+   * teklifi geri verdi. Arayüz için fark yok, yalnızca teşhis.
+   */
+  tekrar?: boolean;
 }
 
-/** Araç bilgileri girilirken yapılan CRM tipi kayıtlı teklif ön kontrolü. */
+/**
+ * Araç bilgileri girilirken yapılan CRM tipi kayıtlı teklif ön kontrolü.
+ * Yalnızca bilgilendirme: teklif akışı her durumda yeni teklif açar.
+ */
 export interface KayitliTeklifKontrolSonucu {
   bulundu: boolean;
   teklifId: number | null;
+  /** IO'daki son işlem zamanı (ISO); bilinmiyorsa null. */
   teklifTarihi: string | null;
-  policeBitisi: string | null;
 }
 
 export interface PrimlerSonuc {
   teklifCalisildi: boolean;
-  /**
-   * IO yeni teklif açmak yerine daha önce çalışılmış teklifi döndürdü.
-   * Satırlar eski çalışmadan kalıyor ve satın almada şirket reddediyor;
-   * arayüz bu durumda anında satın almayı kapatıp talep açtırıyor.
-   */
-  eskiTeklif?: boolean;
   /** Otorizasyona düştüğü için listeden çıkarılan teklif sayısı. */
   otorizasyonSayisi?: number;
   sirketler: SirketTeklifi[];

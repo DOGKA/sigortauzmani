@@ -31,7 +31,20 @@ import { normalizeSirketKodu, sirketAdi } from "../../src/lib/io/sirketler";
 
 export const config = { runtime: "edge" };
 
-const MAX_SATINAL_PER_HOUR = 10;
+/**
+ * Ödeme denemesi iki sayaçla sınırlı:
+ *
+ * - Aynı çerez oturumu + aynı teklif oturumu: kart tarama ve aynı kişide
+ *   ısrarlı deneme burada kesiliyor. Yanlış CVV, yanlış tarih, prim değişti
+ *   onayı (ikinci bir çağrı), 3D tekrarı ve aynı listeden ikinci şirketi
+ *   deneme dürüst bir müşteride üst üste gelebiliyor; on bunların hepsini
+ *   karşılar, kart tarayan botu yine keser.
+ * - IP: ekip aynı ofis bağlantısından art arda farklı müşterilere poliçe
+ *   kesebildiği için kişi değil hacim ölçüsü; bot denemesini yine kapatır.
+ */
+const MAX_SATINAL_PER_OTURUM = 10;
+const OTURUM_WINDOW_SECONDS = 15 * 60;
+const MAX_SATINAL_PER_HOUR = 100;
 
 interface SeciliTeklif {
   Id?: number;
@@ -220,6 +233,28 @@ export default async function handler(request: Request): Promise<Response> {
   if (!oturum) {
     return withCookie(
       jsonResponse({ error: "Teklif oturumu bulunamadı. Lütfen yeniden teklif alın." }, 404),
+      session,
+    );
+  }
+
+  // Dar sayaç (aynı kişi/teklif) önce; dolmuşsa IP sayacı boşuna artmaz.
+  // Teklif oturumu zaten çerezle doğrulandı, o yüzden anahtar kimlik
+  // numarası değil oturum kimliği.
+  const oturumAllowed = await rateCheck(
+    `satinal:${session.id}:${oturum.id}`,
+    "satinal_oturum",
+    MAX_SATINAL_PER_OTURUM,
+    OTURUM_WINDOW_SECONDS,
+  );
+  if (!oturumAllowed) {
+    return withCookie(
+      jsonResponse(
+        {
+          error:
+            "Bu teklif için kısa sürede çok fazla ödeme denemesi yapıldı. Lütfen birkaç dakika sonra tekrar deneyin ya da bizi arayın.",
+        },
+        429,
+      ),
       session,
     );
   }

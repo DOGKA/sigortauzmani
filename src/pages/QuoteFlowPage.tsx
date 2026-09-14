@@ -32,7 +32,6 @@ import { useSeo } from "../lib/seo/useSeo";
 import AracAdimi from "./quote/AracAdimi";
 import BelgeButonu from "./quote/BelgeButonu";
 import DaskAdimi from "./quote/DaskAdimi";
-import EskiTeklifModali from "./quote/EskiTeklifModali";
 import FiyatListesi from "./quote/FiyatListesi";
 import KayitliTeklifModali from "./quote/KayitliTeklifModali";
 import KimlikAdimi from "./quote/KimlikAdimi";
@@ -116,18 +115,13 @@ export default function QuoteFlowPage() {
   const [satinAlinan, setSatinAlinan] = useState<SecilenTeklif | null>(null);
   // "Teklif iste" ile açılan talep; lead formundaki başarı ekranını açıyor.
   const [talepBasari, setTalepBasari] = useState<TalepBasarisi | null>(null);
-  // IO 24 saatten eski teklifi döndürdüğünde sorulan soru.
-  const [eskiTeklifSorusu, setEskiTeklifSorusu] = useState(false);
-  const [eskiTeklifTarihi, setEskiTeklifTarihi] = useState<string | null>(null);
-  // Yürürlükteki poliçenin bitişi: yeni teklifin neden açılamadığını anlatıyor.
-  const [eskiTeklifPolicesi, setEskiTeklifPolicesi] = useState<string | null>(
-    null,
-  );
-  const [yeniTeklifGonderiliyor, setYeniTeklifGonderiliyor] = useState(false);
-  const [yeniTeklifHatasi, setYeniTeklifHatasi] = useState("");
-  // CRM'deki gibi, kısa süreli trafik araç bilgileri girilirken açılan ön soru.
-  const [kayitliTeklifSorusu, setKayitliTeklifSorusu] =
+  // CRM'deki gibi, trafik araç bilgileri girilirken çıkan "daha önce teklif
+  // çalışılmış" bilgilendirmesi. Tek çıkışı var: yeni teklif çalıştırmak.
+  const [kayitliTeklifBilgisi, setKayitliTeklifBilgisi] =
     useState<KayitliTeklifKontrolSonucu | null>(null);
+  // Bilgilendirme açıkken IO yeni teklifi reddederse (yürürlükte poliçe)
+  // gerekçe aynı diyalogda gösteriliyor.
+  const [kayitliTeklifHatasi, setKayitliTeklifHatasi] = useState("");
 
   const pollAbort = useRef<AbortController | null>(null);
   // En az bir fiyat geldiyse polling hatası akışı bozmamalı; kullanıcı
@@ -136,8 +130,8 @@ export default function QuoteFlowPage() {
 
   const kayitliTeklifBulundu = useCallback(
     (sonuc: KayitliTeklifKontrolSonucu) => {
-      setYeniTeklifHatasi("");
-      setKayitliTeklifSorusu(sonuc);
+      setKayitliTeklifHatasi("");
+      setKayitliTeklifBilgisi(sonuc);
     },
     [],
   );
@@ -203,7 +197,6 @@ export default function QuoteFlowPage() {
               otorizasyonSayisi,
               sonuc.otorizasyonSayisi,
             ),
-            eskiTeklif: primler.eskiTeklif === true || sonuc.eskiTeklif,
           };
         }),
       );
@@ -212,19 +205,16 @@ export default function QuoteFlowPage() {
   );
 
   /**
-   * `oncekiTeklifId` verildiğinde bu bir "yeni teklif" denemesidir: kullanıcı
-   * kayıtlı teklifi reddetmiştir, sunucu IO'ya kayıt kontrolünü atlatan
-   * kanalla gider ve şirketler yeniden çalışır. Partner CRM'indeki "vazgeç"
-   * ile aynı sonuç. Yürürlükte poliçe varsa IO yeni teklifi HataKodu 11 ile
-   * reddeder; o mesaj diyalogda gösterilir.
+   * Sunucu her çağrıda IO'da yeni teklif açar; eski teklifle devam yolu yok.
+   * Yürürlükte poliçe varsa IO yeni teklifi HataKodu 11 ile reddeder; kayıtlı
+   * teklif bilgilendirmesi açıksa gerekçe orada, değilse araç ekranında
+   * gösterilir.
    */
-  const teklifCalis = async (
-    oncekiTeklifId?: number,
-    kayitliSoruSoruldu = false,
-  ) => {
+  const teklifCalis = async () => {
     if (!gereksinim || !product) return;
 
     setHata("");
+    setKayitliTeklifHatasi("");
     setCalisiyor(true);
     fiyatGeldi.current = false;
 
@@ -294,27 +284,10 @@ export default function QuoteFlowPage() {
           manevi,
           kaskoDa,
         }),
-        yeniTeklif: oncekiTeklifId !== undefined,
       });
 
       setOturumId(sonuc.oturumId);
       setOturumNo(sonuc.oturumNo);
-
-      // Yeni teklif kanalı beklendiği gibi çalışırsa buraya düşmez. IO yine
-      // de aynı TeklifId'yi döndürürse tazelenecek bir şey yok: eldeki liste
-      // bozulmadan bırakılıp talep ekibe düşüyor, soru ekranı da sonucu
-      // göstermek için açık kalıyor.
-      if (
-        oncekiTeklifId !== undefined &&
-        sonuc.teklifler.length > 0 &&
-        sonuc.teklifler.every((teklif) => teklif.teklifId === oncekiTeklifId)
-      ) {
-        const talep = await teklifIste(sonuc.teklifler[0].bransNo);
-        setYeniTeklifHatasi(
-          talep.ok ? t.flow.reworkedDialog.retryFailed : talep.error,
-        );
-        return;
-      }
 
       setSonuclar(
         sonuc.teklifler.map((teklif) => ({
@@ -323,22 +296,11 @@ export default function QuoteFlowPage() {
           sirketler: [],
           tamamlandi: false,
           otorizasyonSayisi: 0,
-          // 24 saati geçmiş teklifte anında satın alma kapalı kalıyor;
-          // liste "Teklif iste" düğmesine dönüyor.
-          eskiTeklif: teklif.eskiTeklif === true,
         })),
       );
-      // Sorgu arka planda sürüyor: "devam" seçilirse fiyatlar hazır olur.
-      const eski = sonuc.teklifler.find((teklif) => teklif.eskiTeklif === true);
-      setEskiTeklifTarihi(eski?.teklifTarihi ?? null);
-      setEskiTeklifPolicesi(eski?.policeBitisi ?? null);
-      // Araç ekranında aynı kayıt zaten sorulduysa fiyat ekranında aynı
-      // diyalog ikinci kez açılmaz. Satın alma yine eski teklif bayrağıyla
-      // kapalıdır; bu yalnızca mükerrer soruyu önler.
-      setEskiTeklifSorusu(Boolean(eski) && !kayitliSoruSoruldu);
-      // Araç ekranındaki kayıtlı teklif sorusu cevaplandı; "Geri" ile
-      // dönülürse yeniden açılmasın.
-      setKayitliTeklifSorusu(null);
+      // Araç ekranındaki bilgilendirme görevini yaptı; "Geri" ile dönülürse
+      // yeniden açılmasın.
+      setKayitliTeklifBilgisi(null);
       setAdim("fiyatlar");
 
       pollAbort.current?.abort();
@@ -365,13 +327,7 @@ export default function QuoteFlowPage() {
           ? error.message
           : "Teklif çalıştırılamadı. Lütfen tekrar deneyin.";
 
-      // Yeni teklif denemesi IO'da reddedildiyse (tipik olarak yürürlükte
-      // poliçe: "… vade için teklif çalışıyorsunuz.") kullanıcı hâlâ kayıtlı
-      // teklif diyalogundadır; IO'nun gerekçesi orada gösterilir, adım ve
-      // eldeki liste değişmez.
-      if (oncekiTeklifId !== undefined && !fiyatGeldi.current) {
-        setYeniTeklifHatasi(mesaj);
-      } else if (fiyatGeldi.current) {
+      if (fiyatGeldi.current) {
         // Fiyatlar gelmeye başladıktan sonra polling koparsa akışı bozmuyoruz:
         // listeyi tamamlandı işaretleyip eldeki tekliflerle devam ediyoruz.
         setSonuclar((onceki) =>
@@ -379,6 +335,13 @@ export default function QuoteFlowPage() {
         );
       } else if (error instanceof IoError && error.fallback) {
         setGeriDonus(mesaj);
+      } else if (kayitliTeklifBilgisi) {
+        // Ziyaretçi "daha önce teklif çalışılmış" bilgilendirmesinden
+        // geldi ve IO yeni teklifi reddetti (tipik olarak yürürlükte poliçe:
+        // "… vade için teklif çalışıyorsunuz."). Gerekçe aynı diyalogda
+        // gösteriliyor; eski teklifle devam seçeneği bilinçli olarak yok,
+        // çıkış "Teklif iste" ile ekibe talep düşürmek.
+        setKayitliTeklifHatasi(mesaj);
       } else {
         setHata(mesaj);
         setAdim("detay");
@@ -469,10 +432,8 @@ export default function QuoteFlowPage() {
     setSatinAlinan(null);
     setSecilen(null);
     setSonuclar([]);
-    setEskiTeklifSorusu(false);
-    setEskiTeklifTarihi(null);
-    setEskiTeklifPolicesi(null);
-    setKayitliTeklifSorusu(null);
+    setKayitliTeklifBilgisi(null);
+    setKayitliTeklifHatasi("");
     setOturumId(null);
     setOturumNo(null);
     setKimlik(bosKimlik);
@@ -651,18 +612,16 @@ export default function QuoteFlowPage() {
           />
         ) : null}
 
-        {!geriDonus && adim === "detay" && kayitliTeklifSorusu ? (
+        {!geriDonus && adim === "detay" && kayitliTeklifBilgisi ? (
           <KayitliTeklifModali
-            teklifTarihi={kayitliTeklifSorusu.teklifTarihi}
+            teklifTarihi={kayitliTeklifBilgisi.teklifTarihi}
             calisiyor={calisiyor}
-            hata={yeniTeklifHatasi}
-            onDevam={() => {
-              setKayitliTeklifSorusu(null);
-              void teklifCalis(undefined, true);
-            }}
-            onVazgec={() => {
-              setYeniTeklifHatasi("");
-              void teklifCalis(kayitliTeklifSorusu.teklifId ?? undefined, true);
+            hata={kayitliTeklifHatasi}
+            onYeniTeklif={() => void teklifCalis()}
+            onTeklifIste={() => teklifIste(gereksinim.bransNo)}
+            onKapat={() => {
+              setKayitliTeklifBilgisi(null);
+              setKayitliTeklifHatasi("");
             }}
           />
         ) : null}
@@ -679,24 +638,6 @@ export default function QuoteFlowPage() {
             onGeri={() => {
               pollAbort.current?.abort();
               setAdim("detay");
-            }}
-          />
-        ) : null}
-
-        {!geriDonus && adim === "fiyatlar" && eskiTeklifSorusu ? (
-          <EskiTeklifModali
-            teklifTarihi={eskiTeklifTarihi}
-            policeBitisi={eskiTeklifPolicesi}
-            yeniTeklifGonderiliyor={yeniTeklifGonderiliyor}
-            yeniTeklifHatasi={yeniTeklifHatasi}
-            onDevam={() => setEskiTeklifSorusu(false)}
-            onYeniTeklif={async () => {
-              setYeniTeklifGonderiliyor(true);
-              setYeniTeklifHatasi("");
-              // Şirket yeni teklif açarsa liste tazelenip soru kapanıyor;
-              // açmazsa gerçek sonuç ekranda kalıyor ve talep ekibe düşüyor.
-              await teklifCalis(sonuclar[0]?.teklifId);
-              setYeniTeklifGonderiliyor(false);
             }}
           />
         ) : null}

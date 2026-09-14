@@ -157,23 +157,13 @@ export default function FiyatListesi({
               <p className="flow__hint">{t.flow.offers.none}</p>
             ) : null}
 
-            {/* IO yeni teklif açmak yerine daha önce çalışılmış teklifi
-                döndürdüğünde fiyatlar eski çalışmadan kalıyor ve şirket satın
-                almayı reddediyor. Kart bilgisi istemek yerine durumu söyleyip
-                talep açtırıyoruz. */}
-            {sonuc.eskiTeklif && sirali.length > 0 ? (
-              <p className="flow__warning">{t.flow.offers.reworked}</p>
-            ) : null}
-
             <ul className="flow__teklifler">
               {sirali.map((sirket) => {
-                const satinAl =
-                  !sonuc.eskiTeklif &&
-                  satinAlinabilirSirket(
-                    sonuc.bransNo,
-                    sirket.SirketKodu,
-                    kisaSureli,
-                  );
+                const satinAl = satinAlinabilirSirket(
+                  sonuc.bransNo,
+                  sirket.SirketKodu,
+                  kisaSureli,
+                );
                 const anahtar = teklifAnahtari(sonuc.bransNo, sirket);
                 const bekliyor = gonderiliyor === anahtar;
                 const zaman = teklifZamani(sirket, locale);

@@ -58,6 +58,10 @@ interface Props {
   onKaskoDaDegis: (deger: boolean) => void;
   onGeri: () => void;
   onTeklifCalis: () => void;
+  /**
+   * Plakalı trafikte acente defterinde aynı kişi ve araç için teklif
+   * bulundu; üst bileşen bilgilendirme diyalogunu açar.
+   */
   onKayitliTeklif: (sonuc: KayitliTeklifKontrolSonucu) => void;
   calisiyor: boolean;
   hata: string;
@@ -99,13 +103,15 @@ export default function AracAdimi({
     if (gereksinim.kisaSureli && !durum.plakaVar) onDegis({ plakaVar: true });
   }, [gereksinim.kisaSureli, durum.plakaVar, onDegis]);
 
-  // CRM kısa süreli trafik ekranında plaka ve ruhsat tamamlanınca, henüz
-  // teklif çalıştırmadan `TeklifBul` yapıp kayıtlı teklifi soruyor. Aynı
-  // davranış burada 400 ms beklemeyle uygulanıyor; kullanıcı son karakteri
-  // yazarken ara değerlerle istek atılmıyor.
+  // CRM trafik ekranında plaka ve ruhsat tamamlanınca, henüz teklif
+  // çalıştırmadan `TeklifBul` yapıp kayıtlı teklifi gösteriyor. Aynı davranış
+  // burada 400 ms beklemeyle, plakalı trafik (yıllık ve kısa süreli) için
+  // uygulanıyor; kullanıcı son karakteri yazarken ara değerlerle istek
+  // atılmıyor. Sonuç yalnızca bilgilendirme: teklif her durumda yeni açılır.
   useEffect(() => {
     if (
-      !gereksinim.kisaSureli ||
+      gereksinim.bransNo !== 0 ||
+      !durum.plakaVar ||
       !isValidPlate(durum.plaka) ||
       !isValidDocumentSerial(durum.tescilBelge)
     ) {
@@ -154,8 +160,8 @@ export default function AracAdimi({
     };
   }, [
     gereksinim.bransNo,
-    gereksinim.kisaSureli,
     kimlik,
+    durum.plakaVar,
     durum.plaka,
     durum.tescilBelge,
     onKayitliTeklif,

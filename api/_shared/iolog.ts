@@ -164,33 +164,62 @@ export async function findOturum(
   return rows?.[0] ?? null;
 }
 
+export interface TekrarlananTeklif {
+  id: string;
+  oturum_no: string | null;
+  teklifler: { bransNo: number; teklifId: number }[];
+}
+
 /**
- * Bu teklif kimliğini ilk kez ne zaman gördük.
+ * Aynı ziyaretçinin aynı girdiyle kısa süre önce açtığı teklif.
  *
- * IO aynı kişi ve aynı riziko için yeni teklif açmıyor, mevcut kaydı geri
- * veriyor; yanıtta da teklifin tarihi yok. Teklifin yaşını yalnızca kendi
- * kaydımızdan bilebiliyoruz — partner CRM'i de uyarısındaki tarihi kendi
- * veritabanından okuyor.
+ * Her `/api/teklif` çağrısı IO'da yeni teklif açıp şirketleri yeniden
+ * çalıştırdığı için, ziyaretçi fiyat ekranından geri gelip hiçbir şeyi
+ * değiştirmeden "Teklif Çalış"a yeniden basınca acente defterine boş yere
+ * ikinci kayıt düşer. Girdinin özeti (`form_data.talepHash`) oturum kaydına
+ * yazılıyor; aynı çerez + aynı özet pencere içinde bulunursa IO'ya
+ * gidilmeden o teklif geri veriliyor. Fiyatlar o kadar kısa sürede
+ * değişmiyor, `primler` de aynı satırları döndürüyor.
  *
- * Yaş önemli: aynı gün içinde tanzim tarihi değişmediği için teklif aynı
- * primlerle satın alınabiliyor. 24 saati geçtiğinde tanzim tarihi değişmek
- * zorunda ve şirketin verdiği fiyat da değişebiliyor; o teklif üzerinden
- * satın alma şirket tarafında reddediliyor.
- *
- * Kaydımız yoksa (teklif CRM'de açılmışsa) null dönüyor: yaş bilinmiyor,
- * akış engellenmiyor.
+ * Yalnızca kendi çerez oturumunda arıyor: başka ziyaretçinin teklifi hiçbir
+ * durumda geri verilmez.
  */
-export async function teklifIlkGorulme(
-  teklifId: number,
-  hariciOturumId: string | null,
-): Promise<string | null> {
-  const rows = await dbRequest<{ created_at: string }[]>(
-    `teklif_oturumlari?io_teklif_id=eq.${teklifId}` +
-      (hariciOturumId ? `&id=neq.${encodeURIComponent(hariciOturumId)}` : "") +
-      `&select=created_at&order=created_at.asc&limit=1`,
+export async function sonTeklifTekrari(
+  sessionId: string,
+  talepHash: string,
+  sonrasi: Date,
+): Promise<TekrarlananTeklif | null> {
+  const rows = await dbRequest<
+    {
+      id: string;
+      oturum_no: string | null;
+      form_data: { teklifler?: unknown } | null;
+    }[]
+  >(
+    `teklif_oturumlari?session_id=eq.${encodeURIComponent(sessionId)}` +
+      `&form_data->>talepHash=eq.${encodeURIComponent(talepHash)}` +
+      `&io_teklif_id=not.is.null` +
+      `&created_at=gte.${encodeURIComponent(sonrasi.toISOString())}` +
+      `&select=id,oturum_no,form_data&order=created_at.desc&limit=1`,
     { method: "GET" },
   );
-  return rows?.[0]?.created_at ?? null;
+  const row = rows?.[0];
+  if (!row) return null;
+
+  const teklifler: TekrarlananTeklif["teklifler"] = [];
+  const liste = Array.isArray(row.form_data?.teklifler)
+    ? (row.form_data.teklifler as Record<string, unknown>[])
+    : [];
+  for (const kayit of liste) {
+    const bransNo = Number(kayit?.bransNo);
+    const teklifId = Number(kayit?.teklifId);
+    if (Number.isInteger(bransNo) && Number.isInteger(teklifId) && teklifId > 0) {
+      teklifler.push({ bransNo, teklifId });
+    }
+  }
+  return teklifler.length
+    ? { id: row.id, oturum_no: row.oturum_no, teklifler }
+    : null;
 }
 
 /**

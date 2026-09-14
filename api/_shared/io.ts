@@ -44,13 +44,15 @@ function ioToken(): string | null {
 }
 
 /**
- * Satış kanalı ("Kanal"), tüm uçlarda aynı değer.
+ * Sorgu ve satın alma uçlarında gönderilen satış kanalı ("Kanal").
  *
  * Dokümantasyon alanı yalnızca "Satış kanalı" olarak tanımlıyor ve geçerli
  * değerleri hiçbir yerde listelemiyor; örneklerinde de tutarsız biçimde 1, 2
  * ve 3 geçiyor. Gerçek değer partnerin üretimde kullandığı CRM'in isteği
  * incelenerek bulundu: her uçta 0 gönderiliyor. Doküman örnekleri temsili
  * değil, o yüzden onlara değil bu bulguya uyuluyor.
+ *
+ * Teklif açma bunun dışında: bkz. `ioTeklifKanal`.
  *
  * Sıfır geçerli bir değer olduğu için kontrol `>= 0`; `> 0` yazılırsa 0
  * sessizce yok sayılır ve varsayılana düşerdi.
@@ -61,25 +63,32 @@ export function ioKanal(): number {
 }
 
 /**
- * "Yeni teklif oluştur" isteğinde gönderilen kanal.
+ * `POST /api/teklif` için kanal.
  *
  * `Kanal: 0` ile IO aynı kişi ve riziko için kayıtlı teklifi geri veriyor
  * ("Teklif kayıtlıdır", HataKodu 1); denenen yirmi dokuz alan ve bayrak bunu
- * aşamadı. `Kanal` sıfırdan farklı olduğunda ise kayıt kontrolü hiç
- * yapılmıyor: IO doğrudan yeni teklif açıyor, şirketler yeniden çalışıyor ve
- * güncel primler geliyor (canlıda doğrulandı: 939086 → 952181, primler
- * değişti, SatinAl true). Yürürlükte poliçe varsa yine HataKodu 11 ile
- * reddediyor; partner CRM'inin "vazgeç" düğmesi de aynı sonucu veriyor.
+ * aşamadı. Eski teklifin primleri tanzim tarihi geçince satın alınamıyor
+ * (HataKodu 22) ve ziyaretçi kart hatası sanıyordu. `Kanal` sıfırdan farklı
+ * olduğunda kayıt kontrolü hiç yapılmıyor: IO doğrudan yeni teklif açıyor,
+ * şirketler yeniden çalışıyor ve güncel primler geliyor (canlıda doğrulandı:
+ * 939086 → 952181, primler değişti, SatinAl true). Yürürlükte poliçesi olan
+ * kişide de açıyor, vadeyi poliçe bitişine çekiyor; yalnızca vade IO'nun
+ * yenileme penceresi dışındaysa (test kişisinde bitişe 57 gün varken)
+ * HataKodu 11 ile reddediyor. Partner CRM'inin "vazgeç" düğmesi de aynı
+ * sonucu veriyor.
  *
- * Kayıt kontrolü olmadığı için her çağrı acente defterine yeni teklif yazar
- * ve şirket servislerini yeniden çalıştırır. Bu yüzden yalnızca kullanıcı
- * açıkça "yeni teklif" istediğinde kullanılır; olağan akış `ioKanal()` ile
- * sürer. Döküman kanal değerlerini listelemediği için değer ortamdan
- * değiştirilebilir bırakıldı; sıfır verilirse kayıtlı teklife düşeceğinden
- * yalnızca pozitif değer kabul edilir.
+ * Eski teklifle devam yolu bilinçli olarak yok: her teklif çağrısı bu kanalla
+ * gider, böylece fiyat her zaman günceldir ve yeni teklifin başlangıcını IO
+ * mevcut poliçenin bitişine göre kendisi belirler. Bedeli, her çalıştırmanın
+ * acente defterine yeni teklif yazması; IP başına saatlik teklif limiti bunu
+ * sınırlıyor.
+ *
+ * Döküman kanal değerlerini listelemediği için değer ortamdan
+ * değiştirilebilir; sıfır verilirse kayıtlı teklife düşeceğinden yalnızca
+ * pozitif değer kabul edilir.
  */
-export function ioYeniTeklifKanal(): number {
-  const parsed = Number(readEnv("IO_KANAL_YENI_TEKLIF"));
+export function ioTeklifKanal(): number {
+  const parsed = Number(readEnv("IO_KANAL_TEKLIF"));
   return Number.isInteger(parsed) && parsed > 0 ? parsed : 1;
 }
 

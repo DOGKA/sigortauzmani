@@ -251,11 +251,6 @@ export function teklifOlustur(body: {
   kisi: KisiBilgisi;
   /** Panelde okunacak, kodları etiketlenmiş girdi özeti. */
   girdiler?: { etiket: string; deger: string }[];
-  /**
-   * Kayıtlı teklif reddedildi, IO'da yeni teklif açılsın. Her çağrı yeni
-   * teklif yazdığı için yalnızca kullanıcının açık seçimiyle gönderilir.
-   */
-  yeniTeklif?: boolean;
 }): Promise<TeklifOlusturSonuc> {
   // `api/io/teklif.ts` statik rota olduğu için `[action].ts` yerine ona düşer.
   return call<TeklifOlusturSonuc>("teklif", { method: "POST", body });

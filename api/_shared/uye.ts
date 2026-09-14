@@ -1,10 +1,10 @@
 /**
- * Acente defterindeki teklif ve poliçe kayıtları.
+ * Acente defterindeki teklif kayıtları.
  *
- * `POST /api/uye/teklifler` ve `POST /api/uye/policeler`. Dökümanda ikisi de
- * GET yazıyor, oysa GET'e "The requested resource does not support http
- * method 'GET'." ile 405 dönüyorlar; uçlar `{ Arama, Sayfa }` gövdesiyle POST
- * istiyor.
+ * `POST /api/uye/teklifler` (kardeşi `/api/uye/policeler` de aynı biçimde
+ * çalışıyor). Dökümanda ikisi de GET yazıyor, oysa GET'e "The requested
+ * resource does not support http method 'GET'." ile 405 dönüyorlar; uçlar
+ * `{ Arama, Sayfa }` gövdesiyle POST istiyor.
  *
  * Uçlar acentenin tamamının kaydını görüyor: `Arama` boş gönderildiğinde
  * dönen otuz teklifin yirmi üçü bizim sitemizden hiç geçmemişti, yani CRM'de
@@ -80,35 +80,20 @@ async function uyeKayitlari(
   return kayitlar;
 }
 
-/**
- * Verilen teklifin IO tarafındaki son işlem zamanı.
- *
- * Alan oluşturma değil son işlem zamanını tutuyor: hiç dokunulmamış üç
- * teklifte kendi kaydımızla birebir aynı çıktı, ama `teklifguncelle`
- * çağırdığımız iki teklifte çağrı saatine atladı. Dolayısıyla tek başına yaş
- * ölçüsü değil — tarihin eski olması teklifin eski olduğunu kanıtlar, yeni
- * olması taze olduğunu kanıtlamaz. Çağıran taraf bunu kendi kaydıyla
- * birleştirip eski olanı seçiyor.
- */
-export async function ioTeklifTarihi(
-  arama: string,
-  teklifId: number,
-): Promise<string | null> {
-  for (const kayit of await uyeKayitlari("teklifler", arama)) {
-    if (Number(kayit.TeklifId) === teklifId) {
-      return ioTarihiIso(kayit.TeklifTarihi);
-    }
-  }
-  return null;
-}
-
 export interface KayitliTeklifBilgisi {
   teklifId: number;
+  /**
+   * IO'nun `TeklifTarihi` alanı; oluşturma değil son işlem zamanı
+   * (`teklifguncelle` onu ileri atıyor). Yalnızca bilgilendirme için.
+   */
   teklifTarihi: string | null;
 }
 
 /**
  * Kişi + plaka + branş için acente defterindeki en son teklif.
+ *
+ * Yalnızca "daha önce teklif çalışılmış" bilgilendirmesi için kullanılıyor;
+ * teklif akışı bundan bağımsız olarak her zaman yeni teklif açıyor.
  *
  * Arama plaka ile daraltılsa bile IO yanıtına güvenilip ilk kayıt doğrudan
  * kullanılmıyor; kimlik ve branş sunucuda tekrar karşılaştırılıyor. Böylece
@@ -145,36 +130,4 @@ export async function kayitliTeklifBul(
   return bulunan
     ? { teklifId: bulunan.teklifId, teklifTarihi: bulunan.teklifTarihi }
     : null;
-}
-
-/**
- * Aynı branşta yürürlükte olan poliçenin bitiş tarihi.
- *
- * Yeni teklifin önündeki gerçek engel bu: mevcut poliçe sürerken şirket
- * sonraki vade için teklif açmıyor ve CRM'de bile "Bu vade için teklif
- * çalışılamaz" (HataKodu 11) dönüyor. Tarih poliçenin kendi kaydından geldiği
- * için teklif üzerinde yaptığımız hiçbir işlem onu kaydırmıyor; teklif
- * tarihinin aksine güvenilir.
- *
- * Birden fazla yürürlükte poliçe varsa en uzağa giden seçiliyor: yeni teklifin
- * ne zaman açılabileceğini belirleyen o.
- */
-export async function aktifPoliceBitisi(
-  arama: string,
-  bransNo: number,
-): Promise<string | null> {
-  const simdi = Date.now();
-  let enUzak: { iso: string; ms: number } | null = null;
-
-  for (const kayit of await uyeKayitlari("policeler", arama)) {
-    if (kayit.Yururlukte !== true) continue;
-    if (Number(kayit.BransNo) !== bransNo) continue;
-    const iso = ioTarihiIso(kayit.BitisTarihi);
-    if (!iso) continue;
-    const ms = Date.parse(iso);
-    if (Number.isNaN(ms) || ms <= simdi) continue;
-    if (!enUzak || ms > enUzak.ms) enUzak = { iso, ms };
-  }
-
-  return enUzak?.iso ?? null;
 }

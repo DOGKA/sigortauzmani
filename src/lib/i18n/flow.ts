@@ -23,26 +23,18 @@ export interface FlowMessages {
   editDetails: string;
   close: string;
   /**
-   * IO daha önce çalışılmış teklifi döndürdüğünde açılan soru. Partner
-   * CRM'inde operatöre sorulan "Teklif Bilgi" diyalogunun karşılığı.
+   * Araç bilgileri girilirken acente defterinde aynı kişi ve araç için
+   * teklif bulunduğunda çıkan bilgilendirme. Partner CRM'indeki "Teklif
+   * Bilgi" diyalogunun karşılığı; ama eski teklifle devam seçeneği yok, tek
+   * çıkış yeni teklif çalıştırmak.
    */
   reworkedDialog: {
     title: string;
     body: string;
     /** Teklif tarihi bilindiğinde kullanılan metin; `{date}` ile. */
     bodyDated: string;
-    /**
-     * Yürürlükteki poliçenin bitişi bilindiğinde gösterilen satır; `{date}`
-     * ile. Yeni teklifin neden açılamadığını açıklayan asıl sebep bu.
-     */
-    activePolicy: string;
-    note: string;
-    confirm: string;
-    cancel: string;
-    /** CRM'deki kayıtlı teklif ön kontrolünün ikinci düğmesi. */
-    declineExisting: string;
-    /** Yeni teklif denendi ama şirket kayıtlı teklifi geri verdi. */
-    retryFailed: string;
+    /** Tek düğme: yeni teklif çalıştır. */
+    acknowledge: string;
   };
   brans: {
     trafik: string;
@@ -77,8 +69,6 @@ export interface FlowMessages {
   offers: {
     empty: string;
     authorization: string;
-    /** IO daha önce çalışılmış teklifi döndürdüğünde gösterilen uyarı. */
-    reworked: string;
     none: string;
     best: string;
     pdf: string;
@@ -154,18 +144,10 @@ const TR: FlowMessages = {
   reworkedDialog: {
     title: "Teklif bilgisi",
     body:
-      "Bu bilgilerle daha önce teklif çalışılmış. Aynı teklif ile mi devam edilecek?",
+      "Bu bilgilerle daha önce teklif çalışılmış. Yeni teklifte tanzim tarihi değiştiği için sigorta şirketlerinin fiyatları da değişebilir; güncel fiyatlar yeniden alınacak. Yeni teklifin başlangıcı mevcut poliçenizin bitişine göre belirlenir.",
     bodyDated:
-      "{date} tarihinde bu bilgilerle teklif çalışılmış. Aynı teklif ile mi devam edilecek?",
-    activePolicy:
-      "Bu araç için poliçeniz {date} tarihine kadar yürürlükte. Sigorta şirketleri sonraki dönem için teklif çalıştırmadığından, yeni teklif ancak bitiş tarihine yaklaşınca alınabiliyor.",
-    note:
-      "Teklifin üzerinden 24 saatten fazla geçtiği için tanzim tarihi değişmek zorunda; sigorta şirketlerinin verdiği primler de değişebilir. Bu yüzden eski teklifin fiyatlarıyla çevrim içi satın alma yapılamıyor. Yeni teklif seçeneğinde şirkete yeniden başvurulur; şirket yeni teklif açmazsa talebiniz ekibimize düşer ve size ulaşırız.",
-    confirm: "Evet, devam edeceğim",
-    cancel: "Hayır, yeni teklif oluştur",
-    declineExisting: "Vazgeç",
-    retryFailed:
-      "Sigorta şirketi bu bilgilerle yeni teklif açmadı; mevcut teklif geçerli kalıyor. Talebiniz ekibimize iletildi, en kısa sürede size ulaşacağız.",
+      "{date} tarihinde bu bilgilerle teklif çalışılmış. Yeni teklifte tanzim tarihi değiştiği için sigorta şirketlerinin fiyatları da değişebilir; güncel fiyatlar yeniden alınacak. Yeni teklifin başlangıcı mevcut poliçenizin bitişine göre belirlenir.",
+    acknowledge: "Anladım, yeni teklif çalış",
   },
   brans: {
     trafik: "Trafik Sigortası",
@@ -202,8 +184,6 @@ const TR: FlowMessages = {
       "Şu anda bu bilgilerle anında satın alınabilir teklif çıkmadı. Ekibimiz sizin için manuel olarak çalışabilir.",
     authorization:
       "{n} şirket fiyatı için sigorta şirketinin ayrıca onayı gerekiyor, bu yüzden burada listelenmiyor. Bu teklifleri isterseniz ekibimiz sizin için takip edebilir.",
-    reworked:
-      "Bu bilgilerle daha önce teklif çalışılmış. Sigorta şirketleri eski teklif üzerinden çevrim içi satın almaya izin vermiyor ve aşağıdaki tutarlar güncel olmayabilir. “Teklif iste”ye dokunun; ekibimiz güncel primi hazırlayıp sizi arayacak.",
     none: "Bu üründe teklif gelmedi.",
     best: "En uygun",
     pdf: "Teklif PDF'i",
@@ -285,18 +265,11 @@ const EN: FlowMessages = {
   close: "Close",
   reworkedDialog: {
     title: "Quote information",
-    body: "A quote was already run with these details. Continue with the same quote?",
+    body:
+      "A quote was already run with these details. The new quote has a new issue date, so insurer prices may differ; current prices will be fetched again. The new quote starts when your existing policy ends.",
     bodyDated:
-      "A quote was already run with these details on {date}. Continue with the same quote?",
-    activePolicy:
-      "Your policy for this vehicle stays in force until {date}. Insurers do not run quotes for the following term, so a new quote is only possible as that date approaches.",
-    note:
-      "More than 24 hours have passed, so the issue date has to change and insurer premiums may change with it. That is why the old quote cannot be bought online. Choosing a new quote asks the insurer again; if the insurer will not open one, your request goes to our team and we will contact you.",
-    confirm: "Yes, continue",
-    cancel: "No, create a new quote",
-    declineExisting: "Cancel",
-    retryFailed:
-      "The insurer did not open a new quote with these details, so the existing quote stands. Your request has reached our team and we will contact you shortly.",
+      "A quote was already run with these details on {date}. The new quote has a new issue date, so insurer prices may differ; current prices will be fetched again. The new quote starts when your existing policy ends.",
+    acknowledge: "Got it, run a new quote",
   },
   brans: {
     trafik: "Motor Third Party Liability",
@@ -333,8 +306,6 @@ const EN: FlowMessages = {
       "No instantly purchasable quote came back with these details. Our team can work on it manually for you.",
     authorization:
       "{n} insurer prices need extra company approval, so they are not listed here. Our team can follow those quotes if you want.",
-    reworked:
-      "A quote was already run with these details. Insurers do not allow online purchase on an earlier quote and the amounts below may be out of date. Tap “Request quote” and our team will prepare the current premium and call you.",
     none: "No quote arrived for this product.",
     best: "Best value",
     pdf: "Quote PDF",
@@ -416,18 +387,11 @@ const AR: FlowMessages = {
   close: "إغلاق",
   reworkedDialog: {
     title: "معلومات العرض",
-    body: "سبق أن أُعدّ عرض بهذه البيانات. هل تريدون المتابعة بالعرض نفسه؟",
+    body:
+      "سبق أن أُعدّ عرض بهذه البيانات. للعرض الجديد تاريخ إصدار جديد، لذلك قد تختلف أسعار شركات التأمين؛ وسنحصل على الأسعار الحالية من جديد. يبدأ العرض الجديد عند انتهاء بوليصتكم الحالية.",
     bodyDated:
-      "سبق أن أُعدّ عرض بهذه البيانات في {date}. هل تريدون المتابعة بالعرض نفسه؟",
-    activePolicy:
-      "بوليصتكم لهذه المركبة سارية حتى {date}. وشركات التأمين لا تُعدّ عروضاً للفترة التالية، لذلك لا يمكن الحصول على عرض جديد إلا عند اقتراب هذا التاريخ.",
-    note:
-      "مضى أكثر من 24 ساعة، لذلك يجب أن يتغيّر تاريخ الإصدار وقد تتغيّر معه أقساط شركات التأمين. لهذا لا يمكن شراء العرض القديم إلكترونياً. عند اختيار عرض جديد نراجع شركة التأمين مرة أخرى؛ وإن لم تفتح الشركة عرضاً جديداً يُحال طلبكم إلى فريقنا ونتصل بكم.",
-    confirm: "نعم، أتابع",
-    cancel: "لا، أعدّوا عرضاً جديداً",
-    declineExisting: "إلغاء",
-    retryFailed:
-      "لم تفتح شركة التأمين عرضاً جديداً بهذه البيانات، لذلك يبقى العرض الحالي سارياً. وصل طلبكم إلى فريقنا وسنتصل بكم قريباً.",
+      "سبق أن أُعدّ عرض بهذه البيانات في {date}. للعرض الجديد تاريخ إصدار جديد، لذلك قد تختلف أسعار شركات التأمين؛ وسنحصل على الأسعار الحالية من جديد. يبدأ العرض الجديد عند انتهاء بوليصتكم الحالية.",
+    acknowledge: "فهمت، أعدّوا عرضاً جديداً",
   },
   brans: {
     trafik: "تأمين المرور",
@@ -464,8 +428,6 @@ const AR: FlowMessages = {
       "لم يصدر عرض قابل للشراء الفوري بهذه البيانات. يمكن لفريقنا العمل يدوياً من أجلكم.",
     authorization:
       "تحتاج أسعار {n} شركات إلى موافقة إضافية من شركة التأمين لذلك لا تُدرج هنا. يمكن لفريقنا متابعة تلك العروض إن رغبتم.",
-    reworked:
-      "سبق أن أُعدّ عرض بهذه البيانات. لا تسمح شركات التأمين بالشراء الإلكتروني على عرض قديم وقد لا تكون المبالغ أدناه محدّثة. اضغطوا «اطلبوا عرضاً» وسيقوم فريقنا بإعداد القسط الحالي والاتصال بكم.",
     none: "لم يصل عرض لهذا المنتج.",
     best: "الأنسب",
     pdf: "ملف العرض PDF",
@@ -547,18 +509,11 @@ const FA: FlowMessages = {
   close: "بستن",
   reworkedDialog: {
     title: "اطلاعات پیشنهاد",
-    body: "با این اطلاعات پیش‌تر پیشنهاد گرفته شده است. با همان پیشنهاد ادامه می‌دهید؟",
+    body:
+      "با این اطلاعات پیش‌تر پیشنهاد گرفته شده است. پیشنهاد جدید تاریخ صدور جدیدی دارد، بنابراین قیمت شرکت‌های بیمه می‌تواند تغییر کند؛ قیمت‌های به‌روز دوباره دریافت می‌شود. شروع پیشنهاد جدید با پایان بیمه‌نامه فعلی شما تعیین می‌گردد.",
     bodyDated:
-      "در تاریخ {date} با این اطلاعات پیشنهاد گرفته شده است. با همان پیشنهاد ادامه می‌دهید؟",
-    activePolicy:
-      "بیمه‌نامه شما برای این خودرو تا {date} اعتبار دارد. شرکت‌های بیمه برای دوره بعدی پیشنهاد صادر نمی‌کنند، بنابراین پیشنهاد جدید تنها با نزدیک شدن به این تاریخ امکان‌پذیر است.",
-    note:
-      "بیش از ۲۴ ساعت گذشته است؛ بنابراین تاریخ صدور باید تغییر کند و حق بیمه شرکت‌ها هم می‌تواند تغییر کند. به همین دلیل خرید آنلاین با قیمت‌های پیشنهاد قبلی امکان‌پذیر نیست. با انتخاب پیشنهاد جدید دوباره از شرکت بیمه درخواست می‌شود؛ اگر شرکت پیشنهاد جدیدی باز نکند، درخواست شما به تیم ما می‌رسد و با شما تماس می‌گیریم.",
-    confirm: "بله، ادامه می‌دهم",
-    cancel: "نه، پیشنهاد جدید بگیرید",
-    declineExisting: "انصراف",
-    retryFailed:
-      "شرکت بیمه با این اطلاعات پیشنهاد جدیدی باز نکرد، بنابراین پیشنهاد فعلی معتبر می‌ماند. درخواست شما به تیم ما رسید و به‌زودی با شما تماس می‌گیریم.",
+      "در تاریخ {date} با این اطلاعات پیشنهاد گرفته شده است. پیشنهاد جدید تاریخ صدور جدیدی دارد، بنابراین قیمت شرکت‌های بیمه می‌تواند تغییر کند؛ قیمت‌های به‌روز دوباره دریافت می‌شود. شروع پیشنهاد جدید با پایان بیمه‌نامه فعلی شما تعیین می‌گردد.",
+    acknowledge: "متوجه شدم، پیشنهاد جدید بگیرید",
   },
   brans: {
     trafik: "بیمه شخص ثالث",
@@ -595,8 +550,6 @@ const FA: FlowMessages = {
       "با این اطلاعات پیشنهاد قابل خرید فوری نیامد. تیم ما می‌تواند به‌صورت دستی برایتان کار کند.",
     authorization:
       "قیمت {n} شرکت نیاز به تأیید جداگانه بیمه دارد و اینجا فهرست نشده است. در صورت تمایل تیم ما می‌تواند آن پیشنهادها را پیگیری کند.",
-    reworked:
-      "با این اطلاعات قبلاً پیشنهاد گرفته شده است. شرکت‌های بیمه خرید اینترنتی روی پیشنهاد قبلی را نمی‌پذیرند و مبالغ زیر ممکن است به‌روز نباشد. «درخواست پیشنهاد» را بزنید؛ تیم ما حق بیمه فعلی را آماده می‌کند و با شما تماس می‌گیرد.",
     none: "برای این محصول پیشنهادی نرسید.",
     best: "به‌صرفه‌ترین",
     pdf: "PDF پیشنهاد",
