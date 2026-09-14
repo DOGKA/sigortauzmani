@@ -60,6 +60,8 @@ export function validateSettings(input: unknown): SiteSettings {
       taxNumber: text(company.taxNumber, 32),
       mersisNumber: text(company.mersisNumber, 32),
       kep: text(company.kep, 160).toLowerCase(),
+      tobbNumber: text(company.tobbNumber, 32),
+      tradeRegistryNumber: text(company.tradeRegistryNumber, 32),
     },
     analytics: {
       provider,

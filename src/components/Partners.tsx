@@ -2,30 +2,30 @@ import "./Partners.css";
 import { useT } from "../lib/i18n/context";
 
 const PARTNERS = [
-  { file: "aksigorta.png", name: "Aksigorta" },
-  { file: "allianz.png", name: "Allianz" },
-  { file: "anadolu.png", name: "Anadolu Sigorta" },
-  { file: "ankara.png", name: "Ankara Sigorta" },
-  { file: "axa.png", name: "AXA Sigorta" },
-  { file: "bereket-sigorta.png", name: "Bereket Sigorta" },
-  { file: "corpus-sigorta.png", name: "Corpus Sigorta" },
-  { file: "doga-sigorta.png", name: "Doğa Sigorta" },
-  { file: "emaa-sigorta.png", name: "EMAA Sigorta" },
-  { file: "gig-sigorta.png", name: "GIG Sigorta" },
-  { file: "hdi.png", name: "HDI Sigorta" },
-  { file: "hepsi-iyi-sigorta.png", name: "Hepiyi Sigorta" },
-  { file: "magdeburger-sigorta.png", name: "Magdeburger Sigorta" },
-  { file: "mapfre.png", name: "MAPFRE Sigorta" },
-  { file: "neova-sigorta.png", name: "Neova Sigorta" },
-  { file: "orient-sigorta.png", name: "Orient Sigorta" },
-  { file: "quick-sigorta.png", name: "Quick Sigorta" },
-  { file: "ray-sigorta.png", name: "Ray Sigorta" },
-  { file: "referans-sigorta.png", name: "Referans Sigorta" },
-  { file: "sompo.png", name: "Sompo Sigorta" },
-  { file: "turk-nippon-sigorta.png", name: "Türk Nippon Sigorta" },
-  { file: "turkiye.png", name: "Türkiye Sigorta" },
-  { file: "unico-sigorta.png", name: "Unico Sigorta" },
-  { file: "zurich-sigorta.png", name: "Zurich Sigorta" },
+  { file: "aksigorta.webp", name: "Aksigorta" },
+  { file: "allianz.webp", name: "Allianz" },
+  { file: "anadolu.webp", name: "Anadolu Sigorta" },
+  { file: "ankara.webp", name: "Ankara Sigorta" },
+  { file: "axa.webp", name: "AXA Sigorta" },
+  { file: "bereket-sigorta.webp", name: "Bereket Sigorta" },
+  { file: "corpus-sigorta.webp", name: "Corpus Sigorta" },
+  { file: "doga-sigorta.webp", name: "Doğa Sigorta" },
+  { file: "emaa-sigorta.webp", name: "EMAA Sigorta" },
+  { file: "gig-sigorta.webp", name: "GIG Sigorta" },
+  { file: "hdi.webp", name: "HDI Sigorta" },
+  { file: "hepsi-iyi-sigorta.webp", name: "Hepiyi Sigorta" },
+  { file: "magdeburger-sigorta.webp", name: "Magdeburger Sigorta" },
+  { file: "mapfre.webp", name: "MAPFRE Sigorta" },
+  { file: "neova-sigorta.webp", name: "Neova Sigorta" },
+  { file: "orient-sigorta.webp", name: "Orient Sigorta" },
+  { file: "quick-sigorta.webp", name: "Quick Sigorta" },
+  { file: "ray-sigorta.webp", name: "Ray Sigorta" },
+  { file: "referans-sigorta.webp", name: "Referans Sigorta" },
+  { file: "sompo.webp", name: "Sompo Sigorta" },
+  { file: "turk-nippon-sigorta.webp", name: "Türk Nippon Sigorta" },
+  { file: "turkiye.webp", name: "Türkiye Sigorta" },
+  { file: "unico-sigorta.webp", name: "Unico Sigorta" },
+  { file: "zurich-sigorta.webp", name: "Zurich Sigorta" },
 ];
 
 const firstRow = PARTNERS.slice(0, Math.ceil(PARTNERS.length / 2));
@@ -47,7 +47,11 @@ function MarqueeRow({
               src={`/assets/img/partners/${partner.file}`}
               alt={partner.name}
               title={partner.name}
+              width="138"
+              height="56"
               loading="lazy"
+              fetchPriority="low"
+              decoding="async"
             />
           </div>
         ))}

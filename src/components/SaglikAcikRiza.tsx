@@ -5,10 +5,10 @@
  */
 
 import { useId } from "react";
-import { COMPANY } from "../data/company";
 import type { SaglikRizaSecimi } from "../data/saglikRiza";
 import { interpolate } from "../lib/i18n/format";
 import { useT } from "../lib/i18n/context";
+import { useSiteSettings } from "../lib/settings/context";
 import "./SaglikAcikRiza.css";
 
 interface Props {
@@ -19,6 +19,7 @@ interface Props {
 
 export default function SaglikAcikRiza({ deger, onDegis, hata = false }: Props) {
   const t = useT();
+  const { settings } = useSiteSettings();
   const grupAdi = useId();
   const secenekler = [
     { value: "veriyorum" as const, label: t.quote.consentYes },
@@ -32,7 +33,7 @@ export default function SaglikAcikRiza({ deger, onDegis, hata = false }: Props) 
       >
         <legend>{t.quote.consentTitle}</legend>
         <p className="saglik-kvkk__riza-metin">
-          {interpolate(t.quote.consentBody, { company: COMPANY.unvan })}
+          {interpolate(t.quote.consentBody, { company: settings.company.legalName })}
         </p>
 
         <div className="saglik-kvkk__secenekler">

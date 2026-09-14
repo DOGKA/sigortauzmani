@@ -1,6 +1,28 @@
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig, loadEnv, type Plugin } from "vite";
 import react from "@vitejs/plugin-react";
 import { localApiPlugin } from "./scripts/vite-local-api.ts";
+
+function inlineEntryCss(): Plugin {
+  return {
+    name: "inline-entry-css",
+    apply: "build",
+    enforce: "post",
+    generateBundle(_, bundle) {
+      const html = bundle["index.html"];
+      if (!html || html.type !== "asset") return;
+
+      html.source = String(html.source).replace(
+        /<link rel="stylesheet" crossorigin href="\/([^"]+\.css)">/g,
+        (tag, fileName: string) => {
+          const css = bundle[fileName];
+          return css?.type === "asset"
+            ? `<style>${String(css.source)}</style>`
+            : tag;
+        },
+      );
+    },
+  };
+}
 
 /**
  * `npm run dev` varsayılan olarak `api/` fonksiyonlarını Vite içinde
@@ -19,7 +41,16 @@ export default defineConfig(({ mode }) => {
   const proxyTarget = process.env.VITE_IO_PROXY_TARGET;
 
   return {
-    plugins: [react(), ...(proxyTarget ? [] : [localApiPlugin()])],
+    plugins: [
+      react(),
+      inlineEntryCss(),
+      ...(proxyTarget ? [] : [localApiPlugin()]),
+    ],
+    build: {
+      // Görselleri JS içine base64 olarak gömmek ana paketi ve parse süresini
+      // büyütür; ayrı dosyalar tarayıcı önbelleği ve lazy-loading kullanır.
+      assetsInlineLimit: 0,
+    },
     server: {
       port: 5173,
       // Port doluysa üst porta kaçma; hata ver ki eski süreç fark edilsin.

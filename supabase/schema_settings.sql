@@ -124,10 +124,13 @@ grant execute on function public.get_public_site_settings() to anon, authenticat
 insert into public.site_settings (key, value, is_public)
 values
   ('company', '{
-    "legalName":"Sigorta Uzmanı","brandName":"Sigorta Uzmanı",
+    "legalName":"GROSS SİGORTA ARACILIK HİZMETLERİ LİMİTED ŞİRKETİ",
+    "brandName":"Sigorta Uzmanı",
     "email":"sigorta@sigortauzmani.net","phone":"+908503020032",
-    "phoneDisplay":"0850 302 00 32","address":"","taxOffice":"",
-    "taxNumber":"","mersisNumber":"","kep":""
+    "phoneDisplay":"0850 302 00 32","address":"",
+    "taxOffice":"Kartal","taxNumber":"4110856889",
+    "mersisNumber":"0411085688900001","kep":"grosssigorta@hs03.kep.tr",
+    "tobbNumber":"G08612-15EG","tradeRegistryNumber":"6422-5"
   }'::jsonb, true),
   ('analytics', '{
     "provider":"none","ga4MeasurementId":"","gtmContainerId":""

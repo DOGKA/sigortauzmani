@@ -1,19 +1,37 @@
 import { useCallback, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useLocale, useT } from "../lib/i18n/context";
-import trafikSlider from "../assets/sliders/trafik-sigortasi.png";
-import kaskoSlider from "../assets/sliders/kasko.png";
-import tamamlayiciSaglikSlider from "../assets/sliders/tamamlayici-saglik.png";
-import ozelSaglikSlider from "../assets/sliders/ozel-saglik.png";
-import immSlider from "../assets/sliders/ihtiyari-mali-mesuliyet.png";
-import daskSlider from "../assets/sliders/dask.png";
-import konutSlider from "../assets/sliders/konut-sigortasi.png";
-import seyahatSaglikSlider from "../assets/sliders/seyahat-saglik.png";
-import yesilKartSlider from "../assets/sliders/yesil-kart.png";
+import trafikSlider400 from "../assets/sliders/trafik-sigortasi-400.webp";
+import trafikSlider800 from "../assets/sliders/trafik-sigortasi-800.webp";
+import trafikSlider1200 from "../assets/sliders/trafik-sigortasi-1200.webp";
+import kaskoSlider400 from "../assets/sliders/kasko-400.webp";
+import kaskoSlider800 from "../assets/sliders/kasko-800.webp";
+import kaskoSlider1200 from "../assets/sliders/kasko-1200.webp";
+import tamamlayiciSaglikSlider400 from "../assets/sliders/tamamlayici-saglik-400.webp";
+import tamamlayiciSaglikSlider800 from "../assets/sliders/tamamlayici-saglik-800.webp";
+import tamamlayiciSaglikSlider1200 from "../assets/sliders/tamamlayici-saglik-1200.webp";
+import ozelSaglikSlider400 from "../assets/sliders/ozel-saglik-400.webp";
+import ozelSaglikSlider800 from "../assets/sliders/ozel-saglik-800.webp";
+import ozelSaglikSlider1200 from "../assets/sliders/ozel-saglik-1200.webp";
+import immSlider400 from "../assets/sliders/ihtiyari-mali-mesuliyet-400.webp";
+import immSlider800 from "../assets/sliders/ihtiyari-mali-mesuliyet-800.webp";
+import immSlider1200 from "../assets/sliders/ihtiyari-mali-mesuliyet-1200.webp";
+import daskSlider400 from "../assets/sliders/dask-400.webp";
+import daskSlider800 from "../assets/sliders/dask-800.webp";
+import daskSlider1200 from "../assets/sliders/dask-1200.webp";
+import konutSlider400 from "../assets/sliders/konut-sigortasi-400.webp";
+import konutSlider800 from "../assets/sliders/konut-sigortasi-800.webp";
+import konutSlider1200 from "../assets/sliders/konut-sigortasi-1200.webp";
+import seyahatSaglikSlider400 from "../assets/sliders/seyahat-saglik-400.webp";
+import seyahatSaglikSlider800 from "../assets/sliders/seyahat-saglik-800.webp";
+import seyahatSaglikSlider1200 from "../assets/sliders/seyahat-saglik-1200.webp";
+import yesilKartSlider400 from "../assets/sliders/yesil-kart-400.webp";
+import yesilKartSlider800 from "../assets/sliders/yesil-kart-800.webp";
+import yesilKartSlider1200 from "../assets/sliders/yesil-kart-1200.webp";
 import "./InsuranceSlider.css";
 
-const INITIAL_LOADED = 3;
-const LOAD_AHEAD = 2;
+const INITIAL_LOADED = 2;
+const LOAD_AHEAD = 1;
 
 const slides = [
   {
@@ -21,7 +39,9 @@ const slides = [
     titleLine1: "Yola çıkarken.",
     titleLine2: "Güvenceniz hazır.",
     subtitle: "Zorunlu trafik sigortası tekliflerini kolayca değerlendirin.",
-    image: trafikSlider,
+    image400: trafikSlider400,
+    image800: trafikSlider800,
+    image1200: trafikSlider1200,
     alt: "Dağ yolunda virajı dönen beyaz otomobil",
     cta: "Trafik Sigortası Teklifi Al",
     to: "/teklif/trafik-sigortasi",
@@ -31,7 +51,9 @@ const slides = [
     titleLine1: "Beklenmeyene karşı.",
     titleLine2: "Aracınız güvende.",
     subtitle: "Aracınızı farklı risklere karşı kapsamlı güvenceyle koruyun.",
-    image: kaskoSlider,
+    image400: kaskoSlider400,
+    image800: kaskoSlider800,
+    image1200: kaskoSlider1200,
     alt: "Arkadan çarpma sonucu hasar görmüş otomobil",
     cta: "Kasko Teklifi Al",
     to: "/teklif/kasko",
@@ -42,7 +64,9 @@ const slides = [
     titleLine2: "Bütçenizi yormadan.",
     subtitle:
       "SGK ile anlaşmalı özel hastanelerde, poliçe kapsamındaki fark ücretlerine karşı güvence seçeneklerini değerlendirin.",
-    image: tamamlayiciSaglikSlider,
+    image400: tamamlayiciSaglikSlider400,
+    image800: tamamlayiciSaglikSlider800,
+    image1200: tamamlayiciSaglikSlider1200,
     alt: "Birbirine destek olan kenetlenmiş eller",
     cta: "Tamamlayıcı Sağlık Teklifi Al",
     to: "/teklif/tamamlayici-saglik",
@@ -52,7 +76,9 @@ const slides = [
     titleLine1: "Sağlığınız için.",
     titleLine2: "Daha geniş güvence.",
     subtitle: "İhtiyacınıza uygun kapsam ve sağlık ağı seçeneklerini değerlendirin.",
-    image: ozelSaglikSlider,
+    image400: ozelSaglikSlider400,
+    image800: ozelSaglikSlider800,
+    image1200: ozelSaglikSlider1200,
     alt: "Masada duran stetoskop",
     cta: "Özel Sağlık Teklifi Al",
     to: "/teklif/ozel-saglik",
@@ -62,7 +88,9 @@ const slides = [
     titleLine1: "Limitler yetmediğinde.",
     titleLine2: "Ek güvence yanınızda.",
     subtitle: "Trafik sigortası limitlerini aşan sorumluluklara karşı korunun.",
-    image: immSlider,
+    image400: immSlider400,
+    image800: immSlider800,
+    image1200: immSlider1200,
     alt: "Trafik kazasında hasar gören iki otomobil",
     cta: "İMM Teklifi Al",
     to: "/teklif/imm",
@@ -72,7 +100,9 @@ const slides = [
     titleLine1: "Deprem beklenmez.",
     titleLine2: "Eviniz güvende.",
     subtitle: "Zorunlu deprem sigortanızı kolayca oluşturun.",
-    image: daskSlider,
+    image400: daskSlider400,
+    image800: daskSlider800,
+    image1200: daskSlider1200,
     alt: "Gün batımında modern konut siluetleri",
     cta: "DASK Teklifi Al",
     to: "/teklif/dask",
@@ -82,7 +112,9 @@ const slides = [
     titleLine1: "Eviniz değerli.",
     titleLine2: "Güvencesi hazır.",
     subtitle: "Evinizi ve eşyalarınızı beklenmedik risklere karşı koruyun.",
-    image: konutSlider,
+    image400: konutSlider400,
+    image800: konutSlider800,
+    image1200: konutSlider1200,
     alt: "Akşam ışıkları yanan bahçeli müstakil ev",
     cta: "Konut Sigortası Teklifi Al",
     to: "/teklif/konut",
@@ -92,7 +124,9 @@ const slides = [
     titleLine1: "Yola çıkmadan.",
     titleLine2: "Güvenceniz hazır.",
     subtitle: "Seyahatiniz boyunca sağlık risklerine karşı koruma sağlayın.",
-    image: seyahatSaglikSlider,
+    image400: seyahatSaglikSlider400,
+    image800: seyahatSaglikSlider800,
+    image1200: seyahatSaglikSlider1200,
     alt: "Havalimanında bekleyen seyahat valizi",
     cta: "Seyahat Sağlık Teklifi Al",
     to: "/teklif/seyahat-saglik",
@@ -102,7 +136,9 @@ const slides = [
     titleLine1: "Sınırlar değişir.",
     titleLine2: "Güvenceniz sürer.",
     subtitle: "Aracınızı yurt dışında kullanırken gerekli olan sigorta için teklif alın.",
-    image: yesilKartSlider,
+    image400: yesilKartSlider400,
+    image800: yesilKartSlider800,
+    image1200: yesilKartSlider1200,
     alt: "Dağ manzaralı yolda ilerleyen beyaz otomobil",
     cta: "Yeşil Kart Teklifi Al",
     to: "/teklif/yesil-kart",
@@ -186,9 +222,14 @@ export default function InsuranceSlider() {
             <Link className="insurance-slider__card" to={quoteHref(slug)} key={slide.eyebrow}>
               {index < loadedCount && (
                 <img
-                  src={slide.image}
+                  src={slide.image1200}
+                  srcSet={`${slide.image400} 400w, ${slide.image800} 800w, ${slide.image1200} 1200w`}
+                  sizes="(max-width: 640px) calc(100vw - 32px), (max-width: 1128px) calc(100vw - 48px), 1080px"
                   alt={slide.alt}
-                  fetchPriority={index === 0 ? "high" : "auto"}
+                  width={1200}
+                  height={597}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  fetchPriority={index === 0 ? "high" : "low"}
                   decoding="async"
                 />
               )}

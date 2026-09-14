@@ -153,7 +153,8 @@
 /* Kısa süreli trafik ikonu diğerlerinin aksine kare değil, enine uzun.
    Aynı genişlik sınırında komşularından iri görünüyor; daraltılıyor. */
 .product-card__icon[data-slug="kisa-sureli-trafik"] img {
-  max-width: 84px;
+  width: 84px;
+  height: auto;
 }
 
 .product-card:hover .product-card__icon img {

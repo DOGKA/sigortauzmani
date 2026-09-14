@@ -1,12 +1,9 @@
 import { Link, Navigate, useLocation } from "react-router-dom";
+import { companyFromSettings } from "../data/company";
 import { getLegalDocument } from "../data/legal";
-import {
-  CONTACT_EMAIL,
-  CONTACT_PHONE,
-  CONTACT_PHONE_DISPLAY,
-} from "../lib/seo/config";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
 import { useLocale, useT } from "../lib/i18n/context";
+import { useSiteSettings } from "../lib/settings/context";
 import {
   LEGAL_PAGE_KEYS,
   PAGE_TEMPLATES,
@@ -20,10 +17,12 @@ export default function LegalPage() {
   const { pathname } = useLocation();
   const { locale, href } = useLocale();
   const t = useT();
+  const { settings } = useSiteSettings();
+  const company = companyFromSettings(settings.company);
   const parsed = parsePath(pathname);
   const trPath =
     isLegalPage(parsed.page) ? PAGE_TEMPLATES.tr[parsed.page] : pathname;
-  const doc = getLegalDocument(trPath);
+  const doc = getLegalDocument(trPath, company);
 
   useStaticPageSeo(pathname);
 
@@ -33,7 +32,7 @@ export default function LegalPage() {
 
   const others = LEGAL_PAGE_KEYS.filter((key) => key !== parsed.page).map(
     (key) => {
-      const other = getLegalDocument(PAGE_TEMPLATES.tr[key]);
+      const other = getLegalDocument(PAGE_TEMPLATES.tr[key], company);
       return {
         path: localizedPath(locale, key),
         title: other?.title ?? key,
@@ -94,8 +93,8 @@ export default function LegalPage() {
             <div className="legal__card">
               <h2>{t.legal.contactTitle}</h2>
               <p>{t.legal.contactLead}</p>
-              <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-              <a href={`tel:${CONTACT_PHONE}`}>{CONTACT_PHONE_DISPLAY}</a>
+              <a href={`mailto:${company.eposta}`}>{company.eposta}</a>
+              <a href={`tel:${company.telefonE164}`}>{company.telefon}</a>
               <Link to={href("contact")} className="legal__aside-cta">
                 {t.legal.contactForm}
               </Link>

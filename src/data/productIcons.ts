@@ -6,7 +6,7 @@
 
 import trafikIcon from "../assets/icons/arac-sigortalari.svg";
 import kaskoIcon from "../assets/icons/kasko.svg";
-import kisaSureliTrafikIcon from "../assets/icons/hizli-trafik.png";
+import kisaSureliTrafikIcon from "../assets/icons/hizli-trafik.webp";
 import tamamlayiciIcon from "../assets/icons/tamamlayici-saglik.svg";
 import seyahatIcon from "../assets/icons/seyahat-saglik.svg";
 import immIcon from "../assets/icons/imm.svg";

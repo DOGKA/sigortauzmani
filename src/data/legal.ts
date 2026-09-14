@@ -1,8 +1,12 @@
 /**
- * Yasal metinler. İletişim bilgileri SEO config ile aynı kaynaktan gelir.
+ * Yasal metinler. Veri sorumlusu ve iletişim satırları kurumsal ayarlardan üretilir.
  */
 
-import { KVKK_SORUMLU, kvkkVeriSorumlusuLines } from "./company";
+import {
+  COMPANY,
+  kvkkVeriSorumlusuLines,
+  type CompanyIdentity,
+} from "./company";
 import { ROUTES } from "../lib/seo/routes";
 
 export interface LegalSection {
@@ -27,7 +31,10 @@ export interface LegalDocument {
 
 const KVKK_UPDATED = "1 Eylül 2026";
 
-export const legalDocuments: LegalDocument[] = [
+export function buildLegalDocuments(
+  sorumlu: CompanyIdentity = COMPANY,
+): LegalDocument[] {
+  return [
   {
     path: ROUTES.kvkk,
     title: "KVKK Aydınlatma Metni",
@@ -41,8 +48,8 @@ export const legalDocuments: LegalDocument[] = [
       {
         heading: "1. Veri sorumlusu",
         paragraphs: [
-          `6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) kapsamında kişisel verileriniz, veri sorumlusu sıfatıyla ${KVKK_SORUMLU.unvan} (“Şirket”) tarafından işlenmektedir.`,
-          ...kvkkVeriSorumlusuLines(),
+          `6698 sayılı Kişisel Verilerin Korunması Kanunu (“KVKK”) kapsamında kişisel verileriniz, veri sorumlusu sıfatıyla ${sorumlu.unvan} (“Şirket”) tarafından işlenmektedir.`,
+          ...kvkkVeriSorumlusuLines(sorumlu),
         ],
       },
       {
@@ -163,9 +170,9 @@ export const legalDocuments: LegalDocument[] = [
         closing: [
           "haklarına sahipsiniz.",
           "Başvurularınızı aşağıdaki kanallardan iletebilirsiniz:",
-          `KEP: ${KVKK_SORUMLU.kep}`,
-          `Kayıtlı e-posta adresiniz üzerinden: ${KVKK_SORUMLU.eposta}`,
-          `Güvenli elektronik imza veya mobil imza ile imzaladığınız başvurular: ${KVKK_SORUMLU.eposta}`,
+          `KEP: ${sorumlu.kep}`,
+          `Kayıtlı e-posta adresiniz üzerinden: ${sorumlu.eposta}`,
+          `Güvenli elektronik imza veya mobil imza ile imzaladığınız başvurular: ${sorumlu.eposta}`,
           "Başvurunuz, talebin niteliğine göre en kısa sürede ve en geç otuz gün içinde sonuçlandırılır. Başvuru yöntemleri ve gerekli bilgiler için KVKK Başvuru Formu sayfasını kullanabilirsiniz.",
         ],
       },
@@ -284,7 +291,7 @@ export const legalDocuments: LegalDocument[] = [
       {
         heading: "6. İletişim",
         paragraphs: [
-          `Çerez ve benzeri teknolojilerle ilgili sorularınızı ${KVKK_SORUMLU.eposta} adresine iletebilirsiniz.`,
+          `Çerez ve benzeri teknolojilerle ilgili sorularınızı ${sorumlu.eposta} adresine iletebilirsiniz.`,
         ],
       },
     ],
@@ -300,15 +307,15 @@ export const legalDocuments: LegalDocument[] = [
     updatedAt: KVKK_UPDATED,
     eyebrow: "Kişisel verilerin korunması",
     intro: [
-      `6698 sayılı Kişisel Verilerin Korunması Kanunu’nun 11. maddesi kapsamındaki taleplerinizi ${KVKK_SORUMLU.unvan}’na iletebilirsiniz.`,
+      `6698 sayılı Kişisel Verilerin Korunması Kanunu’nun 11. maddesi kapsamındaki taleplerinizi ${sorumlu.unvan}’na iletebilirsiniz.`,
     ],
     sections: [
       {
         heading: "Başvuru kanalları",
         paragraphs: [
-          `KEP adresi: ${KVKK_SORUMLU.kep}`,
-          `Şirket sisteminde kayıtlı e-posta adresiniz üzerinden: ${KVKK_SORUMLU.eposta}`,
-          `Güvenli elektronik imza veya mobil imza ile imzaladığınız başvurular: ${KVKK_SORUMLU.eposta}`,
+          `KEP adresi: ${sorumlu.kep}`,
+          `Şirket sisteminde kayıtlı e-posta adresiniz üzerinden: ${sorumlu.eposta}`,
+          `Güvenli elektronik imza veya mobil imza ile imzaladığınız başvurular: ${sorumlu.eposta}`,
         ],
       },
       {
@@ -353,8 +360,14 @@ export const legalDocuments: LegalDocument[] = [
     summary:
       "KVKK başvuru kanalları, başvuruda yer alması gereken bilgiler, talep konuları ve sonuçlandırma süresi.",
   },
-];
+  ];
+}
 
-export function getLegalDocument(path: string): LegalDocument | undefined {
-  return legalDocuments.find((doc) => doc.path === path);
+export const legalDocuments: LegalDocument[] = buildLegalDocuments();
+
+export function getLegalDocument(
+  path: string,
+  sorumlu: CompanyIdentity = COMPANY,
+): LegalDocument | undefined {
+  return buildLegalDocuments(sorumlu).find((doc) => doc.path === path);
 }

@@ -29,11 +29,11 @@ export default function HomePage() {
   useStaticPageSeo(homePath, { extra: [faqNode, serviceListNode] });
 
   return (
-    <>
+    <main>
       <Hero />
       <InsuranceSlider />
       <Partners />
       <Faq />
-    </>
+    </main>
   );
 }

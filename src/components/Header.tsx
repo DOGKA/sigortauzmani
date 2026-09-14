@@ -69,7 +69,13 @@ export default function Header() {
     <header className="header">
       <div className="header__inner">
         <Link to={href("home")} className="header__brand">
-          <img src="/sigortauzmani-logo.svg" alt="Sigorta Uzmanı" className="header__logo" />
+          <img
+            src="/favicon.svg"
+            alt="Sigorta Uzmanı"
+            className="header__logo"
+            width="44"
+            height="44"
+          />
           <span className="header__brand-name">
             sigorta<strong>uzmanı</strong>
           </span>

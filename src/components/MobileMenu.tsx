@@ -150,7 +150,7 @@ export default function MobileMenu({ id, open, onClose }: MobileMenuProps) {
 
         <div className="mobile-menu__head">
           <Link to={href("home")} className="mobile-menu__brand" onClick={onClose}>
-            <img src="/sigortauzmani-logo.svg" alt="" />
+            <img src="/favicon.svg" alt="" width="36" height="36" />
             <span>
               sigorta<strong>uzmanı</strong>
             </span>

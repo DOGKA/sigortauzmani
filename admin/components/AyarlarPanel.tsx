@@ -315,6 +315,9 @@ function Company({ settings, setSettings }: PanelProps) {
     setSettings((current) => ({ ...current, company: { ...current.company, [key]: value } }));
   return (
     <div className="grid gap-4 md:grid-cols-2">
+      <div className="md:col-span-2 rounded-xl border border-sky-100 bg-sky-50/60 p-4 text-sm leading-6 text-slate-600">
+        Sitedeki KVKK, gizlilik ve başvuru metinlerindeki unvan, KEP, vergi ve iletişim satırları bu kayıttan üretilir. Kaydettiğiniz anda yayımlanan yasal sayfalar bu bilgileri kullanır.
+      </div>
       <Field label="Ticari unvan" value={settings.company.legalName} onChange={(v) => update("legalName", v)} />
       <Field label="Marka adı" value={settings.company.brandName} onChange={(v) => update("brandName", v)} />
       <Field label="E-posta" type="email" value={settings.company.email} onChange={(v) => update("email", v)} />
@@ -324,7 +327,14 @@ function Company({ settings, setSettings }: PanelProps) {
       <Field label="Vergi dairesi" value={settings.company.taxOffice} onChange={(v) => update("taxOffice", v)} />
       <Field label="Vergi numarası" value={settings.company.taxNumber} onChange={(v) => update("taxNumber", v)} />
       <Field label="MERSİS numarası" value={settings.company.mersisNumber} onChange={(v) => update("mersisNumber", v)} />
-      <div className="md:col-span-2"><Field label="Adres" value={settings.company.address} onChange={(v) => update("address", v)} /></div>
+      <Field label="TOBB levha no" value={settings.company.tobbNumber} onChange={(v) => update("tobbNumber", v)} />
+      <Field label="Ticaret sicil no" value={settings.company.tradeRegistryNumber} onChange={(v) => update("tradeRegistryNumber", v)} />
+      <div className="md:col-span-2">
+        <Field label="Adres" value={settings.company.address} onChange={(v) => update("address", v)} />
+        <p className="mt-1.5 text-xs leading-5 text-slate-400">
+          Açık posta adresi yayımlanmak istenmiyorsa boş bırakın. Tebligat KEP ve e-posta üzerinden yürür.
+        </p>
+      </div>
     </div>
   );
 }

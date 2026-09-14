@@ -38,7 +38,13 @@ export default function Hero() {
             >
               {product.badge && <span className="product-card__badge">{product.badge}</span>}
               <div className="product-card__icon" data-slug={product.slug}>
-                <img src={productIcons[product.slug]} alt="" />
+                <img
+                  src={productIcons[product.slug]}
+                  alt=""
+                  width={product.slug === "kisa-sureli-trafik" ? 168 : 110}
+                  height={product.slug === "kisa-sureli-trafik" ? 82 : 76}
+                  decoding="async"
+                />
               </div>
               <span className="product-card__title">{product.title}</span>
             </Link>

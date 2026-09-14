@@ -278,13 +278,6 @@ function localeRoutes(locale: Locale) {
 }
 
 export default function App() {
-  useEffect(() => {
-    const idle =
-      window.requestIdleCallback?.bind(window) ??
-      ((cb: () => void) => window.setTimeout(cb, 1500));
-    idle(() => loadQuotePage());
-  }, []);
-
   return (
     <BrowserRouter>
       <SiteSettingsProvider>

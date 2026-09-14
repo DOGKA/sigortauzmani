@@ -1,8 +1,8 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { COMPANY } from "../data/company";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
 import { useLocale, useT } from "../lib/i18n/context";
+import { useSiteSettings } from "../lib/settings/context";
 import kolayKarsilastirmaIcon from "../assets/icons/kolay-karsilastirma.svg";
 import uzmanDestekIcon from "../assets/icons/uzman-destek.svg";
 import hizliSurecIcon from "../assets/icons/hizli-surec.svg";
@@ -40,6 +40,7 @@ export default function AboutPage() {
   const rootRef = useRef<HTMLElement>(null);
   const { href } = useLocale();
   const t = useT();
+  const { settings } = useSiteSettings();
 
   useStaticPageSeo(href("about"));
 
@@ -91,7 +92,7 @@ export default function AboutPage() {
             {t.about.h1After}
           </h1>
           <p className="about__lead">
-            <strong>sigortauzmani.net</strong> — {t.about.lead} {COMPANY.unvan}.
+            <strong>sigortauzmani.net</strong> — {t.about.lead} {settings.company.legalName}.
           </p>
 
           <ul className="about__branches" aria-label={t.about.crumb}>
@@ -156,7 +157,7 @@ export default function AboutPage() {
             <Link to={`${href("home")}#urunler`} className="about__cta-btn">
               {t.about.cta}
             </Link>
-            <a href="tel:+908503020032" className="about__cta-btn about__cta-btn--ghost">
+            <a href={`tel:${settings.company.phone}`} className="about__cta-btn about__cta-btn--ghost">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path
                   d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
