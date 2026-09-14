@@ -10,6 +10,7 @@ export interface UiMessages {
     about: string;
     products: string;
     cancel: string;
+    cancelShort: string;
     compare: string;
     blog: string;
     menu: string;
@@ -217,6 +218,7 @@ const TR: UiMessages = {
     about: "Hakkımızda",
     products: "Ürünlerimiz",
     cancel: "Poliçe İptal İşlemleri",
+    cancelShort: "Poliçe İptal",
     compare: "Sigorta Türlerini Karşılaştır",
     blog: "Blog",
     menu: "Menü",
@@ -544,6 +546,7 @@ const EN: UiMessages = {
     about: "About",
     products: "Products",
     cancel: "Policy Cancellation",
+    cancelShort: "Cancel Policy",
     compare: "Compare Insurance Types",
     blog: "Blog",
     menu: "Menu",
@@ -863,6 +866,7 @@ const AR: UiMessages = {
     about: "من نحن",
     products: "منتجاتنا",
     cancel: "إلغاء الوثيقة",
+    cancelShort: "إلغاء الوثيقة",
     compare: "قارن أنواع التأمين",
     blog: "المدونة",
     menu: "القائمة",
@@ -1181,6 +1185,7 @@ const FA: UiMessages = {
     about: "درباره ما",
     products: "محصولات",
     cancel: "لغو بیمه‌نامه",
+    cancelShort: "لغو بیمه‌نامه",
     compare: "مقایسه انواع بیمه",
     blog: "بلاگ",
     menu: "منو",

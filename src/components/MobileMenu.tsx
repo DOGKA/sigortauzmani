@@ -184,7 +184,7 @@ export default function MobileMenu({ id, open, onClose }: MobileMenuProps) {
               <strong>{t.nav.quote}</strong>
             </button>
             <Link to={href("policyCancel")} className="mobile-menu__cta" onClick={onClose}>
-              <strong>{t.nav.cancel}</strong>
+              <strong>{t.nav.cancelShort}</strong>
             </Link>
           </div>
 
