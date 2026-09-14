@@ -347,6 +347,7 @@ export function definedTermSetSchema(
   path: string,
   name: string,
   description: string,
+  inLanguage = SITE_LANG,
 ): JsonLd {
   const url = absoluteUrl(path);
   return {
@@ -355,7 +356,7 @@ export function definedTermSetSchema(
     name,
     description,
     url,
-    inLanguage: SITE_LANG,
+    inLanguage,
     publisher: { "@id": ORGANIZATION_ID },
     hasDefinedTerm: terms.map((term) => ({
       "@type": "DefinedTerm",

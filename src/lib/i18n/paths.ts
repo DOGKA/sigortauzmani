@@ -31,12 +31,12 @@ export const TRANSLATED_PAGES = [
   "privacy",
   "cookies",
   "kvkkApplication",
+  "glossary",
 ] as const satisfies readonly PageKey[];
 
 export const TURKISH_CONTENT_PAGES = [
   "blog",
   "blogPost",
-  "glossary",
   "comparisonHub",
   "comparison",
   "riskMap",

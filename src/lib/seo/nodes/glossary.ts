@@ -1,19 +1,28 @@
-import { CATEGORY_LABELS, glossaryTerms } from "../../../data/glossary";
-import { getStaticPage } from "../pages";
-import { ROUTES } from "../routes";
+import { LOCALE_META, type Locale } from "../../i18n/locales";
+import {
+  GLOSSARY,
+  localizedCategoryLabels,
+  localizedGlossaryTerms,
+} from "../../i18n/glossary";
+import { localizedPath } from "../../i18n/paths";
 import { definedTermSetSchema, type JsonLd } from "../schema";
 
-/** Sözlük sayfası: tüm terimler DefinedTermSet olarak. */
-export function glossaryTermSetNode(): JsonLd {
+export function glossaryTermSetNode(
+  locale: Locale = "tr",
+  path = localizedPath(locale, "glossary"),
+): JsonLd {
+  const copy = GLOSSARY[locale];
+  const labels = localizedCategoryLabels(locale);
   return definedTermSetSchema(
-    glossaryTerms.map((term) => ({
+    localizedGlossaryTerms(locale).map((term) => ({
       slug: term.slug,
       term: term.term,
       definition: term.definition,
-      category: CATEGORY_LABELS[term.category],
+      category: labels[term.category],
     })),
-    ROUTES.glossary,
-    "Sigorta Sözlüğü",
-    getStaticPage(ROUTES.glossary)?.description ?? "",
+    path,
+    copy.seoTitle,
+    copy.seoDescription,
+    LOCALE_META[locale].htmlLang,
   );
 }

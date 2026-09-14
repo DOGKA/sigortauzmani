@@ -1,6 +1,7 @@
 import { CANCEL, type CancelMessages } from "./cancel";
 import { COMPARE, type CompareMessages } from "./compare";
 import { FLOW, type FlowMessages } from "./flow";
+import { GLOSSARY, type GlossaryMessages } from "./glossary";
 import type { Locale } from "./locales";
 import { SUCCESS, type SuccessMessages } from "./success";
 
@@ -197,6 +198,7 @@ export interface UiMessages {
   success: SuccessMessages;
   flow: FlowMessages;
   compare: CompareMessages;
+  glossaryPage: GlossaryMessages;
   unavailable: { contact: string };
   notfound: {
     title: string;
@@ -461,6 +463,7 @@ const TR: UiMessages = {
   success: SUCCESS.tr,
   flow: FLOW.tr,
   compare: COMPARE.tr,
+  glossaryPage: GLOSSARY.tr,
   unavailable: { contact: "Bize ulaşın" },
   notfound: {
     title: "Bu sayfayı bulamadık",
@@ -780,6 +783,7 @@ const EN: UiMessages = {
   success: SUCCESS.en,
   flow: FLOW.en,
   compare: COMPARE.en,
+  glossaryPage: GLOSSARY.en,
   unavailable: { contact: "Contact us" },
   notfound: {
     title: "We could not find this page",
@@ -1097,6 +1101,7 @@ const AR: UiMessages = {
   success: SUCCESS.ar,
   flow: FLOW.ar,
   compare: COMPARE.ar,
+  glossaryPage: GLOSSARY.ar,
   unavailable: { contact: "تواصل معنا" },
   notfound: {
     title: "لم نعثر على هذه الصفحة",
@@ -1414,6 +1419,7 @@ const FA: UiMessages = {
   success: SUCCESS.fa,
   flow: FLOW.fa,
   compare: COMPARE.fa,
+  glossaryPage: GLOSSARY.fa,
   unavailable: { contact: "با ما تماس بگیرید" },
   notfound: {
     title: "این صفحه را پیدا نکردیم",

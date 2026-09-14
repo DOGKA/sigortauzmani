@@ -15,7 +15,7 @@
  * gerçek adresi görmeye devam eder.
  */
 
-import { CATEGORY_LABELS as GLOSSARY_CATEGORIES, glossaryTerms } from "../src/data/glossary";
+import { GLOSSARY, localizedCategoryLabels, localizedGlossaryTerms } from "../src/lib/i18n/glossary";
 import {
   CATEGORY_LABELS as COMPARISON_CATEGORIES,
   comparisons,
@@ -338,18 +338,34 @@ function renderComparison(slug: string): RenderedPage | null {
   };
 }
 
-function renderGlossary(): RenderedPage {
-  const page = getStaticPage(ROUTES.glossary)!;
-  const terms = glossaryTerms
+function renderGlossary(locale: ReturnType<typeof parsePath>["locale"]): RenderedPage {
+  const copy = GLOSSARY[locale];
+  const labels = localizedCategoryLabels(locale);
+  const path = localizedPath(locale, "glossary");
+  const termsHtml = localizedGlossaryTerms(locale)
     .map(
       (term) =>
         `<section id="${escapeHtml(term.slug)}"><h2>${escapeHtml(term.term)}</h2>` +
-        `<p><em>${escapeHtml(GLOSSARY_CATEGORIES[term.category])}</em></p>` +
+        `<p><em>${escapeHtml(labels[term.category])}</em></p>` +
         `<p>${escapeHtml(term.definition)}</p></section>`,
     )
     .join("\n");
 
-  return renderStaticPage(page, [glossaryTermSetNode()], terms);
+  const page = getStaticPage(ROUTES.glossary)!;
+  const localizedPage = {
+    ...page,
+    path,
+    title: copy.seoTitle,
+    description: copy.seoDescription,
+    h1: MESSAGES[locale].footer.glossary,
+    intro: [copy.lead],
+    breadcrumb: [
+      { name: MESSAGES[locale].quote.home, path: localizedPath(locale, "home") },
+      { name: MESSAGES[locale].footer.glossary },
+    ],
+  };
+
+  return renderStaticPage(localizedPage, [glossaryTermSetNode(locale, path)], termsHtml);
 }
 
 async function renderBlogIndex(): Promise<RenderedPage> {
@@ -485,7 +501,7 @@ async function resolve(path: string): Promise<RenderedPage | "error"> {
   if (parsed.page === "comparisonHub") {
     return localizeRendered(renderComparisonHub(), locale, "comparisonHub");
   }
-  if (parsed.page === "glossary") return localizeRendered(renderGlossary(), locale, "glossary");
+  if (parsed.page === "glossary") return renderGlossary(locale);
   if (parsed.page === "blog") {
     if (locale !== "tr") return renderNotFound(parsed.pathname);
     return localizeRendered(await renderBlogIndex(), locale, "blog");

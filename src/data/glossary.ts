@@ -404,25 +404,33 @@ export function getTerm(slug: string): GlossaryTerm | undefined {
   return glossaryTerms.find((t) => t.slug === slug);
 }
 
-export function getRelatedTerms(term: GlossaryTerm): GlossaryTerm[] {
+export function getRelatedTerms(
+  term: GlossaryTerm,
+  source: GlossaryTerm[] = glossaryTerms,
+): GlossaryTerm[] {
   if (!term.related?.length) return [];
   return term.related
-    .map((slug) => getTerm(slug))
-    .filter((t): t is GlossaryTerm => Boolean(t));
+    .map((slug) => source.find((item) => item.slug === slug))
+    .filter((item): item is GlossaryTerm => Boolean(item));
 }
 
-/** Turkish-friendly alphabetical sort */
-export function sortTermsAz(terms: GlossaryTerm[]): GlossaryTerm[] {
+export function sortTermsAz(
+  terms: GlossaryTerm[],
+  locale = "tr",
+): GlossaryTerm[] {
   return [...terms].sort((a, b) =>
-    a.term.localeCompare(b.term, "tr", { sensitivity: "base" }),
+    a.term.localeCompare(b.term, locale, { sensitivity: "base" }),
   );
 }
 
-export function getAlphabetLetters(terms: GlossaryTerm[]): string[] {
+export function getAlphabetLetters(
+  terms: GlossaryTerm[],
+  locale = "tr",
+): string[] {
   const letters = new Set<string>();
   for (const term of terms) {
-    const first = term.term.charAt(0).toLocaleUpperCase("tr-TR");
+    const first = term.term.charAt(0).toLocaleUpperCase(locale);
     letters.add(first);
   }
-  return [...letters].sort((a, b) => a.localeCompare(b, "tr"));
+  return [...letters].sort((a, b) => a.localeCompare(b, locale));
 }
