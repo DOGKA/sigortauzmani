@@ -22,6 +22,21 @@ export interface FlowMessages {
   downloadReceipt: string;
   editDetails: string;
   close: string;
+  /**
+   * IO daha önce çalışılmış teklifi döndürdüğünde açılan soru. Partner
+   * CRM'inde operatöre sorulan "Teklif Bilgi" diyalogunun karşılığı.
+   */
+  reworkedDialog: {
+    title: string;
+    body: string;
+    /** Teklif tarihi bilindiğinde kullanılan metin; `{date}` ile. */
+    bodyDated: string;
+    note: string;
+    confirm: string;
+    cancel: string;
+    /** Yeni teklif denendi ama şirket kayıtlı teklifi geri verdi. */
+    retryFailed: string;
+  };
   brans: {
     trafik: string;
     kasko: string;
@@ -55,6 +70,8 @@ export interface FlowMessages {
   offers: {
     empty: string;
     authorization: string;
+    /** IO daha önce çalışılmış teklifi döndürdüğünde gösterilen uyarı. */
+    reworked: string;
     none: string;
     best: string;
     pdf: string;
@@ -87,6 +104,8 @@ export interface FlowMessages {
     year: string;
     cvv: string;
     complete: string;
+    /** Şirket primi güncellediğinde onay düğmesi. */
+    approveNew: string;
     errName: string;
     errCard: string;
     errExpiry: string;
@@ -125,6 +144,19 @@ const TR: FlowMessages = {
   downloadReceipt: "Ödeme makbuzunu indir",
   editDetails: "Bilgileri düzenle",
   close: "Kapat",
+  reworkedDialog: {
+    title: "Teklif bilgisi",
+    body:
+      "Bu bilgilerle daha önce teklif çalışılmış. Aynı teklif ile mi devam edilecek?",
+    bodyDated:
+      "{date} tarihinde bu bilgilerle teklif çalışılmış. Aynı teklif ile mi devam edilecek?",
+    note:
+      "Teklifin üzerinden 24 saatten fazla geçtiği için tanzim tarihi değişmek zorunda; sigorta şirketlerinin verdiği primler de değişebilir. Bu yüzden eski teklifin fiyatlarıyla çevrim içi satın alma yapılamıyor. Yeni teklif seçeneğinde şirkete yeniden başvurulur; şirket yeni teklif açmazsa talebiniz ekibimize düşer ve size ulaşırız.",
+    confirm: "Evet, devam edeceğim",
+    cancel: "Hayır, yeni teklif oluştur",
+    retryFailed:
+      "Sigorta şirketi bu bilgilerle yeni teklif açmadı; mevcut teklif geçerli kalıyor. Talebiniz ekibimize iletildi, en kısa sürede size ulaşacağız.",
+  },
   brans: {
     trafik: "Trafik Sigortası",
     kasko: "Kasko",
@@ -160,6 +192,8 @@ const TR: FlowMessages = {
       "Şu anda bu bilgilerle anında satın alınabilir teklif çıkmadı. Ekibimiz sizin için manuel olarak çalışabilir.",
     authorization:
       "{n} şirket fiyatı için sigorta şirketinin ayrıca onayı gerekiyor, bu yüzden burada listelenmiyor. Bu teklifleri isterseniz ekibimiz sizin için takip edebilir.",
+    reworked:
+      "Bu bilgilerle daha önce teklif çalışılmış. Sigorta şirketleri eski teklif üzerinden çevrim içi satın almaya izin vermiyor ve aşağıdaki tutarlar güncel olmayabilir. “Teklif iste”ye dokunun; ekibimiz güncel primi hazırlayıp sizi arayacak.",
     none: "Bu üründe teklif gelmedi.",
     best: "En uygun",
     pdf: "Teklif PDF'i",
@@ -196,6 +230,7 @@ const TR: FlowMessages = {
     year: "Yıl",
     cvv: "CVV",
     complete: "Ödemeyi tamamla",
+    approveNew: "Yeni tutarı onayla ve öde",
     errName: "Kart sahibinin adını girin.",
     errCard: "Kart numarasını eksiksiz girin.",
     errExpiry: "Son kullanma tarihini seçin.",
@@ -238,6 +273,18 @@ const EN: FlowMessages = {
   downloadReceipt: "Download payment receipt",
   editDetails: "Edit details",
   close: "Close",
+  reworkedDialog: {
+    title: "Quote information",
+    body: "A quote was already run with these details. Continue with the same quote?",
+    bodyDated:
+      "A quote was already run with these details on {date}. Continue with the same quote?",
+    note:
+      "More than 24 hours have passed, so the issue date has to change and insurer premiums may change with it. That is why the old quote cannot be bought online. Choosing a new quote asks the insurer again; if the insurer will not open one, your request goes to our team and we will contact you.",
+    confirm: "Yes, continue",
+    cancel: "No, create a new quote",
+    retryFailed:
+      "The insurer did not open a new quote with these details, so the existing quote stands. Your request has reached our team and we will contact you shortly.",
+  },
   brans: {
     trafik: "Motor Third Party Liability",
     kasko: "Casco",
@@ -273,6 +320,8 @@ const EN: FlowMessages = {
       "No instantly purchasable quote came back with these details. Our team can work on it manually for you.",
     authorization:
       "{n} insurer prices need extra company approval, so they are not listed here. Our team can follow those quotes if you want.",
+    reworked:
+      "A quote was already run with these details. Insurers do not allow online purchase on an earlier quote and the amounts below may be out of date. Tap “Request quote” and our team will prepare the current premium and call you.",
     none: "No quote arrived for this product.",
     best: "Best value",
     pdf: "Quote PDF",
@@ -309,6 +358,7 @@ const EN: FlowMessages = {
     year: "Year",
     cvv: "CVV",
     complete: "Complete payment",
+    approveNew: "Approve the new amount and pay",
     errName: "Enter the cardholder’s name.",
     errCard: "Enter the full card number.",
     errExpiry: "Select the expiry date.",
@@ -351,6 +401,18 @@ const AR: FlowMessages = {
   downloadReceipt: "تنزيل إيصال الدفع",
   editDetails: "تعديل البيانات",
   close: "إغلاق",
+  reworkedDialog: {
+    title: "معلومات العرض",
+    body: "سبق أن أُعدّ عرض بهذه البيانات. هل تريدون المتابعة بالعرض نفسه؟",
+    bodyDated:
+      "سبق أن أُعدّ عرض بهذه البيانات في {date}. هل تريدون المتابعة بالعرض نفسه؟",
+    note:
+      "مضى أكثر من 24 ساعة، لذلك يجب أن يتغيّر تاريخ الإصدار وقد تتغيّر معه أقساط شركات التأمين. لهذا لا يمكن شراء العرض القديم إلكترونياً. عند اختيار عرض جديد نراجع شركة التأمين مرة أخرى؛ وإن لم تفتح الشركة عرضاً جديداً يُحال طلبكم إلى فريقنا ونتصل بكم.",
+    confirm: "نعم، أتابع",
+    cancel: "لا، أعدّوا عرضاً جديداً",
+    retryFailed:
+      "لم تفتح شركة التأمين عرضاً جديداً بهذه البيانات، لذلك يبقى العرض الحالي سارياً. وصل طلبكم إلى فريقنا وسنتصل بكم قريباً.",
+  },
   brans: {
     trafik: "تأمين المرور",
     kasko: "كاسكو",
@@ -386,6 +448,8 @@ const AR: FlowMessages = {
       "لم يصدر عرض قابل للشراء الفوري بهذه البيانات. يمكن لفريقنا العمل يدوياً من أجلكم.",
     authorization:
       "تحتاج أسعار {n} شركات إلى موافقة إضافية من شركة التأمين لذلك لا تُدرج هنا. يمكن لفريقنا متابعة تلك العروض إن رغبتم.",
+    reworked:
+      "سبق أن أُعدّ عرض بهذه البيانات. لا تسمح شركات التأمين بالشراء الإلكتروني على عرض قديم وقد لا تكون المبالغ أدناه محدّثة. اضغطوا «اطلبوا عرضاً» وسيقوم فريقنا بإعداد القسط الحالي والاتصال بكم.",
     none: "لم يصل عرض لهذا المنتج.",
     best: "الأنسب",
     pdf: "ملف العرض PDF",
@@ -422,6 +486,7 @@ const AR: FlowMessages = {
     year: "السنة",
     cvv: "CVV",
     complete: "أكملوا الدفع",
+    approveNew: "وافقوا على المبلغ الجديد وادفعوا",
     errName: "أدخلوا اسم حامل البطاقة.",
     errCard: "أدخلوا رقم البطاقة كاملاً.",
     errExpiry: "اختاروا تاريخ الانتهاء.",
@@ -464,6 +529,18 @@ const FA: FlowMessages = {
   downloadReceipt: "دانلود رسید پرداخت",
   editDetails: "ویرایش اطلاعات",
   close: "بستن",
+  reworkedDialog: {
+    title: "اطلاعات پیشنهاد",
+    body: "با این اطلاعات پیش‌تر پیشنهاد گرفته شده است. با همان پیشنهاد ادامه می‌دهید؟",
+    bodyDated:
+      "در تاریخ {date} با این اطلاعات پیشنهاد گرفته شده است. با همان پیشنهاد ادامه می‌دهید؟",
+    note:
+      "بیش از ۲۴ ساعت گذشته است؛ بنابراین تاریخ صدور باید تغییر کند و حق بیمه شرکت‌ها هم می‌تواند تغییر کند. به همین دلیل خرید آنلاین با قیمت‌های پیشنهاد قبلی امکان‌پذیر نیست. با انتخاب پیشنهاد جدید دوباره از شرکت بیمه درخواست می‌شود؛ اگر شرکت پیشنهاد جدیدی باز نکند، درخواست شما به تیم ما می‌رسد و با شما تماس می‌گیریم.",
+    confirm: "بله، ادامه می‌دهم",
+    cancel: "نه، پیشنهاد جدید بگیرید",
+    retryFailed:
+      "شرکت بیمه با این اطلاعات پیشنهاد جدیدی باز نکرد، بنابراین پیشنهاد فعلی معتبر می‌ماند. درخواست شما به تیم ما رسید و به‌زودی با شما تماس می‌گیریم.",
+  },
   brans: {
     trafik: "بیمه شخص ثالث",
     kasko: "بیمه بدنه",
@@ -499,6 +576,8 @@ const FA: FlowMessages = {
       "با این اطلاعات پیشنهاد قابل خرید فوری نیامد. تیم ما می‌تواند به‌صورت دستی برایتان کار کند.",
     authorization:
       "قیمت {n} شرکت نیاز به تأیید جداگانه بیمه دارد و اینجا فهرست نشده است. در صورت تمایل تیم ما می‌تواند آن پیشنهادها را پیگیری کند.",
+    reworked:
+      "با این اطلاعات قبلاً پیشنهاد گرفته شده است. شرکت‌های بیمه خرید اینترنتی روی پیشنهاد قبلی را نمی‌پذیرند و مبالغ زیر ممکن است به‌روز نباشد. «درخواست پیشنهاد» را بزنید؛ تیم ما حق بیمه فعلی را آماده می‌کند و با شما تماس می‌گیرد.",
     none: "برای این محصول پیشنهادی نرسید.",
     best: "به‌صرفه‌ترین",
     pdf: "PDF پیشنهاد",
@@ -535,6 +614,7 @@ const FA: FlowMessages = {
     year: "سال",
     cvv: "CVV",
     complete: "تکمیل پرداخت",
+    approveNew: "مبلغ جدید را تأیید و پرداخت کنید",
     errName: "نام دارنده کارت را وارد کنید.",
     errCard: "شماره کارت را کامل وارد کنید.",
     errExpiry: "تاریخ انقضا را انتخاب کنید.",

@@ -19,6 +19,7 @@ import {
   errorResponse,
   io3dsEnabled,
   ioFetch,
+  ioIcHata,
   ioKanal,
   jsonResponse,
 } from "../_shared/io";
@@ -58,6 +59,13 @@ interface RequestBody {
   teklifId?: number;
   teklif?: SeciliTeklif;
   kart?: Kart;
+  /**
+   * Şirket primi güncellediğinde ziyaretçinin açıkça onayladığı tutar.
+   * Arayüz yeni tutarı gösterip onay aldıktan sonra gönderiyor; sunucu
+   * yenilenen primi bununla karşılaştırıyor ki onaylanmamış bir tutar
+   * çekilmesin.
+   */
+  onaylananPrim?: number;
 }
 
 function digitsOnly(value: unknown): string {
@@ -87,6 +95,102 @@ function validateKart(kart: Kart): { ok: true } | { ok: false; message: string }
     return { ok: false, message: "Kart sahibi adı zorunlu." };
   }
   return { ok: true };
+}
+
+/**
+ * Satın alma öncesi seçilen teklifi yenile.
+ *
+ * `TeklifNo`, şirketin o teklif için o an geçerli olan numarası. Teklif bir
+ * gün önce çalışıldıysa numara eskiyor ve satın almada şirket "Şirket şu an
+ * Satın Alma için uygun değildir." (HataKodu 22) diyor; ödemenin kart
+ * yüzünden değil bu yüzden döndüğü canlı API'de ölçüldü. Partner CRM'i de
+ * onay adımında teklifi yeniliyor (dökümandaki "Onay adımında teklif
+ * detayını yenile" adımı) — eksik olan tek adım buydu.
+ *
+ * `teklifguncelle` yalnızca gönderilen satırı yeniliyor: aynı gün içinde
+ * tanzim tarihi geçmediği için numara ve prim aynı kalıyor, tanzim tarihi
+ * geçmişse şirket yeni prim verebiliyor. Bu yüzden dönen prim çağırana
+ * bildiriliyor, sessizce farklı tutar çekilmiyor.
+ *
+ * Yanıttaki `SatinAl` kritik: `primler` eski teklifin satırını `SatinAl:
+ * true` göstermeye devam ederken yenileme aynı satır için `false` diyor
+ * (24 gün önceki teklifte canlı API'de ölçüldü). Yani şirketin ödemeyi
+ * reddedeceği kart çekilmeden önce buradan anlaşılıyor.
+ *
+ * Yenileme isteği başarısız olursa satın alma engellenmiyor: eldeki
+ * numarayla denenmesi, ödemeyi hiç denememekten iyi.
+ */
+async function teklifiYenile(
+  bransNo: number,
+  teklifId: number,
+  teklif: SeciliTeklif,
+  sirketKodu: string,
+): Promise<{
+  teklifNo: string | null;
+  prim: number | null;
+  /** Şirket bu satırdan satın almaya izin veriyor mu; bilinmiyorsa null. */
+  satinAlinabilir: boolean | null;
+  hata: string | null;
+}> {
+  const satir = {
+    Id: teklif.Id,
+    SirketKodu: sirketKodu,
+    TeklifNo: teklif.TeklifNo ?? "",
+    Prim: teklif.Prim,
+    TaksitKodu: teklif.TaksitKodu ?? "1",
+    Taksit: teklif.Taksit ?? "Peşin",
+    AcenteKodu: teklif.AcenteKodu ?? "",
+  };
+
+  // Teminat listesi güncellemeye aynen geri gönderiliyor; boş gitmesi
+  // teminatları sıfırlamıyor ama şirket bazında primi değiştirebiliyor.
+  const detay = await ioFetch(`/api/teklif/teklifdetay`, {
+    method: "POST",
+    body: { BransNo: bransNo, TeklifId: teklifId, TeklifDetay: satir },
+  });
+  const teminat = detay.ok && Array.isArray(detay.data) ? detay.data : [];
+
+  const guncel = await ioFetch(`/api/teklif/teklifguncelle`, {
+    method: "POST",
+    timeoutMs: 60_000,
+    body: {
+      BransNo: bransNo,
+      TeklifId: teklifId,
+      Guncelle: true,
+      Sirketler: [],
+      TeklifDetay: { ...satir, Teminat: teminat },
+      Police: {
+        SirketKodu: sirketKodu,
+        TaksitKodu: satir.TaksitKodu,
+        AcenteKodu: satir.AcenteKodu,
+        TeklifNo: satir.TeklifNo,
+      },
+    },
+  });
+
+  if (!guncel.ok) {
+    return { teklifNo: null, prim: null, satinAlinabilir: null, hata: null };
+  }
+
+  // Yanıt, güncellenmiş teklif satırının kendisi.
+  const satirYeni = (guncel.data ?? {}) as Record<string, unknown>;
+  const teklifNo =
+    typeof satirYeni.TeklifNo === "string" && satirYeni.TeklifNo.trim()
+      ? satirYeni.TeklifNo.trim()
+      : null;
+  const prim = Number(satirYeni.Prim);
+  const satirHata =
+    typeof satirYeni.Hata === "string" && satirYeni.Hata.trim()
+      ? satirYeni.Hata.trim()
+      : null;
+
+  return {
+    teklifNo,
+    prim: Number.isFinite(prim) && prim > 0 ? prim : null,
+    satinAlinabilir:
+      typeof satirYeni.SatinAl === "boolean" ? satirYeni.SatinAl : null,
+    hata: satirHata,
+  };
 }
 
 export default async function handler(request: Request): Promise<Response> {
@@ -154,6 +258,70 @@ export default async function handler(request: Request): Promise<Response> {
     );
   }
 
+  const yenilenen = await teklifiYenile(bransNo, teklifId, teklif, sirketKodu);
+  const gosterilenPrim = Number(teklif.Prim);
+  const yeniPrim = yenilenen.prim;
+
+  // Şirket satın almayı kapatmışsa kart hiç çekilmiyor. Eskiden bu ancak
+  // ödeme denendikten sonra HataKodu 22 ile anlaşılıyor, ziyaretçiye de
+  // "kart bilgilerinizi kontrol edin" deniyordu.
+  if (yenilenen.satinAlinabilir === false) {
+    const mesaj =
+      yenilenen.hata ??
+      "Sigorta şirketi bu teklif üzerinden satın almayı kapattı. Teklifin tanzim tarihi geçtiği için yeni teklif çalıştırılması gerekiyor.";
+    await recordSatinAlma({
+      oturum_id: oturum.id,
+      brans_no: bransNo,
+      sirket_kodu: sirketKodu,
+      sirket_adi: sirketAdi(sirketKodu),
+      teklif_no: yenilenen.teklifNo ?? teklif.TeklifNo ?? null,
+      prim: teklif.Prim ?? null,
+      kart_sahibi: String(kart.KartSahibi ?? "").trim(),
+      kart_son4: kartSon4,
+      uc_d_secure: io3dsEnabled(),
+      io_response: { yenileme: "SatinAl:false", hata: yenilenen.hata },
+      status: "basarisiz",
+      hata_mesaji: mesaj,
+    });
+    return withCookie(
+      jsonResponse({ error: mesaj, sirketReddi: true }, 422),
+      session,
+    );
+  }
+
+  // Tanzim tarihi geçtiği için şirket yeni prim verdiyse kart çekilmiyor:
+  // ziyaretçi gördüğü tutardan farklı bir tutarı onaylamamış olur. Yeni
+  // tutar arayüzde gösterilip onaylandığında `onaylananPrim` ile geri
+  // geliyor ve karşılaştırma ona göre yapılıyor.
+  const onaylanan = Number(body.onaylananPrim);
+  const beklenenPrim =
+    Number.isFinite(onaylanan) && onaylanan > 0 ? onaylanan : gosterilenPrim;
+
+  if (
+    yeniPrim !== null &&
+    Number.isFinite(beklenenPrim) &&
+    Math.abs(yeniPrim - beklenenPrim) > 0.01
+  ) {
+    return withCookie(
+      jsonResponse(
+        {
+          error:
+            "Sigorta şirketi bu teklif için primi güncelledi. Yeni tutarı onaylayın.",
+          primDegisti: true,
+          eskiPrim: beklenenPrim,
+          yeniPrim,
+        },
+        409,
+      ),
+      session,
+    );
+  }
+
+  const teklifNo = yenilenen.teklifNo ?? teklif.TeklifNo ?? "";
+  // Yenileme prim döndürdüyse geçerli tutar o: buraya gelindiğinde tutar
+  // ya değişmemiştir ya da ziyaretçi tarafından onaylanmıştır.
+  const odenecekPrim = yeniPrim ?? teklif.Prim;
+
   const result = await ioFetch(`/api/teklif/satinal`, {
     method: "POST",
     timeoutMs: 60_000,
@@ -165,12 +333,12 @@ export default async function handler(request: Request): Promise<Response> {
         Id: teklif.Id,
         SirketKodu: sirketKodu,
         AcenteKodu: teklif.AcenteKodu ?? "",
-        TeklifNo: teklif.TeklifNo ?? "",
+        TeklifNo: teklifNo,
         isWebServis: teklif.isWebServis ?? true,
         SanalPos: true,
         SatinAl: true,
         Us3D: io3dsEnabled(),
-        Prim: teklif.Prim,
+        Prim: odenecekPrim,
         Taksit: teklif.Taksit ?? "Peşin",
         TaksitKodu: teklif.TaksitKodu ?? "1",
         KartSahibi: String(kart.KartSahibi ?? "").trim(),
@@ -189,8 +357,8 @@ export default async function handler(request: Request): Promise<Response> {
       brans_no: bransNo,
       sirket_kodu: sirketKodu,
       sirket_adi: sirketAdi(sirketKodu),
-      teklif_no: teklif.TeklifNo ?? null,
-      prim: teklif.Prim ?? null,
+      teklif_no: teklifNo || null,
+      prim: odenecekPrim ?? null,
       taksit: teklif.Taksit ?? null,
       taksit_kodu: teklif.TaksitKodu ?? null,
       kart_sahibi: String(kart.KartSahibi ?? "").trim(),
@@ -209,23 +377,39 @@ export default async function handler(request: Request): Promise<Response> {
     typeof police.PoliceNo === "string" ? police.PoliceNo : null;
 
   if (!policeKesildi) {
+    // Gerçek sebep kökte değil iç içe `Hata` nesnesinde geliyor; eski bir
+    // teklifle satın almaya gidildiğinde şirket "Şirket şu an Satın Alma için
+    // uygun değildir." (HataKodu 22) döndürüyor. Bunu göstermek zorunlu:
+    // yerine kart uyarısı basmak müşteriyi doğru kartı tekrar tekrar
+    // denemeye itiyordu.
+    const icHata = ioIcHata(payload);
+    const sirketReddi = icHata.kod === 22 || /uygun de[ğg]il/i.test(icHata.mesaj ?? "");
+
     await recordSatinAlma({
       oturum_id: oturum.id,
       brans_no: bransNo,
       sirket_kodu: sirketKodu,
       sirket_adi: sirketAdi(sirketKodu),
-      teklif_no: teklif.TeklifNo ?? null,
-      prim: teklif.Prim ?? null,
+      teklif_no: teklifNo || null,
+      prim: odenecekPrim ?? null,
       kart_sahibi: String(kart.KartSahibi ?? "").trim(),
       kart_son4: kartSon4,
       uc_d_secure: io3dsEnabled(),
       io_response: payload,
       status: "basarisiz",
-      hata_mesaji: "Poliçe kesilemedi.",
+      hata_mesaji: icHata.mesaj ?? "Poliçe kesilemedi.",
     });
     return withCookie(
       jsonResponse(
-        { error: "Ödeme tamamlanamadı. Kart bilgilerinizi kontrol edip tekrar deneyin." },
+        {
+          error:
+            icHata.mesaj ??
+            "Ödeme tamamlanamadı. Kart bilgilerinizi kontrol edip tekrar deneyin.",
+          code: icHata.kod,
+          // Kart sorunu değil: bu teklif üzerinden satın alma kapalı. Arayüz
+          // "tekrar dene" yerine talep açma yolunu gösteriyor.
+          sirketReddi,
+        },
         422,
       ),
       session,
@@ -252,9 +436,9 @@ export default async function handler(request: Request): Promise<Response> {
     brans_no: bransNo,
     sirket_kodu: sirketKodu,
     sirket_adi: sirketAdi(sirketKodu),
-    teklif_no: teklif.TeklifNo ?? null,
+    teklif_no: teklifNo || null,
     police_no: policeNo,
-    prim: teklif.Prim ?? null,
+    prim: odenecekPrim ?? null,
     taksit: teklif.Taksit ?? null,
     taksit_kodu: teklif.TaksitKodu ?? null,
     kart_sahibi: String(kart.KartSahibi ?? "").trim(),

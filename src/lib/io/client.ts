@@ -34,18 +34,33 @@ export class IoError extends Error {
    * formunu önerir; "tekrar dene" göstermek anlamsız olur.
    */
   readonly fallback: boolean;
+  /**
+   * Satın alma isteğini sigorta şirketi reddetti (kart sorunu değil).
+   * Arayüz bu durumda "tekrar dene" yerine talep açma yolunu gösterir.
+   */
+  readonly sirketReddi: boolean;
+  /**
+   * Şirket, satın alma öncesi yenilemede primi değiştirdi. Kart çekilmedi;
+   * arayüz yeni tutarı gösterip onay almalı, onaylanan tutar bir sonraki
+   * istekte `onaylananPrim` olarak gidiyor.
+   */
+  readonly yeniPrim: number | null;
 
   constructor(
     message: string,
     status: number,
     code: number | null,
     fallback = false,
+    sirketReddi = false,
+    yeniPrim: number | null = null,
   ) {
     super(message);
     this.name = "IoError";
     this.status = status;
     this.code = code;
     this.fallback = fallback;
+    this.sirketReddi = sirketReddi;
+    this.yeniPrim = yeniPrim;
   }
 }
 
@@ -89,12 +104,16 @@ async function call<T>(
       error?: string;
       code?: number | null;
       fallback?: boolean;
+      sirketReddi?: boolean;
+      yeniPrim?: number | null;
     };
     throw new IoError(
       record.error ?? "İşlem tamamlanamadı. Lütfen tekrar deneyin.",
       response.status,
       record.code ?? null,
       record.fallback === true,
+      record.sirketReddi === true,
+      typeof record.yeniPrim === "number" ? record.yeniPrim : null,
     );
   }
 
@@ -246,6 +265,8 @@ export function satinAl(body: {
   teklifId: number;
   teklif: Partial<SirketTeklifi>;
   kart: KartBilgisi;
+  /** Şirket primi güncellediyse ziyaretçinin onayladığı yeni tutar. */
+  onaylananPrim?: number;
 }): Promise<SatinAlmaSonuc> {
   return call<SatinAlmaSonuc>("satinal", { method: "POST", body });
 }
@@ -292,11 +313,7 @@ const POLL_MAX_ARDISIK_HATA = 4;
  */
 export async function primleriBekle(
   params: { oturumId: string | null; bransNo: number; teklifId: number },
-  onSonuc: (
-    sirketler: SirketTeklifi[],
-    tamamlandi: boolean,
-    otorizasyonSayisi: number,
-  ) => void,
+  onSonuc: (sonuc: PrimlerSonuc) => void,
   signal?: AbortSignal,
 ): Promise<void> {
   const baslangic = Date.now();
@@ -307,11 +324,7 @@ export async function primleriBekle(
 
     try {
       const sonuc = await primleriGetir(params);
-      onSonuc(
-        sonuc.sirketler,
-        sonuc.teklifCalisildi,
-        sonuc.otorizasyonSayisi ?? 0,
-      );
+      onSonuc(sonuc);
       if (sonuc.teklifCalisildi) return;
       ardisikHata = 0;
     } catch (error) {
@@ -339,5 +352,5 @@ export async function primleriBekle(
 
   // Süre doldu: elde ne varsa gösterilir, tamamlandı işaretlenir ki
   // arayüz sonsuza kadar "hesaplanıyor" demesin.
-  onSonuc([], true, 0);
+  onSonuc({ teklifCalisildi: true, sirketler: [], otorizasyonSayisi: 0 });
 }

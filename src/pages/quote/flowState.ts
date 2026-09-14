@@ -210,6 +210,12 @@ export interface BransSonucu {
    * "bir kısmı manuel onay bekliyor" notu göstermek için tutuluyor.
    */
   otorizasyonSayisi: number;
+  /**
+   * IO bu branşta yeni teklif açmak yerine daha önce çalışılmış teklifi
+   * döndürdü. Fiyatlar eski çalışmadan kalıyor ve şirket satın almayı
+   * reddediyor; bu yüzden anında satın alma kapatılıp talep açtırılıyor.
+   */
+  eskiTeklif: boolean;
 }
 
 export const bosKimlik: KimlikDurumu = {

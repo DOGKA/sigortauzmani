@@ -87,7 +87,9 @@ create table if not exists public.teklif_fiyatlari (
   sirket_kodu text not null,
   sirket_adi text,
   io_teklif_satir_id bigint,
-  teklif_no text,
+  -- Boş string'e varsayılıyor: upsert anahtarında yer aldığı için null
+  -- kalırsa Postgres her satırı tekil sayar ve çakışma yakalanmaz.
+  teklif_no text not null default '',
   prim numeric(12, 2),
   taksit text,
   taksit_kodu text,
@@ -99,12 +101,22 @@ create index if not exists teklif_fiyatlari_oturum_idx
   on public.teklif_fiyatlari (oturum_id);
 
 -- Primler polling'i aynı şirketi birden çok kez döndürüyor; upsert
--- yapabilmek için tekilleştirme anahtarı. Tablo seviyesindeki UNIQUE
--- ifade kabul etmediği için ayrı index olarak tanımlanır.
+-- yapabilmek için tekilleştirme anahtarı.
+--
+-- Anahtar düz sütun listesi olmak zorunda: PostgREST `on_conflict` yalnızca
+-- sütun adı alıyor ve Postgres bunu bir ifade index'iyle (`coalesce(...)`)
+-- eşleştirmiyor. Önceki sürüm coalesce kullandığı için her upsert 42P10 ile
+-- düşüyordu; `iolog.ts` hatayı yuttuğu için tablo sessizce boş kaldı.
+-- Null'ı anahtardan çıkarmak için teklif_no artık `not null default ''`.
+alter table public.teklif_fiyatlari
+  alter column teklif_no set default '';
+update public.teklif_fiyatlari set teklif_no = '' where teklif_no is null;
+alter table public.teklif_fiyatlari
+  alter column teklif_no set not null;
+
+drop index if exists teklif_fiyatlari_tekil_idx;
 create unique index if not exists teklif_fiyatlari_tekil_idx
-  on public.teklif_fiyatlari (
-    oturum_id, brans_no, sirket_kodu, coalesce(teklif_no, '')
-  );
+  on public.teklif_fiyatlari (oturum_id, brans_no, sirket_kodu, teklif_no);
 
 alter table public.teklif_fiyatlari enable row level security;
 

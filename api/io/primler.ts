@@ -38,6 +38,10 @@ interface SirketTeklifi {
   TeklifNo?: string;
   TaksitKodu?: string;
   Taksit?: string;
+  /** IO'nun satın alma bayrağı; kapalıysa şirket poliçeleştirmiyor. */
+  SatinAl?: boolean;
+  /** Satır bazlı hata / koşul metni. Doluysa prim bağlamıyor. */
+  Hata?: string;
   [key: string]: unknown;
 }
 
@@ -77,15 +81,20 @@ function readSirketler(payload: unknown): SirketTeklifi[] {
  * DASK'ta sık görülüyor ama her branşta çıkabiliyor. Listelersek müşteri
  * satın al'a basıp hataya düşer, çünkü satılabilir bir prim yok.
  *
- * IO dokümantasyonu bu durumu taşıyan alanı yazmıyor, bu yüzden iki bağımsız
- * işarete bakılıyor: (1) satın alınabilir bir prim yok, (2) satırdaki bir
- * alan adı ya da metin değeri "otorizasyon" diyor. Ham satır Supabase'e yine
- * yazılıyor; hem denetim izi kalıyor hem canlı veriden gerçek alan adını
- * öğrenebiliyoruz.
+ * Canlı yanıtta satırın kendi `SatinAl` bayrağı var ve en doğrudan işaret o;
+ * dolu `Hata` metni de aynı anlama geliyor (şirket primi bir koşula bağlamış:
+ * araç fotoğrafı istiyor, prim aralığı dışı, KPS hatası…). Bunların yanında
+ * "otorizasyon" geçen alanlara da bakılıyor, çünkü alan adı şirketten şirkete
+ * değişebiliyor. Ham satır Supabase'e yine yazılıyor; denetim izi kalıyor.
  */
 function satinAlinabilir(sirket: SirketTeklifi): boolean {
   const prim = toNumber(sirket.Prim);
   if (prim === null || prim <= 0) return false;
+
+  // IO'nun kendi bayrağı. Kapalıysa poliçeleşmiyor; primi dolu olsa bile
+  // satın al düğmesi gösterilmemeli.
+  if (sirket.SatinAl === false) return false;
+  if (typeof sirket.Hata === "string" && sirket.Hata.trim()) return false;
 
   for (const [key, value] of Object.entries(sirket)) {
     if (typeof value === "string" && /otoriz/i.test(value)) return false;
@@ -95,6 +104,37 @@ function satinAlinabilir(sirket: SirketTeklifi): boolean {
     if (/otoriz/i.test(key) && dolu(value)) return false;
   }
   return true;
+}
+
+/**
+ * Çalışması bir daha tamamlanmayan, ölü teklif mi.
+ *
+ * IO aynı kişi ve aynı riziko için yeni teklif açmıyor, "Teklif kayıtlıdır."
+ * diyip mevcut kaydı geri veriyor. Geri dönen teklif hâlâ sağlıklı olabilir;
+ * aylar önce açılmış bir teklif de `TeklifCalisildi: true` ve dolu
+ * `SirketSayisi` ile gelebiliyor. Buradaki kontrol o genel durumu değil,
+ * tekliflerin bir alt kümesini yakalıyor.
+ *
+ * Böyle bir teklifte prim sorgusu hiç tamamlanmıyor: çalıştırılacak şirket
+ * kalmadığı için `SirketSayisi` 0 geliyor ama `TeklifCalisildi` hiçbir turda
+ * true olmuyor, yani polling boşa 90 saniye dönüyor. Dönen satırlar eski
+ * çalışmadan kalan önbellek ve `SatinAl` true görünse bile satın almada
+ * şirket "Şirket şu an Satın Alma için uygun değildir." (HataKodu 22) diyor.
+ * Bu yüzden bu tekliften anında satın alma yapılmıyor.
+ *
+ * Taze tekliflerde `SirketSayisi` çalıştırılacak şirket sayısını veriyor ve
+ * tamamlandığında `TeklifCalisildi` true oluyor; ilk turda henüz hiç şirket
+ * çalışmamış olabileceği için `CalisilanSirketSayisi` şartı da aranıyor.
+ */
+function eskiTeklifMi(
+  payload: Record<string, unknown>,
+  teklifCalisildi: boolean,
+  satirSayisi: number,
+): boolean {
+  if (teklifCalisildi || satirSayisi === 0) return false;
+  const sirketSayisi = toNumber(payload?.SirketSayisi);
+  const calisilan = toNumber(payload?.CalisilanSirketSayisi);
+  return sirketSayisi === 0 && calisilan !== null && calisilan > 0;
 }
 
 /** Bayrak alanının "açık" sayılıp sayılmayacağı. */
@@ -157,6 +197,7 @@ export default async function handler(request: Request): Promise<Response> {
   const payload = result.data as Record<string, unknown>;
   const teklifCalisildi = payload?.TeklifCalisildi === true;
   const sirketler = readSirketler(payload);
+  const eskiTeklif = eskiTeklifMi(payload, teklifCalisildi, sirketler.length);
 
   if (oturum && sirketler.length) {
     const fiyatlar: FiyatInput[] = sirketler.map((sirket) => ({
@@ -173,6 +214,13 @@ export default async function handler(request: Request): Promise<Response> {
     await upsertFiyatlar(oturum.id, fiyatlar);
     if (teklifCalisildi) {
       await updateOturum(oturum.id, { status: "teklif_calisti" });
+    } else if (eskiTeklif) {
+      // Panelde neden anında satın alma sunulmadığı görünsün.
+      await updateOturum(oturum.id, {
+        status: "teklif_calisti",
+        hata_mesaji:
+          "IO daha önce çalışılmış teklifi döndürdü; anında satın alma kapatıldı.",
+      });
     }
   }
 
@@ -180,7 +228,13 @@ export default async function handler(request: Request): Promise<Response> {
 
   return withCookie(
     jsonResponse({
-      teklifCalisildi,
+      // Eski teklifte `TeklifCalisildi` hiçbir turda true olmuyor; tamamlandı
+      // saymazsak istemci boşuna 90 saniye polling yapıyor.
+      teklifCalisildi: teklifCalisildi || eskiTeklif,
+      // Satırlar listelenmeye devam ediyor ama arayüz bu bayrakla anında
+      // satın almayı kapatıp talep açma yoluna geçiyor: fiyatı hiç
+      // göstermemek müşteriyi çıkışsız bırakırdı.
+      eskiTeklif,
       // Müşteriye yalnızca satın alınabilir teklifler gidiyor; elenen sayı
       // ekranda "manuel onay bekliyor" notu için taşınıyor.
       otorizasyonSayisi: sirketler.length - listelenecek.length,

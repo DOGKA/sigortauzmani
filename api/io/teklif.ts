@@ -10,11 +10,18 @@
  * ayrı bir teklif oluşturur.
  */
 
-import { errorResponse, ioFetch, ioKanal, jsonResponse } from "../_shared/io";
+import {
+  errorResponse,
+  ioFetch,
+  ioIcHata,
+  ioKanal,
+  jsonResponse,
+} from "../_shared/io";
 import {
   createOturum,
   globalRateCheck,
   rateCheck,
+  teklifIlkGorulme,
   updateOturum,
 } from "../_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
@@ -104,11 +111,57 @@ interface RequestBody {
  * konusunda kör bırakıyordu.
  */
 function ioHataMesaji(payload: unknown): string | null {
-  if (!payload || typeof payload !== "object") return null;
-  const hata = (payload as Record<string, unknown>).Hata;
-  if (!hata || typeof hata !== "object") return null;
-  const mesaj = (hata as Record<string, unknown>).Mesaj;
-  return typeof mesaj === "string" && mesaj.trim() ? mesaj.trim() : null;
+  return ioIcHata(payload).mesaj;
+}
+
+/**
+ * Yanıtın kişisel veri taşımayan skaler alanları.
+ *
+ * `/api/teklif` yanıtı hiç kaydedilmiyordu. IO aynı kişi ve aynı riziko için
+ * yeni teklif açmak yerine mevcut (aylar öncesine ait olabilen) teklif
+ * kaydını döndürüyor; ödemenin neden reddedildiği ancak canlı API'ye elle
+ * bağlanıp anlaşılabildi. Özet kayda geçsin ki bir daha gerekmesin.
+ *
+ * Sigortalı bloğu ve şifreli `SigortaliStr` bilinçli olarak dışarıda: teşhis
+ * için işe yaramıyor, oturum kaydında kimlik bilgisi zaten ayrı kolonlarda.
+ */
+function ioYanitOzeti(payload: unknown): Record<string, unknown> {
+  if (!payload || typeof payload !== "object") return {};
+  const ozet: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(payload as Record<string, unknown>)) {
+    if (value === null || typeof value === "object") continue;
+    if (/sigortali|kimlik|str$/i.test(key)) continue;
+    ozet[key] = value;
+  }
+  // İç içe `Hata` nesnesi düzleştiriliyor: yukarıdaki döngü nesneleri
+  // atlıyor, oysa IO'nun asıl açıklaması ("Teklif kayıtlıdır.", "Sistem
+  // Hatası" …) orada duruyor ve teşhis için en değerli alan o.
+  const { kod, mesaj } = ioIcHata(payload);
+  if (kod !== null) ozet.HataKodu = kod;
+  if (mesaj !== null) ozet.HataMesaj = mesaj;
+  return ozet;
+}
+
+/**
+ * Teklifin tanzim tarihi geçmiş mi (24 saatten eski mi).
+ *
+ * Aynı gün içinde tanzim tarihi değişmediği için teklif aynı primlerle
+ * satın alınabiliyor. 24 saati geçtiğinde tanzim tarihi değişmek zorunda,
+ * şirketin fiyatı da değişebiliyor; eski teklif üzerinden satın alma
+ * "Şirket şu an Satın Alma için uygun değildir." (HataKodu 22) ile
+ * reddediliyor. Böyle bir teklife yeni teklif çalıştırmak gerekiyor.
+ *
+ * IO tarafı burada yardımcı olmuyor: `primler` eski teklifin satırlarını
+ * `SatinAl: true` ve dolu `TeklifNo` ile döndürmeye devam ediyor, yanıtta
+ * teklif tarihi de yok. Bu yüzden yaş kendi kaydımızdan hesaplanıyor.
+ */
+const TEKLIF_GECERLILIK_MS = 24 * 60 * 60 * 1000;
+
+function tanzimGecmis(ilkGorulme: string | null): boolean {
+  if (!ilkGorulme) return false;
+  const ms = Date.parse(ilkGorulme);
+  if (Number.isNaN(ms)) return false;
+  return Date.now() - ms > TEKLIF_GECERLILIK_MS;
 }
 
 /** Yanıt alan adı uca göre TeklifId / Id olarak değişebiliyor. */
@@ -205,8 +258,15 @@ export default async function handler(request: Request): Promise<Response> {
     form_data: { girdiler, talepler },
   });
 
-  const sonuclar: { bransNo: number; teklifId: number }[] = [];
+  const sonuclar: {
+    bransNo: number;
+    teklifId: number;
+    eskiTeklif: boolean;
+    teklifTarihi: string | null;
+  }[] = [];
   const hatalar: { bransNo: number; message: string }[] = [];
+  /** Yalnızca oturum kaydına yazılıyor; istemciye dönmüyor. */
+  const ioYanitlari: Record<string, unknown>[] = [];
 
   for (const talep of talepler) {
     const result = await ioFetch(`/api/teklif`, {
@@ -222,6 +282,10 @@ export default async function handler(request: Request): Promise<Response> {
       hatalar.push({ bransNo: talep.bransNo, message: result.error.message });
       continue;
     }
+    ioYanitlari.push({
+      bransNo: talep.bransNo,
+      ...ioYanitOzeti(result.data),
+    });
     const teklifId = readTeklifId(result.data);
     if (teklifId === null) {
       hatalar.push({
@@ -230,7 +294,17 @@ export default async function handler(request: Request): Promise<Response> {
       });
       continue;
     }
-    sonuclar.push({ bransNo: talep.bransNo, teklifId });
+    // IO aynı teklifi geri verdiyse tarihi bizim kaydımızda: bu kimliği
+    // daha önce hangi oturumda gördüysek teklif o zaman açılmış.
+    const ilkGorulme = oturum
+      ? await teklifIlkGorulme(teklifId, oturum.id)
+      : null;
+    sonuclar.push({
+      bransNo: talep.bransNo,
+      teklifId,
+      eskiTeklif: tanzimGecmis(ilkGorulme),
+      teklifTarihi: ilkGorulme,
+    });
   }
 
   // Hiçbiri tutmadıysa istemciye ilk hatayı döneriz; oturum "hata" olarak
@@ -256,7 +330,7 @@ export default async function handler(request: Request): Promise<Response> {
     await updateOturum(oturum.id, {
       status: "sorgu_tamam",
       io_teklif_id: sonuclar[0].teklifId,
-      form_data: { girdiler, talepler, teklifler: sonuclar, hatalar },
+      form_data: { girdiler, talepler, teklifler: sonuclar, hatalar, ioYanitlari },
     });
   }
 

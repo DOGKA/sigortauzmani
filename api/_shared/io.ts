@@ -145,6 +145,42 @@ function readErrorMessage(payload: Record<string, unknown>): string {
   return "Sigorta servisinden beklenmeyen bir yanıt alındı.";
 }
 
+/**
+ * İç içe `Hata` nesnesindeki kod ve mesaj.
+ *
+ * Satın alma, yazdır ve teklif oluşturma uçları HTTP 200 dönüp kökte hiç
+ * `HataKodu` taşımadan gerçek sebebi burada bildiriyor — satın almada
+ * "Şirket şu an Satın Alma için uygun değildir." (HataKodu 22) böyle geliyor.
+ * `ioFetch` yalnızca köke baktığı için bu yanıtlar başarılı sayılıyor ve
+ * mesaj kaybolup yerine genel bir metin gösteriliyordu.
+ *
+ * Başarılı yanıtlarda da nesne dolu gelebiliyor (`HataKodu: 0` + bilgi
+ * mesajı), bu yüzden hata sayılması için kodun sıfırdan farklı olması şart.
+ */
+export function ioIcHata(payload: unknown): {
+  kod: number | null;
+  mesaj: string | null;
+} {
+  const bos = { kod: null, mesaj: null };
+  if (!payload || typeof payload !== "object") return bos;
+
+  const hata = (payload as Record<string, unknown>).Hata;
+  // Şirket teklif satırlarında aynı alan düz metin olarak geliyor.
+  if (typeof hata === "string") {
+    return { kod: null, mesaj: hata.trim() || null };
+  }
+  if (!hata || typeof hata !== "object") return bos;
+
+  const record = hata as Record<string, unknown>;
+  const kodDegeri = Number(record.HataKodu);
+  const kod = Number.isFinite(kodDegeri) ? kodDegeri : null;
+  const mesaj =
+    typeof record.Mesaj === "string" && record.Mesaj.trim()
+      ? record.Mesaj.trim()
+      : null;
+  return { kod, mesaj };
+}
+
 export async function ioFetch<T>(
   path: string,
   init: IoFetchInit = {},

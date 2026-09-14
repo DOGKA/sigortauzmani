@@ -94,6 +94,14 @@ export interface SirketTeklifi {
   AcenteKodu?: string;
   isWebServis?: boolean;
   /**
+   * Şirketin satın almaya izin verip vermediği. Dokümantasyonda satın alma
+   * isteğinin bir alanı olarak geçiyor ama prim yanıtındaki satırda da
+   * geliyor ve orada okunması gerekiyor: kapalı satırlar poliçeleşmiyor.
+   */
+  SatinAl?: boolean;
+  /** Satır bazlı hata / koşul metni. Doluysa prim bağlamıyor. */
+  Hata?: string;
+  /**
    * Teklifin arayüze ilk düştüğü an (ISO). IO'dan gelmiyor; polling sırasında
    * istemcide işaretleniyor ve teklif kartında "teklif zamanı" olarak
    * gösteriliyor.
@@ -178,12 +186,29 @@ export interface KartBilgisi {
 export interface TeklifOlusturSonuc {
   oturumId: string | null;
   oturumNo: string | null;
-  teklifler: { bransNo: number; teklifId: number }[];
+  teklifler: {
+    bransNo: number;
+    teklifId: number;
+    /**
+     * IO yeni teklif açmak yerine 24 saatten eski bir teklifi döndürdü.
+     * Tanzim tarihi değişmek zorunda olduğu için o primlerle satın alma
+     * yapılamıyor; yeni teklif çalıştırılması gerekiyor.
+     */
+    eskiTeklif?: boolean;
+    /** Teklifin bizde ilk görüldüğü an (ISO). Bilinmiyorsa null. */
+    teklifTarihi?: string | null;
+  }[];
   hatalar: { bransNo: number; message: string }[];
 }
 
 export interface PrimlerSonuc {
   teklifCalisildi: boolean;
+  /**
+   * IO yeni teklif açmak yerine daha önce çalışılmış teklifi döndürdü.
+   * Satırlar eski çalışmadan kalıyor ve satın almada şirket reddediyor;
+   * arayüz bu durumda anında satın almayı kapatıp talep açtırıyor.
+   */
+  eskiTeklif?: boolean;
   /** Otorizasyona düştüğü için listeden çıkarılan teklif sayısı. */
   otorizasyonSayisi?: number;
   sirketler: SirketTeklifi[];

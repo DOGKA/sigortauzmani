@@ -19,13 +19,19 @@ import { getProduct } from "../data/products";
 import { getQuoteKvkkGovde, QUOTE_KVKK_SURUM } from "../data/quoteKvkk";
 import { isSaglikUrunu } from "../data/saglikRiza";
 import { IoError, primleriBekle, teklifOlustur } from "../lib/io/client";
-import type { SatinAlmaSonuc, SirketTeklifi, TeklifPayload } from "../lib/io/types";
+import type {
+  PrimlerSonuc,
+  SatinAlmaSonuc,
+  SirketTeklifi,
+  TeklifPayload,
+} from "../lib/io/types";
 import { createTalep, generateTalepNo } from "../lib/supabase";
 import { ROBOTS_NOINDEX, pageOgImageUrl } from "../lib/seo/config";
 import { useSeo } from "../lib/seo/useSeo";
 import AracAdimi from "./quote/AracAdimi";
 import BelgeButonu from "./quote/BelgeButonu";
 import DaskAdimi from "./quote/DaskAdimi";
+import EskiTeklifModali from "./quote/EskiTeklifModali";
 import FiyatListesi from "./quote/FiyatListesi";
 import KimlikAdimi from "./quote/KimlikAdimi";
 import OdemeModali from "./quote/OdemeModali";
@@ -108,6 +114,11 @@ export default function QuoteFlowPage() {
   const [satinAlinan, setSatinAlinan] = useState<SecilenTeklif | null>(null);
   // "Teklif iste" ile açılan talep; lead formundaki başarı ekranını açıyor.
   const [talepBasari, setTalepBasari] = useState<TalepBasarisi | null>(null);
+  // IO 24 saatten eski teklifi döndürdüğünde sorulan soru.
+  const [eskiTeklifSorusu, setEskiTeklifSorusu] = useState(false);
+  const [eskiTeklifTarihi, setEskiTeklifTarihi] = useState<string | null>(null);
+  const [yeniTeklifGonderiliyor, setYeniTeklifGonderiliyor] = useState(false);
+  const [yeniTeklifHatasi, setYeniTeklifHatasi] = useState("");
 
   const pollAbort = useRef<AbortController | null>(null);
   // En az bir fiyat geldiyse polling hatası akışı bozmamalı; kullanıcı
@@ -139,12 +150,9 @@ export default function QuoteFlowPage() {
   }, []);
 
   const bransSonucGuncelle = useCallback(
-    (
-      bransNo: number,
-      sirketler: SirketTeklifi[],
-      tamamlandi: boolean,
-      otorizasyonSayisi: number,
-    ) => {
+    (bransNo: number, primler: PrimlerSonuc) => {
+      const { sirketler, teklifCalisildi: tamamlandi } = primler;
+      const otorizasyonSayisi = primler.otorizasyonSayisi ?? 0;
       if (sirketler.length) fiyatGeldi.current = true;
       setSonuclar((onceki) =>
         onceki.map((sonuc) => {
@@ -178,6 +186,7 @@ export default function QuoteFlowPage() {
               otorizasyonSayisi,
               sonuc.otorizasyonSayisi,
             ),
+            eskiTeklif: primler.eskiTeklif === true || sonuc.eskiTeklif,
           };
         }),
       );
@@ -185,7 +194,12 @@ export default function QuoteFlowPage() {
     [],
   );
 
-  const teklifCalis = async () => {
+  /**
+   * `oncekiTeklifId` verildiğinde bu bir "yeni teklif" denemesidir: eski
+   * teklif diyalogunda kullanıcı yeni teklif istediğinde IO'ya gerçekten
+   * gidilir. Partner CRM'indeki "vazgeç" de aynı şeyi yapıyor.
+   */
+  const teklifCalis = async (oncekiTeklifId?: number) => {
     if (!gereksinim || !product) return;
 
     setHata("");
@@ -262,6 +276,23 @@ export default function QuoteFlowPage() {
 
       setOturumId(sonuc.oturumId);
       setOturumNo(sonuc.oturumNo);
+
+      // IO aynı kişi ve aynı riziko için yeni teklif açmıyor, kayıtlı
+      // teklifi geri veriyor. Deneme aynı TeklifId ile döndüyse tazelenecek
+      // bir şey yok: eldeki liste bozulmadan bırakılıp talep ekibe düşüyor,
+      // soru ekranı da sonucu göstermek için açık kalıyor.
+      if (
+        oncekiTeklifId !== undefined &&
+        sonuc.teklifler.length > 0 &&
+        sonuc.teklifler.every((teklif) => teklif.teklifId === oncekiTeklifId)
+      ) {
+        const talep = await teklifIste(sonuc.teklifler[0].bransNo);
+        setYeniTeklifHatasi(
+          talep.ok ? t.flow.reworkedDialog.retryFailed : talep.error,
+        );
+        return;
+      }
+
       setSonuclar(
         sonuc.teklifler.map((teklif) => ({
           bransNo: teklif.bransNo,
@@ -269,8 +300,15 @@ export default function QuoteFlowPage() {
           sirketler: [],
           tamamlandi: false,
           otorizasyonSayisi: 0,
+          // 24 saati geçmiş teklifte anında satın alma kapalı kalıyor;
+          // liste "Teklif iste" düğmesine dönüyor.
+          eskiTeklif: teklif.eskiTeklif === true,
         })),
       );
+      // Sorgu arka planda sürüyor: "devam" seçilirse fiyatlar hazır olur.
+      const eski = sonuc.teklifler.find((teklif) => teklif.eskiTeklif === true);
+      setEskiTeklifTarihi(eski?.teklifTarihi ?? null);
+      setEskiTeklifSorusu(Boolean(eski));
       setAdim("fiyatlar");
 
       pollAbort.current?.abort();
@@ -286,13 +324,7 @@ export default function QuoteFlowPage() {
               bransNo: teklif.bransNo,
               teklifId: teklif.teklifId,
             },
-            (sirketler, tamamlandi, otorizasyonSayisi) =>
-              bransSonucGuncelle(
-                teklif.bransNo,
-                sirketler,
-                tamamlandi,
-                otorizasyonSayisi,
-              ),
+            (primler) => bransSonucGuncelle(teklif.bransNo, primler),
             controller.signal,
           ),
         ),
@@ -320,9 +352,14 @@ export default function QuoteFlowPage() {
     }
   };
 
+  /**
+   * Ekibe manuel teklif talebi düşürür. `teklif` boş geçilebilir: eski
+   * teklif diyalogunda "yeni teklif oluştur" seçildiğinde henüz bir şirket
+   * seçilmiş olmuyor.
+   */
   const teklifIste = async (
     bransNo: number,
-    teklif: SirketTeklifi,
+    teklif?: SirketTeklifi | null,
   ): Promise<{ ok: true } | { ok: false; error: string }> => {
     if (!product || !gereksinim) {
       return { ok: false, error: "Ürün bulunamadı." };
@@ -361,8 +398,8 @@ export default function QuoteFlowPage() {
         gereksinim.aracGerekli && !arac.plakaVar
           ? arac.sasiNo.trim().toUpperCase() || null
           : null,
-      sirket_adi: teklif.SirketAdi ?? null,
-      gosterilen_prim: teklif.Prim ?? null,
+      sirket_adi: teklif?.SirketAdi ?? null,
+      gosterilen_prim: teklif?.Prim ?? null,
       saglik_acik_riza: isSaglikUrunu(product.slug)
         ? kimlik.saglikRiza === "veriyorum"
         : null,
@@ -383,7 +420,7 @@ export default function QuoteFlowPage() {
     setTalepBasari({
       talepNo,
       urunAdi,
-      sirketAdi: teklif.SirketAdi ?? "",
+      sirketAdi: teklif?.SirketAdi ?? "",
     });
     window.scrollTo({ top: 0, behavior: "smooth" });
     return sonuc;
@@ -396,6 +433,7 @@ export default function QuoteFlowPage() {
     setSatinAlinan(null);
     setSecilen(null);
     setSonuclar([]);
+    setEskiTeklifSorusu(false);
     setOturumId(null);
     setOturumNo(null);
     setKimlik(bosKimlik);
@@ -589,6 +627,23 @@ export default function QuoteFlowPage() {
           />
         ) : null}
 
+        {!geriDonus && adim === "fiyatlar" && eskiTeklifSorusu ? (
+          <EskiTeklifModali
+            teklifTarihi={eskiTeklifTarihi}
+            yeniTeklifGonderiliyor={yeniTeklifGonderiliyor}
+            yeniTeklifHatasi={yeniTeklifHatasi}
+            onDevam={() => setEskiTeklifSorusu(false)}
+            onYeniTeklif={async () => {
+              setYeniTeklifGonderiliyor(true);
+              setYeniTeklifHatasi("");
+              // Şirket yeni teklif açarsa liste tazelenip soru kapanıyor;
+              // açmazsa gerçek sonuç ekranda kalıyor ve talep ekibe düşüyor.
+              await teklifCalis(sonuclar[0]?.teklifId);
+              setYeniTeklifGonderiliyor(false);
+            }}
+          />
+        ) : null}
+
         {!geriDonus && adim === "sonuc" && satinAlma ? (
           <div className="flow__card">
             <h2 className="flow__card-title">{t.flow.policyReady}</h2>
@@ -672,6 +727,7 @@ export default function QuoteFlowPage() {
           teklifId={secilen.teklifId}
           teklif={secilen.teklif}
           kimlikNo={kimlikNoOf(kimlik)}
+          onTeklifIste={() => teklifIste(secilen.bransNo, secilen.teklif)}
           onKapat={() => setSecilen(null)}
           onBasarili={(sonuc) => {
             pollAbort.current?.abort();

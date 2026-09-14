@@ -41,6 +41,11 @@ interface Props {
   kimlikNo: string;
   onKapat: () => void;
   onBasarili: (sonuc: SatinAlmaSonuc) => void;
+  /**
+   * Sigorta şirketi satın almayı reddettiğinde (kart sorunu değil) müşteriyi
+   * boş ekranda bırakmamak için aynı şirket adına talep açar.
+   */
+  onTeklifIste: () => Promise<{ ok: true } | { ok: false; error: string }>;
 }
 
 export default function OdemeModali({
@@ -51,6 +56,7 @@ export default function OdemeModali({
   kimlikNo,
   onKapat,
   onBasarili,
+  onTeklifIste,
 }: Props) {
   const t = useT();
   const [asama, setAsama] = useState<Asama>("onay");
@@ -62,8 +68,16 @@ export default function OdemeModali({
   const [cvv, setCvv] = useState("");
   const [hata, setHata] = useState("");
   const [gonderiliyor, setGonderiliyor] = useState(false);
+  // Şirket satın almayı reddetti: kartı tekrar denemenin faydası yok, tek
+  // anlamlı aksiyon talep açmak.
+  const [sirketReddetti, setSirketReddetti] = useState(false);
+  const [talepGonderiliyor, setTalepGonderiliyor] = useState(false);
+  // Şirket ödeme öncesi yenilemede primi değiştirdiyse kart çekilmiyor;
+  // ziyaretçi yeni tutarı onaylayana kadar burada tutuluyor.
+  const [yeniPrim, setYeniPrim] = useState<number | null>(null);
 
   const odemeUrl = odemeUrlOku(teklif);
+  const odenecekPrim = yeniPrim ?? teklif.Prim;
 
   const ozet = (
     <div className="flow__modal-head">
@@ -71,7 +85,7 @@ export default function OdemeModali({
 
       <span className="flow__modal-odenecek">
         <strong className="flow__modal-prim">
-          {formatPrim(teklif.Prim, bransNo)}
+          {formatPrim(odenecekPrim, bransNo)}
         </strong>
         {teklif.Taksit ? (
           <span className="flow__modal-taksit">
@@ -143,6 +157,8 @@ export default function OdemeModali({
           SonKullanimYil: yil,
           Cvv2: cvv,
         },
+        // Onaylanan tutar gönderilmezse sunucu değişikliği tekrar sorar.
+        ...(yeniPrim !== null ? { onaylananPrim: yeniPrim } : {}),
       });
       onBasarili(sonuc);
     } catch (error) {
@@ -151,9 +167,25 @@ export default function OdemeModali({
           ? error.message
           : t.flow.pay.errFail,
       );
+      if (error instanceof IoError && error.sirketReddi) {
+        setSirketReddetti(true);
+      }
+      // Yeni tutar geldiğinde özet o tutara dönüyor; ziyaretçi "Ödemeyi
+      // tamamla"ya bir daha basarak onaylıyor.
+      if (error instanceof IoError && error.yeniPrim !== null) {
+        setYeniPrim(error.yeniPrim);
+      }
     } finally {
       setGonderiliyor(false);
     }
+  };
+
+  const talepAc = async () => {
+    setTalepGonderiliyor(true);
+    const sonuc = await onTeklifIste();
+    setTalepGonderiliyor(false);
+    // Başarılıysa sayfa başarı ekranına geçtiği için modal zaten kapanıyor.
+    if ("error" in sonuc) setHata(sonuc.error);
   };
 
   if (gonderiliyor) {
@@ -330,13 +362,24 @@ export default function OdemeModali({
 
         {hata ? <p className="flow__warning">{hata}</p> : null}
 
-        <button
-          type="button"
-          className="flow__primary flow__primary--block"
-          onClick={() => void odemeYap()}
-        >
-          {t.flow.pay.complete}
-        </button>
+        {sirketReddetti ? (
+          <button
+            type="button"
+            className="flow__primary flow__primary--block"
+            disabled={talepGonderiliyor}
+            onClick={() => void talepAc()}
+          >
+            {talepGonderiliyor ? t.flow.offers.sending : t.flow.offers.request}
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="flow__primary flow__primary--block"
+            onClick={() => void odemeYap()}
+          >
+            {yeniPrim !== null ? t.flow.pay.approveNew : t.flow.pay.complete}
+          </button>
+        )}
       </div>
     </div>
   );

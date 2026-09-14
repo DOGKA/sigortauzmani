@@ -165,6 +165,35 @@ export async function findOturum(
 }
 
 /**
+ * Bu teklif kimliğini ilk kez ne zaman gördük.
+ *
+ * IO aynı kişi ve aynı riziko için yeni teklif açmıyor, mevcut kaydı geri
+ * veriyor; yanıtta da teklifin tarihi yok. Teklifin yaşını yalnızca kendi
+ * kaydımızdan bilebiliyoruz — partner CRM'i de uyarısındaki tarihi kendi
+ * veritabanından okuyor.
+ *
+ * Yaş önemli: aynı gün içinde tanzim tarihi değişmediği için teklif aynı
+ * primlerle satın alınabiliyor. 24 saati geçtiğinde tanzim tarihi değişmek
+ * zorunda ve şirketin verdiği fiyat da değişebiliyor; o teklif üzerinden
+ * satın alma şirket tarafında reddediliyor.
+ *
+ * Kaydımız yoksa (teklif CRM'de açılmışsa) null dönüyor: yaş bilinmiyor,
+ * akış engellenmiyor.
+ */
+export async function teklifIlkGorulme(
+  teklifId: number,
+  hariciOturumId: string | null,
+): Promise<string | null> {
+  const rows = await dbRequest<{ created_at: string }[]>(
+    `teklif_oturumlari?io_teklif_id=eq.${teklifId}` +
+      (hariciOturumId ? `&id=neq.${encodeURIComponent(hariciOturumId)}` : "") +
+      `&select=created_at&order=created_at.asc&limit=1`,
+    { method: "GET" },
+  );
+  return rows?.[0]?.created_at ?? null;
+}
+
+/**
  * Oturumun IO'da açtığı teklif kimlikleri.
  *
  * `io_teklif_id` yalnızca ilk branşı taşıyor; trafik akışında aynı oturumda
@@ -215,6 +244,10 @@ export interface FiyatInput {
 /**
  * Primler polling'i aynı şirketi tekrar tekrar döndürdüğü için upsert.
  * Çakışma anahtarı schema_io.sql'deki teklif_fiyatlari_tekil_idx.
+ *
+ * `teklif_no` null bırakılmıyor: upsert anahtarının parçası ve kolon
+ * `not null default ''`. Null gönderilirse insert tümden düşer ve buradaki
+ * hata yutulduğu için kimse fark etmez.
  */
 export async function upsertFiyatlar(
   oturumId: string,
@@ -226,7 +259,11 @@ export async function upsertFiyatlar(
     {
       method: "POST",
       prefer: "resolution=merge-duplicates,return=minimal",
-      body: fiyatlar.map((fiyat) => ({ ...fiyat, oturum_id: oturumId })),
+      body: fiyatlar.map((fiyat) => ({
+        ...fiyat,
+        teklif_no: fiyat.teklif_no ?? "",
+        oturum_id: oturumId,
+      })),
     },
   );
 }
