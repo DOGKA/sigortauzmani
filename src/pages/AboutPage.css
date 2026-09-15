@@ -366,6 +366,19 @@
   object-fit: contain;
 }
 
+/* RTL'de ikon + başlık sağdan başlıyor; 01–04 numarası sağda kalırsa üstlerine
+   biniyor. Numara sola alınıyor, boşluk da sola taşınıyor. Özgüllük medya
+   sorgusundaki right: 16px'ten yüksek, orada ayrıca ezmek gerekmiyor. */
+html[dir="rtl"] .about__why-num {
+  right: auto;
+  left: 14px;
+}
+
+html[dir="rtl"] .about__why-card-head {
+  padding-right: 0;
+  padding-left: 44px;
+}
+
 .about__why-card h3 {
   position: relative;
   color: var(--ink-900);
