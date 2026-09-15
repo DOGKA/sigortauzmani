@@ -502,25 +502,37 @@ function Legal({ documents, reload }: { documents: LegalDocument[]; reload: () =
     });
 
   async function createDocument() {
-    const response = await fetch("/api/ayarlar/yasal", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        ...newDocument,
-        content: { intro: [], sections: [] },
-      }),
-    });
-    const body = await readJson<{ id: string }>(response);
-    setStatus(
-      response.ok
-        ? "Yeni belge taslağı oluşturuldu."
-        : (body.error ?? "Belge oluşturulamadı."),
-    );
-    if (response.ok) {
-      setShowCreate(false);
-      setNewDocument({ slug: "", locale: "tr", title: "", description: "" });
-      await reload();
-      if (body.id) setSelectedId(body.id);
+    const slug = newDocument.slug.trim().toLowerCase();
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) || !newDocument.title.trim()) {
+      setStatus(
+        "Slug ve başlık zorunlu. Slug küçük harf, rakam ve tire kullanır (örn. acik-riza-metni); boş bırakılırsa sunucu 400 döndürüyor.",
+      );
+      return;
+    }
+    try {
+      const response = await fetch("/api/ayarlar/yasal", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          ...newDocument,
+          slug,
+          content: { intro: [], sections: [] },
+        }),
+      });
+      const body = await readJson<{ id: string }>(response);
+      setStatus(
+        response.ok
+          ? "Yeni belge taslağı oluşturuldu."
+          : (body.error ?? "Belge oluşturulamadı."),
+      );
+      if (response.ok) {
+        setShowCreate(false);
+        setNewDocument({ slug: "", locale: "tr", title: "", description: "" });
+        await reload();
+        if (body.id) setSelectedId(body.id);
+      }
+    } catch {
+      setStatus("Sunucuya ulaşılamadı. Bağlantıyı kontrol edin.");
     }
   }
 
@@ -587,6 +599,7 @@ function Legal({ documents, reload }: { documents: LegalDocument[]; reload: () =
           <Field label="Başlık" value={newDocument.title} onChange={(title) => setNewDocument((current) => ({ ...current, title }))} />
           <Field label="Açıklama" value={newDocument.description} onChange={(description) => setNewDocument((current) => ({ ...current, description }))} />
           <button type="button" onClick={() => void createDocument()} className="rounded-xl bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white md:col-span-2">Taslak oluştur</button>
+          {status && <p className="text-sm text-red-500 md:col-span-2">{status}</p>}
         </div>
       )}
       {!selected ? <p className="text-sm text-slate-500">Önce schema_settings.sql dosyasını çalıştırın veya yeni belge oluşturun.</p> : (
