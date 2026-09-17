@@ -42,7 +42,13 @@ import {
 } from "../../utils/validation";
 import { useT } from "../../lib/i18n/context";
 import IlerlemePaneli from "./IlerlemePaneli";
-import { kimlikNoOf, type AracDurumu, type KimlikDurumu, type UrunGereksinimi } from "./flowState";
+import {
+  aracKodu,
+  kimlikNoOf,
+  type AracDurumu,
+  type KimlikDurumu,
+  type UrunGereksinimi,
+} from "./flowState";
 
 interface Props {
   gereksinim: UrunGereksinimi;
@@ -97,6 +103,8 @@ export default function AracAdimi({
   const [tramerNotu, setTramerNotu] = useState("");
   const [kayitKontrolEdiliyor, setKayitKontrolEdiliyor] = useState(false);
   const sonKayitKontrolu = useRef("");
+  /** Elle seçilen marka + model; TRAMER tutmazsa teklif gövdesine bu giriyor. */
+  const secilenAracKodu = aracKodu(durum);
 
   // Kısa süreli poliçe plakalı araç istiyor; YK akışı o üründe hiç açılmıyor.
   useEffect(() => {
@@ -108,12 +116,17 @@ export default function AracAdimi({
   // burada 400 ms beklemeyle, plakalı trafik (yıllık ve kısa süreli) için
   // uygulanıyor; kullanıcı son karakteri yazarken ara değerlerle istek
   // atılmıyor. Sonuç yalnızca bilgilendirme: teklif her durumda yeni açılır.
+  //
+  // Araç bilgisi hazır olmadan sorulmuyor: bilgilendirmenin tek düğmesi teklif
+  // çalıştırıyor ve TRAMER sorgusu yapılmadan IO teklifi "Araç kodu
+  // girilmemiştir" ile reddediyor. Erken açılsa çıkışsız bir pencere olurdu.
   useEffect(() => {
     if (
       gereksinim.bransNo !== 0 ||
       !durum.plakaVar ||
       !isValidPlate(durum.plaka) ||
-      !isValidDocumentSerial(durum.tescilBelge)
+      !isValidDocumentSerial(durum.tescilBelge) ||
+      (!durum.tramerTamam && !secilenAracKodu)
     ) {
       sonKayitKontrolu.current = "";
       setKayitKontrolEdiliyor(false);
@@ -164,6 +177,8 @@ export default function AracAdimi({
     durum.plakaVar,
     durum.plaka,
     durum.tescilBelge,
+    durum.tramerTamam,
+    secilenAracKodu,
     onKayitliTeklif,
   ]);
 
@@ -291,9 +306,17 @@ export default function AracAdimi({
       if (!isValidDocumentSerial(durum.tescilBelge)) {
         next.tescilBelge = "Belge seri no 2 harf + 6 hane olmalı.";
       }
-      // TRAMER araç bilgisini getirememişse marka/model elle seçilmeli.
-      if (tramerDurumu === "gelmedi" && (!durum.markaKodu || !durum.tipKodu)) {
-        next.markaKodu = "Araç bilgisi gelmedi, marka ve modeli seçin.";
+      // IO aracı TRAMER sorgusundan tanıyor; sorgu hiç yapılmadıysa ya da
+      // tutmadıysa gövdede `AracKodu` gitmeli, yoksa teklif "Araç kodu
+      // girilmemiştir" ile reddediliyor. Ölçüt bileşen state'i `tramerDurumu`
+      // değil kalıcı `durum.tramerTamam`: adımlar arasında gidip gelince
+      // bileşen sıfırlanıyor ve sorgu yapılmamış gibi davranmalı.
+      if (!durum.tramerTamam && !secilenAracKodu) {
+        if (tramerDurumu === "gelmedi") {
+          next.markaKodu = "Araç bilgisi gelmedi, marka ve modeli seçin.";
+        } else {
+          next.tramer = 'Devam etmek için "Araç bilgilerini getir"e basın.';
+        }
       }
       setHatalar(next);
       if (Object.keys(next).length) return;
@@ -432,6 +455,10 @@ export default function AracAdimi({
               <span className="flow__ok">Araç bilgileri alındı.</span>
             ) : null}
           </div>
+
+          {hatalar.tramer ? (
+            <span className="flow__error">{hatalar.tramer}</span>
+          ) : null}
 
           {tramerDurumu === "gelmedi" ? (
             <>

@@ -44,6 +44,7 @@ import {
 } from "./quote/buildPayload";
 import { ozetSatirlari } from "./quote/ozet";
 import {
+  aracKodu,
   bosArac,
   bosDask,
   bosKimlik,
@@ -215,6 +216,27 @@ export default function QuoteFlowPage() {
 
     setHata("");
     setKayitliTeklifHatasi("");
+
+    // Plakalı araçta IO aracı TRAMER sorgusundan tanıyor; sorgu yapılmadıysa
+    // gövdede `AracKodu` da bulunmuyor ve IO "Araç kodu girilmemiştir, seçim
+    // yapınız" diyerek teklifi reddediyor. Kart çekilmiyor ama acente
+    // defterine boşa kayıt düşüyor, ziyaretçi de sebebi anlamıyor.
+    if (
+      gereksinim.adimTipi === "arac" &&
+      arac.plakaVar &&
+      !arac.tramerTamam &&
+      !aracKodu(arac)
+    ) {
+      const mesaj =
+        'Araç bilgileri alınmadı. "Araç bilgilerini getir"e basın; sorgu tutmazsa marka ve modeli seçip devam edin.';
+      if (kayitliTeklifBilgisi) setKayitliTeklifHatasi(mesaj);
+      else {
+        setHata(mesaj);
+        setAdim("detay");
+      }
+      return;
+    }
+
     setCalisiyor(true);
     fiyatGeldi.current = false;
 
