@@ -140,6 +140,9 @@ export interface UiMessages {
     identityLead: string;
     kimlikLabel: string;
     kimlikHint: string;
+    shortTermTcknLabel: string;
+    shortTermTcknHint: string;
+    shortTermTcknError: string;
     kvkkBody: string;
     kvkkMore: string;
     kvkkLink: string;
@@ -396,6 +399,10 @@ const TR: UiMessages = {
       "Bilgileriniz, entegrasyon bulunan sigorta şirketlerinden anlık teklif almak için kullanılır.",
     kimlikLabel: "T.C. kimlik / vergi kimlik numarası",
     kimlikHint: "Şirket adına teklif alıyorsanız vergi kimlik numarasını girin.",
+    shortTermTcknLabel: "T.C. Kimlik Numarası",
+    shortTermTcknHint:
+      "Kısa süreli trafik teklifinde araçla ilişkili kişinin T.C. Kimlik Numarasını girin.",
+    shortTermTcknError: "Geçerli bir T.C. Kimlik Numarası girin (11 hane).",
     kvkkBody:
       "Paylaştığınız kişisel veriler, talep ettiğiniz sigorta teklifinin oluşturulması ve ilgili sigorta şirketlerinden fiyat alınması amacıyla işlenir.",
     kvkkMore: "Ayrıntılı bilgi için",
@@ -718,6 +725,10 @@ const EN: UiMessages = {
       "Your details are used to get live quotes from integrated insurance companies.",
     kimlikLabel: "Turkish ID / tax ID number",
     kimlikHint: "If you are requesting a quote for a company, enter the tax ID number.",
+    shortTermTcknLabel: "Turkish ID number",
+    shortTermTcknHint:
+      "For short-term traffic insurance, enter the Turkish ID of the person associated with the vehicle.",
+    shortTermTcknError: "Enter a valid Turkish ID number (11 digits).",
     kvkkBody:
       "The personal data you share is processed to create the insurance quote you requested and to obtain prices from the relevant insurers.",
     kvkkMore: "For details, see the",
@@ -1037,6 +1048,10 @@ const AR: UiMessages = {
       "تُستخدم بياناتكم للحصول على عروض فورية من شركات التأمين المتكاملة.",
     kimlikLabel: "رقم الهوية التركية / الرقم الضريبي",
     kimlikHint: "إذا كنتم تطلبون العرض باسم شركة فأدخلوا الرقم الضريبي.",
+    shortTermTcknLabel: "رقم الهوية التركية",
+    shortTermTcknHint:
+      "للتأمين المروري قصير المدة، أدخلوا رقم الهوية التركية للشخص المرتبط بالمركبة.",
+    shortTermTcknError: "أدخلوا رقم هوية تركية صالحاً مكوّناً من 11 خانة.",
     kvkkBody:
       "تُعالَج البيانات الشخصية التي تشاركونها لإنشاء عرض التأمين المطلوب والحصول على الأسعار من شركات التأمين المعنية.",
     kvkkMore: "للتفاصيل راجعوا",
@@ -1356,6 +1371,10 @@ const FA: UiMessages = {
       "اطلاعات شما برای دریافت پیشنهاد لحظه‌ای از شرکت‌های بیمه یکپارچه استفاده می‌شود.",
     kimlikLabel: "شماره هویت ترکیه / شماره مالیاتی",
     kimlikHint: "اگر برای شرکت پیشنهاد می‌گیرید شماره مالیاتی را وارد کنید.",
+    shortTermTcknLabel: "شماره هویت ترکیه",
+    shortTermTcknHint:
+      "برای بیمه ترافیک کوتاه‌مدت، شماره هویت ترکیه شخص مرتبط با خودرو را وارد کنید.",
+    shortTermTcknError: "یک شماره هویت ترکیه معتبر ۱۱ رقمی وارد کنید.",
     kvkkBody:
       "داده‌های شخصی که به اشتراک می‌گذارید برای تهیه پیشنهاد بیمه درخواستی و گرفتن قیمت از شرکت‌های بیمه مربوط پردازش می‌شود.",
     kvkkMore: "برای جزئیات",

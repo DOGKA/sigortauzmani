@@ -67,14 +67,17 @@ export default function KimlikAdimi({
   const [hatalar, setHatalar] = useState<Record<string, string>>({});
   const [sorguluyor, setSorguluyor] = useState(false);
   const [uyari, setUyari] = useState("");
+  const sadeceTckn = productSlug === "kisa-sureli-trafik";
 
   const dogrula = () => {
     const next: Record<string, string> = {};
-    if (!kimlikGecerli(durum)) {
+    if (sadeceTckn ? !isValidTckn(durum.tckn) : !kimlikGecerli(durum)) {
       // Alan tek olduğu için eksik girişte hangi numaranın beklendiği
       // söylenmeli; tip yalnızca girilen değerden çıkarılabiliyor.
       next.kimlik =
-        durum.entityType === "sirket"
+        sadeceTckn
+          ? t.quote.shortTermTcknError
+          : durum.entityType === "sirket"
           ? t.quote.vknError
           : durum.entityType === "yabanci"
             ? t.quote.yknError
@@ -159,11 +162,15 @@ export default function KimlikAdimi({
     }
   };
 
-  const kimlikDegeri = kimlikNoOf(durum);
+  const kimlikDegeri = sadeceTckn ? durum.tckn : kimlikNoOf(durum);
 
   const kimlikYaz = (value: string) => {
     const kimlikNo = normalizeDigits(value).replace(/\D/g, "").slice(0, 11);
-    const tip = kisiTipiCikar(kimlikNo);
+    // Kısa süreli trafik TRAMER'i VKN + doğum tarihini kabul etmiyor;
+    // araçla ilişkili gerçek kişinin TCKN + doğum tarihini doğruluyor.
+    // Yazım sırasında 10 hanede değeri VKN alanına taşımamak için tipi
+    // bu üründe baştan sona `sahis` tutuyoruz.
+    const tip = sadeceTckn ? "sahis" : kisiTipiCikar(kimlikNo);
     onDegis({
       entityType: tip,
       tckn: tip === "sahis" ? kimlikNo : "",
@@ -177,8 +184,9 @@ export default function KimlikAdimi({
     });
   };
 
-  // Vergi Kimlik Numarası girildiyse doğum tarihi sorulmuyor.
-  const dogumTarihiGoster = durum.entityType !== "sirket";
+  // Kısa süreli trafikte VKN kabul edilmediği için doğum tarihi her zaman
+  // gösterilir. Diğer ürünlerde şirket akışı eskisi gibi devam eder.
+  const dogumTarihiGoster = sadeceTckn || durum.entityType !== "sirket";
 
   return (
     <div className="flow__card">
@@ -187,7 +195,9 @@ export default function KimlikAdimi({
 
       <div className="flow__grid">
         <label className="flow__field">
-          <span className="flow__label">{t.quote.kimlikLabel}</span>
+          <span className="flow__label">
+            {sadeceTckn ? t.quote.shortTermTcknLabel : t.quote.kimlikLabel}
+          </span>
           <input
             className={`flow__input${hatalar.kimlik ? " flow__input--error" : ""}`}
             inputMode="numeric"
@@ -196,7 +206,9 @@ export default function KimlikAdimi({
             value={kimlikDegeri}
             onChange={(event) => kimlikYaz(event.target.value)}
           />
-          <span className="flow__hint">{t.quote.kimlikHint}</span>
+          <span className="flow__hint">
+            {sadeceTckn ? t.quote.shortTermTcknHint : t.quote.kimlikHint}
+          </span>
           {hatalar.kimlik ? (
             <span className="flow__error">{hatalar.kimlik}</span>
           ) : null}
