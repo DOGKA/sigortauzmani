@@ -99,9 +99,8 @@ export default function AracAdimi({
   const [meslekler, setMeslekler] = useState<Meslek[]>([]);
   const [tramerDurumu, setTramerDurumu] = useState<
     "bekliyor" | "sorguluyor" | "geldi" | "gelmedi"
-  >("bekliyor");
+  >(durum.tramerTamam ? "geldi" : "bekliyor");
   const [tramerNotu, setTramerNotu] = useState("");
-  const [kayitKontrolEdiliyor, setKayitKontrolEdiliyor] = useState(false);
   const sonKayitKontrolu = useRef("");
   /** Elle seçilen marka + model; TRAMER tutmazsa teklif gövdesine bu giriyor. */
   const secilenAracKodu = aracKodu(durum);
@@ -129,7 +128,6 @@ export default function AracAdimi({
       (!durum.tramerTamam && !secilenAracKodu)
     ) {
       sonKayitKontrolu.current = "";
-      setKayitKontrolEdiliyor(false);
       return;
     }
 
@@ -141,7 +139,6 @@ export default function AracAdimi({
     // Yeni geçerli değer eski, hâlâ sürmekte olan isteğin sonucunu geçersiz
     // kılsın; aksi halde hızlı plaka değişiminde eski araç için modal açılır.
     sonKayitKontrolu.current = anahtar;
-    setKayitKontrolEdiliyor(true);
     const timer = window.setTimeout(() => {
       void kayitliTeklifKontrol({
         kimlikNo,
@@ -159,17 +156,11 @@ export default function AracAdimi({
         })
         // Ön kontrol yardımcıdır; servis düşerse normal teklif çağrısı gerçek
         // hatayı ve kayıtlı teklif bilgisini yine yakalar.
-        .catch(() => undefined)
-        .finally(() => {
-          if (sonKayitKontrolu.current === anahtar) {
-            setKayitKontrolEdiliyor(false);
-          }
-        });
+        .catch(() => undefined);
     }, 400);
 
     return () => {
       window.clearTimeout(timer);
-      setKayitKontrolEdiliyor(false);
     };
   }, [
     gereksinim.bransNo,
@@ -196,9 +187,11 @@ export default function AracAdimi({
     };
   }, [gereksinim.meslekGerekli]);
 
-  // YK akışına geçildiğinde il ve marka listeleri gerekiyor.
+  // YK akışında ve TRAMER tutmayınca marka-model elle seçiliyor.
+  const elleMarka = !durum.plakaVar || tramerDurumu === "gelmedi";
+
   useEffect(() => {
-    if (durum.plakaVar) return;
+    if (!elleMarka) return;
     let iptal = false;
     Promise.all([getIller(), getMarkalar()])
       .then(([illerListesi, markaListesi]) => {
@@ -210,12 +203,12 @@ export default function AracAdimi({
     return () => {
       iptal = true;
     };
-  }, [durum.plakaVar]);
+  }, [elleMarka]);
 
   // Marka veya model yılı değişince tip listesi yenilenir.
   useEffect(() => {
-    if (durum.plakaVar || !durum.markaKodu) {
-      setTipler([]);
+    if (!elleMarka || !durum.markaKodu) {
+      if (elleMarka) setTipler([]);
       return;
     }
     let iptal = false;
@@ -229,7 +222,7 @@ export default function AracAdimi({
     return () => {
       iptal = true;
     };
-  }, [durum.plakaVar, durum.markaKodu, durum.modelYili]);
+  }, [elleMarka, durum.markaKodu, durum.modelYili]);
 
   const plakaliSorgula = async () => {
     const next: Record<string, string> = {};
@@ -348,6 +341,14 @@ export default function AracAdimi({
   };
 
   const sekiller = kullanimSekilleri(durum.kullanimTarzi);
+  // Plakalı akışta IO aracı TRAMER'den tanıyor. Sorgu yapılmadan (veya
+  // tutmayınca marka-model seçilmeden) düğme tıklanabilir kalırsa teklif
+  // "Araç kodu girilmemiştir" ile reddediliyor. YK'da marka-model zaten
+  // formda dolduruluyor; orada düğme açık kalır, tıklanınca ykDogrula keser.
+  const plakaliTeklifHazir =
+    !durum.plakaVar || durum.tramerTamam || Boolean(secilenAracKodu);
+  const teklifKapali =
+    calisiyor || tramerDurumu === "sorguluyor" || !plakaliTeklifHazir;
 
   return (
     <div className="flow__card">
@@ -682,11 +683,9 @@ export default function AracAdimi({
           type="button"
           className="flow__primary"
           onClick={teklifCalis}
-          disabled={calisiyor || kayitKontrolEdiliyor}
+          disabled={teklifKapali}
         >
-          {calisiyor || kayitKontrolEdiliyor
-            ? t.flow.running
-            : t.flow.runQuote}
+          {calisiyor ? t.flow.running : t.flow.runQuote}
         </button>
       </div>
     </div>
