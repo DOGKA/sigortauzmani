@@ -27,14 +27,26 @@ import {
 function sigortaliAracBransi(kimlik: KimlikDurumu) {
   return {
     KimlikNo: kimlikNoOf(kimlik),
-    Dogumtarihi: kimlik.birthDate,
+    ...kimlikTipi(kimlik),
+    ...(kimlik.birthDate ? { Dogumtarihi: kimlik.birthDate } : {}),
   };
+}
+
+/**
+ * Tüzel kişi bayrağı. Teklif ucu VKN'yi kendisi tanıyor (yanıtta KimlikTipi:1
+ * dönüyor) ama TRAMER tanımıyor; iki uca aynı Sigortali gövdesi gitsin diye
+ * burada da ekleniyor. Şirkette doğum tarihi yok, CRM'in gönderdiği kuruluş
+ * tarihini IO kendi tarafında eşliyor.
+ */
+function kimlikTipi(kimlik: KimlikDurumu) {
+  return kimlik.entityType === "sirket" ? { KimlikTipi: 1 as const } : {};
 }
 
 /** DASK ve seyahat örneklerinde büyük T'li `DogumTarihi` geçiyor. */
 function sigortaliDigerBrans(kimlik: KimlikDurumu) {
   return {
     KimlikNo: kimlikNoOf(kimlik),
+    ...kimlikTipi(kimlik),
     DogumTarihi: kimlik.birthDate,
   };
 }

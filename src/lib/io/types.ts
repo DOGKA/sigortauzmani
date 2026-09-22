@@ -8,6 +8,13 @@
 export interface Sigortali {
   KimlikNo: string;
   /**
+   * 0 = TCKN (gerçek kişi), 1 = VKN (tüzel kişi). Dokümanda yok; IO'nun
+   * kendi yanıt gövdesinden okundu. TRAMER ucu VKN'yi yalnızca bu bayrakla
+   * tüzel kişi sayıyor; bayrak yokken numarayı gerçek kişi gibi işleyip
+   * "Doğum tarihini girerek tekrar deneyin" (HataKodu 6) döndürüyor.
+   */
+  KimlikTipi?: 0 | 1;
+  /**
    * Dokümantasyon araç branşlarında `Dogumtarihi`, konut/sağlıkta
    * `DogumTarihi` kullanıyor. İkisi de opsiyonel bırakıldı; ürün adımı
    * hangisini dolduracağını biliyor.

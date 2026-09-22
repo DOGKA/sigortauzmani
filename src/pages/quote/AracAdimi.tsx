@@ -245,9 +245,15 @@ export default function AracAdimi({
       await sorguTramer({
         BransNo: gereksinim.bransNo,
         SigortaEttirenAyniMi: true,
+        ...(kimlik.sigortaliStr
+          ? { SigortaliStr: kimlik.sigortaliStr }
+          : {}),
         Sigortali: {
           KimlikNo: kimlikNoOf(kimlik),
-          Dogumtarihi: kimlik.birthDate,
+          // Şirkette KimlikTipi:1 şart: bayrak olmadan TRAMER VKN'yi gerçek
+          // kişi sayıp doğum tarihi istiyor; kuruluş tarihini de kabul etmiyor.
+          ...(kimlik.entityType === "sirket" ? { KimlikTipi: 1 as const } : {}),
+          ...(kimlik.birthDate ? { Dogumtarihi: kimlik.birthDate } : {}),
         },
         Arac: {
           Plaka: durum.plaka.replace(/\s/g, "").toUpperCase(),
@@ -261,9 +267,13 @@ export default function AracAdimi({
       // YK gibi elle girişe düşülmesi gerektiğini söylüyor.
       setTramerDurumu("gelmedi");
       setTramerNotu(
-        error instanceof IoError
-          ? error.message
-          : "Araç bilgileri getirilemedi.",
+        kimlik.entityType === "sirket" &&
+          error instanceof IoError &&
+          error.code === 6
+          ? "Şirket aracı bilgileri otomatik doğrulanamadı."
+          : error instanceof IoError
+            ? error.message
+            : "Araç bilgileri getirilemedi.",
       );
       onDegis({ tramerTamam: false });
     }
@@ -747,7 +757,7 @@ function MarkaModelSecici({
           }
         >
           <option value="">Seçin</option>
-          {markalar.map((marka) => (
+          {[...new Map(markalar.map((marka) => [marka.MarkaKodu, marka])).values()].map((marka) => (
             <option key={marka.MarkaKodu} value={marka.MarkaKodu}>
               {marka.MarkaAdi}
             </option>
@@ -767,7 +777,7 @@ function MarkaModelSecici({
           disabled={!markaKodu}
         >
           <option value="">{markaKodu ? "Seçin" : "Önce marka seçin"}</option>
-          {tipler.map((tip) => (
+          {[...new Map(tipler.map((tip) => [tip.TipKodu, tip])).values()].map((tip) => (
             <option key={tip.TipKodu} value={tip.TipKodu}>
               {tip.TipAdi}
             </option>

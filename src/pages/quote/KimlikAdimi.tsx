@@ -67,17 +67,13 @@ export default function KimlikAdimi({
   const [hatalar, setHatalar] = useState<Record<string, string>>({});
   const [sorguluyor, setSorguluyor] = useState(false);
   const [uyari, setUyari] = useState("");
-  const sadeceTckn = productSlug === "kisa-sureli-trafik";
-
   const dogrula = () => {
     const next: Record<string, string> = {};
-    if (sadeceTckn ? !isValidTckn(durum.tckn) : !kimlikGecerli(durum)) {
+    if (!kimlikGecerli(durum)) {
       // Alan tek olduğu için eksik girişte hangi numaranın beklendiği
       // söylenmeli; tip yalnızca girilen değerden çıkarılabiliyor.
       next.kimlik =
-        sadeceTckn
-          ? t.quote.shortTermTcknError
-          : durum.entityType === "sirket"
+        durum.entityType === "sirket"
           ? t.quote.vknError
           : durum.entityType === "yabanci"
             ? t.quote.yknError
@@ -86,10 +82,8 @@ export default function KimlikAdimi({
     if (!isValidMobilePhone(durum.phone)) {
       next.phone = t.quote.phoneError;
     }
-    // Şirketlerde alan zaten gizli; zorunlu tutmak görünmeyen bir hataya
-    // yol açardı. Şahıslarda ise her zaman isteniyor: MERNİS kapalı olduğu
-    // için doğum tarihini başka hiçbir kaynaktan alamıyoruz ve teklif
-    // gövdesi bu alanı taşıyor.
+    // Şirkette doğum/kuruluş tarihi sorulmaz; IO, VKN MERNİS sorgusundan
+    // dönen SigortaliStr ile tüzel kişiyi eşleştirir.
     if (durum.entityType !== "sirket" && !durum.birthDate) {
       next.birthDate = t.quote.birthError;
     }
@@ -162,20 +156,17 @@ export default function KimlikAdimi({
     }
   };
 
-  const kimlikDegeri = sadeceTckn ? durum.tckn : kimlikNoOf(durum);
+  const kimlikDegeri = kimlikNoOf(durum);
 
   const kimlikYaz = (value: string) => {
     const kimlikNo = normalizeDigits(value).replace(/\D/g, "").slice(0, 11);
-    // Kısa süreli trafik TRAMER'i VKN + doğum tarihini kabul etmiyor;
-    // araçla ilişkili gerçek kişinin TCKN + doğum tarihini doğruluyor.
-    // Yazım sırasında 10 hanede değeri VKN alanına taşımamak için tipi
-    // bu üründe baştan sona `sahis` tutuyoruz.
-    const tip = sadeceTckn ? "sahis" : kisiTipiCikar(kimlikNo);
+    const tip = kisiTipiCikar(kimlikNo);
     onDegis({
       entityType: tip,
       tckn: tip === "sahis" ? kimlikNo : "",
       ykn: tip === "yabanci" ? kimlikNo : "",
       vkn: tip === "sirket" ? kimlikNo : "",
+      birthDate: tip === "sirket" ? "" : durum.birthDate,
       // Numara değişti; önceki sorgunun sonucu artık bu kişiye ait değil.
       adSoyad: "",
       mernisTamam: false,
@@ -184,9 +175,7 @@ export default function KimlikAdimi({
     });
   };
 
-  // Kısa süreli trafikte VKN kabul edilmediği için doğum tarihi her zaman
-  // gösterilir. Diğer ürünlerde şirket akışı eskisi gibi devam eder.
-  const dogumTarihiGoster = sadeceTckn || durum.entityType !== "sirket";
+  const dogumTarihiGoster = durum.entityType !== "sirket";
 
   return (
     <div className="flow__card">
@@ -196,7 +185,7 @@ export default function KimlikAdimi({
       <div className="flow__grid">
         <label className="flow__field">
           <span className="flow__label">
-            {sadeceTckn ? t.quote.shortTermTcknLabel : t.quote.kimlikLabel}
+            {t.quote.kimlikLabel}
           </span>
           <input
             className={`flow__input${hatalar.kimlik ? " flow__input--error" : ""}`}
@@ -207,7 +196,7 @@ export default function KimlikAdimi({
             onChange={(event) => kimlikYaz(event.target.value)}
           />
           <span className="flow__hint">
-            {sadeceTckn ? t.quote.shortTermTcknHint : t.quote.kimlikHint}
+            {t.quote.kimlikHint}
           </span>
           {hatalar.kimlik ? (
             <span className="flow__error">{hatalar.kimlik}</span>

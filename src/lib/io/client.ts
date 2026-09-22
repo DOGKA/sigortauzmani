@@ -203,7 +203,13 @@ export async function sorguMernis(body: {
 export async function sorguTramer(body: {
   BransNo: number | string;
   SigortaEttirenAyniMi: boolean;
-  Sigortali: { KimlikNo: string; Dogumtarihi?: string; Cep?: string };
+  SigortaliStr?: string;
+  Sigortali: {
+    KimlikNo: string;
+    KimlikTipi?: 0 | 1;
+    Dogumtarihi?: string;
+    Cep?: string;
+  };
   Arac: { Plaka: string; TescilBelge: string };
 }): Promise<void> {
   await call("tramer", { method: "POST", body });

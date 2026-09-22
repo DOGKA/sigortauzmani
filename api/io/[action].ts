@@ -135,11 +135,39 @@ export default async function handler(request: Request): Promise<Response> {
   const session = await resolveSession(request);
   const ipHash = await hashIp(clientIp(request));
 
-  // MERNİS sorgusu müşteriye SMS onay kodu yollattığı için kapatılabiliyor.
-  // İstek IO'ya hiç gitmiyor; arayüz `atlandi` görünce doğrulamayı atlayıp
-  // kullanıcının girdiği bilgilerle devam ediyor.
+  let body: unknown;
+  if (action.method === "POST") {
+    try {
+      body = await request.json();
+    } catch {
+      return withCookie(jsonResponse({ error: "Geçersiz istek." }, 400), session);
+    }
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return withCookie(jsonResponse({ error: "Geçersiz istek." }, 400), session);
+    }
+  }
+
+  // Gerçek kişi MERNİS sorgusu müşteriye SMS onay kodu yollattığı için
+  // kapatılabiliyor. Tüzel kişi VKN sorgusu ise SMS üretmiyor ve kısa süreli
+  // trafikte TRAMER'in beklediği şifreli SigortaliStr değerini sağlıyor.
+  // Bu yüzden genel anahtar kapalıyken yalnızca 10 haneli VKN sorgusuna izin
+  // veriliyor; KodGonder iki seviyede de sunucu tarafından false'a zorlanıyor.
   if (actionName === "mernis" && !ioMernisEnabled()) {
-    return withCookie(jsonResponse({ atlandi: true }), session);
+    const record = body as Record<string, unknown>;
+    const sigortali =
+      record.Sigortali && typeof record.Sigortali === "object"
+        ? (record.Sigortali as Record<string, unknown>)
+        : null;
+    const kimlikNo =
+      typeof sigortali?.KimlikNo === "string" ? sigortali.KimlikNo : "";
+    if (!/^\d{10}$/.test(kimlikNo)) {
+      return withCookie(jsonResponse({ atlandi: true }), session);
+    }
+    body = {
+      ...record,
+      KodGonder: false,
+      Sigortali: { ...sigortali, KodGonder: false },
+    };
   }
 
   if (action.rateLimit) {
@@ -160,16 +188,7 @@ export default async function handler(request: Request): Promise<Response> {
     }
   }
 
-  let body: unknown;
   if (action.method === "POST") {
-    try {
-      body = await request.json();
-    } catch {
-      return withCookie(jsonResponse({ error: "Geçersiz istek." }, 400), session);
-    }
-    if (!body || typeof body !== "object" || Array.isArray(body)) {
-      return withCookie(jsonResponse({ error: "Geçersiz istek." }, 400), session);
-    }
     if (action.injectKanal) {
       body = { ...(body as Record<string, unknown>), Kanal: ioKanal() };
     }
