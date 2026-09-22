@@ -78,6 +78,21 @@ interface TalepBasarisi {
   sirketAdi: string;
 }
 
+/** Polling turlarında değişebilen satır Id'si yerine şirket + teklif numarası. */
+function sirketAnahtari(sirket: SirketTeklifi): string {
+  const kod = String(sirket.SirketKodu ?? "").trim();
+  const sirketKodu = kod || `id:${sirket.Id}`;
+  const teklifNo = String(sirket.TeklifNo ?? "").trim();
+  return teklifNo
+    ? `${sirketKodu}|teklif:${teklifNo}`
+    : `${sirketKodu}|satir:${sirket.Id}`;
+}
+
+function sirketOnEki(sirket: SirketTeklifi): string {
+  const kod = String(sirket.SirketKodu ?? "").trim();
+  return `${kod || `id:${sirket.Id}`}|`;
+}
+
 export default function QuoteFlowPage() {
   const slug = useInternalProductSlug();
   const { locale, href, quoteHref } = useLocale();
@@ -169,14 +184,30 @@ export default function QuoteFlowPage() {
       setSonuclar((onceki) =>
         onceki.map((sonuc) => {
           if (sonuc.bransNo !== bransNo) return sonuc;
-          // Aynı şirket her turda tekrar gelebiliyor; TeklifNo + Id ile
-          // tekilleştirip son gelen değeri tutuyoruz.
+          // IO aynı teklifi polling turlarında farklı satır Id'siyle
+          // döndürebiliyor. Şirket + TeklifNo aynıysa güncel satır eskisinin
+          // yerini alır. TeklifNo farklıysa iki teklif de korunur; aynı şirket
+          // yıllık ve kısa süreli seçenek döndürürse biri kaybolmaz.
           const harita = new Map<string, SirketTeklifi>();
           for (const mevcut of sonuc.sirketler) {
-            harita.set(`${mevcut.Id}-${mevcut.TeklifNo}`, mevcut);
+            harita.set(sirketAnahtari(mevcut), mevcut);
           }
           for (const yeni of sirketler) {
-            const anahtar = `${yeni.Id}-${yeni.TeklifNo}`;
+            const teklifNo = String(yeni.TeklifNo ?? "").trim();
+            if (teklifNo) {
+              // İlk ara turda teklif numarası boş gelebilir. Numaralı nihai
+              // satır geldiğinde yalnızca aynı şirketin geçici satırını sil.
+              const onEk = sirketOnEki(yeni);
+              for (const anahtar of harita.keys()) {
+                if (
+                  anahtar.startsWith(onEk) &&
+                  anahtar.includes("|satir:")
+                ) {
+                  harita.delete(anahtar);
+                }
+              }
+            }
+            const anahtar = sirketAnahtari(yeni);
             // Teklif zamanı ilk görüldüğü anda sabitleniyor; sonraki turlar
             // aynı satırı tekrar döndürdüğünde tarih ileri kaymamalı.
             const oncekiZaman = harita.get(anahtar)?.alindiAt;
