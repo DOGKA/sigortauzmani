@@ -97,3 +97,21 @@ export function sirketAdi(kod: string | number | null | undefined): string {
   const normalized = normalizeSirketKodu(kod);
   return SIRKET_ADLARI[normalized] ?? (normalized || "Bilinmeyen şirket");
 }
+
+/**
+ * Müşteriye ve panele hiç düşmeyen şirketler.
+ *
+ * IO teklifi tüm anlaşmalı şirketlere kendisi dağıtıyor; istek gövdesinde
+ * şirket seçmek veya bir şirketi hariç tutmak mümkün değil. Bu yüzden
+ * gelen satır sunucuda düşürülüyor: ekrana, satın almaya ve fiyat kaydına
+ * ulaşmıyor.
+ */
+const GIZLI_SIRKET_KODLARI = new Set([
+  "104", // Doğa Sigorta
+]);
+
+export function sirketGizli(
+  kod: string | number | null | undefined,
+): boolean {
+  return GIZLI_SIRKET_KODLARI.has(normalizeSirketKodu(kod));
+}

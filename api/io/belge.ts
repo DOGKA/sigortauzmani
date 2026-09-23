@@ -20,6 +20,7 @@ import { ioFetch, jsonResponse } from "../_shared/io";
 import { oturumTeklifIdleri, rateCheck } from "../_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
 import { belgeGetir, type YazdirTipi } from "../_shared/yazdir";
+import { sirketGizli } from "../../src/lib/io/sirketler";
 
 export const config = { runtime: "edge" };
 
@@ -66,14 +67,19 @@ async function teklifSatiriGecerli(
   teklifId: number,
   sirketTeklifId: number,
 ): Promise<boolean> {
-  const result = await ioFetch<{ Sirketler?: { Id?: unknown }[] }>(
-    `/api/teklif/primler`,
-    { method: "POST", body: { BransNo: bransNo, TeklifId: teklifId } },
-  );
+  const result = await ioFetch<{
+    Sirketler?: { Id?: unknown; SirketKodu?: string | number }[];
+  }>(`/api/teklif/primler`, {
+    method: "POST",
+    body: { BransNo: bransNo, TeklifId: teklifId },
+  });
   if (!result.ok) return false;
   const sirketler = result.data?.Sirketler;
   if (!Array.isArray(sirketler)) return false;
-  return sirketler.some((sirket) => Number(sirket?.Id) === sirketTeklifId);
+  return sirketler.some(
+    (sirket) =>
+      Number(sirket?.Id) === sirketTeklifId && !sirketGizli(sirket?.SirketKodu),
+  );
 }
 
 export default async function handler(request: Request): Promise<Response> {

@@ -52,6 +52,46 @@ const MAX_TEKLIF_PER_HOUR = 200;
 const MAX_BRANS_PER_REQUEST = 2;
 
 /**
+ * İstemcinin ürün adı satın alma şirket listesini seçiyor. Liste
+ * bilinmeyen bir ada düşmesin ve kısa süreli bayrağı gövdeden değil
+ * doğrulanmış üründen gelsin diye slug burada sabitleniyor.
+ * Trafikte ikinci branş yalnızca kasko olabilir.
+ */
+const URUNLER: Record<string, { branslar: number[]; kisaSureli: boolean }> = {
+  "trafik-sigortasi": { branslar: [0, 1], kisaSureli: false },
+  "kisa-sureli-trafik": { branslar: [0], kisaSureli: true },
+  kasko: { branslar: [1], kisaSureli: false },
+  imm: { branslar: [22], kisaSureli: false },
+  "seyahat-saglik": { branslar: [6], kisaSureli: false },
+  dask: { branslar: [2], kisaSureli: false },
+};
+
+function talepleriDogrula(
+  slug: string,
+  talepler: TeklifTalep[],
+): TeklifTalep[] | null {
+  const urun = URUNLER[slug];
+  if (!urun || !talepler.length || talepler.length > urun.branslar.length) return null;
+  if (talepler.some((talep, index) => talep.bransNo !== urun.branslar[index])) {
+    return null;
+  }
+  return talepler.map((talep) => {
+    if (talep.bransNo !== 0 || !talep.payload || typeof talep.payload !== "object") {
+      return talep;
+    }
+    const arac = talep.payload.Arac;
+    if (!arac || typeof arac !== "object" || Array.isArray(arac)) return talep;
+    return {
+      ...talep,
+      payload: {
+        ...talep.payload,
+        Arac: { ...arac, KisaSureli: urun.kisaSureli },
+      },
+    };
+  });
+}
+
+/**
  * Kısa pencerede iki ayrı sayaç:
  *
  * - Aynı çerez oturumu + aynı kişi/araç: bir alanı değiştirip yeniden
@@ -243,8 +283,10 @@ export default async function handler(request: Request): Promise<Response> {
     return withCookie(jsonResponse({ error: "Geçersiz istek." }, 400), session);
   }
 
-  const talepler = body.talepler ?? [];
-  if (!body.productSlug || !talepler.length) {
+  const productSlug = body.productSlug ?? "";
+  const hamTalepler = body.talepler ?? [];
+  const talepler = talepleriDogrula(productSlug, hamTalepler);
+  if (!talepler) {
     return withCookie(
       jsonResponse({ error: "Ürün ve teklif bilgisi zorunlu." }, 400),
       session,
@@ -351,7 +393,7 @@ export default async function handler(request: Request): Promise<Response> {
   const oturum = await createOturum({
     session_id: session.id,
     ip_hash: ipHash,
-    product_slug: body.productSlug,
+    product_slug: productSlug,
     brans_no: talepler[0].bransNo,
     entity_type: kisiTipi(kisi.entityType),
     tckn: kisi.tckn ?? null,

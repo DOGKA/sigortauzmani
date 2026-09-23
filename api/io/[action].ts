@@ -89,17 +89,10 @@ const ACTIONS: Record<string, ActionDef> = {
   // numarasından kişisel veri döndürdükleri için allowlist'te durmaları
   // kötüye kullanıma davet olurdu.
 
-  // --- Teklif yardımcıları (oturum kaydı gerektirmeyenler) ---
-  teklifdetay: {
-    method: "POST",
-    path: "/api/teklif/teklifdetay",
-    rateLimit: { limit: 120, windowSeconds: HOUR },
-  },
-  teklifguncelle: {
-    method: "POST",
-    path: "/api/teklif/teklifguncelle",
-    rateLimit: { limit: 120, windowSeconds: HOUR },
-  },
+  // teklifdetay ve teklifguncelle burada değil. İkisi de teklif numarası
+  // ile çalışıyor ve numara ardışık. Herkese açık proxy olsalardı partner
+  // token'ı ile başkasının teklifi okunur veya değiştirilirdi. Satın alma
+  // bunları sunucu içinde, oturumu doğruladıktan sonra çağırıyor.
   // `/api/yazdir` bilinçli olarak burada değil: id'yi sorgu parametresinden
   // alıyor, sahibine bakmıyor ve id'ler ardışık ilerliyor. Serbest bırakılsa
   // sayaç çevirerek başkalarının teklif ve poliçe PDF'leri indirilebilirdi.

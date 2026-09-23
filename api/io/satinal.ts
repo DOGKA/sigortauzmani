@@ -23,11 +23,21 @@ import {
   ioKanal,
   jsonResponse,
 } from "../_shared/io";
-import { findOturum, rateCheck, recordSatinAlma, updateOturum } from "../_shared/iolog";
+import {
+  findOturum,
+  oturumTeklifIdleri,
+  rateCheck,
+  recordSatinAlma,
+  updateOturum,
+} from "../_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
 import { belgeGetir } from "../_shared/yazdir";
 import { satinAlinabilirSirket } from "../../src/lib/io/satinAlFiltre";
-import { normalizeSirketKodu, sirketAdi } from "../../src/lib/io/sirketler";
+import {
+  normalizeSirketKodu,
+  sirketAdi,
+  sirketGizli,
+} from "../../src/lib/io/sirketler";
 
 export const config = { runtime: "edge" };
 
@@ -130,8 +140,9 @@ function validateKart(kart: Kart): { ok: true } | { ok: false; message: string }
  * (24 gün önceki teklifte canlı API'de ölçüldü). Yani şirketin ödemeyi
  * reddedeceği kart çekilmeden önce buradan anlaşılıyor.
  *
- * Yenileme isteği başarısız olursa satın alma engellenmiyor: eldeki
- * numarayla denenmesi, ödemeyi hiç denememekten iyi.
+ * Yenileme prim döndürmezse kart çekilmiyor. Tutar istemciden gelen
+ * `Prim` alanına bırakılırsa ziyaretçi gördüğünden farklı bir tutarı
+ * onaylatmadan ödeme başlardı.
  */
 async function teklifiYenile(
   bransNo: number,
@@ -237,6 +248,14 @@ export default async function handler(request: Request): Promise<Response> {
     );
   }
 
+  const teklifIdleri = await oturumTeklifIdleri(oturumId, session.id);
+  if (!teklifIdleri.includes(teklifId)) {
+    return withCookie(
+      jsonResponse({ error: "Bu teklif bu oturuma ait değil." }, 403),
+      session,
+    );
+  }
+
   // Dar sayaç (aynı kişi/teklif) önce; dolmuşsa IP sayacı boşuna artmaz.
   // Teklif oturumu zaten çerezle doğrulandı, o yüzden anahtar kimlik
   // numarası değil oturum kimliği.
@@ -280,7 +299,7 @@ export default async function handler(request: Request): Promise<Response> {
   // kaydındaki üründen okunuyor; aksi hâlde istemci listeyi seçebilirdi.
   const kisaSureli = oturum.product_slug === "kisa-sureli-trafik";
 
-  if (!satinAlinabilirSirket(bransNo, sirketKodu, kisaSureli)) {
+  if (sirketGizli(sirketKodu) || !satinAlinabilirSirket(bransNo, sirketKodu, kisaSureli)) {
     return withCookie(
       jsonResponse(
         {
@@ -352,10 +371,24 @@ export default async function handler(request: Request): Promise<Response> {
     );
   }
 
+  if (yeniPrim === null) {
+    return withCookie(
+      jsonResponse(
+        {
+          error:
+            "Teklif tutarı doğrulanamadı. Kartınızdan çekim yapılmadı; lütfen yeniden deneyin.",
+          sirketReddi: true,
+        },
+        422,
+      ),
+      session,
+    );
+  }
+
   const teklifNo = yenilenen.teklifNo ?? teklif.TeklifNo ?? "";
   // Yenileme prim döndürdüyse geçerli tutar o: buraya gelindiğinde tutar
   // ya değişmemiştir ya da ziyaretçi tarafından onaylanmıştır.
-  const odenecekPrim = yeniPrim ?? teklif.Prim;
+  const odenecekPrim = yeniPrim;
 
   const result = await ioFetch(`/api/teklif/satinal`, {
     method: "POST",

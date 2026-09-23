@@ -9,7 +9,6 @@ const PARTNERS = [
   { file: "axa.webp", name: "AXA Sigorta" },
   { file: "bereket-sigorta.webp", name: "Bereket Sigorta" },
   { file: "corpus-sigorta.webp", name: "Corpus Sigorta" },
-  { file: "doga-sigorta.webp", name: "Doğa Sigorta" },
   { file: "emaa-sigorta.webp", name: "EMAA Sigorta" },
   { file: "gig-sigorta.webp", name: "GIG Sigorta" },
   { file: "hdi.webp", name: "HDI Sigorta" },

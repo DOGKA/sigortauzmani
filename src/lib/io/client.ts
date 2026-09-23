@@ -270,18 +270,6 @@ export function primleriGetir(body: {
   return call<PrimlerSonuc>("primler", { method: "POST", body });
 }
 
-export function teklifDetay(body: {
-  BransNo: number;
-  TeklifId: number;
-  TeklifDetay: Record<string, unknown>;
-}): Promise<unknown> {
-  return call("teklifdetay", { method: "POST", body });
-}
-
-export function teklifGuncelle(body: Record<string, unknown>): Promise<unknown> {
-  return call("teklifguncelle", { method: "POST", body });
-}
-
 export function satinAl(body: {
   oturumId: string;
   bransNo: number;

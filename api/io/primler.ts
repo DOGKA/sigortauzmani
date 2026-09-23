@@ -12,14 +12,18 @@
 
 import { errorResponse, ioFetch, jsonResponse } from "../_shared/io";
 import {
-  findOturum,
+  oturumTeklifIdleri,
   rateCheck,
   updateOturum,
   upsertFiyatlar,
   type FiyatInput,
 } from "../_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
-import { normalizeSirketKodu, sirketAdi } from "../../src/lib/io/sirketler";
+import {
+  normalizeSirketKodu,
+  sirketAdi,
+  sirketGizli,
+} from "../../src/lib/io/sirketler";
 
 export const config = { runtime: "edge" };
 
@@ -175,10 +179,19 @@ export default async function handler(request: Request): Promise<Response> {
     );
   }
 
-  // Oturum sahibi doğrulanır; başka bir ziyaretçinin teklifi sorgulanamaz.
-  const oturum = body.oturumId
-    ? await findOturum(body.oturumId, session.id)
-    : null;
+  // Teklif numarası istemciden gelse de yalnızca bu çerezin açtığı
+  // oturumun kayıtlı teklifleri sorgulanır. Numara ardışık olduğu için
+  // oturum kontrolü olmadan başka bir ziyaretçinin primi okunabiliyordu.
+  if (!body.oturumId) {
+    return withCookie(jsonResponse({ error: "Teklif oturumu zorunlu." }, 400), session);
+  }
+  const teklifIdleri = await oturumTeklifIdleri(body.oturumId, session.id);
+  if (!teklifIdleri.includes(teklifId)) {
+    return withCookie(
+      jsonResponse({ error: "Bu teklif bu oturuma ait değil." }, 403),
+      session,
+    );
+  }
 
   const result = await ioFetch(`/api/teklif/primler`, {
     method: "POST",
@@ -191,10 +204,13 @@ export default async function handler(request: Request): Promise<Response> {
 
   const payload = result.data as Record<string, unknown>;
   const teklifCalisildi = payload?.TeklifCalisildi === true;
-  const sirketler = readSirketler(payload);
+  // Gizli şirket IO'dan gelse de kayda ve istemciye hiç yazılmıyor.
+  const sirketler = readSirketler(payload).filter(
+    (sirket) => !sirketGizli(sirket.SirketKodu),
+  );
   const takili = takiliTeklifMi(payload, teklifCalisildi, sirketler.length);
 
-  if (oturum && sirketler.length) {
+  if (sirketler.length) {
     const fiyatlar: FiyatInput[] = sirketler.map((sirket) => ({
       brans_no: bransNo,
       sirket_kodu: normalizeSirketKodu(sirket.SirketKodu),
@@ -206,12 +222,12 @@ export default async function handler(request: Request): Promise<Response> {
       taksit_kodu: sirket.TaksitKodu ?? null,
       raw: sirket,
     }));
-    await upsertFiyatlar(oturum.id, fiyatlar);
+    await upsertFiyatlar(body.oturumId, fiyatlar);
     if (teklifCalisildi) {
-      await updateOturum(oturum.id, { status: "teklif_calisti" });
+      await updateOturum(body.oturumId, { status: "teklif_calisti" });
     } else if (takili) {
       // Panelde polling'in neden erken kesildiği görünsün.
-      await updateOturum(oturum.id, {
+      await updateOturum(body.oturumId, {
         status: "teklif_calisti",
         hata_mesaji:
           "IO teklifi tamamlanmış işaretlemedi (SirketSayisi 0); polling kesildi.",
