@@ -1,6 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { useT } from "../lib/i18n/context";
+import { useLocale, useT } from "../lib/i18n/context";
 import "./AdvisorVideo.css";
+
+/** İlk adım videosu. Türkçe ayrı; diğer diller şimdilik İngilizce kaydı kullanır. */
+const ILK_VIDEO = {
+  tr: "/turkish-first-video.mp4",
+  diger: "/english-first-video.mp4",
+} as const;
 
 interface AdvisorVideoProps {
   /** Her değiştiğinde video ve konuşma balonu baştan oynatılır (form adımı). */
@@ -11,10 +17,12 @@ interface AdvisorVideoProps {
 
 export default function AdvisorVideo({
   replayKey,
-  videoSrc = "/advisor.mp4",
+  videoSrc,
   transcript,
 }: AdvisorVideoProps) {
+  const { locale } = useLocale();
   const t = useT();
+  const src = videoSrc ?? (locale === "tr" ? ILK_VIDEO.tr : ILK_VIDEO.diger);
   const spoken = transcript ?? t.quote.advisorIntro;
   const videoRef = useRef<HTMLVideoElement>(null);
   const isFirstRunRef = useRef(true);
@@ -42,7 +50,7 @@ export default function AdvisorVideo({
       video.pause();
       video.muted = true;
     };
-  }, [replayKey, videoSrc]);
+  }, [replayKey, src]);
 
   const toggleMute = () => {
     const video = videoRef.current;
@@ -61,7 +69,7 @@ export default function AdvisorVideo({
         <div className="advisor__video-wrap">
           <video
             ref={videoRef}
-            src={videoSrc}
+            src={src}
             className="advisor__video"
             muted={muted}
             playsInline
