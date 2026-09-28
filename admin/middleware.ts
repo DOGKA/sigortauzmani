@@ -1,6 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { supabaseServerUrl } from "./lib/supabase/url";
+import { ADMIN_AUTH_COOKIE, supabaseServerUrl } from "./lib/supabase/url";
 
 export async function middleware(request: NextRequest) {
   const supabaseUrl = supabaseServerUrl();
@@ -27,6 +27,7 @@ export async function middleware(request: NextRequest) {
 
   try {
     const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
+      cookieOptions: { name: ADMIN_AUTH_COOKIE },
       cookies: {
         getAll() {
           return request.cookies.getAll();

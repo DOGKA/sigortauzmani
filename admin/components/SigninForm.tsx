@@ -29,24 +29,29 @@ export default function SigninForm() {
     setLoading(true);
     setError(null);
 
-    const supabase = createClient();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const supabase = createClient();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (signInError) {
-      setError(
-        signInError.message === "Invalid login credentials"
-          ? "E-posta veya şifre hatalı"
-          : signInError.message,
-      );
+      if (signInError) {
+        setError(
+          signInError.message === "Invalid login credentials"
+            ? "E-posta veya şifre hatalı"
+            : signInError.message,
+        );
+        return;
+      }
+
+      router.push("/talepler");
+      router.refresh();
+    } catch {
+      setError("Giriş tamamlanamadı. Lütfen tekrar deneyin.");
+    } finally {
       setLoading(false);
-      return;
     }
-
-    router.push("/talepler");
-    router.refresh();
   };
 
   return (
