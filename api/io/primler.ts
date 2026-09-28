@@ -86,11 +86,23 @@ function readSirketler(payload: unknown): SirketTeklifi[] {
  * satın al'a basıp hataya düşer, çünkü satılabilir bir prim yok.
  *
  * Canlı yanıtta satırın kendi `SatinAl` bayrağı var ve en doğrudan işaret o;
- * dolu `Hata` metni de aynı anlama geliyor (şirket primi bir koşula bağlamış:
- * araç fotoğrafı istiyor, prim aralığı dışı, KPS hatası…). Bunların yanında
- * "otorizasyon" geçen alanlara da bakılıyor, çünkü alan adı şirketten şirkete
- * değişebiliyor. Ham satır Supabase'e yine yazılıyor; denetim izi kalıyor.
+ * dolu `Hata` metni de çoğu zaman aynı anlama geliyor (şirket primi bir koşula
+ * bağlamış: araç fotoğrafı istiyor, prim aralığı dışı, KPS hatası…). AXA ise
+ * başarılı kaydı da bu alana yazıyor ("Kayıt işlemi tamamlandı, …"); o metin
+ * fiyatı gizlememeli. "Otorizasyon" geçen alanlara da bakılıyor, çünkü alan
+ * adı şirketten şirkete değişebiliyor. Ham satır yine kayda yazılıyor.
  */
+function basariNotu(hata: string): boolean {
+  return /kay[ıi]t i[sş]lemi tamamland[ıi]/i.test(hata);
+}
+
+function hataFiyatiGizler(sirket: SirketTeklifi): boolean {
+  if (typeof sirket.Hata !== "string") return false;
+  const metin = sirket.Hata.trim();
+  if (!metin || basariNotu(metin)) return false;
+  return true;
+}
+
 function satinAlinabilir(sirket: SirketTeklifi): boolean {
   const prim = toNumber(sirket.Prim);
   if (prim === null || prim <= 0) return false;
@@ -98,7 +110,7 @@ function satinAlinabilir(sirket: SirketTeklifi): boolean {
   // IO'nun kendi bayrağı. Kapalıysa poliçeleşmiyor; primi dolu olsa bile
   // satın al düğmesi gösterilmemeli.
   if (sirket.SatinAl === false) return false;
-  if (typeof sirket.Hata === "string" && sirket.Hata.trim()) return false;
+  if (hataFiyatiGizler(sirket)) return false;
 
   for (const [key, value] of Object.entries(sirket)) {
     if (typeof value === "string" && /otoriz/i.test(value)) return false;
@@ -245,14 +257,21 @@ export default async function handler(request: Request): Promise<Response> {
       // Müşteriye yalnızca satın alınabilir teklifler gidiyor; elenen sayı
       // ekranda "manuel onay bekliyor" notu için taşınıyor.
       otorizasyonSayisi: sirketler.length - listelenecek.length,
-      sirketler: listelenecek.map((sirket) => ({
-        ...sirket,
-        SirketKodu: normalizeSirketKodu(sirket.SirketKodu),
-        SirketAdi: sirketAdi(sirket.SirketKodu),
-        // İstemci Prim'i sayı kabul ediyor; süzgeçten geçen her satırda
-        // geçerli bir değer olduğu garanti.
-        Prim: toNumber(sirket.Prim),
-      })),
+      sirketler: listelenecek.map((sirket) => {
+        const hata =
+          typeof sirket.Hata === "string" && basariNotu(sirket.Hata)
+            ? undefined
+            : sirket.Hata;
+        return {
+          ...sirket,
+          Hata: hata,
+          SirketKodu: normalizeSirketKodu(sirket.SirketKodu),
+          SirketAdi: sirketAdi(sirket.SirketKodu),
+          // İstemci Prim'i sayı kabul ediyor; süzgeçten geçen her satırda
+          // geçerli bir değer olduğu garanti.
+          Prim: toNumber(sirket.Prim),
+        };
+      }),
     }),
     session,
   );
