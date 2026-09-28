@@ -32,6 +32,7 @@ import {
 } from "../_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
 import { belgeGetir } from "../_shared/yazdir";
+import { axaAnindaSatinAl } from "../../src/lib/io/hataBasari";
 import { satinAlinabilirSirket } from "../../src/lib/io/satinAlFiltre";
 import {
   normalizeSirketKodu,
@@ -299,7 +300,8 @@ export default async function handler(request: Request): Promise<Response> {
   // kaydındaki üründen okunuyor; aksi hâlde istemci listeyi seçebilirdi.
   const kisaSureli = oturum.product_slug === "kisa-sureli-trafik";
 
-  if (sirketGizli(sirketKodu) || !satinAlinabilirSirket(bransNo, sirketKodu, kisaSureli)) {
+  const listede = satinAlinabilirSirket(bransNo, sirketKodu, kisaSureli);
+  if (sirketGizli(sirketKodu) || (!listede && sirketKodu !== "040")) {
     return withCookie(
       jsonResponse(
         {
@@ -313,6 +315,31 @@ export default async function handler(request: Request): Promise<Response> {
   }
 
   const yenilenen = await teklifiYenile(bransNo, teklifId, teklif, sirketKodu);
+
+  // AXA izin listesinde değil. Satın alma, yenilenen satırın Hata alanı
+  // başarı notuysa açılır; tarayıcıdan gelen bayrağa güvenilmez.
+  if (
+    !listede &&
+    !axaAnindaSatinAl({
+      sirketKodu,
+      satinAl: yenilenen.satinAlinabilir,
+      prim: yenilenen.prim,
+      teklifNo: yenilenen.teklifNo,
+      hata: yenilenen.hata,
+    })
+  ) {
+    return withCookie(
+      jsonResponse(
+        {
+          error:
+            yenilenen.hata ??
+            "Bu teklif anında satın alınamıyor. Ekibimiz sizinle iletişime geçecek.",
+        },
+        403,
+      ),
+      session,
+    );
+  }
   const gosterilenPrim = Number(teklif.Prim);
   const yeniPrim = yenilenen.prim;
 

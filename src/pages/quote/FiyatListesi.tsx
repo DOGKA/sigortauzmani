@@ -159,11 +159,13 @@ export default function FiyatListesi({
 
             <ul className="flow__teklifler">
               {sirali.map((sirket) => {
-                const satinAl = satinAlinabilirSirket(
-                  sonuc.bransNo,
-                  sirket.SirketKodu,
-                  kisaSureli,
-                );
+                const satinAl =
+                  sirket.anindaSatinAl === true ||
+                  satinAlinabilirSirket(
+                    sonuc.bransNo,
+                    sirket.SirketKodu,
+                    kisaSureli,
+                  );
                 const anahtar = teklifAnahtari(sonuc.bransNo, sirket);
                 const bekliyor = gonderiliyor === anahtar;
                 const zaman = teklifZamani(sirket, locale);

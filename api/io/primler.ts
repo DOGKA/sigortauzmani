@@ -19,6 +19,7 @@ import {
   type FiyatInput,
 } from "../_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
+import { axaAnindaSatinAl, hataBasariNotu } from "../../src/lib/io/hataBasari";
 import {
   normalizeSirketKodu,
   sirketAdi,
@@ -92,14 +93,10 @@ function readSirketler(payload: unknown): SirketTeklifi[] {
  * fiyatı gizlememeli. "Otorizasyon" geçen alanlara da bakılıyor, çünkü alan
  * adı şirketten şirkete değişebiliyor. Ham satır yine kayda yazılıyor.
  */
-function basariNotu(hata: string): boolean {
-  return /kay[ıi]t i[sş]lemi tamamland[ıi]/i.test(hata);
-}
-
 function hataFiyatiGizler(sirket: SirketTeklifi): boolean {
   if (typeof sirket.Hata !== "string") return false;
   const metin = sirket.Hata.trim();
-  if (!metin || basariNotu(metin)) return false;
+  if (!metin || hataBasariNotu(metin)) return false;
   return true;
 }
 
@@ -258,13 +255,18 @@ export default async function handler(request: Request): Promise<Response> {
       // ekranda "manuel onay bekliyor" notu için taşınıyor.
       otorizasyonSayisi: sirketler.length - listelenecek.length,
       sirketler: listelenecek.map((sirket) => {
-        const hata =
-          typeof sirket.Hata === "string" && basariNotu(sirket.Hata)
-            ? undefined
-            : sirket.Hata;
+        const hamHata = typeof sirket.Hata === "string" ? sirket.Hata : null;
+        const anindaSatinAl = axaAnindaSatinAl({
+          sirketKodu: sirket.SirketKodu,
+          satinAl: sirket.SatinAl,
+          prim: toNumber(sirket.Prim),
+          teklifNo: sirket.TeklifNo,
+          hata: hamHata,
+        });
         return {
           ...sirket,
-          Hata: hata,
+          Hata: hamHata && hataBasariNotu(hamHata) ? undefined : sirket.Hata,
+          anindaSatinAl,
           SirketKodu: normalizeSirketKodu(sirket.SirketKodu),
           SirketAdi: sirketAdi(sirket.SirketKodu),
           // İstemci Prim'i sayı kabul ediyor; süzgeçten geçen her satırda
