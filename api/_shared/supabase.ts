@@ -15,7 +15,7 @@ export function readEnv(name: string): string | undefined {
 }
 
 function credentials(): { url: string; key: string } | null {
-  const url = readEnv("VITE_SUPABASE_URL") ?? readEnv("SUPABASE_URL");
+  const url = readEnv("SUPABASE_URL") ?? readEnv("VITE_SUPABASE_URL");
   const key = readEnv("VITE_SUPABASE_ANON_KEY") ?? readEnv("SUPABASE_ANON_KEY");
   if (!url || !key) return null;
   return { url, key };

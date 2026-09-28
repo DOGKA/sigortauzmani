@@ -15,6 +15,7 @@
 import { NextResponse } from "next/server";
 import { makbuzUrlGetir, teklifSatiriIdBul } from "@/lib/io/makbuz";
 import { createClient } from "@/lib/supabase/server";
+import { supabaseServerUrl } from "@/lib/supabase/url";
 
 interface Govde {
   satinAlmaId?: string;
@@ -71,7 +72,7 @@ async function ioTeklifSatirIdBul(
  */
 async function makbuzuKaydet(satinAlmaId: string, url: string): Promise<void> {
   const servisAnahtari = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseUrl = supabaseServerUrl();
   if (!servisAnahtari || !supabaseUrl) return;
 
   try {

@@ -31,7 +31,7 @@ function escapeHtml(value: string): string {
 }
 
 async function fetchShareMeta(slug: string): Promise<ShareRow | null> {
-  const url = readEnv("VITE_SUPABASE_URL") ?? readEnv("SUPABASE_URL");
+  const url = readEnv("SUPABASE_URL") ?? readEnv("VITE_SUPABASE_URL");
   const key =
     readEnv("VITE_SUPABASE_ANON_KEY") ?? readEnv("SUPABASE_ANON_KEY");
   if (!url || !key) return null;

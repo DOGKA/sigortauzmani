@@ -7,7 +7,7 @@ import { readEnv } from "./_shared/supabase";
 export const config = { runtime: "edge" };
 
 export default async function handler(): Promise<Response> {
-  const url = readEnv("VITE_SUPABASE_URL") ?? readEnv("SUPABASE_URL");
+  const url = readEnv("SUPABASE_URL") ?? readEnv("VITE_SUPABASE_URL");
   const key = readEnv("VITE_SUPABASE_ANON_KEY") ?? readEnv("SUPABASE_ANON_KEY");
   let source: unknown = DEFAULT_SITE_SETTINGS;
 

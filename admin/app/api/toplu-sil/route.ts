@@ -4,6 +4,7 @@ import {
 } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { supabaseServerUrl } from "@/lib/supabase/url";
 import type { BulkResource } from "@/lib/bulk-actions";
 
 interface RequestBody {
@@ -65,7 +66,7 @@ export async function POST(request: Request) {
     );
   }
 
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseUrl = supabaseServerUrl();
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!supabaseUrl || !serviceKey) {
     return NextResponse.json(

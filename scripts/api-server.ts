@@ -6,6 +6,7 @@
  */
 
 import { existsSync, readFileSync, readdirSync } from "node:fs";
+import { handleSb } from "./sb-gateway";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
@@ -108,6 +109,7 @@ async function writeWebResponse(web: Response, res: ServerResponse) {
 }
 
 async function dispatch(req: IncomingMessage, res: ServerResponse) {
+  if (await handleSb(req, res)) return;
   const modulePath = resolveApiModule(requestUrl(req).pathname);
   if (!modulePath) {
     res.statusCode = 404;

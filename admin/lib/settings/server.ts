@@ -1,6 +1,7 @@
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { supabaseServerUrl } from "@/lib/supabase/url";
 import {
   DEFAULT_SITE_SETTINGS,
   SETTING_KEYS,
@@ -35,7 +36,7 @@ export async function requireUser() {
 }
 
 export function serviceClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = supabaseServerUrl();
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new Error("Supabase sunucu yapılandırması eksik.");
   return createServiceClient(url, key, {

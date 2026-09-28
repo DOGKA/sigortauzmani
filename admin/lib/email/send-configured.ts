@@ -1,5 +1,6 @@
 import { createClient as createServiceClient } from "@supabase/supabase-js";
 import { Resend } from "resend";
+import { supabaseServerUrl } from "@/lib/supabase/url";
 import {
   DEFAULT_SITE_SETTINGS,
   type NotificationSettings,
@@ -18,7 +19,7 @@ interface SendConfiguredInput {
 }
 
 function serviceClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const url = supabaseServerUrl();
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return null;
   return createServiceClient(url, key, {

@@ -195,36 +195,14 @@ export function useBildirimler(): BildirimDurumu {
     }
 
     void yukle();
+    const tekrar = setInterval(() => {
+      void yukle();
+    }, 20000);
     return () => {
       iptal = true;
+      clearInterval(tekrar);
     };
   }, [supabase, bastirilmisYaz]);
-
-  // Realtime: izlenen tabloların hepsi tek kanaldan dinleniyor.
-  useEffect(() => {
-    const kanal = supabase.channel("admin-bildirim-merkezi");
-
-    for (const tanim of BILDIRIM_KAYNAKLARI) {
-      kanal.on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: tanim.tablo },
-        (payload) => {
-          const bildirim = tanim.olustur(payload.new as Record<string, unknown>);
-          if (!bildirim) return;
-          const anahtar = bildirimAnahtari(bildirim.kaynak, bildirim.kayitId);
-          setBildirimler((mevcut) => bildirimleriBirlestir(mevcut, [bildirim]));
-          setToastAnahtarlari((mevcut) =>
-            mevcut.includes(anahtar) ? mevcut : [anahtar, ...mevcut].slice(0, 4),
-          );
-        },
-      );
-    }
-
-    kanal.subscribe();
-    return () => {
-      void supabase.removeChannel(kanal);
-    };
-  }, [supabase]);
 
   // Ertelemesi dolanların listeye geri dönmesi zamanla tetikleniyor.
   useEffect(() => {
