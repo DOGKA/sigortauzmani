@@ -45,27 +45,55 @@
 
 /* --- marquee --- */
 .partners__marquee {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 20px;
   margin-top: 48px;
-  mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
+}
+
+.partners__marquee::before,
+.partners__marquee::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  width: 72px;
+  pointer-events: none;
+}
+
+.partners__marquee::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--surface), transparent);
+}
+
+.partners__marquee::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--surface), transparent);
 }
 
 .partners__row {
+  --partners-gap: 20px;
   overflow: hidden;
 }
 
 .partners__row-track {
   display: flex;
-  gap: 20px;
   width: max-content;
   animation: partners-scroll 46s linear infinite;
+  will-change: transform;
+}
+
+.partners__row-set {
+  display: flex;
+  flex: 0 0 auto;
+  gap: var(--partners-gap);
+  padding-inline-end: var(--partners-gap);
 }
 
 .partners__row--reverse .partners__row-track {
-  animation-direction: reverse;
+  animation-name: partners-scroll-reverse;
 }
 
 .partners__row:hover .partners__row-track {
@@ -74,11 +102,19 @@
 
 @keyframes partners-scroll {
   from {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    /* track contains the logo list twice; shifting by half loops seamlessly */
-    transform: translateX(calc(-50% - 10px));
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes partners-scroll-reverse {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -129,8 +165,11 @@
     margin-top: 36px;
   }
 
+  .partners__row {
+    --partners-gap: 14px;
+  }
+
   .partners__row-track {
-    gap: 14px;
     animation-duration: 34s;
   }
 
@@ -139,12 +178,6 @@
     height: 74px;
     padding: 14px 20px;
     border-radius: 16px;
-  }
-
-  @keyframes partners-scroll {
-    to {
-      transform: translateX(calc(-50% - 7px));
-    }
   }
 }
 

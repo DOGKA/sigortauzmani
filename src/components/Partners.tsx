@@ -29,6 +29,33 @@ const PARTNERS = [
 const firstRow = PARTNERS.slice(0, Math.ceil(PARTNERS.length / 2));
 const secondRow = PARTNERS.slice(Math.ceil(PARTNERS.length / 2));
 
+function LogoSet({
+  partners,
+  copy,
+}: {
+  partners: typeof PARTNERS;
+  copy: string;
+}) {
+  return (
+    <div className="partners__row-set" aria-hidden={copy === "b" ? true : undefined}>
+      {partners.map((partner) => (
+        <div className="partners__logo" key={`${copy}-${partner.file}`}>
+          <img
+            src={`/assets/img/partners/${partner.file}`}
+            alt={partner.name}
+            title={partner.name}
+            width="138"
+            height="56"
+            loading="lazy"
+            fetchPriority="low"
+            decoding="async"
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function MarqueeRow({
   partners,
   reverse,
@@ -39,20 +66,8 @@ function MarqueeRow({
   return (
     <div className={`partners__row ${reverse ? "partners__row--reverse" : ""}`}>
       <div className="partners__row-track">
-        {[...partners, ...partners].map((partner, i) => (
-          <div className="partners__logo" key={`${partner.file}-${i}`}>
-            <img
-              src={`/assets/img/partners/${partner.file}`}
-              alt={partner.name}
-              title={partner.name}
-              width="138"
-              height="56"
-              loading="lazy"
-              fetchPriority="low"
-              decoding="async"
-            />
-          </div>
-        ))}
+        <LogoSet partners={partners} copy="a" />
+        <LogoSet partners={partners} copy="b" />
       </div>
     </div>
   );
