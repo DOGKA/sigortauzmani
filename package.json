@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "legal:seed": "node scripts/generate-legal-seed-sql.mjs",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start:api": "tsx scripts/api-server.ts"
   },
   "dependencies": {
     "@lottiefiles/dotlottie-react": "^0.19.9",
@@ -27,6 +28,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
     "oxlint": "^1.71.0",
+    "tsx": "^4.20.6",
     "typescript": "~6.0.2",
     "vite": "^8.1.1"
   }
