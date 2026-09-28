@@ -106,13 +106,8 @@ export interface SirketTeklifi {
    * geliyor ve orada okunması gerekiyor: kapalı satırlar poliçeleşmiyor.
    */
   SatinAl?: boolean;
-  /**
-   * Satır bazlı hata / koşul metni. Doluysa prim çoğu zaman bağlanmaz.
-   * AXA başarılı kaydı da buraya yazar; o not fiyatı gizlemez.
-   */
+  /** Satır bazlı hata / koşul metni. Doluysa prim bağlamıyor. */
   Hata?: string;
-  /** İzin listesi dışında, başarı notu doğrulanmış satırda satın alma açılsın. */
-  anindaSatinAl?: boolean;
   /**
    * Teklifin arayüze ilk düştüğü an (ISO). IO'dan gelmiyor; polling sırasında
    * istemcide işaretleniyor ve teklif kartında "teklif zamanı" olarak
