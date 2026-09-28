@@ -107,6 +107,8 @@ export function sirketAdi(kod: string | number | null | undefined): string {
  * ulaşmıyor.
  */
 const GIZLI_SIRKET_KODLARI = new Set([
+  "036", // Magdeburger Sigorta
+  "096", // Koru Sigorta
   "104", // Doğa Sigorta
 ]);
 

@@ -13,7 +13,6 @@ const PARTNERS = [
   { file: "gig-sigorta.webp", name: "GIG Sigorta" },
   { file: "hdi.webp", name: "HDI Sigorta" },
   { file: "hepsi-iyi-sigorta.webp", name: "Hepiyi Sigorta" },
-  { file: "magdeburger-sigorta.webp", name: "Magdeburger Sigorta" },
   { file: "mapfre.webp", name: "MAPFRE Sigorta" },
   { file: "neova-sigorta.webp", name: "Neova Sigorta" },
   { file: "orient-sigorta.webp", name: "Orient Sigorta" },
