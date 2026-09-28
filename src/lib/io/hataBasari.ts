@@ -1,6 +1,6 @@
 import { normalizeSirketKodu } from "./sirketler";
 
-/** AXA başarılı kaydı `Hata` alanına yazar. Anında satın alma yalnız bu notta açılır. */
+/** AXA başarılı kaydı `Hata` alanına yazar. Fiyat listelenir; satın alma açılmaz. */
 const AXA = "040";
 
 /**
@@ -17,7 +17,7 @@ export function hataBasariNotu(hata: string | null | undefined): boolean {
   return /kay[ıi]t i[sş]lemi tamamland[ıi]/i.test(metin);
 }
 
-export function axaAnindaSatinAl(girdi: {
+export function axaFiyatiListelenir(girdi: {
   sirketKodu: string | number | null | undefined;
   satinAl: boolean | null | undefined;
   prim: number | null;

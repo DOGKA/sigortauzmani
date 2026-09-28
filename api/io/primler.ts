@@ -19,7 +19,7 @@ import {
   type FiyatInput,
 } from "../_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
-import { axaAnindaSatinAl, hataBasariNotu } from "../../src/lib/io/hataBasari";
+import { axaFiyatiListelenir } from "../../src/lib/io/hataBasari";
 import {
   normalizeSirketKodu,
   sirketAdi,
@@ -87,19 +87,11 @@ function readSirketler(payload: unknown): SirketTeklifi[] {
  * satın al'a basıp hataya düşer, çünkü satılabilir bir prim yok.
  *
  * Canlı yanıtta satırın kendi `SatinAl` bayrağı var ve en doğrudan işaret o;
- * dolu `Hata` metni de çoğu zaman aynı anlama geliyor (şirket primi bir koşula
- * bağlamış: araç fotoğrafı istiyor, prim aralığı dışı, KPS hatası…). AXA ise
- * başarılı kaydı da bu alana yazıyor ("Kayıt işlemi tamamlandı, …"); o metin
- * fiyatı gizlememeli. "Otorizasyon" geçen alanlara da bakılıyor, çünkü alan
- * adı şirketten şirkete değişebiliyor. Ham satır yine kayda yazılıyor.
+ * dolu `Hata` metni de aynı anlama geliyor (şirket primi bir koşula bağlamış:
+ * araç fotoğrafı istiyor, prim aralığı dışı, KPS hatası…). Bunların yanında
+ * "otorizasyon" geçen alanlara da bakılıyor, çünkü alan adı şirketten şirkete
+ * değişebiliyor. Ham satır Supabase'e yine yazılıyor; denetim izi kalıyor.
  */
-function hataFiyatiGizler(sirket: SirketTeklifi): boolean {
-  if (typeof sirket.Hata !== "string") return false;
-  const metin = sirket.Hata.trim();
-  if (!metin || hataBasariNotu(metin)) return false;
-  return true;
-}
-
 function satinAlinabilir(sirket: SirketTeklifi): boolean {
   const prim = toNumber(sirket.Prim);
   if (prim === null || prim <= 0) return false;
@@ -107,7 +99,21 @@ function satinAlinabilir(sirket: SirketTeklifi): boolean {
   // IO'nun kendi bayrağı. Kapalıysa poliçeleşmiyor; primi dolu olsa bile
   // satın al düğmesi gösterilmemeli.
   if (sirket.SatinAl === false) return false;
-  if (hataFiyatiGizler(sirket)) return false;
+  // AXA başarılı kaydı da `Hata` alanına yazar. Fiyat görünsün; anında
+  // satın alma listesinde olmadığı için buton "Teklif iste" kalır.
+  if (
+    typeof sirket.Hata === "string" &&
+    sirket.Hata.trim() &&
+    !axaFiyatiListelenir({
+      sirketKodu: sirket.SirketKodu,
+      satinAl: sirket.SatinAl,
+      prim,
+      teklifNo: sirket.TeklifNo,
+      hata: sirket.Hata,
+    })
+  ) {
+    return false;
+  }
 
   for (const [key, value] of Object.entries(sirket)) {
     if (typeof value === "string" && /otoriz/i.test(value)) return false;
@@ -254,26 +260,14 @@ export default async function handler(request: Request): Promise<Response> {
       // Müşteriye yalnızca satın alınabilir teklifler gidiyor; elenen sayı
       // ekranda "manuel onay bekliyor" notu için taşınıyor.
       otorizasyonSayisi: sirketler.length - listelenecek.length,
-      sirketler: listelenecek.map((sirket) => {
-        const hamHata = typeof sirket.Hata === "string" ? sirket.Hata : null;
-        const anindaSatinAl = axaAnindaSatinAl({
-          sirketKodu: sirket.SirketKodu,
-          satinAl: sirket.SatinAl,
-          prim: toNumber(sirket.Prim),
-          teklifNo: sirket.TeklifNo,
-          hata: hamHata,
-        });
-        return {
-          ...sirket,
-          Hata: hamHata && hataBasariNotu(hamHata) ? undefined : sirket.Hata,
-          anindaSatinAl,
-          SirketKodu: normalizeSirketKodu(sirket.SirketKodu),
-          SirketAdi: sirketAdi(sirket.SirketKodu),
-          // İstemci Prim'i sayı kabul ediyor; süzgeçten geçen her satırda
-          // geçerli bir değer olduğu garanti.
-          Prim: toNumber(sirket.Prim),
-        };
-      }),
+      sirketler: listelenecek.map((sirket) => ({
+        ...sirket,
+        SirketKodu: normalizeSirketKodu(sirket.SirketKodu),
+        SirketAdi: sirketAdi(sirket.SirketKodu),
+        // İstemci Prim'i sayı kabul ediyor; süzgeçten geçen her satırda
+        // geçerli bir değer olduğu garanti.
+        Prim: toNumber(sirket.Prim),
+      })),
     }),
     session,
   );
