@@ -39,6 +39,7 @@ export interface YenilemeOzeti {
   hataKodu?: number | null;
   mesaj?: string | null;
   SatinAl?: unknown;
+  SanalPos?: unknown;
   TeklifNo?: unknown;
   Prim?: unknown;
   Hata?: unknown;
@@ -51,7 +52,14 @@ export const YENILEME_DOGRULANAMADI =
   "Sigorta şirketinden bu teklif için güncel tutar alınamadı. Kartınızdan çekim yapılmadı.";
 
 export type YenilemeSonucu =
-  | { durum: "acik"; prim: number; teklifNo: string | null; ozet: YenilemeOzeti }
+  | {
+      durum: "acik";
+      prim: number;
+      teklifNo: string | null;
+      /** Satırın `SanalPos` bayrağı; yanıtta yoksa null. */
+      sanalPos: boolean | null;
+      ozet: YenilemeOzeti;
+    }
   | { durum: "kapali"; mesaj: string; teklifNo: string | null; ozet: YenilemeOzeti }
   | { durum: "dogrulanamadi"; ozet: YenilemeOzeti };
 
@@ -113,6 +121,7 @@ export async function teklifiYenile(
   const ozet: YenilemeOzeti = {
     ok: true,
     SatinAl: yeni.SatinAl,
+    SanalPos: yeni.SanalPos,
     TeklifNo: yeni.TeklifNo,
     Prim: yeni.Prim,
     Hata: yeni.Hata,
@@ -131,5 +140,6 @@ export async function teklifiYenile(
   const prim = Number(yeni.Prim);
   if (!Number.isFinite(prim) || prim <= 0) return { durum: "dogrulanamadi", ozet };
 
-  return { durum: "acik", prim, teklifNo, ozet };
+  const sanalPos = typeof yeni.SanalPos === "boolean" ? yeni.SanalPos : null;
+  return { durum: "acik", prim, teklifNo, sanalPos, ozet };
 }

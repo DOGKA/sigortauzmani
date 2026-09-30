@@ -291,7 +291,10 @@ export default async function handler(request: Request): Promise<Response> {
         AcenteKodu: teklif.AcenteKodu ?? "",
         TeklifNo: teklifNo,
         isWebServis: teklif.isWebServis ?? true,
-        SanalPos: true,
+        // Doküman "tekliften" diyor. Türk Nippon satırı `false` taşırken
+        // sabit `true` "Şirket şu an hizmet vermemektedir" ile reddediliyor;
+        // CRM aynı satırdan poliçe kesiyor.
+        SanalPos: yenilenen.sanalPos ?? true,
         SatinAl: true,
         Us3D: io3dsEnabled(),
         Prim: odenecekPrim,
