@@ -51,7 +51,11 @@ interface Props {
   oturumId: string | null;
   /** Kısa süreli trafikte anında satın alınabilir şirket listesi farklı. */
   kisaSureli: boolean;
-  onSatinAl: (bransNo: number, teklifId: number, teklif: SirketTeklifi) => void;
+  onSatinAl: (
+    bransNo: number,
+    teklifId: number,
+    teklif: SirketTeklifi,
+  ) => Promise<void>;
   onTeklifIste: (
     bransNo: number,
     teklif: SirketTeklifi,
@@ -83,6 +87,18 @@ export default function FiyatListesi({
               : BRANS_ADLARI[bransNo] ?? String(bransNo);
   const [gonderiliyor, setGonderiliyor] = useState<string | null>(null);
   const [hatalar, setHatalar] = useState<Record<string, string>>({});
+  // "Satın al" basılınca şirkete ön kontrol soruluyor; o sırada düğme kilitli.
+  const [kontrolEdilen, setKontrolEdilen] = useState<string | null>(null);
+
+  const satinAlBaslat = async (bransNo: number, teklifId: number, teklif: SirketTeklifi) => {
+    if (kontrolEdilen) return;
+    setKontrolEdilen(teklifAnahtari(bransNo, teklif));
+    try {
+      await onSatinAl(bransNo, teklifId, teklif);
+    } finally {
+      setKontrolEdilen(null);
+    }
+  };
 
   const hepsiTamam = sonuclar.every((sonuc) => sonuc.tamamlandi);
   const toplamTeklif = sonuclar.reduce(
@@ -212,11 +228,14 @@ export default function FiyatListesi({
                       <button
                         type="button"
                         className="flow__primary flow__primary--sm"
+                        disabled={Boolean(kontrolEdilen)}
                         onClick={() =>
-                          onSatinAl(sonuc.bransNo, sonuc.teklifId, sirket)
+                          void satinAlBaslat(sonuc.bransNo, sonuc.teklifId, sirket)
                         }
                       >
-                        {t.flow.offers.buy}
+                        {kontrolEdilen === anahtar
+                          ? t.flow.offers.checking
+                          : t.flow.offers.buy}
                       </button>
                     ) : (
                       <div className="flow__teklif-aksiyon">

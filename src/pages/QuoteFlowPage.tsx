@@ -18,7 +18,7 @@ import { localizedProduct } from "../lib/i18n/products";
 import { getProduct } from "../data/products";
 import { getQuoteKvkkGovde, QUOTE_KVKK_SURUM } from "../data/quoteKvkk";
 import { isSaglikUrunu } from "../data/saglikRiza";
-import { IoError, primleriBekle, teklifOlustur } from "../lib/io/client";
+import { IoError, onKontrol, primleriBekle, teklifOlustur } from "../lib/io/client";
 import type {
   KayitliTeklifKontrolSonucu,
   PrimlerSonuc,
@@ -36,6 +36,7 @@ import FiyatListesi from "./quote/FiyatListesi";
 import KayitliTeklifModali from "./quote/KayitliTeklifModali";
 import KimlikAdimi from "./quote/KimlikAdimi";
 import OdemeModali from "./quote/OdemeModali";
+import SatinAlUyariModali from "./quote/SatinAlUyariModali";
 import SeyahatAdimi from "./quote/SeyahatAdimi";
 import {
   aracTeklifPayload,
@@ -69,6 +70,8 @@ interface SecilenTeklif {
   bransNo: number;
   teklifId: number;
   teklif: SirketTeklifi;
+  /** Ön kontrolde şirketin verdiği, onaylanması gereken güncel prim. */
+  yeniPrim?: number | null;
 }
 
 /** Anında satın alınamayan şirketlerde açılan talep. */
@@ -125,6 +128,9 @@ export default function QuoteFlowPage() {
   const [geriDonus, setGeriDonus] = useState("");
 
   const [secilen, setSecilen] = useState<SecilenTeklif | null>(null);
+  // Şirket bu teklif üzerinden satın almaya izin vermedi: kart ekranı
+  // yerine ayrı uyarı açılıyor.
+  const [uyari, setUyari] = useState<(SecilenTeklif & { mesaj: string }) | null>(null);
   const [satinAlma, setSatinAlma] = useState<SatinAlmaSonuc | null>(null);
   // Poliçe ve makbuz PDF'leri satın alınan teklifin satır kimliğiyle
   // alınıyor; sonuç ekranı ödeme modalı kapandıktan sonra da ihtiyaç duyuyor.
@@ -478,12 +484,58 @@ export default function QuoteFlowPage() {
     return sonuc;
   };
 
+  /**
+   * "Satın al": kart ekranı açılmadan önce şirkete teklifin hâlâ satılabilir
+   * olduğu sorulur. Kapalıysa kart ekranı hiç açılmaz, ayrı uyarı çıkar.
+   */
+  const satinAlKontrol = async (
+    bransNo: number,
+    teklifId: number,
+    teklif: SirketTeklifi,
+  ): Promise<void> => {
+    if (!oturumId) return;
+    try {
+      const sonuc = await onKontrol({
+        oturumId,
+        bransNo,
+        teklifId,
+        teklif: {
+          Id: teklif.Id,
+          SirketKodu: teklif.SirketKodu,
+          AcenteKodu: teklif.AcenteKodu,
+          TeklifNo: teklif.TeklifNo,
+          Prim: teklif.Prim,
+          Taksit: teklif.Taksit,
+          TaksitKodu: teklif.TaksitKodu,
+        },
+      });
+      if (sonuc.durum === "kapali") {
+        setUyari({ bransNo, teklifId, teklif, mesaj: sonuc.mesaj });
+        return;
+      }
+      setSecilen({
+        bransNo,
+        teklifId,
+        teklif,
+        yeniPrim: sonuc.durum === "primDegisti" ? sonuc.yeniPrim : null,
+      });
+    } catch (error) {
+      setUyari({
+        bransNo,
+        teklifId,
+        teklif,
+        mesaj: error instanceof IoError ? error.message : t.flow.pay.errFail,
+      });
+    }
+  };
+
   /** "Yeni teklif oluştur" — akışı ilk adımdan başlatır. */
   const akisiSifirla = () => {
     setTalepBasari(null);
     setSatinAlma(null);
     setSatinAlinan(null);
     setSecilen(null);
+    setUyari(null);
     setSonuclar([]);
     setKayitliTeklifBilgisi(null);
     setKayitliTeklifHatasi("");
@@ -684,9 +736,7 @@ export default function QuoteFlowPage() {
             sonuclar={sonuclar}
             oturumId={oturumId}
             kisaSureli={gereksinim.kisaSureli}
-            onSatinAl={(bransNo, teklifId, teklif) =>
-              setSecilen({ bransNo, teklifId, teklif })
-            }
+            onSatinAl={satinAlKontrol}
             onTeklifIste={teklifIste}
             onGeri={() => {
               pollAbort.current?.abort();
@@ -778,7 +828,11 @@ export default function QuoteFlowPage() {
           teklifId={secilen.teklifId}
           teklif={secilen.teklif}
           kimlikNo={kimlikNoOf(kimlik)}
-          onTeklifIste={() => teklifIste(secilen.bransNo, secilen.teklif)}
+          baslangicPrim={secilen.yeniPrim ?? null}
+          onSirketReddi={(mesaj) => {
+            setUyari({ ...secilen, mesaj });
+            setSecilen(null);
+          }}
           onKapat={() => setSecilen(null)}
           onBasarili={(sonuc) => {
             pollAbort.current?.abort();
@@ -786,6 +840,20 @@ export default function QuoteFlowPage() {
             setSecilen(null);
             setSatinAlma(sonuc);
             setAdim("sonuc");
+          }}
+        />
+      ) : null}
+
+      {uyari && !talepBasari ? (
+        <SatinAlUyariModali
+          bransNo={uyari.bransNo}
+          teklif={uyari.teklif}
+          mesaj={uyari.mesaj}
+          onKapat={() => setUyari(null)}
+          onTeklifIste={async () => {
+            const sonuc = await teklifIste(uyari.bransNo, uyari.teklif);
+            if (sonuc.ok) setUyari(null);
+            return sonuc;
           }}
         />
       ) : null}

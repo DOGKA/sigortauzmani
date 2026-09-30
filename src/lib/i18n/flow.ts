@@ -76,6 +76,9 @@ export interface FlowMessages {
     buy: string;
     request: string;
     sending: string;
+    checking: string;
+    warnTitle: string;
+    warnNote: string;
     disclaimer: string;
     cash: string;
     installments: string;
@@ -103,6 +106,8 @@ export interface FlowMessages {
     complete: string;
     /** Şirket primi güncellediğinde onay düğmesi. */
     approveNew: string;
+    /** Ön kontrolde şirket primi güncellediğinde onay ekranındaki not. */
+    priceChanged: string;
     errName: string;
     errCard: string;
     errExpiry: string;
@@ -191,6 +196,10 @@ const TR: FlowMessages = {
     buy: "Satın al",
     request: "Teklif iste",
     sending: "Gönderiliyor…",
+    checking: "Kontrol ediliyor…",
+    warnTitle: "Bu teklif şu an satın alınamıyor",
+    warnNote:
+      "Kartınızdan herhangi bir çekim yapılmadı. Teklif isterseniz ekibimiz poliçenizi sizin için düzenler.",
     disclaimer:
       "Listelenen tutarlar sigorta şirketlerinden gelen tekliflerdir ve poliçe değildir. Sigorta şirketi, poliçeleştirme sırasında yaptığı son kontrole göre teklifi güncelleyebilir veya kabul etmeyebilir.",
     cash: "Peşin",
@@ -221,6 +230,8 @@ const TR: FlowMessages = {
     cvv: "CVV",
     complete: "Ödemeyi tamamla",
     approveNew: "Yeni tutarı onayla ve öde",
+    priceChanged:
+      "Sigorta şirketi bu teklifin primini güncelledi. Ödeyeceğiniz güncel tutar yukarıda yazıyor.",
     errName: "Kart sahibinin adını girin.",
     errCard: "Kart numarasını eksiksiz girin.",
     errExpiry: "Son kullanma tarihini seçin.",
@@ -313,6 +324,10 @@ const EN: FlowMessages = {
     buy: "Buy",
     request: "Request quote",
     sending: "Sending…",
+    checking: "Checking…",
+    warnTitle: "This quote cannot be purchased right now",
+    warnNote:
+      "No charge was made to your card. Request a quote and our team will arrange the policy for you.",
     disclaimer:
       "Listed amounts are quotes from insurers, not policies. The insurer may update or decline the quote after its final check at issuance.",
     cash: "In full",
@@ -343,6 +358,8 @@ const EN: FlowMessages = {
     cvv: "CVV",
     complete: "Complete payment",
     approveNew: "Approve the new amount and pay",
+    priceChanged:
+      "The insurer updated the premium for this quote. The current amount you will pay is shown above.",
     errName: "Enter the cardholder’s name.",
     errCard: "Enter the full card number.",
     errExpiry: "Select the expiry date.",
@@ -435,6 +452,10 @@ const AR: FlowMessages = {
     buy: "اشتروا",
     request: "اطلبوا عرضاً",
     sending: "جارٍ الإرسال…",
+    checking: "جارٍ التحقق…",
+    warnTitle: "لا يمكن شراء هذا العرض الآن",
+    warnNote:
+      "لم يتم خصم أي مبلغ من بطاقتكم. اطلبوا عرضاً وسيقوم فريقنا بإعداد الوثيقة لكم.",
     disclaimer:
       "المبالغ المدرجة عروض من شركات التأمين وليست وثائق. قد تحدّث الشركة العرض أو ترفضه بعد الفحص النهائي عند الإصدار.",
     cash: "نقداً",
@@ -465,6 +486,8 @@ const AR: FlowMessages = {
     cvv: "CVV",
     complete: "أكملوا الدفع",
     approveNew: "وافقوا على المبلغ الجديد وادفعوا",
+    priceChanged:
+      "حدّثت شركة التأمين قسط هذا العرض. المبلغ الحالي الذي ستدفعونه مبيّن أعلاه.",
     errName: "أدخلوا اسم حامل البطاقة.",
     errCard: "أدخلوا رقم البطاقة كاملاً.",
     errExpiry: "اختاروا تاريخ الانتهاء.",
@@ -557,6 +580,10 @@ const FA: FlowMessages = {
     buy: "خرید",
     request: "درخواست پیشنهاد",
     sending: "در حال ارسال…",
+    checking: "در حال بررسی…",
+    warnTitle: "این پیشنهاد در حال حاضر قابل خرید نیست",
+    warnNote:
+      "هیچ مبلغی از کارت شما کسر نشد. درخواست پیشنهاد دهید تا تیم ما بیمه‌نامه را برایتان تنظیم کند.",
     disclaimer:
       "مبالغ فهرست‌شده پیشنهاد شرکت‌های بیمه است نه بیمه‌نامه. شرکت ممکن است پس از کنترل نهایی در صدور، پیشنهاد را به‌روز یا رد کند.",
     cash: "نقدی",
@@ -587,6 +614,8 @@ const FA: FlowMessages = {
     cvv: "CVV",
     complete: "تکمیل پرداخت",
     approveNew: "مبلغ جدید را تأیید و پرداخت کنید",
+    priceChanged:
+      "شرکت بیمه حق بیمه این پیشنهاد را به‌روز کرد. مبلغ فعلی قابل پرداخت در بالا نوشته شده است.",
     errName: "نام دارنده کارت را وارد کنید.",
     errCard: "شماره کارت را کامل وارد کنید.",
     errExpiry: "تاریخ انقضا را انتخاب کنید.",

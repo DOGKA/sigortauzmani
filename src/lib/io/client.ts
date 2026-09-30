@@ -270,6 +270,21 @@ export function primleriGetir(body: {
   return call<PrimlerSonuc>("primler", { method: "POST", body });
 }
 
+export type OnKontrolSonucu =
+  | { durum: "acik"; prim: number }
+  | { durum: "primDegisti"; eskiPrim: number; yeniPrim: number }
+  | { durum: "kapali"; mesaj: string };
+
+/** "Satın al"a basıldığında, kart ekranı açılmadan önce şirkete sorar. */
+export function onKontrol(body: {
+  oturumId: string;
+  bransNo: number;
+  teklifId: number;
+  teklif: Partial<SirketTeklifi>;
+}): Promise<OnKontrolSonucu> {
+  return call<OnKontrolSonucu>("on-kontrol", { method: "POST", body });
+}
+
 export function satinAl(body: {
   oturumId: string;
   bransNo: number;
