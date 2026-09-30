@@ -670,7 +670,7 @@ export default function QuotePage() {
               {t.quote.serialHelpTitle}
             </h3>
             <img
-              src="/ruhsat-seri.jpg"
+              src="/ruhsat-belge-seri.jpg"
               alt={t.quote.serialHelpAlt}
               className="quote__modal-image"
             />

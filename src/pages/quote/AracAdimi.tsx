@@ -101,6 +101,7 @@ export default function AracAdimi({
     "bekliyor" | "sorguluyor" | "geldi" | "gelmedi"
   >(durum.tramerTamam ? "geldi" : "bekliyor");
   const [tramerNotu, setTramerNotu] = useState("");
+  const [seriGorseliAcik, setSeriGorseliAcik] = useState(false);
   const sonKayitKontrolu = useRef("");
   /** Elle seçilen marka + model; TRAMER tutmazsa teklif gövdesine bu giriyor. */
   const secilenAracKodu = aracKodu(durum);
@@ -444,7 +445,16 @@ export default function AracAdimi({
                   onDegis({ tescilBelge: event.target.value.toUpperCase() })
                 }
               />
-              <span className="flow__hint">Ruhsatın sağ üst köşesinde yer alır.</span>
+              <span className="flow__hint">
+                Ruhsatın sağ alt kısmında yer almaktadır.{" "}
+                <button
+                  type="button"
+                  className="flow__hint-link"
+                  onClick={() => setSeriGorseliAcik(true)}
+                >
+                  Örnek görseli gör
+                </button>
+              </span>
               {hatalar.tescilBelge ? (
                 <span className="flow__error">{hatalar.tescilBelge}</span>
               ) : null}
@@ -698,6 +708,40 @@ export default function AracAdimi({
           {calisiyor ? t.flow.running : t.flow.runQuote}
         </button>
       </div>
+
+      {seriGorseliAcik ? (
+        <div
+          className="flow__overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Ruhsatta belge seri numarasının yeri"
+          onClick={() => setSeriGorseliAcik(false)}
+        >
+          <div
+            className="flow__modal flow__modal--gorsel"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              className="flow__modal-close"
+              onClick={() => setSeriGorseliAcik(false)}
+              aria-label={t.flow.close}
+            >
+              ×
+            </button>
+            <h2 className="flow__modal-title">Belge seri no nerede?</h2>
+            <p className="flow__modal-lead">
+              Belge seri no, ruhsatın sağ alt kısmındaki "Belge Seri" ve "№"
+              alanlarında yer alır. Örneğin: AA999999
+            </p>
+            <img
+              className="flow__modal-gorsel"
+              src="/ruhsat-belge-seri.jpg"
+              alt="Ruhsatın sağ alt kısmında Belge Seri: AA № 999999 alanı"
+            />
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

@@ -174,6 +174,20 @@
   color: var(--ink-400);
 }
 
+.flow__hint-link {
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: var(--brand-600);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.flow__hint-link:hover {
+  color: var(--brand-700);
+}
+
 /* Verinin neden istendiğini ve nasıl işlendiğini anlatan not. */
 .flow__bilgi {
   display: flex;
@@ -623,6 +637,18 @@
   background: #fff;
   border-radius: 18px;
   box-shadow: 0 24px 64px rgb(16 28 48 / 25%);
+}
+
+.flow__modal--gorsel {
+  max-width: 640px;
+}
+
+.flow__modal-gorsel {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  border: 1px solid #e3e8f2;
 }
 
 .flow__modal-close {
