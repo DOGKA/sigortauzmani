@@ -64,14 +64,15 @@ export function kodOzeti(sessionId: string, telefon: string, kod: string): Promi
   return gizliOzet(`sms:${sessionId}:${telefon}:${kod}`);
 }
 
-/** Kod mesajın başında: telefonların SMS'ten otomatik doldurması ilk sayıyı alıyor. */
+/**
+ * Kod mesajın başında: telefonların SMS'ten otomatik doldurması ilk sayıyı
+ * alıyor. Metin 155 karakterin altında kalmalı; Türkçe harfli mesajda
+ * Verimor 156. karakterden itibaren ikinci SMS kredisi düşüyor.
+ */
 function mesajMetni(kod: string): string {
   return (
-    `${kod} Gross Sigorta, sigortauzmani.net üzerinden gerçekleştirdiğiniz ` +
-    "KVKK Aydınlatma Metni, Açık Rıza Metni ve Gizlilik Sözleşmesi onaylarını " +
-    "doğrulamak için doğrulama kodunuzdur. Doğrulama kodunuzu kimseyle " +
-    "paylaşmayınız. Detaylı metinlere web sitemizden ulaşabilirsiniz. " +
-    "MERSİS: 0411085688900001"
+    `${kod} sigortauzmani.net KVKK, Açık Rıza ve Gizlilik Sözleşmesi onay kodunuzdur. ` +
+    "Kimseyle paylaşmayınız. Gross Sigorta MERSİS: 0411085688900001"
   );
 }
 
