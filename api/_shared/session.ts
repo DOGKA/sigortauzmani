@@ -41,8 +41,14 @@ async function hmac(value: string, key: string): Promise<string> {
   return toHex(signature);
 }
 
+/** SESSION_SECRET ile HMAC; anahtar tanımlı değilse null. */
+export async function gizliOzet(value: string): Promise<string | null> {
+  const key = secret();
+  return key ? hmac(value, key) : null;
+}
+
 /** Sabit süreli karşılaştırma; imza doğrulamasında zamanlama sızıntısını önler. */
-function safeEqual(a: string, b: string): boolean {
+export function safeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
   let diff = 0;
   for (let i = 0; i < a.length; i++) {

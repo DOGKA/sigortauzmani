@@ -28,7 +28,9 @@ import { IoError, sorguMernis } from "../../lib/io/client";
 import { okuAdSoyad, okuAdresKodu, okuDogumTarihi } from "../../lib/io/okuma";
 import QuoteKvkkNotu from "../../components/QuoteKvkkNotu";
 import SaglikAcikRiza from "../../components/SaglikAcikRiza";
+import { useTelefonDogrulama } from "../../components/TelefonDogrulama";
 import { isSaglikUrunu } from "../../data/saglikRiza";
+import { smsDogrulamaGerekli } from "../../data/smsDogrulama";
 import {
   formatPhoneInput,
   isValidForeignId,
@@ -67,6 +69,7 @@ export default function KimlikAdimi({
   const [hatalar, setHatalar] = useState<Record<string, string>>({});
   const [sorguluyor, setSorguluyor] = useState(false);
   const [uyari, setUyari] = useState("");
+  const { dogrula: telefonDogrula, modal: telefonModali } = useTelefonDogrulama();
   const dogrula = () => {
     const next: Record<string, string> = {};
     if (!kimlikGecerli(durum)) {
@@ -100,6 +103,11 @@ export default function KimlikAdimi({
     if (!dogrula()) return;
     setUyari("");
     setSorguluyor(true);
+
+    if (smsDogrulamaGerekli(productSlug) && !(await telefonDogrula(durum.phone))) {
+      setSorguluyor(false);
+      return;
+    }
 
     try {
       const yanit = await sorguMernis({
@@ -275,6 +283,7 @@ export default function KimlikAdimi({
               : t.quote.continueEt}
         </button>
       </div>
+      {telefonModali}
     </div>
   );
 }

@@ -18,7 +18,7 @@ function serviceCredentials(): { url: string; key: string } | null {
   return { url, key };
 }
 
-async function dbRequest<T>(
+export async function dbRequest<T>(
   path: string,
   init: { method: string; body?: unknown; prefer?: string },
 ): Promise<T | null> {
@@ -41,6 +41,46 @@ async function dbRequest<T>(
     return text ? (JSON.parse(text) as T) : null;
   } catch {
     return null;
+  }
+}
+
+export type DbInsertSonucu =
+  | { ok: true }
+  | { ok: false; code: string | null; message: string };
+
+/**
+ * Hata ayrıntısını döndüren insert. `dbRequest` hatayı yutuyor; eksik kolona
+ * göre yedek insert denemek isteyen çağıran PostgREST kodunu görmeli.
+ */
+export async function dbInsert(table: string, body: unknown): Promise<DbInsertSonucu> {
+  const creds = serviceCredentials();
+  if (!creds) return { ok: false, code: null, message: "Veritabanı yapılandırması eksik." };
+
+  try {
+    const response = await fetch(`${creds.url}/rest/v1/${table}`, {
+      method: "POST",
+      headers: {
+        apikey: creds.key,
+        Authorization: `Bearer ${creds.key}`,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify(body),
+    });
+    if (response.ok) return { ok: true };
+    const text = await response.text();
+    try {
+      const hata = JSON.parse(text) as { code?: string; message?: string };
+      return { ok: false, code: hata.code ?? null, message: hata.message ?? text };
+    } catch {
+      return { ok: false, code: null, message: text || `HTTP ${response.status}` };
+    }
+  } catch (error) {
+    return {
+      ok: false,
+      code: null,
+      message: error instanceof Error ? error.message : "Veritabanına ulaşılamadı.",
+    };
   }
 }
 

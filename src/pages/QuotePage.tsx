@@ -8,7 +8,9 @@ import AdvisorVideo from "../components/AdvisorVideo";
 import QuoteKvkkNotu from "../components/QuoteKvkkNotu";
 import SaglikAcikRiza from "../components/SaglikAcikRiza";
 import TalepBasariEkrani from "../components/TalepBasariEkrani";
+import { useTelefonDogrulama } from "../components/TelefonDogrulama";
 import { isSaglikUrunu, type SaglikRizaSecimi } from "../data/saglikRiza";
+import { smsDogrulamaGerekli } from "../data/smsDogrulama";
 import { getQuoteKvkkGovde, QUOTE_KVKK_SURUM } from "../data/quoteKvkk";
 import { ROBOTS_NOINDEX, pageOgImageUrl } from "../lib/seo/config";
 import { productServiceNode } from "../lib/seo/nodes/product";
@@ -69,6 +71,8 @@ export default function QuotePage() {
   // anı talep kaydına yazılıyor ki sonradan hangi metnin gösterildiği
   // kanıtlanabilsin.
   const [kvkkGosterildiAt] = useState(() => new Date().toISOString());
+  const { dogrula: telefonDogrula, modal: telefonModali } = useTelefonDogrulama();
+  const [gonderiliyor, setGonderiliyor] = useState(false);
 
   const clearError = (field: string) =>
     setErrors((prev) => {
@@ -128,6 +132,16 @@ export default function QuotePage() {
   /** Vergi kimlik numarası girildiyse doğum tarihi sorulmuyor. */
   const showBirthDate = entityType !== "sirket";
   const nextStep = () => setStep((s) => Math.min(s + 1, TOTAL_STEPS));
+  const smsGerekli = smsDogrulamaGerekli(product.slug);
+
+  /** Telefonun alındığı adımda, sonraki adıma geçmeden SMS kodu. */
+  const telefonOnayli = async (): Promise<boolean> => {
+    if (!smsGerekli) return true;
+    setGonderiliyor(true);
+    const sonuc = await telefonDogrula(phone);
+    setGonderiliyor(false);
+    return sonuc;
+  };
 
   const switchHasPlate = (value: boolean) => {
     if (value === hasPlate) return;
@@ -189,10 +203,10 @@ export default function QuotePage() {
     return Object.keys(next).length === 0;
   };
 
-  const completeQuote = () => {
+  const completeQuote = async () => {
     const no = generateTalepNo();
-    setTalepNo(no);
-    void createTalep({
+    setGonderiliyor(true);
+    const sonuc = await createTalep({
       talep_no: no,
       product_slug: product.slug,
       product_title: product.title,
@@ -218,6 +232,12 @@ export default function QuotePage() {
           }
         : {}),
     });
+    setGonderiliyor(false);
+    if (!sonuc.ok) {
+      setErrors((prev) => ({ ...prev, submit: sonuc.error }));
+      return;
+    }
+    setTalepNo(no);
     setCompleted(true);
   };
 
@@ -308,9 +328,11 @@ export default function QuotePage() {
                 {step === 1 && (
                   <form
                     className="quote__form"
-                    onSubmit={(e) => {
+                    onSubmit={async (e) => {
                       e.preventDefault();
-                      if (validateStep1()) nextStep();
+                      if (!validateStep1()) return;
+                      if (usesIdentityPhoneStep && !(await telefonOnayli())) return;
+                      nextStep();
                     }}
                     noValidate
                   >
@@ -382,8 +404,12 @@ export default function QuotePage() {
                       />
                     ) : null}
 
-                    <button type="submit" className="quote__submit">
-                      {t.quote.continueEt}
+                    <button
+                      type="submit"
+                      className="quote__submit"
+                      disabled={gonderiliyor}
+                    >
+                      {gonderiliyor ? t.quote.loading : t.quote.continueEt}
                     </button>
                   </form>
                 )}
@@ -391,9 +417,11 @@ export default function QuotePage() {
                 {step === 2 && (
                   <form
                     className="quote__form"
-                    onSubmit={(e) => {
+                    onSubmit={async (e) => {
                       e.preventDefault();
-                      if (validateStep2()) completeQuote();
+                      if (!validateStep2()) return;
+                      if (!usesIdentityPhoneStep && !(await telefonOnayli())) return;
+                      await completeQuote();
                     }}
                   >
                     {isVehicleProduct ? (
@@ -614,11 +642,20 @@ export default function QuotePage() {
                       </p>
                     )}
 
-                    <button type="submit" className="quote__submit">
-                      {t.quote.seeQuotes}
+                    {errors.submit && (
+                      <span className="quote__error">{errors.submit}</span>
+                    )}
+
+                    <button
+                      type="submit"
+                      className="quote__submit"
+                      disabled={gonderiliyor}
+                    >
+                      {gonderiliyor ? t.quote.loading : t.quote.seeQuotes}
                     </button>
                   </form>
                 )}
+                {telefonModali}
               </>
             )}
           </div>

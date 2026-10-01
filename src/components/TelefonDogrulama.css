@@ -1,0 +1,158 @@
+.tel-dogrulama__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgb(16 28 48 / 55%);
+  overflow-y: auto;
+}
+
+.tel-dogrulama__modal {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 400px;
+  padding: 28px 24px 22px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 24px 64px rgb(16 28 48 / 25%);
+}
+
+.tel-dogrulama__close {
+  position: absolute;
+  top: 12px;
+  inset-inline-end: 12px;
+  width: 28px;
+  height: 28px;
+  font-size: 21px;
+  line-height: 1;
+  color: var(--ink-400);
+  border-radius: 8px;
+}
+
+.tel-dogrulama__close:hover {
+  color: var(--ink-900);
+  background: #eef2fa;
+}
+
+.tel-dogrulama__title {
+  margin: 0;
+  padding-inline-end: 32px;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.tel-dogrulama__lead {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-500);
+}
+
+.tel-dogrulama__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 4px;
+}
+
+.tel-dogrulama__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-700);
+}
+
+.tel-dogrulama__input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-900);
+  background: #fff;
+  border: 1px solid #d7deea;
+  border-radius: 10px;
+  outline: none;
+  direction: ltr;
+}
+
+.tel-dogrulama__input:focus {
+  border-color: var(--brand-600);
+  box-shadow: 0 0 0 3px rgb(17 85 214 / 15%);
+}
+
+.tel-dogrulama__input:disabled {
+  color: var(--ink-400);
+  background: #f5f7fb;
+}
+
+.tel-dogrulama__input--error {
+  border-color: #d93025;
+}
+
+.tel-dogrulama__hint {
+  min-height: 18px;
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-500);
+}
+
+.tel-dogrulama__error {
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 13px;
+  color: #a12a1f;
+  background: #fdecea;
+  border: 1px solid #f6c7c2;
+  border-radius: 10px;
+}
+
+.tel-dogrulama__primary {
+  width: 100%;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--brand-600);
+  border-radius: 10px;
+  transition: background 0.15s ease;
+}
+
+.tel-dogrulama__primary:hover:not(:disabled) {
+  background: var(--brand-700);
+}
+
+.tel-dogrulama__primary:disabled {
+  background: var(--brand-300);
+  cursor: not-allowed;
+}
+
+.tel-dogrulama__links {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tel-dogrulama__link {
+  padding: 4px 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--brand-700);
+}
+
+.tel-dogrulama__link:hover:not(:disabled) {
+  text-decoration: underline;
+}
+
+.tel-dogrulama__link:disabled {
+  color: var(--ink-400);
+  cursor: not-allowed;
+}

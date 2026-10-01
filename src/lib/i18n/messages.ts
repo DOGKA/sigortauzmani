@@ -3,6 +3,7 @@ import { COMPARE, type CompareMessages } from "./compare";
 import { FLOW, type FlowMessages } from "./flow";
 import { GLOSSARY, type GlossaryMessages } from "./glossary";
 import type { Locale } from "./locales";
+import { SMS, type SmsMessages } from "./sms";
 import { SUCCESS, type SuccessMessages } from "./success";
 
 export interface UiMessages {
@@ -200,6 +201,7 @@ export interface UiMessages {
     chassisPlaceholder: string;
   };
   success: SuccessMessages;
+  sms: SmsMessages;
   flow: FlowMessages;
   compare: CompareMessages;
   glossaryPage: GlossaryMessages;
@@ -470,6 +472,7 @@ const TR: UiMessages = {
     chassisPlaceholder: "Şasi No (17 karakter)",
   },
   success: SUCCESS.tr,
+  sms: SMS.tr,
   flow: FLOW.tr,
   compare: COMPARE.tr,
   glossaryPage: GLOSSARY.tr,
@@ -795,6 +798,7 @@ const EN: UiMessages = {
     chassisPlaceholder: "Chassis no. (17 characters)",
   },
   success: SUCCESS.en,
+  sms: SMS.en,
   flow: FLOW.en,
   compare: COMPARE.en,
   glossaryPage: GLOSSARY.en,
@@ -1118,6 +1122,7 @@ const AR: UiMessages = {
     chassisPlaceholder: "رقم الهيكل (17 خانة)",
   },
   success: SUCCESS.ar,
+  sms: SMS.ar,
   flow: FLOW.ar,
   compare: COMPARE.ar,
   glossaryPage: GLOSSARY.ar,
@@ -1441,6 +1446,7 @@ const FA: UiMessages = {
     chassisPlaceholder: "شماره شاسی (۱۷ نویسه)",
   },
   success: SUCCESS.fa,
+  sms: SMS.fa,
   flow: FLOW.fa,
   compare: COMPARE.fa,
   glossaryPage: GLOSSARY.fa,

@@ -139,68 +139,30 @@ export function generateIletisimNo(): string {
   return `IL-${yy}${mm}${dd}-${suffix}`;
 }
 
-function sutunYok(error: { code?: string; message?: string }): boolean {
-  return (
-    error.code === "PGRST204" ||
-    /Could not find the '.+' column/i.test(error.message ?? "")
-  );
-}
-
+/**
+ * Talep sunucu üzerinden yazılıyor (`api/talep.ts`): SMS doğrulaması gereken
+ * ürünlerde numaranın doğrulandığını orası kontrol ediyor. Eksik kolon
+ * yedekleri de orada.
+ */
 export async function createTalep(talep: TalepInsert): Promise<TalepSonuc> {
-  const client = getSupabase();
-  if (!client) {
+  let response: Response;
+  try {
+    response = await fetch("/api/talep", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(talep),
+    });
+  } catch {
     return { ok: false, error: "Bağlantı kurulamadı. Lütfen tekrar deneyin." };
   }
 
-  const {
-    sirket_adi,
-    gosterilen_prim,
-    saglik_acik_riza,
-    kvkk_surum,
-    kvkk_gosterildi_at,
-    locale,
-    ...temel
-  } = talep;
-  const genis = {
-    ...temel,
-    ...(sirket_adi ? { sirket_adi } : {}),
-    ...(typeof gosterilen_prim === "number" ? { gosterilen_prim } : {}),
-    ...(typeof saglik_acik_riza === "boolean" ? { saglik_acik_riza } : {}),
-    ...(kvkk_surum ? { kvkk_surum } : {}),
-    ...(kvkk_gosterildi_at ? { kvkk_gosterildi_at } : {}),
-    ...(locale ? { locale } : {}),
-  };
-
-  let { error } = await client.from("talepler").insert(genis);
-  if (error && /locale/i.test(error.message ?? "") && locale) {
-    const { locale: _omit, ...withoutLocale } = genis;
-    ({ error } = await client.from("talepler").insert(withoutLocale));
-  }
-  if (error && sutunYok(error)) {
-    // Eski şemaya düşerken sirket_adi ve gosterilen_prim feda edilebilir;
-    // uyum kayıtları edilemez. Açık rıza düşerse kayıt rıza hiç sorulmamış,
-    // KVKK sürümü düşerse aydınlatma hiç gösterilmemiş gibi görünürdü.
-    if (typeof saglik_acik_riza === "boolean" || kvkk_surum) {
-      console.error("Uyum kolonları eksik, talep yazılmadı:", error.message);
-      return {
-        ok: false,
-        error: "Talep kaydedilemedi. Lütfen bizimle iletişime geçin.",
-      };
-    }
-    if (sirket_adi || gosterilen_prim != null) {
-      const yedekBaslik = sirket_adi
-        ? `${temel.product_title} · ${sirket_adi}`
-        : temel.product_title;
-      ({ error } = await client.from("talepler").insert({
-        ...temel,
-        product_title: yedekBaslik,
-      }));
-    }
-  }
-
-  if (error) {
-    console.error("Talep kaydedilemedi:", error.message);
-    return { ok: false, error: "Talep kaydedilemedi. Lütfen tekrar deneyin." };
+  if (!response.ok) {
+    const govde = (await response.json().catch(() => null)) as { error?: string } | null;
+    return {
+      ok: false,
+      error: govde?.error ?? "Talep kaydedilemedi. Lütfen tekrar deneyin.",
+    };
   }
 
   void sendTalepNotificationEmail(talep);

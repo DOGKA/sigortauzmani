@@ -37,7 +37,9 @@ import {
   updateOturum,
 } from "../_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
+import { DOGRULANMAMIS_TELEFON, telefonDogrulandi } from "../_shared/sms";
 import { readEnv } from "../_shared/supabase";
+import { smsDogrulamaGerekli } from "../../src/data/smsDogrulama";
 
 export const config = { runtime: "edge" };
 
@@ -295,6 +297,16 @@ export default async function handler(request: Request): Promise<Response> {
   if (talepler.length > MAX_BRANS_PER_REQUEST) {
     return withCookie(
       jsonResponse({ error: "Tek istekte en fazla iki branş çalıştırılabilir." }, 400),
+      session,
+    );
+  }
+
+  if (
+    smsDogrulamaGerekli(productSlug) &&
+    !(await telefonDogrulandi(session.id, body.kisi?.phone))
+  ) {
+    return withCookie(
+      jsonResponse({ error: DOGRULANMAMIS_TELEFON, telefonDogrulama: true }, 403),
       session,
     );
   }
