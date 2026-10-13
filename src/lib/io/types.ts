@@ -226,4 +226,14 @@ export interface SatinAlmaSonuc {
   policePdfUrl: string | null;
   makbuzPdfUrl: string | null;
   kartSon4: string;
+  /**
+   * 3D Secure: poliçe henüz kesilmedi, banka doğrulama sayfası gösterilmeli.
+   * Form kendiliğinden bankaya gönderilen bir HTML ya da doğrudan bir adres.
+   */
+  ucDSecure?: { html: string } | { url: string };
+}
+
+export interface UcDDurumSonuc extends Partial<SatinAlmaSonuc> {
+  policeKesildi: boolean;
+  bekliyor?: boolean;
 }

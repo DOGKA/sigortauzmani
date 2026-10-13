@@ -23,6 +23,7 @@ import type {
   SirketTeklifi,
   TeklifOlusturSonuc,
   TeklifPayload,
+  UcDDurumSonuc,
   Ulke,
 } from "./types";
 
@@ -295,6 +296,17 @@ export function satinAl(body: {
   onaylananPrim?: number;
 }): Promise<SatinAlmaSonuc> {
   return call<SatinAlmaSonuc>("satinal", { method: "POST", body });
+}
+
+/** 3D Secure doğrulamasından sonra poliçenin kesilip kesilmediği. */
+export function ucDDurum(body: {
+  oturumId: string;
+  bransNo: number;
+  teklifId: number;
+  sirketTeklifId: number | undefined;
+  sirketKodu: string | number | undefined;
+}): Promise<UcDDurumSonuc> {
+  return call<UcDDurumSonuc>("ucd-durum", { method: "POST", body });
 }
 
 /**

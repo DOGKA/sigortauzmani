@@ -7,14 +7,19 @@
  * sigorta şirketinin sanal POS altyapısına iletilir (sistemde saklanmaz).
  */
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useT } from "../../lib/i18n/context";
 import { interpolate, localizeInstallment } from "../../lib/i18n/format";
 import IlerlemePaneli from "./IlerlemePaneli";
 import { odemeUrlEtiketi, odemeUrlOku } from "./odemeUrl";
 import { formatPrim } from "./paraBirimi";
-import { IoError, satinAl } from "../../lib/io/client";
+import { IoError, satinAl, ucDDurum } from "../../lib/io/client";
 import type { SatinAlmaSonuc, SirketTeklifi } from "../../lib/io/types";
+
+type UcDYonlendirme = NonNullable<SatinAlmaSonuc["ucDSecure"]>;
+
+const UCD_SORGU_ARALIGI_MS = 5_000;
+const UCD_AZAMI_BEKLEME_MS = 10 * 60 * 1000;
 
 /** Kart numarasını 4'erli gruplar hâlinde gösterir; sunucuya rakamlar gider. */
 function formatKartNo(value: string): string {
@@ -31,7 +36,7 @@ const AYLAR = Array.from({ length: 12 }, (_, index) =>
   String(index + 1).padStart(2, "0"),
 );
 
-type Asama = "onay" | "pos";
+type Asama = "onay" | "pos" | "ucd";
 
 interface Props {
   oturumId: string;
@@ -74,8 +79,81 @@ export default function OdemeModali({
   // Şirket ödeme öncesi yenilemede primi değiştirdiyse kart çekilmiyor;
   // ziyaretçi yeni tutarı onaylayana kadar burada tutuluyor.
   const [yeniPrim, setYeniPrim] = useState<number | null>(baslangicPrim);
+  const [ucd, setUcd] = useState<UcDYonlendirme | null>(null);
+  const [ucdKontrol, setUcdKontrol] = useState(false);
+  const [ucdMesaj, setUcdMesaj] = useState("");
+  const ucdBitti = useRef(false);
+  const onBasariliRef = useRef(onBasarili);
+  onBasariliRef.current = onBasarili;
 
   const odemeUrl = odemeUrlOku(teklif);
+
+  const ucdSorgula = async (elle: boolean) => {
+    if (ucdBitti.current) return;
+    if (elle) {
+      setUcdKontrol(true);
+      setUcdMesaj("");
+    }
+    try {
+      const durum = await ucDDurum({
+        oturumId,
+        bransNo,
+        teklifId,
+        sirketTeklifId: teklif.Id,
+        sirketKodu: teklif.SirketKodu,
+      });
+      if (durum.policeKesildi && !ucdBitti.current) {
+        ucdBitti.current = true;
+        onBasariliRef.current({
+          policeKesildi: true,
+          policeNo: durum.policeNo ?? null,
+          policePdfUrl: durum.policePdfUrl ?? null,
+          makbuzPdfUrl: durum.makbuzPdfUrl ?? null,
+          kartSon4: durum.kartSon4 ?? "",
+        });
+        return;
+      }
+      if (elle) setUcdMesaj(t.flow.pay.ucdNotYet);
+    } catch {
+      if (elle) setUcdMesaj(t.flow.pay.ucdNotYet);
+    } finally {
+      if (elle) setUcdKontrol(false);
+    }
+  };
+  const ucdSorgulaRef = useRef(ucdSorgula);
+  ucdSorgulaRef.current = ucdSorgula;
+
+  // Banka ekranı açıkken poliçe arka planda takip ediliyor; müşteri şifreyi
+  // girdiğinde ayrıca bir şey yapması gerekmiyor.
+  useEffect(() => {
+    if (asama !== "ucd") return;
+    const baslangic = Date.now();
+    const zamanlayici = window.setInterval(() => {
+      if (Date.now() - baslangic > UCD_AZAMI_BEKLEME_MS) {
+        window.clearInterval(zamanlayici);
+        setUcdMesaj(t.flow.pay.ucdTimeout);
+        return;
+      }
+      void ucdSorgulaRef.current(false);
+    }, UCD_SORGU_ARALIGI_MS);
+    return () => window.clearInterval(zamanlayici);
+  }, [asama, t.flow.pay.ucdTimeout]);
+
+  const ucdYeniSekme = () => {
+    if (!ucd) return;
+    if ("url" in ucd) {
+      window.open(ucd.url, "_blank", "noopener,noreferrer");
+      return;
+    }
+    const pencere = window.open("", "_blank");
+    if (!pencere) {
+      setUcdMesaj(t.flow.pay.popupBlocked);
+      return;
+    }
+    pencere.document.open();
+    pencere.document.write(ucd.html);
+    pencere.document.close();
+  };
   const odenecekPrim = yeniPrim ?? teklif.Prim;
 
   const ozet = (
@@ -159,6 +237,11 @@ export default function OdemeModali({
         // Onaylanan tutar gönderilmezse sunucu değişikliği tekrar sorar.
         ...(yeniPrim !== null ? { onaylananPrim: yeniPrim } : {}),
       });
+      if (sonuc.ucDSecure) {
+        setUcd(sonuc.ucDSecure);
+        setAsama("ucd");
+        return;
+      }
       onBasarili(sonuc);
     } catch (error) {
       if (error instanceof IoError && error.sirketReddi) {
@@ -196,6 +279,60 @@ export default function OdemeModali({
             tahminiSaniye={25}
             not={t.flow.pay.processingNot}
           />
+        </div>
+      </div>
+    );
+  }
+
+  if (asama === "ucd" && ucd) {
+    return (
+      <div
+        className="flow__overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="odeme-ucd-baslik"
+      >
+        <div className="flow__modal">
+          <button
+            type="button"
+            className="flow__modal-close"
+            onClick={onKapat}
+            aria-label={t.flow.close}
+          >
+            ×
+          </button>
+
+          {ozet}
+
+          <h2 className="flow__modal-title" id="odeme-ucd-baslik">
+            {t.flow.pay.ucdTitle}
+          </h2>
+          <p className="flow__modal-lead">{t.flow.pay.ucdLead}</p>
+
+          {/* Banka sayfası kendi alan adına geçiyor; çerezlerinin çalışması
+              için allow-same-origin gerekli. Üst pencereyi kendiliğinden
+              değiştirmesine izin verilmiyor, sonuç takipten okunuyor. */}
+          <iframe
+            className="flow__ucd-frame"
+            title={t.flow.pay.ucdTitle}
+            sandbox="allow-forms allow-scripts allow-same-origin allow-popups allow-top-navigation-by-user-activation"
+            {...("html" in ucd ? { srcDoc: ucd.html } : { src: ucd.url })}
+          />
+
+          <button type="button" className="flow__ucd-link" onClick={ucdYeniSekme}>
+            {t.flow.pay.ucdNewTab}
+          </button>
+
+          {ucdMesaj ? <p className="flow__warning">{ucdMesaj}</p> : null}
+
+          <button
+            type="button"
+            className="flow__primary flow__primary--block"
+            disabled={ucdKontrol}
+            onClick={() => void ucdSorgula(true)}
+          >
+            {ucdKontrol ? t.flow.pay.ucdWaiting : t.flow.pay.ucdCheck}
+          </button>
         </div>
       </div>
     );

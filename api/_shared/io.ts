@@ -27,6 +27,12 @@ export interface IoError {
    * tekrar dener.
    */
   fallback?: boolean;
+  /**
+   * IO'nun ham yanıtı (JSON gövdesi ya da okunamayan metin). Satın almada
+   * 3D Secure formu hata yolundan da gelebildiği için tutuluyor; istemciye
+   * yazılmaz.
+   */
+  ham?: unknown;
 }
 
 export type IoResult<T> =
@@ -283,6 +289,7 @@ export async function ioFetch<T>(
           status: 502,
           code: null,
           message: "Sigorta servisinden okunamayan bir yanıt alındı.",
+          ham: text,
         },
       };
     }
@@ -297,6 +304,7 @@ export async function ioFetch<T>(
             status: 422,
             code: hataKodu,
             message: readErrorMessage(record),
+            ham: record,
           },
         };
       }

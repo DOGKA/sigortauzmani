@@ -114,6 +114,14 @@ export interface FlowMessages {
     errCvv: string;
     errFail: string;
     msgs: [string, string, string];
+    /** 3D Secure banka doğrulama ekranı. */
+    ucdTitle: string;
+    ucdLead: string;
+    ucdNewTab: string;
+    ucdWaiting: string;
+    ucdCheck: string;
+    ucdNotYet: string;
+    ucdTimeout: string;
   };
 }
 
@@ -237,6 +245,16 @@ const TR: FlowMessages = {
     errExpiry: "Son kullanma tarihini seçin.",
     errCvv: "Güvenlik kodunu girin.",
     errFail: "Ödeme tamamlanamadı. Lütfen tekrar deneyin.",
+    ucdTitle: "Banka doğrulaması",
+    ucdLead:
+      "Bankanızın 3D Secure ekranında telefonunuza gelen şifreyi girin. Poliçeniz doğrulama tamamlanınca kesilir.",
+    ucdNewTab: "Banka ekranı görünmüyorsa yeni sekmede açın",
+    ucdWaiting: "Poliçeniz kontrol ediliyor…",
+    ucdCheck: "Ödemeyi tamamladım",
+    ucdNotYet:
+      "Poliçe henüz kesilmedi. Banka ekranındaki işlemi tamamladıysanız birkaç saniye sonra tekrar deneyin.",
+    ucdTimeout:
+      "Poliçe kontrolü zaman aşımına uğradı. Ödemeniz tamamlandıysa poliçeniz ekibimiz tarafından size iletilecek; lütfen tekrar ödeme yapmadan bizi arayın.",
     msgs: [
       "Ödeme talebiniz sigorta şirketine iletiliyor.",
       "Kart bilgileriniz sanal POS altyapısında doğrulanıyor.",
@@ -365,6 +383,16 @@ const EN: FlowMessages = {
     errExpiry: "Select the expiry date.",
     errCvv: "Enter the security code.",
     errFail: "Payment could not be completed. Please try again.",
+    ucdTitle: "Bank verification",
+    ucdLead:
+      "Enter the code sent to your phone on your bank's 3D Secure screen. Your policy is issued once verification is complete.",
+    ucdNewTab: "Open the bank screen in a new tab if it does not appear",
+    ucdWaiting: "Checking your policy…",
+    ucdCheck: "I have completed the payment",
+    ucdNotYet:
+      "The policy has not been issued yet. If you completed the bank step, try again in a few seconds.",
+    ucdTimeout:
+      "Policy check timed out. If your payment went through, our team will send your policy; please call us instead of paying again.",
     msgs: [
       "Your payment request is being sent to the insurer.",
       "Your card details are being verified on the virtual POS.",
@@ -493,6 +521,16 @@ const AR: FlowMessages = {
     errExpiry: "اختاروا تاريخ الانتهاء.",
     errCvv: "أدخلوا رمز الأمان.",
     errFail: "تعذر إكمال الدفع. حاولوا مرة أخرى.",
+    ucdTitle: "التحقق البنكي",
+    ucdLead:
+      "أدخلوا الرمز المرسل إلى هاتفكم في شاشة 3D Secure الخاصة بالبنك. تصدر وثيقتكم بعد اكتمال التحقق.",
+    ucdNewTab: "افتحوا شاشة البنك في علامة تبويب جديدة إذا لم تظهر",
+    ucdWaiting: "جارٍ التحقق من وثيقتكم…",
+    ucdCheck: "أكملت الدفع",
+    ucdNotYet:
+      "لم تصدر الوثيقة بعد. إذا أكملتم خطوة البنك فحاولوا مرة أخرى بعد بضع ثوانٍ.",
+    ucdTimeout:
+      "انتهت مهلة التحقق من الوثيقة. إذا تم الدفع فسيرسل فريقنا وثيقتكم؛ يرجى الاتصال بنا بدلاً من الدفع مرة أخرى.",
     msgs: [
       "يُرسل طلب الدفع إلى شركة التأمين.",
       "يتم التحقق من بيانات البطاقة في نقطة البيع الافتراضية.",
@@ -621,6 +659,16 @@ const FA: FlowMessages = {
     errExpiry: "تاریخ انقضا را انتخاب کنید.",
     errCvv: "کد امنیتی را وارد کنید.",
     errFail: "پرداخت کامل نشد. لطفاً دوباره تلاش کنید.",
+    ucdTitle: "تأیید بانکی",
+    ucdLead:
+      "کدی را که به تلفن شما ارسال شده در صفحه 3D Secure بانک وارد کنید. بیمه‌نامه پس از تکمیل تأیید صادر می‌شود.",
+    ucdNewTab: "اگر صفحه بانک نمایش داده نشد، آن را در برگه جدید باز کنید",
+    ucdWaiting: "در حال بررسی بیمه‌نامه شما…",
+    ucdCheck: "پرداخت را تکمیل کردم",
+    ucdNotYet:
+      "بیمه‌نامه هنوز صادر نشده است. اگر مرحله بانک را تکمیل کرده‌اید، چند ثانیه دیگر دوباره تلاش کنید.",
+    ucdTimeout:
+      "زمان بررسی بیمه‌نامه به پایان رسید. اگر پرداخت انجام شده باشد تیم ما بیمه‌نامه را ارسال می‌کند؛ لطفاً به جای پرداخت مجدد با ما تماس بگیرید.",
     msgs: [
       "درخواست پرداخت به شرکت بیمه ارسال می‌شود.",
       "اطلاعات کارت در POS مجازی تأیید می‌شود.",

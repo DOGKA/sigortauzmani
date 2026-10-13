@@ -766,6 +766,31 @@
   text-align: center;
 }
 
+.flow__ucd-frame {
+  display: block;
+  width: 100%;
+  height: min(460px, 60vh);
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 12px;
+  background: #fff;
+  margin: 0 0 12px;
+}
+
+.flow__ucd-link {
+  display: block;
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 13px;
+  color: var(--brand-600, #2563eb);
+  text-decoration: underline;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
+
 /* Ödeme formu, adım kartlarındakinden bir tık daha derli toplu: kart
    alanlarının tamamı kaydırmadan görünsün diye dikey boşluklar kısılıyor. */
 .flow__modal .flow__grid {

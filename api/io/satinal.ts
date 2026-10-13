@@ -6,9 +6,9 @@
  * - Veritabanına yalnızca kart sahibinin adı ve son 4 hane gider
  *   (`api/_shared/iolog.ts` içindeki stripCardFields IO yanıtını da temizler).
  *
- * 3D Secure: Sigorta Gross tarafında bozuk olduğu ve partner panelinde de
- * kapalı geçildiği için varsayılan kapalı. Düzeltildiğinde IO_3DS_ENABLED
- * ile açılabilir.
+ * 3D Secure: IO_3DS_ENABLED ile açılıyor. Açıkken IO bankanın doğrulama
+ * sayfasını dönebiliyor; o durumda poliçe burada değil, müşteri şifreyi
+ * girdikten sonra kesiliyor (`api/_shared/ucd.ts`, `api/io/ucd-durum.ts`).
  *
  * Daini Mürtehin: partner ödeme ekranında var ama API dökümantasyonunda
  * karşılığı yok. Self serviste her zaman "Yok" olduğu için alan hiç
@@ -31,6 +31,7 @@ import {
   updateOturum,
 } from "../_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
+import { UCD_BEKLIYOR, ucDOzeti, ucDYonlendirmesi } from "../_shared/ucd";
 import { belgeGetir } from "../_shared/yazdir";
 import { YENILEME_DOGRULANAMADI, teklifiYenile } from "../_shared/yenile";
 import { satinAlinabilirSirket } from "../../src/lib/io/satinAlFiltre";
@@ -309,6 +310,43 @@ export default async function handler(request: Request): Promise<Response> {
       },
     },
   });
+
+  // Banka doğrulaması bekleniyor: poliçe müşteri şifreyi girdikten sonra IO
+  // tarafında kesilecek, sonucu `api/io/ucd-durum.ts` takip ediyor.
+  const ucD = io3dsEnabled()
+    ? ucDYonlendirmesi(result.ok ? result.data : result.error.ham)
+    : null;
+  const policeHemenKesildi =
+    result.ok && (result.data as Record<string, unknown>)?.PoliceKesildi === true;
+  if (ucD && !policeHemenKesildi) {
+    await recordSatinAlma({
+      oturum_id: oturum.id,
+      brans_no: bransNo,
+      sirket_kodu: sirketKodu,
+      sirket_adi: sirketAdi(sirketKodu),
+      teklif_no: teklifNo || null,
+      prim: odenecekPrim ?? null,
+      taksit: teklif.Taksit ?? null,
+      taksit_kodu: teklif.TaksitKodu ?? null,
+      kart_sahibi: String(kart.KartSahibi ?? "").trim(),
+      kart_son4: kartSon4,
+      uc_d_secure: true,
+      io_response: { ...ucDOzeti(ucD), yenileme: yenilenen.ozet },
+      status: "basarisiz",
+      hata_mesaji: UCD_BEKLIYOR,
+    });
+    return withCookie(
+      jsonResponse({
+        policeKesildi: false,
+        policeNo: null,
+        policePdfUrl: null,
+        makbuzPdfUrl: null,
+        kartSon4,
+        ucDSecure: ucD,
+      }),
+      session,
+    );
+  }
 
   if (!result.ok) {
     await recordSatinAlma({
