@@ -99,21 +99,37 @@ export function sirketAdi(kod: string | number | null | undefined): string {
 }
 
 /**
- * Müşteriye ve panele hiç düşmeyen şirketler.
+ * Sitede açık olan şirketler; listede olmayan her şirket gizli.
  *
- * IO teklifi tüm anlaşmalı şirketlere kendisi dağıtıyor; istek gövdesinde
- * şirket seçmek veya bir şirketi hariç tutmak mümkün değil. Bu yüzden
- * gelen satır sunucuda düşürülüyor: ekrana, satın almaya ve fiyat kaydına
- * ulaşmıyor.
+ * Partner CRM'de 3D Secure ödeme ve makbuz/poliçe PDF'i yalnızca bu
+ * şirketlerde çalışıyor. IO teklifi tüm anlaşmalı şirketlere kendisi
+ * dağıtıyor; istek gövdesinde şirket seçmek mümkün değil. Bu yüzden liste
+ * dışı satır sunucuda düşürülüyor: ekrana, satın almaya, PDF'e ve fiyat
+ * kaydına ulaşmıyor.
  */
-const GIZLI_SIRKET_KODLARI = new Set([
-  "036", // Magdeburger Sigorta
+const AKTIF_SIRKET_KODLARI = new Set([
+  "004", // Aksigorta
+  "005", // Gulf Sigorta (katalogda GIG)
+  "007", // Anadolu Sigorta
+  "009", // Ankara Sigorta
+  "017", // Unico Sigorta
+  "018", // Zurich Sigorta
+  "025", // Referans Sigorta
+  "045", // Allianz Sigorta
+  "050", // Mapfre Sigorta
+  "051", // Türk Nippon Sigorta
+  "057", // Bereket Sigorta
+  "061", // Sompo Sigorta
+  "093", // Neova Sigorta
   "096", // Koru Sigorta
-  "104", // Doğa Sigorta
+  "106", // Orient Sigorta
+  "110", // Quick Sigorta
+  "116", // Türkiye Sigorta
+  "126", // Hepiyi Sigorta
 ]);
 
 export function sirketGizli(
   kod: string | number | null | undefined,
 ): boolean {
-  return GIZLI_SIRKET_KODLARI.has(normalizeSirketKodu(kod));
+  return !AKTIF_SIRKET_KODLARI.has(normalizeSirketKodu(kod));
 }
