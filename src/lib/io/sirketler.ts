@@ -121,7 +121,6 @@ const AKTIF_SIRKET_KODLARI = new Set([
   "057", // Bereket Sigorta
   "061", // Sompo Sigorta
   "093", // Neova Sigorta
-  "096", // Koru Sigorta
   "106", // Orient Sigorta
   "110", // Quick Sigorta
   "116", // Türkiye Sigorta
