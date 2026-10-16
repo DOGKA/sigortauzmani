@@ -3,6 +3,7 @@ import {
   DEFAULT_SITE_SETTINGS,
   type SiteSettings,
 } from "../../../shared/site-settings";
+import { AKTIF_SIRKET_KODLARI } from "../../../shared/sirketler";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const GA4 = /^G-[A-Z0-9]{6,20}$/i;
@@ -48,6 +49,12 @@ export function validateSettings(input: unknown): SiteSettings {
       )
     : [...ALL_PRODUCT_SLUGS];
 
+  const onerilenSirketler = Array.isArray(products.onerilenSirketler)
+    ? products.onerilenSirketler.filter(
+        (kod): kod is string => typeof kod === "string" && AKTIF_SIRKET_KODLARI.includes(kod),
+      )
+    : [];
+
   return {
     company: {
       legalName: text(company.legalName, 180) || DEFAULT_SITE_SETTINGS.company.legalName,
@@ -68,7 +75,10 @@ export function validateSettings(input: unknown): SiteSettings {
       ga4MeasurementId: provider === "ga4" ? ga4MeasurementId : "",
       gtmContainerId: provider === "gtm" ? gtmContainerId : "",
     },
-    products: { enabledSlugs: [...new Set(enabledSlugs)] },
+    products: {
+      enabledSlugs: [...new Set(enabledSlugs)],
+      onerilenSirketler: [...new Set(onerilenSirketler)],
+    },
     maintenance: {
       enabled: maintenance.enabled === true,
       title: text(maintenance.title, 120) || DEFAULT_SITE_SETTINGS.maintenance.title,

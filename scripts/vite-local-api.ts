@@ -145,6 +145,20 @@ export function localApiPlugin(): Plugin {
       );
       server.middlewares.use((req, res, next) => {
         const pathname = (req.url ?? "/").split("?")[0];
+        // Yerel PostgreSQL kurulumunda canlıdaki `/sb` kapısı: PostgREST,
+        // giriş ve belge uçları. `DATABASE_URL` yoksa eski davranış.
+        if (pathname.startsWith("/sb/") && process.env.DATABASE_URL) {
+          void server
+            .ssrLoadModule(path.resolve(root, "scripts/sb-gateway.ts"))
+            .then((mod) => (mod.handleSb as typeof import("./sb-gateway.ts").handleSb)(req, res))
+            .catch((error: unknown) => {
+              console.error("[vite] /sb hata:", error);
+              if (res.headersSent) return;
+              res.statusCode = 500;
+              res.end();
+            });
+          return;
+        }
         if (!pathname.startsWith("/api/")) {
           next();
           return;

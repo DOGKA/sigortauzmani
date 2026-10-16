@@ -39,139 +39,65 @@
   margin-bottom: 24px;
 }
 
-/* --- Adım göstergesi --- */
+/* --- Adım göstergesi: ad, "1 / 4" ve ince segmentli çubuk --- */
 
-.flow__steps {
-  display: flex;
-  gap: 8px;
-  list-style: none;
-  margin-bottom: 24px;
-}
-
-.flow__step {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  font-size: 13px;
-  color: var(--ink-400);
-  padding-bottom: 10px;
-  border-bottom: 2px solid #e2e8f4;
-}
-
-.flow__step--active {
-  color: var(--brand-700);
-  border-bottom-color: var(--brand-500);
-}
-
-.flow__step-no {
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #e2e8f4;
-  color: var(--ink-500);
-  font-size: 12px;
-  font-weight: 600;
-  flex-shrink: 0;
-}
-
-.flow__step--active .flow__step-no {
-  background: var(--brand-500);
-  color: #fff;
-}
-
-.flow__step-label {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* --- Kart --- */
-
-.flow__card {
-  background: #fff;
-  border: 1px solid #e5eaf5;
-  border-radius: 16px;
-  padding: 28px;
-  box-shadow: 0 8px 24px rgb(16 28 48 / 5%);
-}
-
-.flow__card--wide {
-  padding: 24px;
-}
-
-/* Başarı ekranı lead formundan geliyor: hero bandı kart dolgusunu negatif
-   marjla taşıyor ve köşe yarıçapı oranın kartına göre ayarlı. Kart burada
-   16px kenarlıklı olduğu için iç yarıçap 15px'e çekiliyor. Kartta
-   `overflow: hidden` yok; konfeti animasyonu bilerek dışarı taşıyor. */
-.flow__card--basari .quote__success-hero {
-  border-radius: 15px 15px 0 0;
-}
-
-.flow__card-title {
-  font-size: 20px;
-  color: var(--ink-900);
-  margin-bottom: 6px;
-}
-
-.flow__card-sub {
-  font-size: 14px;
-  color: var(--ink-500);
+.flow__progress {
   margin-bottom: 20px;
 }
 
-/* --- Form --- */
-
-.flow__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.flow__field {
+.flow__progress-head {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
-.flow__field--full {
-  grid-column: 1 / -1;
-}
-
-.flow__label {
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--ink-700);
-}
-
-.flow__input {
-  width: 100%;
-  padding: 11px 13px;
+.flow__progress-label {
   font-size: 15px;
-  font-family: inherit;
-  color: var(--ink-900);
-  background: #fff;
-  border: 1px solid #d4dcec;
-  border-radius: 10px;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  font-weight: 700;
+  color: var(--brand-700);
 }
 
-.flow__input:focus {
-  outline: none;
-  border-color: var(--brand-400);
-  box-shadow: 0 0 0 3px var(--brand-100);
-}
-
-.flow__input--error {
-  border-color: #d94141;
-}
-
-.flow__hint {
-  font-size: 12px;
+.flow__progress-count {
+  font-size: 13px;
+  font-weight: 600;
   color: var(--ink-400);
+  font-variant-numeric: tabular-nums;
+}
+
+.flow__progress-bars {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+}
+
+.flow__progress-bar {
+  height: 4px;
+  border-radius: 999px;
+  background: #e2e8f4;
+  transition: background-color 0.3s ease;
+}
+
+.flow__progress-bar--active {
+  background: linear-gradient(90deg, var(--brand-400), var(--brand-600));
+}
+
+/* --- Güven satırı --- */
+
+.flow__ozet {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--ink-500);
+}
+
+.flow__ozet span + span {
+  font-weight: 600;
+  color: var(--brand-600);
 }
 
 .flow__hint-link {
@@ -681,6 +607,13 @@
   border-bottom: 1px solid #eef2fa;
 }
 
+.flow__modal-logo {
+  display: block;
+  width: 112px;
+  height: 44px;
+  object-fit: contain;
+}
+
 /* Hangi şirketten poliçe alındığı ödemenin en belirleyici bilgilerinden
    biri; ikincil gri tonda kalınca gözden kaçıyordu. */
 .flow__modal-sirket {
@@ -689,13 +622,11 @@
   color: var(--ink-900);
 }
 
-/* Taksit bilgisi tutarın sağında, aynı taban çizgisinde duruyor. */
 .flow__modal-odenecek {
   display: flex;
-  align-items: baseline;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 4px 10px;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
 }
 
 .flow__modal-prim {
@@ -758,6 +689,40 @@
   background: var(--brand-500);
 }
 
+.flow__modal-guven {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin: -4px 0 18px;
+}
+
+.flow__modal-guven span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 6px 7px;
+  color: var(--ink-600);
+  border: 1px solid #dce3ef;
+  border-radius: 9px;
+  font-size: 10.5px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.flow__modal-guven svg {
+  flex: 0 0 15px;
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: var(--brand-600);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .flow__modal-note {
   font-size: 13px;
   line-height: 1.5;
@@ -812,6 +777,32 @@
 .flow__modal .flow__input {
   padding: 9px 12px;
   border-radius: 9px;
+}
+
+/* Tarayıcının kendi oku kenara dayanıyordu. İç boşluk, modal ve mobil
+   kartın `padding` kısaltmalarını ezmek için onlarla aynı seçicide. */
+select.flow__input {
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+}
+
+select.flow__input,
+.flow__modal select.flow__input,
+.flow__card--duz select.flow__input {
+  padding-right: 38px;
+}
+
+[dir="rtl"] select.flow__input,
+[dir="rtl"] .flow__modal select.flow__input,
+[dir="rtl"] .flow__card--duz select.flow__input {
+  padding-right: 12px;
+  padding-left: 38px;
+  background-position: left 12px center;
 }
 
 .flow__modal .flow__warning {
@@ -872,25 +863,100 @@
     font-size: 23px;
   }
 
-  /* Etiketler yan yana sığmıyor; numara üstte, ad altta olacak şekilde
-     dizilip dört adım ekran genişliğini eşit paylaşıyor. */
-  .flow__steps {
-    gap: 6px;
+  .flow__card-sub,
+  .flow__label,
+  .flow__bilgi {
+    font-size: 15px;
   }
 
-  .flow__step {
-    flex: 1 1 0;
-    flex-direction: column;
-    gap: 5px;
-    justify-content: flex-start;
-    padding-bottom: 8px;
+  .flow__input {
+    font-size: 16px;
+  }
+
+  /* Sayfa yolu mobilde form alanını aşağı itiyordu. */
+  .flow__breadcrumb {
+    display: none;
+  }
+
+  .flow__title {
+    margin-bottom: 14px;
+  }
+
+  /* Kimlik adımı kart çerçevesi olmadan doğrudan sayfada; mobilde kart
+     kenarları yalnızca yatay alan yiyordu. */
+  .flow__card--duz {
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
+  }
+
+  /* Adım adı ilerleme çubuğunda, verinin neden istendiği asistan balonunda
+     yazıyor; tekrarları ilk alanı ekranın altına itiyordu. */
+  .flow__card--duz .flow__card-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .flow__card--duz .flow__card-sub {
+    display: none;
+  }
+
+  .flow__card--duz .flow__grid {
+    gap: 18px;
+  }
+
+  .flow__card--duz .flow__label {
+    font-weight: 600;
+    color: var(--ink-900);
+  }
+
+  .flow__card--duz .flow__input {
+    min-height: 54px;
+    padding: 14px 16px;
+    font-size: 17px;
+    border-radius: 14px;
+    border-color: #cfd8ea;
+  }
+
+  .flow__card--duz .flow__input:focus {
+    box-shadow: 0 0 0 4px var(--brand-100);
+  }
+
+  .flow__card--duz .flow__hint,
+  .flow__card--duz .flow__error {
+    font-size: 13px;
+  }
+
+  .flow__card--duz .flow__bilgi {
+    font-size: 14px;
+  }
+
+  /* Ana buton başparmak bölgesinde: kaydırırken ekranın altına yapışıyor,
+     kartın sonuna gelince yerine oturuyor. */
+  .flow__actions--sabit {
+    position: sticky;
+    bottom: 0;
+    z-index: 5;
+    margin: 16px -14px 0;
+    padding: 14px 14px calc(14px + env(safe-area-inset-bottom));
+    background: linear-gradient(to bottom, transparent, var(--surface) 28%);
+  }
+
+  .flow__actions--sabit > * {
+    flex: 1;
+    min-height: 54px;
+    font-size: 17px;
     text-align: center;
+    border-radius: 14px;
   }
 
-  .flow__step-label {
-    font-size: 11.5px;
-    font-weight: 500;
-    max-width: 100%;
+  .flow__actions--sabit .flow__primary {
+    box-shadow: 0 10px 24px -10px rgba(27, 102, 230, 0.7);
   }
 
   .flow__toggle {

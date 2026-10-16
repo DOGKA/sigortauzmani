@@ -16,6 +16,7 @@ export interface Talep {
   vergi_no: string | null;
   phone: string | null;
   birth_date: string | null;
+  il?: string | null;
   plate: string | null;
   document_serial: string | null;
   motor_no: string | null;

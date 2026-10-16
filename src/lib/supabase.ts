@@ -35,6 +35,8 @@ export interface TalepInsert {
   vergi_no: string | null;
   phone: string | null;
   birth_date: string | null;
+  /** Sağlık ürünlerinde: hastane ağı ve prim ile göre değişiyor. */
+  il?: string | null;
   plate: string | null;
   document_serial: string | null;
   motor_no: string | null;

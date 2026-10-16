@@ -11,6 +11,7 @@
  */
 
 import { smsDogrulamaGerekli } from "../src/data/smsDogrulama";
+import { dogumTarihiSorgula, sorgulanabilirKimlik } from "./_shared/dogumTarihi";
 import { jsonResponse } from "./_shared/io";
 import { dbInsert, rateCheck } from "./_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "./_shared/session";
@@ -30,6 +31,7 @@ const METIN_ALANLARI = [
   "vergi_no",
   "phone",
   "birth_date",
+  "il",
   "plate",
   "document_serial",
   "motor_no",
@@ -100,6 +102,19 @@ export default async function handler(request: Request): Promise<Response> {
     return yanit({ error: DOGRULANMAMIS_TELEFON, telefonDogrulama: true }, 403);
   }
 
+  // Formlar doğum tarihini sormuyor; telefonu doğrulanmış ziyaretçide kimlik
+  // numarasından okunup yalnızca kayda yazılıyor.
+  const kimlikNo = sorgulanabilirKimlik(satir.tckn);
+  if (
+    smsDogrulamaGerekli(String(satir.product_slug)) &&
+    satir.entity_type === "sahis" &&
+    kimlikNo &&
+    !satir.birth_date
+  ) {
+    const tarih = await dogumTarihiSorgula(session.id, kimlikNo);
+    if (tarih) satir.birth_date = tarih;
+  }
+
   let sonuc = await dbInsert("talepler", satir);
   if (!sonuc.ok && satir.locale && /locale/i.test(sonuc.message)) {
     const { locale: _locale, ...yerelsiz } = satir;
@@ -112,9 +127,10 @@ export default async function handler(request: Request): Promise<Response> {
       console.error("[talep] uyum kolonları eksik:", sonuc.message);
       return yanit({ error: "Talep kaydedilemedi. Lütfen bizimle iletişime geçin." }, 500);
     }
-    const { sirket_adi, gosterilen_prim: _prim, ...temel } = satir;
+    const { sirket_adi, gosterilen_prim: _prim, il, ...temel } = satir;
     sonuc = await dbInsert("talepler", {
       ...temel,
+      ...(il ? { insured_for: [temel.insured_for, String(il)].filter(Boolean).join(" · ") } : {}),
       product_title: sirket_adi
         ? `${String(temel.product_title)} · ${String(sirket_adi)}`
         : temel.product_title,

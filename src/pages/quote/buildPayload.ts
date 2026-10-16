@@ -42,12 +42,15 @@ function kimlikTipi(kimlik: KimlikDurumu) {
   return kimlik.entityType === "sirket" ? { KimlikTipi: 1 as const } : {};
 }
 
-/** DASK ve seyahat örneklerinde büyük T'li `DogumTarihi` geçiyor. */
+/**
+ * DASK ve seyahat örneklerinde büyük T'li `DogumTarihi` geçiyor. Tarih
+ * boşsa sunucu kimlik numarasından okuyup ekliyor.
+ */
 function sigortaliDigerBrans(kimlik: KimlikDurumu) {
   return {
     KimlikNo: kimlikNoOf(kimlik),
     ...kimlikTipi(kimlik),
-    DogumTarihi: kimlik.birthDate,
+    ...(kimlik.birthDate ? { DogumTarihi: kimlik.birthDate } : {}),
   };
 }
 

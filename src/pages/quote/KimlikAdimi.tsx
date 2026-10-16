@@ -4,8 +4,12 @@
  * MERNİS sorgusu şu anda kapalı (`IO_MERNIS_ENABLED`), çünkü sorgulanan
  * kişinin telefonuna onay kodu SMS'i yolluyor ve bu istemciden kapatılamıyor.
  * Kapalıyken proxy `atlandi` döndürüyor; adım kullanıcının girdiği bilgilerle
- * sessizce devam ediyor. Bu yüzden doğum tarihi artık zorunlu — sorgu açıkken
- * bile yanıt gerçek doğum tarihini vermiyordu.
+ * sessizce devam ediyor.
+ *
+ * Doğum tarihi sorulmuyor: telefon SMS koduyla doğrulandıktan sonra sunucu
+ * kimlik numarasından okuyor ve TRAMER / teklif isteğine kendisi ekliyor;
+ * tarih tarayıcıya gelmiyor. Okunamazsa ya da ürün SMS doğrulamalı değilse
+ * alan açılıyor.
  *
  * Aşağıdaki okuma mantığı sorgu geri açıldığında geçerli olacak.
  *
@@ -24,7 +28,7 @@
  */
 
 import { useState } from "react";
-import { IoError, sorguMernis } from "../../lib/io/client";
+import { IoError, dogumTarihiKontrol, sorguMernis } from "../../lib/io/client";
 import { okuAdSoyad, okuAdresKodu, okuDogumTarihi } from "../../lib/io/okuma";
 import QuoteKvkkNotu from "../../components/QuoteKvkkNotu";
 import SaglikAcikRiza from "../../components/SaglikAcikRiza";
@@ -69,7 +73,15 @@ export default function KimlikAdimi({
   const [hatalar, setHatalar] = useState<Record<string, string>>({});
   const [sorguluyor, setSorguluyor] = useState(false);
   const [uyari, setUyari] = useState("");
+  const [dogumTarihiIste, setDogumTarihiIste] = useState(false);
   const { dogrula: telefonDogrula, modal: telefonModali } = useTelefonDogrulama();
+  const smsli = smsDogrulamaGerekli(productSlug);
+  // Şirkette doğum/kuruluş tarihi sorulmaz; IO, VKN MERNİS sorgusundan
+  // dönen SigortaliStr ile tüzel kişiyi eşleştirir.
+  const dogumTarihiGoster =
+    durum.entityType !== "sirket" &&
+    (!smsli || dogumTarihiIste || Boolean(durum.birthDate));
+
   const dogrula = () => {
     const next: Record<string, string> = {};
     if (!kimlikGecerli(durum)) {
@@ -85,9 +97,7 @@ export default function KimlikAdimi({
     if (!isValidMobilePhone(durum.phone)) {
       next.phone = t.quote.phoneError;
     }
-    // Şirkette doğum/kuruluş tarihi sorulmaz; IO, VKN MERNİS sorgusundan
-    // dönen SigortaliStr ile tüzel kişiyi eşleştirir.
-    if (durum.entityType !== "sirket" && !durum.birthDate) {
+    if (dogumTarihiGoster && !durum.birthDate) {
       next.birthDate = t.quote.birthError;
     }
     // Rıza vermemek akışı durdurmuyor; yalnızca seçimin yapılmış olması
@@ -104,9 +114,26 @@ export default function KimlikAdimi({
     setUyari("");
     setSorguluyor(true);
 
-    if (smsDogrulamaGerekli(productSlug) && !(await telefonDogrula(durum.phone))) {
+    if (smsli && !(await telefonDogrula(durum.phone))) {
       setSorguluyor(false);
       return;
+    }
+
+    if (smsli && durum.entityType !== "sirket" && !durum.birthDate) {
+      const bulundu = await dogumTarihiKontrol({
+        productSlug,
+        kimlikNo: kimlikNoOf(durum),
+        phone: durum.phone,
+      }).then(
+        (yanit) => yanit.bulundu,
+        () => false,
+      );
+      if (!bulundu) {
+        setDogumTarihiIste(true);
+        setHatalar({ birthDate: t.quote.birthAutoFailed });
+        setSorguluyor(false);
+        return;
+      }
     }
 
     try {
@@ -169,12 +196,16 @@ export default function KimlikAdimi({
   const kimlikYaz = (value: string) => {
     const kimlikNo = normalizeDigits(value).replace(/\D/g, "").slice(0, 11);
     const tip = kisiTipiCikar(kimlikNo);
+    if (kimlikNo === kimlikDegeri) return;
+    setDogumTarihiIste(false);
     onDegis({
       entityType: tip,
       tckn: tip === "sahis" ? kimlikNo : "",
       ykn: tip === "yabanci" ? kimlikNo : "",
       vkn: tip === "sirket" ? kimlikNo : "",
-      birthDate: tip === "sirket" ? "" : durum.birthDate,
+      // Elle girilmiş tarih SMS'siz üründe kalıyor; otomatik akışta yeni
+      // numaranın tarihi sunucuda yeniden okunacak.
+      birthDate: tip === "sirket" || smsli ? "" : durum.birthDate,
       // Numara değişti; önceki sorgunun sonucu artık bu kişiye ait değil.
       adSoyad: "",
       mernisTamam: false,
@@ -183,10 +214,8 @@ export default function KimlikAdimi({
     });
   };
 
-  const dogumTarihiGoster = durum.entityType !== "sirket";
-
   return (
-    <div className="flow__card">
+    <div className="flow__card flow__card--duz">
       <h2 className="flow__card-title">{t.quote.identity}</h2>
       <p className="flow__card-sub">{t.quote.identityLead}</p>
 
@@ -198,6 +227,8 @@ export default function KimlikAdimi({
           <input
             className={`flow__input${hatalar.kimlik ? " flow__input--error" : ""}`}
             inputMode="numeric"
+            pattern="[0-9]*"
+            enterKeyHint="next"
             autoComplete="off"
             maxLength={11}
             value={kimlikDegeri}
@@ -215,8 +246,10 @@ export default function KimlikAdimi({
           <span className="flow__label">{t.quote.phone}</span>
           <input
             className={`flow__input${hatalar.phone ? " flow__input--error" : ""}`}
+            type="tel"
             inputMode="tel"
-            autoComplete="tel"
+            enterKeyHint="next"
+            autoComplete="tel-national"
             placeholder="05XX XXX XX XX"
             value={durum.phone}
             onChange={(event) =>
@@ -264,7 +297,7 @@ export default function KimlikAdimi({
 
       {uyari ? <p className="flow__warning">{uyari}</p> : null}
 
-      <div className="flow__actions">
+      <div className="flow__actions flow__actions--sabit">
         {uyari ? (
           <button type="button" className="flow__ghost" onClick={onDevam}>
             {t.quote.continueAnyway}

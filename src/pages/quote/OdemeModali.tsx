@@ -5,6 +5,10 @@
  * bilgisi gösterilir. IO yanıtında harici ödeme bağlantısı varsa yeni sekmede
  * açılır; aksi hâlde kart bilgileri yalnızca bu adımda toplanıp doğrudan
  * sigorta şirketinin sanal POS altyapısına iletilir (sistemde saklanmaz).
+ *
+ * Payten açıksa çekimden önce kart sahibi Payten'de 3D ile doğrulanır:
+ * kart formu tarayıcıdan Payten'e gider, sonuç dönüş sayfasından
+ * `postMessage` ile gelir ve satın alma doğrulama kimliğiyle yapılır.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -13,7 +17,9 @@ import { interpolate, localizeInstallment } from "../../lib/i18n/format";
 import IlerlemePaneli from "./IlerlemePaneli";
 import { odemeUrlEtiketi, odemeUrlOku } from "./odemeUrl";
 import { formatPrim } from "./paraBirimi";
-import { IoError, satinAl, ucDDurum } from "../../lib/io/client";
+import KampanyaSayaci from "./KampanyaSayaci";
+import { sirketLogosu } from "./sirketLogo";
+import { IoError, paytenBaslat, satinAl, ucDDurum } from "../../lib/io/client";
 import type { SatinAlmaSonuc, SirketTeklifi } from "../../lib/io/types";
 
 type UcDYonlendirme = NonNullable<SatinAlmaSonuc["ucDSecure"]>;
@@ -36,7 +42,48 @@ const AYLAR = Array.from({ length: 12 }, (_, index) =>
   String(index + 1).padStart(2, "0"),
 );
 
-type Asama = "onay" | "pos" | "ucd";
+type Asama = "onay" | "pos" | "payten" | "ucd";
+
+interface PaytenOturumu {
+  dogrulamaId: string;
+  formAdresi: string;
+  donusAdresi: string;
+}
+
+const PAYTEN_CERCEVE = "payten-3d";
+
+/**
+ * Kart bilgisini Payten'in 3D formuna doğrudan gönderir; sunucumuzdan
+ * geçmez. Form üst pencerede kurulup iframe'e hedeflenir ve hemen silinir.
+ */
+function paytenFormunuGonder(
+  oturum: PaytenOturumu,
+  kart: { sahibi: string; no: string; ay: string; yil: string; cvv: string },
+) {
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = oturum.formAdresi;
+  form.target = PAYTEN_CERCEVE;
+  form.style.display = "none";
+  const alanlar: Record<string, string> = {
+    cardOwner: kart.sahibi,
+    pan: kart.no,
+    expiryMonth: kart.ay,
+    expiryYear: kart.yil,
+    cvv: kart.cvv,
+    callbackUrl: oturum.donusAdresi,
+  };
+  for (const [ad, deger] of Object.entries(alanlar)) {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = ad;
+    input.value = deger;
+    form.appendChild(input);
+  }
+  document.body.appendChild(form);
+  form.submit();
+  form.remove();
+}
 
 interface Props {
   oturumId: string;
@@ -53,6 +100,8 @@ interface Props {
    * kapanır, ayrı uyarı "Teklif iste" yolunu gösterir.
    */
   onSirketReddi: (mesaj: string) => void;
+  /** Fiyat listesindeki kampanya sayacının bitiş anı; modal içinde gösterilir. */
+  kampanyaBitis?: number | null;
 }
 
 export default function OdemeModali({
@@ -65,6 +114,7 @@ export default function OdemeModali({
   onBasarili,
   baslangicPrim = null,
   onSirketReddi,
+  kampanyaBitis = null,
 }: Props) {
   const t = useT();
   const [asama, setAsama] = useState<Asama>("onay");
@@ -83,6 +133,8 @@ export default function OdemeModali({
   const [ucdKontrol, setUcdKontrol] = useState(false);
   const [ucdMesaj, setUcdMesaj] = useState("");
   const ucdBitti = useRef(false);
+  const [payten, setPayten] = useState<PaytenOturumu | null>(null);
+  const paytenGonderildi = useRef<string | null>(null);
   const onBasariliRef = useRef(onBasarili);
   onBasariliRef.current = onBasarili;
 
@@ -139,6 +191,46 @@ export default function OdemeModali({
     return () => window.clearInterval(zamanlayici);
   }, [asama, t.flow.pay.ucdTimeout]);
 
+  // Çerçeve ekrana geldikten sonra gönderiliyor; her doğrulama bir kez.
+  useEffect(() => {
+    if (asama !== "payten" || !payten) return;
+    if (paytenGonderildi.current === payten.dogrulamaId) return;
+    paytenGonderildi.current = payten.dogrulamaId;
+    paytenFormunuGonder(payten, {
+      sahibi: kartSahibi.trim(),
+      no: kartNo.replace(/\D/g, ""),
+      ay,
+      yil,
+      cvv,
+    });
+  }, [asama, payten, kartSahibi, kartNo, ay, yil, cvv]);
+
+  const satinAlGonderRef = useRef<(id?: string) => Promise<void>>(async () => {});
+
+  // Dönüş sayfası (`api/io/payten-donus.ts`) aynı origin'den mesaj atıyor.
+  useEffect(() => {
+    if (asama !== "payten" || !payten) return;
+    const dinle = (event: MessageEvent) => {
+      if (event.origin !== window.location.origin) return;
+      const veri = event.data as {
+        kaynak?: string;
+        dogrulamaId?: string | null;
+        durum?: string;
+      } | null;
+      if (veri?.kaynak !== "payten") return;
+      if (veri.dogrulamaId && veri.dogrulamaId !== payten.dogrulamaId) return;
+      setAsama("pos");
+      setPayten(null);
+      if (veri.durum === "dogrulandi" && veri.dogrulamaId) {
+        void satinAlGonderRef.current(veri.dogrulamaId);
+      } else {
+        setHata(t.flow.pay.paytenFail);
+      }
+    };
+    window.addEventListener("message", dinle);
+    return () => window.removeEventListener("message", dinle);
+  }, [asama, payten, t.flow.pay.paytenFail]);
+
   const ucdYeniSekme = () => {
     if (!ucd) return;
     if ("url" in ucd) {
@@ -155,9 +247,21 @@ export default function OdemeModali({
     pencere.document.close();
   };
   const odenecekPrim = yeniPrim ?? teklif.Prim;
+  const logoYolu = sirketLogosu(teklif.SirketKodu);
 
   const ozet = (
     <div className="flow__modal-head">
+      {kampanyaBitis ? <KampanyaSayaci bitis={kampanyaBitis} /> : null}
+      {logoYolu ? (
+        <img
+          className="flow__modal-logo"
+          src={logoYolu}
+          alt=""
+          width="200"
+          height="80"
+          decoding="async"
+        />
+      ) : null}
       <span className="flow__modal-sirket">{teklif.SirketAdi}</span>
 
       <span className="flow__modal-odenecek">
@@ -212,6 +316,35 @@ export default function OdemeModali({
 
     setGonderiliyor(true);
     try {
+      const baslat = await paytenBaslat({
+        oturumId,
+        bransNo,
+        teklifId,
+        teklif: { Id: teklif.Id, SirketKodu: teklif.SirketKodu, Prim: teklif.Prim },
+        ...(yeniPrim !== null ? { onaylananPrim: yeniPrim } : {}),
+      });
+      if (!baslat.kapali) {
+        paytenGonderildi.current = null;
+        setPayten({
+          dogrulamaId: baslat.dogrulamaId,
+          formAdresi: baslat.formAdresi,
+          donusAdresi: baslat.donusAdresi,
+        });
+        setAsama("payten");
+        setGonderiliyor(false);
+        return;
+      }
+    } catch (error) {
+      setHata(error instanceof IoError ? error.message : t.flow.pay.errFail);
+      setGonderiliyor(false);
+      return;
+    }
+    await satinAlGonder();
+  };
+
+  const satinAlGonder = async (paytenDogrulamaId?: string) => {
+    setGonderiliyor(true);
+    try {
       const sonuc = await satinAl({
         oturumId,
         bransNo,
@@ -229,13 +362,14 @@ export default function OdemeModali({
         kart: {
           KartSahibi: kartSahibi.trim(),
           KimlikNo: kimlik,
-          KartNo: rakamlar,
+          KartNo: kartNo.replace(/\D/g, ""),
           SonKullanimAy: ay,
           SonKullanimYil: yil,
           Cvv2: cvv,
         },
         // Onaylanan tutar gönderilmezse sunucu değişikliği tekrar sorar.
         ...(yeniPrim !== null ? { onaylananPrim: yeniPrim } : {}),
+        ...(paytenDogrulamaId ? { paytenDogrulamaId } : {}),
       });
       if (sonuc.ucDSecure) {
         setUcd(sonuc.ucDSecure);
@@ -262,6 +396,7 @@ export default function OdemeModali({
       setGonderiliyor(false);
     }
   };
+  satinAlGonderRef.current = satinAlGonder;
 
   if (gonderiliyor) {
     return (
@@ -279,6 +414,55 @@ export default function OdemeModali({
             tahminiSaniye={25}
             not={t.flow.pay.processingNot}
           />
+        </div>
+      </div>
+    );
+  }
+
+  if (asama === "payten" && payten) {
+    return (
+      <div
+        className="flow__overlay"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="odeme-payten-baslik"
+      >
+        <div className="flow__modal">
+          <button
+            type="button"
+            className="flow__modal-close"
+            onClick={onKapat}
+            aria-label={t.flow.close}
+          >
+            ×
+          </button>
+
+          {ozet}
+
+          <h2 className="flow__modal-title" id="odeme-payten-baslik">
+            {t.flow.pay.paytenTitle}
+          </h2>
+          <p className="flow__modal-lead">{t.flow.pay.paytenLead}</p>
+
+          {/* Banka sayfası üst pencereyi değiştiremez; sonuç dönüş
+              sayfasının postMessage'ı ile geliyor. */}
+          <iframe
+            className="flow__ucd-frame"
+            name={PAYTEN_CERCEVE}
+            title={t.flow.pay.paytenTitle}
+            sandbox="allow-forms allow-scripts allow-same-origin allow-popups"
+          />
+
+          <button
+            type="button"
+            className="flow__ucd-link"
+            onClick={() => {
+              setPayten(null);
+              setAsama("pos");
+            }}
+          >
+            {t.flow.pay.paytenBack}
+          </button>
         </div>
       </div>
     );
@@ -371,6 +555,30 @@ export default function OdemeModali({
             <li>{t.flow.pay.bullet1}</li>
             <li>{t.flow.pay.bullet2}</li>
           </ul>
+
+          <div className="flow__modal-guven" aria-label={t.flow.pay.securePayment}>
+            <span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3 5 6v5c0 4.5 3 8.5 7 10 4-1.5 7-5.5 7-10V6l-7-3Z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+              {t.flow.pay.securePayment}
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="5" y="10" width="14" height="11" rx="2" />
+                <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+              </svg>
+              {t.flow.pay.sslEncryption}
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="5" width="18" height="14" rx="2" />
+                <path d="M3 9h18M8 15h3" />
+              </svg>
+              {t.flow.pay.secure3D}
+            </span>
+          </div>
 
           {odemeUrl ? (
             <p className="flow__modal-note">

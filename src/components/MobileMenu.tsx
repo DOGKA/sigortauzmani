@@ -28,13 +28,11 @@ export default function MobileMenu({ id, open, onClose }: MobileMenuProps) {
   const exploreLinks: {
     to: string;
     label: string;
-    desc: string;
     icon: ReactNode;
   }[] = [
     {
       to: href("about"),
       label: t.nav.about,
-      desc: t.about.crumb,
       icon: (
         <>
           <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
@@ -49,7 +47,6 @@ export default function MobileMenu({ id, open, onClose }: MobileMenuProps) {
           {
             to: href("blog"),
             label: t.nav.blog,
-            desc: t.notice.turkishSection,
             icon: (
               <>
                 <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
@@ -62,7 +59,6 @@ export default function MobileMenu({ id, open, onClose }: MobileMenuProps) {
     {
       to: href("comparisonHub"),
       label: t.nav.compare,
-      desc: t.notice.turkishSection,
       icon: (
         <>
           <path d="M6 20V10" />
@@ -74,7 +70,6 @@ export default function MobileMenu({ id, open, onClose }: MobileMenuProps) {
     {
       to: href("riskMap"),
       label: t.footer.riskMap,
-      desc: t.notice.turkishSection,
       icon: (
         <>
           <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" />
@@ -85,7 +80,6 @@ export default function MobileMenu({ id, open, onClose }: MobileMenuProps) {
     {
       to: href("glossary"),
       label: t.footer.glossary,
-      desc: t.notice.turkishSection,
       icon: (
         <>
           <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
@@ -96,7 +90,6 @@ export default function MobileMenu({ id, open, onClose }: MobileMenuProps) {
     {
       to: href("contact"),
       label: t.contact.reachUs,
-      desc: t.contact.lead,
       icon: (
         <>
           <rect x="3" y="5" width="18" height="14" rx="2" />
@@ -231,7 +224,6 @@ export default function MobileMenu({ id, open, onClose }: MobileMenuProps) {
                   </span>
                   <span className="mobile-menu__link-text">
                     {link.label}
-                    <small>{link.desc}</small>
                   </span>
                   <svg
                     width="7"

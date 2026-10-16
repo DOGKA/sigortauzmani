@@ -36,6 +36,7 @@ import {
   sonTeklifTekrari,
   updateOturum,
 } from "../_shared/iolog";
+import { sigortaliyaDogumTarihiEkle } from "../_shared/dogumTarihi";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
 import { DOGRULANMAMIS_TELEFON, telefonDogrulandi } from "../_shared/sms";
 import { readEnv } from "../_shared/supabase";
@@ -163,6 +164,32 @@ function maxTeklifGlobalPerHour(): number {
 interface TeklifTalep {
   bransNo: number;
   payload: Record<string, unknown>;
+}
+
+/** Araç branşları (Trafik, Kasko, İMM) küçük t'li `Dogumtarihi` bekliyor. */
+const ARAC_BRANSLARI = new Set([0, 1, 22]);
+
+/**
+ * Arayüz doğum tarihini sormuyor; telefonu doğrulanmış ziyaretçide sunucu
+ * kimlik numarasından okuyup gövdeye ekliyor. Tarih istemciye dönmüyor,
+ * yalnızca oturum kaydına yazılıyor.
+ */
+async function dogumTarihiTamamla(
+  sessionId: string,
+  talepler: TeklifTalep[],
+): Promise<{ talepler: TeklifTalep[]; tarih: string | null }> {
+  let tarih: string | null = null;
+  const tamamlanan: TeklifTalep[] = [];
+  for (const talep of talepler) {
+    const sonuc = await sigortaliyaDogumTarihiEkle(
+      sessionId,
+      talep.payload,
+      ARAC_BRANSLARI.has(talep.bransNo) ? "Dogumtarihi" : "DogumTarihi",
+    );
+    tarih ??= sonuc.tarih;
+    tamamlanan.push({ ...talep, payload: sonuc.govde });
+  }
+  return { talepler: tamamlanan, tarih };
 }
 
 /** `teklif_oturumlari.entity_type` check kısıtıyla birebir aynı olmalı. */
@@ -402,6 +429,11 @@ export default async function handler(request: Request): Promise<Response> {
   const kisi = body.kisi ?? {};
   const girdiler = temizOzet(body.girdiler);
   const kanal = ioTeklifKanal();
+  // URUNLER'deki her ürün SMS doğrulamalı; telefon yukarıda doğrulandı.
+  const tamamlanan = smsDogrulamaGerekli(productSlug)
+    ? await dogumTarihiTamamla(session.id, talepler)
+    : { talepler, tarih: null };
+  const gonderilecek = tamamlanan.talepler;
   const oturum = await createOturum({
     session_id: session.id,
     ip_hash: ipHash,
@@ -412,10 +444,10 @@ export default async function handler(request: Request): Promise<Response> {
     vergi_no: kisi.vergiNo ?? null,
     ad_soyad: kisi.adSoyad ?? null,
     phone: kisi.phone ?? null,
-    birth_date: kisi.birthDate ?? null,
+    birth_date: kisi.birthDate || tamamlanan.tarih || null,
     plate: kisi.plate ?? null,
     adres_kodu: kisi.adresKodu ?? null,
-    form_data: { girdiler, talepler, kanal, talepHash },
+    form_data: { girdiler, talepler: gonderilecek, kanal, talepHash },
   });
 
   const sonuclar: { bransNo: number; teklifId: number }[] = [];
@@ -423,7 +455,7 @@ export default async function handler(request: Request): Promise<Response> {
   /** Yalnızca oturum kaydına yazılıyor; istemciye dönmüyor. */
   const ioYanitlari: Record<string, unknown>[] = [];
 
-  for (const talep of talepler) {
+  for (const talep of gonderilecek) {
     const result = await ioFetch(`/api/teklif`, {
       method: "POST",
       body: {
@@ -477,7 +509,7 @@ export default async function handler(request: Request): Promise<Response> {
       io_teklif_id: sonuclar[0].teklifId,
       form_data: {
         girdiler,
-        talepler,
+        talepler: gonderilecek,
         kanal,
         talepHash,
         teklifler: sonuclar,

@@ -9,6 +9,7 @@ export interface TalepEmailPayload {
   vergi_no?: string | null;
   phone?: string | null;
   birth_date?: string | null;
+  il?: string | null;
   plate?: string | null;
   document_serial?: string | null;
   motor_no?: string | null;
@@ -56,6 +57,7 @@ export function buildTalepEmailHtml(talep: TalepEmailPayload) {
           ${talep.entity_type === "sirket" ? row("Vergi No", talep.vergi_no) : row("T.C. Kimlik No", talep.tckn)}
           ${row("Cep Telefonu", talep.phone)}
           ${row("Doğum Tarihi", formatDate(talep.birth_date))}
+          ${talep.il ? row("İl", talep.il) : ""}
           ${typeof talep.saglik_acik_riza === "boolean" ? row("Sağlık Verisi Açık Rızası", talep.saglik_acik_riza ? "Verildi" : "Verilmedi") : ""}
           ${talep.motor_no || talep.sasi_no ? `${row("Motor No", talep.motor_no)}${row("Şasi No", talep.sasi_no)}` : `${row("Plaka", talep.plate)}${row("Belge Seri No", talep.document_serial)}`}
         </table>

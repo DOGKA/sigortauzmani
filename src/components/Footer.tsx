@@ -4,6 +4,8 @@ import { useCookieConsent } from "../lib/cookies/context";
 import { useLocale, useT } from "../lib/i18n/context";
 import { localizedProducts } from "../lib/i18n/products";
 import { useSiteSettings } from "../lib/settings/context";
+import { companyFromSettings } from "../data/company";
+import { interpolate } from "../lib/i18n/format";
 import "./Footer.css";
 
 export default function Footer() {
@@ -113,6 +115,13 @@ export default function Footer() {
         </div>
 
         <div className="footer__bottom">
+          <p className="footer__legal">
+            {t.quote.trustRegistered}
+            <span aria-hidden="true"> · </span>
+            {interpolate(t.flow.stats.registeredSub, {
+              n: companyFromSettings(settings.company).tobb,
+            })}
+          </p>
           <div className="footer__credits">
             <span>{t.footer.copyright}</span>
             <span>

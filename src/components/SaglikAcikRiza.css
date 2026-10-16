@@ -1,25 +1,41 @@
 .saglik-kvkk {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
   margin-top: 14px;
-}
-
-.saglik-kvkk__riza {
-  margin: 0;
   padding: 14px 16px 16px;
   border: 1px solid #d4dcec;
   border-radius: 12px;
   background: #f7f9fd;
 }
 
-.saglik-kvkk__riza--hata {
+.saglik-kvkk--hata {
   border-color: #e5484d;
   background: #fef6f6;
 }
 
+.saglik-kvkk__bilgi {
+  margin: 0 0 12px;
+  padding-bottom: 12px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-500);
+  border-bottom: 1px solid #e2e8f4;
+}
+
+.saglik-kvkk__bilgi a {
+  color: var(--brand-600);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.saglik-kvkk__riza {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
 .saglik-kvkk__riza legend {
-  padding: 0 6px;
+  padding: 0;
+  margin-bottom: 6px;
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -31,7 +47,7 @@
   margin: 0 0 12px;
   font-size: 13px;
   line-height: 1.55;
-  color: var(--ink-500);
+  color: var(--ink-700);
 }
 
 .saglik-kvkk__secenekler {
@@ -70,4 +86,34 @@
   font-weight: 500;
   line-height: 1.4;
   color: #e5484d;
+}
+
+@media (max-width: 640px) {
+  .saglik-kvkk__bilgi,
+  .saglik-kvkk__riza-metin {
+    font-size: 14px;
+  }
+
+  /* Seçenekler dar ekranda da yan yana; iki eşit kolon, her biri parmakla
+     rahat seçilecek yükseklikte. */
+  .saglik-kvkk__secenekler {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .saglik-kvkk__secenek {
+    min-height: 40px;
+    font-size: 14px;
+    line-height: 1.25;
+  }
+
+  .saglik-kvkk__secenek input {
+    flex-shrink: 0;
+  }
+
+  .saglik-kvkk__secenek input {
+    width: 20px;
+    height: 20px;
+  }
 }

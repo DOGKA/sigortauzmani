@@ -43,7 +43,8 @@ alter table public.talepler
   add column if not exists gosterilen_prim numeric,
   add column if not exists saglik_acik_riza boolean,
   add column if not exists kvkk_surum text,
-  add column if not exists kvkk_gosterildi_at timestamptz;
+  add column if not exists kvkk_gosterildi_at timestamptz,
+  add column if not exists il text;
 
 create index if not exists talepler_created_at_idx on public.talepler (created_at desc);
 create index if not exists talepler_status_idx on public.talepler (status);

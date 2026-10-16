@@ -27,8 +27,11 @@ interface Props {
   sirketTeklifId: number;
   tip: BelgeTipi;
   etiket: string;
-  /** Teklif listesinde yalnızca ikon, sonuç ekranında etiketli buton. */
-  gorunum?: "ikon" | "buton";
+  /**
+   * Yalnızca ikon; sonuç ekranındaki dolgulu buton; teklif kartlarında
+   * "Satın al"ın altındaki içi boş, ikonlu ikincil buton.
+   */
+  gorunum?: "ikon" | "buton" | "ikincil";
 }
 
 function PdfIkonu() {
@@ -66,6 +69,12 @@ export default function BelgeButonu({
   const [mesaj, setMesaj] = useState("");
 
   const ikonlu = gorunum === "ikon";
+  const ikincil = gorunum === "ikincil";
+  const sinif = ikonlu
+    ? "flow__belge flow__belge--ikon"
+    : ikincil
+      ? "flow__belge-ikincil"
+      : "flow__secondary";
 
   const getir = async () => {
     if (yukleniyor) return;
@@ -96,14 +105,14 @@ export default function BelgeButonu({
   if (url) {
     return (
       <a
-        className={ikonlu ? "flow__belge flow__belge--ikon" : "flow__secondary"}
+        className={sinif}
         href={url}
         target="_blank"
         rel="noreferrer"
         title={`${etiket} — yeni sekmede açılır`}
       >
-        {ikonlu ? <PdfIkonu /> : etiket}
-        {ikonlu ? <span className="flow__gizli">{etiket}</span> : null}
+        {ikonlu || ikincil ? <PdfIkonu /> : null}
+        {ikonlu ? <span className="flow__gizli">{etiket}</span> : etiket}
       </a>
     );
   }
@@ -112,17 +121,21 @@ export default function BelgeButonu({
     <>
       <button
         type="button"
-        className={ikonlu ? "flow__belge flow__belge--ikon" : "flow__secondary"}
+        className={sinif}
         onClick={() => void getir()}
         disabled={yukleniyor}
         title={etiket}
       >
-        {ikonlu ? <PdfIkonu /> : yukleniyor ? "Hazırlanıyor…" : etiket}
+        {ikonlu || ikincil ? <PdfIkonu /> : null}
         {ikonlu ? (
           <span className="flow__gizli">
             {yukleniyor ? `${etiket} hazırlanıyor` : etiket}
           </span>
-        ) : null}
+        ) : yukleniyor ? (
+          "Hazırlanıyor…"
+        ) : (
+          etiket
+        )}
       </button>
       {mesaj ? <span className="flow__belge-not">{mesaj}</span> : null}
     </>

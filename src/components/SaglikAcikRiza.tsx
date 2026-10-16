@@ -1,13 +1,14 @@
 /**
- * Sağlık ürünlerinde genel KVKK notunun altında duran iki ayrı blok:
- * özel nitelikli veri aydınlatması ve ondan bağımsız açık rıza seçimi.
- * İki blok bilerek tek kutuda birleştirilmiyor.
+ * Sağlık ürünlerinde tek kutu: üstte özel nitelikli veri aydınlatması, altında
+ * ondan ayrı açık rıza cümlesi ve seçimi. Aydınlatma ile rıza aynı cümlede
+ * birleştirilmiyor; KVKK rızanın aydınlatmadan ayrı alınmasını istiyor.
  */
 
 import { useId } from "react";
+import { Link } from "react-router-dom";
 import type { SaglikRizaSecimi } from "../data/saglikRiza";
 import { interpolate } from "../lib/i18n/format";
-import { useT } from "../lib/i18n/context";
+import { useLocale, useT } from "../lib/i18n/context";
 import { useSiteSettings } from "../lib/settings/context";
 import "./SaglikAcikRiza.css";
 
@@ -19,6 +20,7 @@ interface Props {
 
 export default function SaglikAcikRiza({ deger, onDegis, hata = false }: Props) {
   const t = useT();
+  const { href } = useLocale();
   const { settings } = useSiteSettings();
   const grupAdi = useId();
   const secenekler = [
@@ -27,10 +29,16 @@ export default function SaglikAcikRiza({ deger, onDegis, hata = false }: Props) 
   ];
 
   return (
-    <div className="saglik-kvkk">
-      <fieldset
-        className={`saglik-kvkk__riza${hata ? " saglik-kvkk__riza--hata" : ""}`}
-      >
+    <div className={`saglik-kvkk${hata ? " saglik-kvkk--hata" : ""}`}>
+      <p className="saglik-kvkk__bilgi">
+        {t.quote.saglikKvkkBody} {t.quote.kvkkMore}{" "}
+        <Link to={href("kvkk")} target="_blank" rel="noreferrer">
+          {t.quote.kvkkLink}
+        </Link>
+        {t.quote.kvkkAfter}
+      </p>
+
+      <fieldset className="saglik-kvkk__riza">
         <legend>{t.quote.consentTitle}</legend>
         <p className="saglik-kvkk__riza-metin">
           {interpolate(t.quote.consentBody, { company: settings.company.legalName })}

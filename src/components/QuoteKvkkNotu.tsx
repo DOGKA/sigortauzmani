@@ -16,12 +16,12 @@ export default function QuoteKvkkNotu({
 }: Props) {
   const { href } = useLocale();
   const t = useT();
-  if (!getQuoteKvkkGovde(productSlug)) return null;
-  const govde = isSaglikUrunu(productSlug) ? t.quote.saglikKvkkBody : t.quote.kvkkBody;
+  // Sağlık ürünlerinde not, SaglikAcikRiza kutusunun üst satırında duruyor.
+  if (!getQuoteKvkkGovde(productSlug) || isSaglikUrunu(productSlug)) return null;
 
   const metin = (
     <>
-      {govde} {t.quote.kvkkMore}{" "}
+      {t.quote.kvkkBody} {t.quote.kvkkMore}{" "}
       <Link to={href("kvkk")} target="_blank" rel="noreferrer">
         {t.quote.kvkkLink}
       </Link>

@@ -20,8 +20,10 @@ import {
   ioMernisEnabled,
   jsonResponse,
 } from "../_shared/io";
+import { sigortaliyaDogumTarihiEkle } from "../_shared/dogumTarihi";
 import { rateCheck } from "../_shared/iolog";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
+import { telefonDogrulandi } from "../_shared/sms";
 
 export const config = { runtime: "edge" };
 
@@ -184,6 +186,17 @@ export default async function handler(request: Request): Promise<Response> {
   if (action.method === "POST") {
     if (action.injectKanal) {
       body = { ...(body as Record<string, unknown>), Kanal: ioKanal() };
+    }
+  }
+
+  // Arayüz doğum tarihini artık sormuyor. TRAMER onu istediği için telefonu
+  // bu oturumda doğrulanmış ziyaretçide sunucu ekliyor; `Cep` yalnızca bu
+  // kontrol için geliyor, `ioFetch` IO'ya göndermeden düşürüyor.
+  if (actionName === "tramer") {
+    const govde = body as Record<string, unknown>;
+    const sigortali = govde.Sigortali as Record<string, unknown> | undefined;
+    if (await telefonDogrulandi(session.id, sigortali?.Cep)) {
+      body = (await sigortaliyaDogumTarihiEkle(session.id, govde, "Dogumtarihi")).govde;
     }
   }
 

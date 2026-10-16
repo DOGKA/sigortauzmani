@@ -13,9 +13,11 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import AdvisorVideo from "../components/AdvisorVideo";
 import TalepBasariEkrani from "../components/TalepBasariEkrani";
+import UrunRehberi from "./quote/UrunRehberi";
 import { useInternalProductSlug, useLocale, useT } from "../lib/i18n/context";
 import { localizedProduct } from "../lib/i18n/products";
 import { getProduct } from "../data/products";
+import { getProductGuide } from "../data/productGuides";
 import { getQuoteKvkkGovde, QUOTE_KVKK_SURUM } from "../data/quoteKvkk";
 import { isSaglikUrunu } from "../data/saglikRiza";
 import { IoError, onKontrol, primleriBekle, teklifOlustur } from "../lib/io/client";
@@ -28,11 +30,16 @@ import type {
 } from "../lib/io/types";
 import { createTalep, generateTalepNo } from "../lib/supabase";
 import { ROBOTS_NOINDEX, pageOgImageUrl } from "../lib/seo/config";
+import { productServiceNode } from "../lib/seo/nodes/product";
+import { faqSchema, pageGraph } from "../lib/seo/schema";
+import { useJsonLd } from "../lib/seo/useJsonLd";
 import { useSeo } from "../lib/seo/useSeo";
 import AracAdimi from "./quote/AracAdimi";
+import AktifInceleyenler from "./quote/AktifInceleyenler";
 import BelgeButonu from "./quote/BelgeButonu";
 import DaskAdimi from "./quote/DaskAdimi";
 import FiyatListesi from "./quote/FiyatListesi";
+import GuvenSeridi from "./quote/GuvenSeridi";
 import KayitliTeklifModali from "./quote/KayitliTeklifModali";
 import KimlikAdimi from "./quote/KimlikAdimi";
 import OdemeModali from "./quote/OdemeModali";
@@ -128,6 +135,7 @@ export default function QuoteFlowPage() {
   const [geriDonus, setGeriDonus] = useState("");
 
   const [secilen, setSecilen] = useState<SecilenTeklif | null>(null);
+  const [kampanyaBitis, setKampanyaBitis] = useState<number | null>(null);
   // Şirket bu teklif üzerinden satın almaya izin vermedi: kart ekranı
   // yerine ayrı uyarı açılıyor.
   const [uyari, setUyari] = useState<(SecilenTeklif & { mesaj: string }) | null>(null);
@@ -159,6 +167,7 @@ export default function QuoteFlowPage() {
   );
 
   const productPath = product ? quoteHref(product.slug) : href("home");
+  const rehber = product && locale === "tr" ? getProductGuide(product.slug) : undefined;
 
   useSeo(
     product
@@ -167,8 +176,6 @@ export default function QuoteFlowPage() {
           description: product.metaDescription,
           path: productPath,
           image: pageOgImageUrl(product.seoTitle, product.title),
-          // Teklif akışı kişiye özel ve adımlı; arama motorlarına kapalı.
-          robots: ROBOTS_NOINDEX,
         }
       : {
           title: t.quote.notFound,
@@ -176,6 +183,25 @@ export default function QuoteFlowPage() {
           path: "/",
           robots: ROBOTS_NOINDEX,
         },
+  );
+
+  useJsonLd(
+    product
+      ? pageGraph({
+          path: productPath,
+          name: product.seoTitle,
+          description: product.metaDescription,
+          dateModified: rehber?.guncelleme,
+          breadcrumb: [
+            { name: t.quote.home, path: href("home") },
+            { name: product.title },
+          ],
+          extra: [
+            productServiceNode(product, productPath),
+            rehber ? faqSchema(rehber.faq, productPath) : null,
+          ],
+        })
+      : null,
   );
 
   useEffect(() => {
@@ -608,18 +634,27 @@ export default function QuoteFlowPage() {
 
         <h1 className="flow__title">{product.title}</h1>
 
+        {!geriDonus ? <AktifInceleyenler productSlug={product.slug} /> : null}
+
         {!geriDonus ? (
-          <ol className="flow__steps">
-            {ADIM_SIRASI.map((deger, index) => (
-              <li
-                key={deger}
-                className={`flow__step${index <= aktifIndex ? " flow__step--active" : ""}`}
-              >
-                <span className="flow__step-no">{index + 1}</span>
-                <span className="flow__step-label">{adimEtiketleri[deger]}</span>
-              </li>
-            ))}
-          </ol>
+          <div className="flow__progress">
+            <div className="flow__progress-head">
+              <span className="flow__progress-label">{adimEtiketleri[adim]}</span>
+              <span className="flow__progress-count">
+                {aktifIndex + 1} / {ADIM_SIRASI.length}
+              </span>
+            </div>
+            <div className="flow__progress-bars" aria-hidden="true">
+              {ADIM_SIRASI.map((deger, index) => (
+                <span
+                  key={deger}
+                  className={`flow__progress-bar${
+                    index <= aktifIndex ? " flow__progress-bar--active" : ""
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
         ) : null}
 
         {!geriDonus && (adim === "kimlik" || adim === "detay") ? (
@@ -670,6 +705,10 @@ export default function QuoteFlowPage() {
             }}
           />
         ) : null}
+
+        {!geriDonus && adim === "kimlik" ? <GuvenSeridi /> : null}
+
+        {!geriDonus && adim === "kimlik" && rehber ? <UrunRehberi rehber={rehber} /> : null}
 
         {!geriDonus && adim === "detay" && gereksinim.adimTipi === "seyahat" ? (
           <SeyahatAdimi
@@ -738,6 +777,9 @@ export default function QuoteFlowPage() {
             kisaSureli={gereksinim.kisaSureli}
             onSatinAl={satinAlKontrol}
             onTeklifIste={teklifIste}
+            onSureDoldu={akisiSifirla}
+            odemeAcik={Boolean(secilen && oturumId)}
+            onKampanyaBitis={setKampanyaBitis}
             onGeri={() => {
               pollAbort.current?.abort();
               setAdim("detay");
@@ -829,6 +871,7 @@ export default function QuoteFlowPage() {
           teklif={secilen.teklif}
           kimlikNo={kimlikNoOf(kimlik)}
           baslangicPrim={secilen.yeniPrim ?? null}
+          kampanyaBitis={kampanyaBitis}
           onSirketReddi={(mesaj) => {
             setUyari({ ...secilen, mesaj });
             setSecilen(null);

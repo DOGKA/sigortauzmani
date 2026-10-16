@@ -10,6 +10,11 @@
  * sayfasını dönebiliyor; o durumda poliçe burada değil, müşteri şifreyi
  * girdikten sonra kesiliyor (`api/_shared/ucd.ts`, `api/io/ucd-durum.ts`).
  *
+ * Payten: PAYTEN_ENABLED açıkken kart sahibi önce Payten'de 3D ile
+ * doğrulanıyor (`api/_shared/payten.ts`) ve istek bu doğrulamanın
+ * kimliğini taşımak zorunda. IO'nun kendi 3D'si o zaman kapalı kalıyor;
+ * müşteri iki kez şifre girmesin.
+ *
  * Daini Mürtehin: partner ödeme ekranında var ama API dökümantasyonunda
  * karşılığı yok. Self serviste her zaman "Yok" olduğu için alan hiç
  * gönderilmiyor; IO tarafı zorunlu tutarsa burada eklenmesi gerekir.
@@ -24,12 +29,14 @@ import {
   jsonResponse,
 } from "../_shared/io";
 import {
+  dbRequest,
   findOturum,
   oturumTeklifIdleri,
   rateCheck,
   recordSatinAlma,
   updateOturum,
 } from "../_shared/iolog";
+import { paytenDogrulamaTutari, paytenEnabled } from "../_shared/payten";
 import { clientIp, hashIp, resolveSession, withCookie } from "../_shared/session";
 import { UCD_BEKLIYOR, ucDOzeti, ucDYonlendirmesi } from "../_shared/ucd";
 import { belgeGetir } from "../_shared/yazdir";
@@ -57,6 +64,43 @@ export const config = { runtime: "edge" };
 const MAX_SATINAL_PER_OTURUM = 10;
 const OTURUM_WINDOW_SECONDS = 15 * 60;
 const MAX_SATINAL_PER_HOUR = 100;
+
+/** Banka ekranı ile satın alma arasında geçebilecek en uzun süre. */
+const PAYTEN_GECERLILIK_MS = 30 * 60 * 1000;
+
+const PAYTEN_TEKRAR =
+  "Kart doğrulaması bu ödemeyle eşleşmedi. Lütfen ödemeyi yeniden başlatın.";
+
+interface PaytenKaydi {
+  tutar: number | string;
+  kart_bin: string | null;
+  kart_son4: string | null;
+}
+
+/**
+ * Doğrulamayı tek seferlik tüketir. Filtre ve güncelleme tek UPDATE olduğu
+ * için aynı doğrulama iki satın almada kullanılamaz.
+ */
+async function paytenDogrulamasiniKullan(input: {
+  dogrulamaId: string;
+  sessionId: string;
+  oturumId: string;
+  teklifId: number;
+  sirketKodu: string;
+}): Promise<PaytenKaydi | null> {
+  const sonrasi = new Date(Date.now() - PAYTEN_GECERLILIK_MS).toISOString();
+  const rows = await dbRequest<PaytenKaydi[]>(
+    `payten_dogrulamalar?merchant_payment_id=eq.${encodeURIComponent(input.dogrulamaId)}` +
+      `&session_id=eq.${encodeURIComponent(input.sessionId)}` +
+      `&oturum_id=eq.${encodeURIComponent(input.oturumId)}` +
+      `&teklif_id=eq.${input.teklifId}` +
+      `&sirket_kodu=eq.${encodeURIComponent(input.sirketKodu)}` +
+      `&status=eq.dogrulandi&created_at=gte.${encodeURIComponent(sonrasi)}` +
+      `&select=tutar,kart_bin,kart_son4`,
+    { method: "PATCH", body: { status: "kullanildi" }, prefer: "return=representation" },
+  );
+  return rows?.[0] ?? null;
+}
 
 interface SeciliTeklif {
   Id?: number;
@@ -91,6 +135,8 @@ interface RequestBody {
    * çekilmesin.
    */
   onaylananPrim?: number;
+  /** Payten açıkken `api/io/payten-baslat.ts`'nin verdiği doğrulama kimliği. */
+  paytenDogrulamaId?: string;
 }
 
 function digitsOnly(value: unknown): string {
@@ -196,6 +242,14 @@ export default async function handler(request: Request): Promise<Response> {
     return withCookie(jsonResponse({ error: kartCheck.message }, 400), session);
   }
 
+  const paytenAcik = paytenEnabled();
+  const paytenDogrulamaId = String(body.paytenDogrulamaId ?? "").trim();
+  if (paytenAcik && !paytenDogrulamaId) {
+    return withCookie(jsonResponse({ error: PAYTEN_TEKRAR }, 409), session);
+  }
+  const ioUcD = io3dsEnabled() && !paytenAcik;
+  const ucDKaydi = ioUcD || paytenAcik;
+
   const kartNo = digitsOnly(kart.KartNo);
   const kartSon4 = kartNo.slice(-4);
   const sirketKodu = normalizeSirketKodu(teklif.SirketKodu);
@@ -238,7 +292,7 @@ export default async function handler(request: Request): Promise<Response> {
       prim: teklif.Prim ?? null,
       kart_sahibi: String(kart.KartSahibi ?? "").trim(),
       kart_son4: kartSon4,
-      uc_d_secure: io3dsEnabled(),
+      uc_d_secure: ucDKaydi,
       io_response: { yenileme: yenilenen.ozet },
       status: "basarisiz",
       hata_mesaji: mesaj,
@@ -279,6 +333,28 @@ export default async function handler(request: Request): Promise<Response> {
   // onaylanmıştır.
   const odenecekPrim = yeniPrim;
 
+  // Prim kontrolünden sonra: prim değişti onayı doğrulamayı yakmasın.
+  if (paytenAcik) {
+    const dogrulama = await paytenDogrulamasiniKullan({
+      dogrulamaId: paytenDogrulamaId,
+      sessionId: session.id,
+      oturumId: oturum.id,
+      teklifId,
+      sirketKodu,
+    });
+    const kartEslesti =
+      dogrulama !== null &&
+      dogrulama.kart_son4 === kartSon4 &&
+      (!dogrulama.kart_bin || kartNo.startsWith(dogrulama.kart_bin));
+    const tutarEslesti =
+      dogrulama !== null &&
+      Math.abs(Number(dogrulama.tutar) - paytenDogrulamaTutari(odenecekPrim)) <= 0.01;
+    if (!kartEslesti || !tutarEslesti) {
+      return withCookie(jsonResponse({ error: PAYTEN_TEKRAR }, 409), session);
+    }
+  }
+  const paytenOzeti = paytenAcik ? { paytenDogrulamaId } : {};
+
   const result = await ioFetch(`/api/teklif/satinal`, {
     method: "POST",
     timeoutMs: 60_000,
@@ -297,7 +373,7 @@ export default async function handler(request: Request): Promise<Response> {
         // CRM aynı satırdan poliçe kesiyor.
         SanalPos: yenilenen.sanalPos ?? true,
         SatinAl: true,
-        Us3D: io3dsEnabled(),
+        Us3D: ioUcD,
         Prim: odenecekPrim,
         Taksit: teklif.Taksit ?? "Peşin",
         TaksitKodu: teklif.TaksitKodu ?? "1",
@@ -313,7 +389,7 @@ export default async function handler(request: Request): Promise<Response> {
 
   // Banka doğrulaması bekleniyor: poliçe müşteri şifreyi girdikten sonra IO
   // tarafında kesilecek, sonucu `api/io/ucd-durum.ts` takip ediyor.
-  const ucD = io3dsEnabled()
+  const ucD = ioUcD
     ? ucDYonlendirmesi(result.ok ? result.data : result.error.ham)
     : null;
   const policeHemenKesildi =
@@ -360,8 +436,8 @@ export default async function handler(request: Request): Promise<Response> {
       taksit_kodu: teklif.TaksitKodu ?? null,
       kart_sahibi: String(kart.KartSahibi ?? "").trim(),
       kart_son4: kartSon4,
-      uc_d_secure: io3dsEnabled(),
-      io_response: { yenileme: yenilenen.ozet },
+      uc_d_secure: ucDKaydi,
+      io_response: { yenileme: yenilenen.ozet, ...paytenOzeti },
       status: "basarisiz",
       hata_mesaji: result.error.message,
     });
@@ -392,8 +468,8 @@ export default async function handler(request: Request): Promise<Response> {
       prim: odenecekPrim ?? null,
       kart_sahibi: String(kart.KartSahibi ?? "").trim(),
       kart_son4: kartSon4,
-      uc_d_secure: io3dsEnabled(),
-      io_response: { ...payload, yenileme: yenilenen.ozet },
+      uc_d_secure: ucDKaydi,
+      io_response: { ...payload, yenileme: yenilenen.ozet, ...paytenOzeti },
       status: "basarisiz",
       hata_mesaji: icHata.mesaj ?? "Poliçe kesilemedi.",
     });
@@ -441,10 +517,10 @@ export default async function handler(request: Request): Promise<Response> {
     taksit_kodu: teklif.TaksitKodu ?? null,
     kart_sahibi: String(kart.KartSahibi ?? "").trim(),
     kart_son4: kartSon4,
-    uc_d_secure: io3dsEnabled(),
+    uc_d_secure: ucDKaydi,
     police_pdf_url: policePdf,
     makbuz_pdf_url: makbuzPdf,
-    io_response: { ...payload, yenileme: yenilenen.ozet },
+    io_response: { ...payload, yenileme: yenilenen.ozet, ...paytenOzeti },
     status: "basarili",
   });
 

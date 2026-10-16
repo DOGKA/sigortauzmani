@@ -33,6 +33,8 @@ export interface AnalyticsSettings {
 
 export interface ProductSettings {
   enabledSlugs: string[];
+  /** Teklif ekranında "Önerilen" etiketi alacak şirket kodları ("050" gibi). */
+  onerilenSirketler: string[];
 }
 
 export interface MaintenanceSettings {
@@ -92,7 +94,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     ga4MeasurementId: "",
     gtmContainerId: "",
   },
-  products: { enabledSlugs: [...ALL_PRODUCT_SLUGS] },
+  products: { enabledSlugs: [...ALL_PRODUCT_SLUGS], onerilenSirketler: [] },
   maintenance: {
     enabled: false,
     title: "Kısa bir bakımdayız",
@@ -116,7 +118,13 @@ export function mergePublicSettings(value: unknown): PublicSiteSettings {
   return {
     company: { ...DEFAULT_SITE_SETTINGS.company, ...input.company },
     analytics: { ...DEFAULT_SITE_SETTINGS.analytics, ...input.analytics },
-    products: { ...DEFAULT_SITE_SETTINGS.products, ...input.products },
+    products: {
+      ...DEFAULT_SITE_SETTINGS.products,
+      ...input.products,
+      onerilenSirketler: Array.isArray(input.products?.onerilenSirketler)
+        ? input.products.onerilenSirketler.filter((kod) => typeof kod === "string")
+        : [],
+    },
     maintenance: {
       ...DEFAULT_SITE_SETTINGS.maintenance,
       ...input.maintenance,

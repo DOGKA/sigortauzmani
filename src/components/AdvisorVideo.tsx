@@ -23,7 +23,7 @@ export default function AdvisorVideo({
   const { locale } = useLocale();
   const t = useT();
   const src = videoSrc ?? (locale === "tr" ? ILK_VIDEO.tr : ILK_VIDEO.diger);
-  const spoken = transcript ?? t.quote.advisorIntro;
+  const spoken = transcript ?? t.quote.advisorShort;
   const videoRef = useRef<HTMLVideoElement>(null);
   const isFirstRunRef = useRef(true);
   const [muted, setMuted] = useState(true);
@@ -81,8 +81,28 @@ export default function AdvisorVideo({
           className="advisor__sound"
           onClick={toggleMute}
           aria-pressed={!muted}
+          aria-label={muted ? t.quote.listen : t.quote.mute}
         >
-          {muted ? t.quote.listen : t.quote.mute}
+          <svg
+            className="advisor__sound-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M11 5 6 9H3v6h3l5 4V5z" />
+            {muted ? (
+              <path d="m22 9-6 6M16 9l6 6" />
+            ) : (
+              <path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13" />
+            )}
+          </svg>
+          <span className="advisor__sound-text">
+            {muted ? t.quote.listen : t.quote.mute}
+          </span>
         </button>
       </div>
 

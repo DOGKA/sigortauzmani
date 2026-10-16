@@ -217,6 +217,19 @@ export async function sorguTramer(body: {
 }
 
 /**
+ * Doğum tarihinin kimlik numarasından otomatik alınıp alınamadığı. Tarihin
+ * kendisi tarayıcıya hiç gelmiyor; sunucu TRAMER ve teklif isteğine ekliyor.
+ * Telefon SMS koduyla doğrulandıktan sonra çağrılmalı.
+ */
+export function dogumTarihiKontrol(body: {
+  productSlug: string;
+  kimlikNo: string;
+  phone: string;
+}): Promise<{ bulundu: boolean }> {
+  return call<{ bulundu: boolean }>("dogum-tarihi", { method: "POST", body });
+}
+
+/**
  * CRM'in araç ekranındaki `TeklifBul` kontrolünün güvenli karşılığı.
  * Sunucu acente defterini tarar; istemciye yalnızca eşleşen teklif tarihi ve
  * kimliği gelir, müşteri listesi gelmez.
@@ -294,8 +307,28 @@ export function satinAl(body: {
   kart: KartBilgisi;
   /** Şirket primi güncellediyse ziyaretçinin onayladığı yeni tutar. */
   onaylananPrim?: number;
+  /** Payten 3D doğrulamasının kimliği; Payten kapalıyken gönderilmez. */
+  paytenDogrulamaId?: string;
 }): Promise<SatinAlmaSonuc> {
   return call<SatinAlmaSonuc>("satinal", { method: "POST", body });
+}
+
+export type PaytenBaslatSonucu =
+  | { kapali: true }
+  | { kapali?: false; dogrulamaId: string; formAdresi: string; donusAdresi: string; tutar: number };
+
+/**
+ * Payten 3D doğrulama oturumu açar. Kart bilgisi bu çağrıda gitmez; tarayıcı
+ * kartı dönen `formAdresi`ne doğrudan gönderir.
+ */
+export function paytenBaslat(body: {
+  oturumId: string;
+  bransNo: number;
+  teklifId: number;
+  teklif: Partial<SirketTeklifi>;
+  onaylananPrim?: number;
+}): Promise<PaytenBaslatSonucu> {
+  return call<PaytenBaslatSonucu>("payten-baslat", { method: "POST", body });
 }
 
 /** 3D Secure doğrulamasından sonra poliçenin kesilip kesilmediği. */

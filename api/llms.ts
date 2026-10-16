@@ -13,6 +13,7 @@ import { CATEGORY_LABELS as GLOSSARY_CATEGORIES, glossaryTerms } from "../src/da
 import { comparisons } from "../src/data/comparisons";
 import { HOME_FAQ_ITEMS } from "../src/data/faq";
 import { products } from "../src/data/products";
+import { getProductGuide, type ProductGuide } from "../src/data/productGuides";
 import {
   CONTACT_EMAIL,
   CONTACT_PHONE_DISPLAY,
@@ -143,16 +144,41 @@ function staticPageBodies(): string {
   return `# Sayfalar\n\n${blocks.join("\n\n---\n\n")}`;
 }
 
+function guideMarkdown(guide: ProductGuide): string {
+  const parts = [`### ${guide.heading}`, `Son güncelleme: ${guide.guncelleme}`, guide.summary];
+  for (const section of guide.sections) {
+    parts.push(`#### ${section.heading}`, section.paragraphs.join("\n\n"));
+    if (section.bullets?.length) parts.push(section.bullets.map((item) => `- ${item}`).join("\n"));
+    if (section.table) {
+      const head = `| ${section.table.head.join(" | ")} |`;
+      const rule = `| ${section.table.head.map(() => "---").join(" | ")} |`;
+      const rows = section.table.rows.map((row) => `| ${row.join(" | ")} |`).join("\n");
+      parts.push([section.table.caption, head, rule, rows].join("\n"));
+    }
+    if (section.note) parts.push(section.note);
+  }
+  parts.push(
+    `#### ${guide.faqHeading}`,
+    guide.faq.map((item) => `**${item.question}**\n\n${item.answer}`).join("\n\n"),
+    `Kaynak: [${guide.kaynak.label}](${guide.kaynak.path})`,
+  );
+  return parts.filter(Boolean).join("\n\n");
+}
+
 function productBodies(): string {
-  const blocks = products.map((product) =>
-    [
+  const blocks = products.map((product) => {
+    const guide = getProductGuide(product.slug);
+    return [
       `## ${product.seoTitle}`,
       `URL: ${url(ROUTES.quote(product.slug))}`,
       `Branş: ${product.serviceType}`,
       product.metaDescription,
       product.seoBullets.map((bullet) => `- ${bullet}`).join("\n"),
-    ].join("\n\n"),
-  );
+      guide ? guideMarkdown(guide) : "",
+    ]
+      .filter(Boolean)
+      .join("\n\n");
+  });
   return `# Sigorta ürünleri\n\n${blocks.join("\n\n---\n\n")}`;
 }
 

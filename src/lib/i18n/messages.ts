@@ -151,13 +151,19 @@ export interface UiMessages {
     saglikKvkkBody: string;
     listen: string;
     mute: string;
-    advisorIntro: string;
     advisorNext: string;
+    advisorShort: string;
+    trustRegistered: string;
+    trustAuthorized: string;
+    trustFree: string;
     retry: string;
     continueAnyway: string;
     loading: string;
     phoneError: string;
     birthError: string;
+    birthAutoFailed: string;
+    province: string;
+    provinceError: string;
     tcknError: string;
     vknError: string;
     yknError: string;
@@ -400,7 +406,7 @@ const TR: UiMessages = {
     identityLead:
       "Bilgileriniz, entegrasyon bulunan sigorta şirketlerinden anlık teklif almak için kullanılır.",
     kimlikLabel: "T.C. kimlik / vergi kimlik numarası",
-    kimlikHint: "Şirket adına teklif alıyorsanız vergi kimlik numarasını girin.",
+    kimlikHint: "Şirketler için vergi kimlik numarası girin.",
     shortTermTcknLabel: "T.C. Kimlik Numarası",
     shortTermTcknHint:
       "Kısa süreli trafik teklifinde araçla ilişkili kişinin T.C. Kimlik Numarasını girin.",
@@ -411,18 +417,24 @@ const TR: UiMessages = {
     kvkkLink: "KVKK Aydınlatma Metni",
     kvkkAfter: "’ni inceleyebilirsiniz.",
     saglikKvkkBody:
-      "Sağlık sigortası teklifi için paylaşacağınız sağlık beyanı ve sağlığınıza ilişkin diğer bilgiler özel nitelikli kişisel veridir. Bu bilgiler, kişiselleştirilmiş teklif alınması ve seçiminiz hâlinde poliçe sürecinin yürütülmesi amacıyla yalnızca gerekli olduğu ölçüde işlenebilir ve ilgili sağlık sigortası şirketlerine iletilebilir.",
+      "Sağlık bilgileriniz özel nitelikli kişisel veridir; yalnızca teklif ve poliçe süreci için gerektiği kadar işlenir.",
     listen: "Sesli dinle",
     mute: "Sesi kapat",
-    advisorIntro:
-      "Merhaba, ben Sigorta Uzmanı dijital teklif asistanıyım. Bilgilerinizi birkaç kısa adımda paylaşarak entegrasyon bulunan sigorta şirketlerinden gelen anlık fiyat ve teminat seçeneklerini karşılaştırabilirsiniz. Çevrim içi satın alma desteklenen ürünlerde doğrudan sigorta şirketinin ödeme ekranına yönlendirilirsiniz; diğerlerinde süreciniz WhatsApp temsilcimizle devam eder. Hazırsanız başlayalım.",
     advisorNext:
       "Teşekkür ederim. Son adıma geçiyoruz. Lütfen kalan iki bilgiyi de paylaşın. Ardından sizin için en uygun sigorta tekliflerini hazırlayacağım.",
+    advisorShort:
+      "Merhaba, ben dijital teklif asistanınız. Kimlik numaranız ve telefonunuzla başlayalım; teklifleri sizin için ben karşılaştıracağım.",
+    trustRegistered: "T.C. SEDDK & TOBB Kayıtlı",
+    trustAuthorized: "Yetkili Sigorta Acentesi",
+    trustFree: "Ücretsiz Teklif ve İptal Desteği",
     retry: "Tekrar dene",
     continueAnyway: "Yine de devam et",
     loading: "Bilgiler getiriliyor…",
     phoneError: "Geçerli bir cep telefonu girin (05XX XXX XX XX).",
     birthError: "Doğum tarihinizi girin.",
+    birthAutoFailed: "Doğum tarihinizi otomatik alamadık, lütfen girin.",
+    province: "Yaşadığınız il",
+    provinceError: "İl seçin.",
     tcknError: "T.C. Kimlik Numarası 11 hane, Vergi Kimlik Numarası 10 hane olmalı.",
     vknError: "Geçerli bir Vergi Kimlik Numarası girin (10 hane).",
     yknError: "Yabancı Kimlik Numarası 99 ile başlayan 11 hane olmalı.",
@@ -432,9 +444,9 @@ const TR: UiMessages = {
     stillContinue: "Yine de devam edebilirsiniz.",
     consentTitle: "Açık rıza",
     consentBody:
-      "Sağlık sigortası teklifinin hazırlanması ve seçmem hâlinde poliçe sürecinin yürütülmesi amacıyla; formda paylaştığım sağlık bilgilerimin {company} tarafından işlenmesine ve teklif alınması amacıyla seçilen anlaşmalı sağlık sigortası şirketlerine aktarılmasına açık rıza veriyorum.",
-    consentYes: "Açık rıza veriyorum",
-    consentNo: "Açık rıza vermiyorum",
+      "Sağlık bilgilerimin teklif ve poliçe süreci için {company} tarafından işlenmesine ve seçilen sağlık sigortası şirketlerine aktarılmasına açık rıza veriyorum.",
+    consentYes: "Onaylıyorum",
+    consentNo: "Onaylamıyorum",
     consentError:
       "Devam etmek için açık rıza seçeneklerinden birini işaretleyin.",
     consentDeclineNote:
@@ -727,7 +739,7 @@ const EN: UiMessages = {
     identityLead:
       "Your details are used to get live quotes from integrated insurance companies.",
     kimlikLabel: "Turkish ID / tax ID number",
-    kimlikHint: "If you are requesting a quote for a company, enter the tax ID number.",
+    kimlikHint: "For a company, enter the tax ID number.",
     shortTermTcknLabel: "Turkish ID number",
     shortTermTcknHint:
       "For short-term traffic insurance, enter the Turkish ID of the person associated with the vehicle.",
@@ -738,18 +750,24 @@ const EN: UiMessages = {
     kvkkLink: "KVKK information notice",
     kvkkAfter: ".",
     saglikKvkkBody:
-      "The health declaration and other health information you share for a health insurance quote are special-category personal data. They may be processed only as far as needed to obtain a personalised quote and, if you choose, to run the policy process, and may be sent to the relevant health insurers.",
+      "Your health information is special-category personal data and is processed only as needed for the quote and policy process.",
     listen: "Listen with sound",
     mute: "Mute",
-    advisorIntro:
-      "Hello, I am Sigorta Uzmanı’s digital quote assistant. Share your details in a few short steps to compare live prices and covers from integrated insurers. On products that support online purchase you are sent to the insurer’s payment screen; otherwise your process continues with our WhatsApp advisor. Let’s get started when you are ready.",
     advisorNext:
       "Thank you. We are moving to the last step. Please share the remaining two details. I will then prepare the most suitable insurance quotes for you.",
+    advisorShort:
+      "Hello, I'm your digital quote assistant. Let's start with your ID number and phone; I'll compare the quotes for you.",
+    trustRegistered: "Registered with SEDDK & TOBB",
+    trustAuthorized: "Licensed Insurance Agency",
+    trustFree: "Free Quotes & Cancellation Support",
     retry: "Try again",
     continueAnyway: "Continue anyway",
     loading: "Fetching details…",
     phoneError: "Enter a valid mobile number (05XX XXX XX XX).",
     birthError: "Enter your date of birth.",
+    birthAutoFailed: "We couldn't retrieve your date of birth automatically. Please enter it.",
+    province: "Province of residence",
+    provinceError: "Select a province.",
     tcknError: "Turkish ID must be 11 digits and tax ID must be 10 digits.",
     vknError: "Enter a valid tax ID number (10 digits).",
     yknError: "Foreign ID number must be 11 digits starting with 99.",
@@ -759,9 +777,9 @@ const EN: UiMessages = {
     stillContinue: "You can still continue.",
     consentTitle: "Explicit consent",
     consentBody:
-      "I give explicit consent for {company} to process the health information I share in this form and to transfer it to the selected partner health insurers in order to prepare a health insurance quote and, if I choose, to run the policy process.",
-    consentYes: "I give explicit consent",
-    consentNo: "I do not give explicit consent",
+      "I give explicit consent to {company} processing my health information for the quote and policy process and sharing it with the selected health insurers.",
+    consentYes: "I agree",
+    consentNo: "I do not agree",
     consentError: "Select one of the explicit-consent options to continue.",
     consentDeclineNote:
       "You can continue without giving explicit consent. In that case your health information is not processed; the quote is prepared only with the identity and contact details you share in the form.",
@@ -1051,7 +1069,7 @@ const AR: UiMessages = {
     identityLead:
       "تُستخدم بياناتكم للحصول على عروض فورية من شركات التأمين المتكاملة.",
     kimlikLabel: "رقم الهوية التركية / الرقم الضريبي",
-    kimlikHint: "إذا كنتم تطلبون العرض باسم شركة فأدخلوا الرقم الضريبي.",
+    kimlikHint: "للشركات أدخلوا الرقم الضريبي.",
     shortTermTcknLabel: "رقم الهوية التركية",
     shortTermTcknHint:
       "للتأمين المروري قصير المدة، أدخلوا رقم الهوية التركية للشخص المرتبط بالمركبة.",
@@ -1062,18 +1080,24 @@ const AR: UiMessages = {
     kvkkLink: "نص التوعية وفق KVKK",
     kvkkAfter: ".",
     saglikKvkkBody:
-      "إقرار الصحة والمعلومات الصحية الأخرى التي تشاركونها لعرض التأمين الصحي بيانات شخصية ذات طبيعة خاصة. يجوز معالجتها بالقدر اللازم فقط للحصول على عرض مخصص وتسيير عملية الوثيقة إذا اخترتم ذلك، ويجوز إرسالها إلى شركات التأمين الصحي المعنية.",
+      "معلوماتكم الصحية بيانات شخصية ذات طبيعة خاصة، وتُعالَج فقط بالقدر اللازم للعرض وعملية الوثيقة.",
     listen: "استمع بالصوت",
     mute: "كتم الصوت",
-    advisorIntro:
-      "مرحباً، أنا مساعد العروض الرقمي في Sigorta Uzmanı. شاركوا بياناتكم في بضع خطوات قصيرة لمقارنة الأسعار والتغطيات الفورية من الشركات المتكاملة. في المنتجات التي تدعم الشراء عبر الإنترنت تُوجَّهون إلى شاشة دفع شركة التأمين؛ وفي غيرها يستمر الإجراء مع ممثل واتساب. إن كنتم جاهزين فلنبدأ.",
     advisorNext:
       "شكراً لكم. ننتقل إلى الخطوة الأخيرة. يرجى مشاركة البيانين المتبقيين. بعدها أعدّ لكم أنسب عروض التأمين.",
+    advisorShort:
+      "مرحباً، أنا مساعد العروض الرقمي. لنبدأ برقم هويتك وهاتفك، وسأقارن العروض من أجلك.",
+    trustRegistered: "مسجّل لدى SEDDK وTOBB",
+    trustAuthorized: "وكالة تأمين مرخّصة",
+    trustFree: "عرض مجاني ودعم الإلغاء",
     retry: "أعد المحاولة",
     continueAnyway: "تابع على أي حال",
     loading: "جارٍ جلب البيانات…",
     phoneError: "أدخلوا رقم هاتف محمولاً صالحاً (05XX XXX XX XX).",
     birthError: "أدخلوا تاريخ الميلاد.",
+    birthAutoFailed: "لم نتمكن من الحصول على تاريخ الميلاد تلقائيًا، يرجى إدخاله.",
+    province: "المحافظة التي تقيمون فيها",
+    provinceError: "اختاروا المحافظة.",
     tcknError: "رقم الهوية التركية 11 خانة والرقم الضريبي 10 خانات.",
     vknError: "أدخلوا رقماً ضريبياً صالحاً (10 خانات).",
     yknError: "رقم هوية الأجنبي يجب أن يكون 11 خانة ويبدأ بـ 99.",
@@ -1083,9 +1107,9 @@ const AR: UiMessages = {
     stillContinue: "يمكنكم المتابعة رغم ذلك.",
     consentTitle: "الموافقة الصريحة",
     consentBody:
-      "أمنح موافقة صريحة لـ {company} بمعالجة معلوماتي الصحية التي أشاركها في هذا النموذج ونقلها إلى شركات التأمين الصحي الشريكة المختارة لإعداد عرض التأمين الصحي وتسيير عملية الوثيقة إذا اخترت ذلك.",
-    consentYes: "أمنح الموافقة الصريحة",
-    consentNo: "لا أمنح الموافقة الصريحة",
+      "أمنح موافقة صريحة لـ {company} بمعالجة معلوماتي الصحية لأجل العرض وعملية الوثيقة ونقلها إلى شركات التأمين الصحي المختارة.",
+    consentYes: "أوافق",
+    consentNo: "لا أوافق",
     consentError: "اختاروا أحد خياري الموافقة الصريحة للمتابعة.",
     consentDeclineNote:
       "يمكنكم المتابعة دون منح الموافقة الصريحة. في هذه الحالة لا تُعالَج معلوماتكم الصحية؛ ويُعدّ العرض فقط ببيانات الهوية والتواصل التي تشاركونها في النموذج.",
@@ -1375,7 +1399,7 @@ const FA: UiMessages = {
     identityLead:
       "اطلاعات شما برای دریافت پیشنهاد لحظه‌ای از شرکت‌های بیمه یکپارچه استفاده می‌شود.",
     kimlikLabel: "شماره هویت ترکیه / شماره مالیاتی",
-    kimlikHint: "اگر برای شرکت پیشنهاد می‌گیرید شماره مالیاتی را وارد کنید.",
+    kimlikHint: "برای شرکت‌ها شماره مالیاتی را وارد کنید.",
     shortTermTcknLabel: "شماره هویت ترکیه",
     shortTermTcknHint:
       "برای بیمه ترافیک کوتاه‌مدت، شماره هویت ترکیه شخص مرتبط با خودرو را وارد کنید.",
@@ -1386,18 +1410,24 @@ const FA: UiMessages = {
     kvkkLink: "متن اطلاع‌رسانی KVKK",
     kvkkAfter: " را ببینید.",
     saglikKvkkBody:
-      "اظهار سلامت و سایر اطلاعات مربوط به سلامتی که برای پیشنهاد بیمه درمان به اشتراک می‌گذارید داده شخصی حساس است. این اطلاعات فقط تا حد لازم برای گرفتن پیشنهاد شخصی و در صورت انتخاب شما اجرای فرآیند بیمه‌نامه پردازش می‌شود و ممکن است به شرکت‌های بیمه درمان مربوط ارسال شود.",
+      "اطلاعات سلامت شما داده شخصی حساس است و فقط به اندازه لازم برای پیشنهاد و فرآیند بیمه‌نامه پردازش می‌شود.",
     listen: "با صدا گوش دهید",
     mute: "بی‌صدا",
-    advisorIntro:
-      "سلام، من دستیار دیجیتال پیشنهاد Sigorta Uzmanı هستم. اطلاعات را در چند گام کوتاه به اشتراک بگذارید تا قیمت و پوشش لحظه‌ای شرکت‌های یکپارچه را مقایسه کنید. در محصولاتی که خرید آنلاین دارند به صفحه پرداخت شرکت بیمه می‌روید؛ در بقیه مسیر با نماینده واتساپ ادامه می‌یابد. اگر آماده‌اید شروع کنیم.",
     advisorNext:
       "متشکرم. به گام آخر می‌رویم. لطفاً دو اطلاعات باقی‌مانده را هم به اشتراک بگذارید. سپس مناسب‌ترین پیشنهادهای بیمه را آماده می‌کنم.",
+    advisorShort:
+      "سلام، من دستیار دیجیتال پیشنهاد شما هستم. با شماره شناسایی و تلفن شما شروع کنیم؛ پیشنهادها را برایتان مقایسه می‌کنم.",
+    trustRegistered: "ثبت‌شده نزد SEDDK و TOBB",
+    trustAuthorized: "نمایندگی بیمه مجاز",
+    trustFree: "پیشنهاد رایگان و پشتیبانی لغو",
     retry: "دوباره تلاش کنید",
     continueAnyway: "باز هم ادامه دهید",
     loading: "در حال دریافت اطلاعات…",
     phoneError: "یک شماره همراه معتبر وارد کنید (05XX XXX XX XX).",
     birthError: "تاریخ تولد را وارد کنید.",
+    birthAutoFailed: "تاریخ تولد به‌صورت خودکار دریافت نشد، لطفاً آن را وارد کنید.",
+    province: "استان محل سکونت",
+    provinceError: "استان را انتخاب کنید.",
     tcknError: "شماره هویت ترکیه ۱۱ رقم و شماره مالیاتی ۱۰ رقم است.",
     vknError: "یک شماره مالیاتی معتبر وارد کنید (۱۰ رقم).",
     yknError: "شماره هویت خارجی باید ۱۱ رقم باشد و با ۹۹ شروع شود.",
@@ -1407,9 +1437,9 @@ const FA: UiMessages = {
     stillContinue: "با این حال می‌توانید ادامه دهید.",
     consentTitle: "رضایت صریح",
     consentBody:
-      "رضایت صریح می‌دهم که {company} اطلاعات سلامت من در این فرم را برای تهیه پیشنهاد بیمه درمان و در صورت انتخاب من اجرای فرآیند بیمه‌نامه پردازش کند و به شرکت‌های بیمه درمان طرف قرارداد منتخب منتقل کند.",
-    consentYes: "رضایت صریح می‌دهم",
-    consentNo: "رضایت صریح نمی‌دهم",
+      "رضایت صریح می‌دهم که {company} اطلاعات سلامت مرا برای پیشنهاد و فرآیند بیمه‌نامه پردازش کند و به شرکت‌های بیمه درمان منتخب منتقل کند.",
+    consentYes: "موافقم",
+    consentNo: "موافق نیستم",
     consentError: "برای ادامه یکی از گزینه‌های رضایت صریح را انتخاب کنید.",
     consentDeclineNote:
       "بدون دادن رضایت صریح هم می‌توانید ادامه دهید. در این صورت اطلاعات سلامت شما پردازش نمی‌شود؛ پیشنهاد فقط با هویت و اطلاعات تماس فرم آماده می‌شود.",

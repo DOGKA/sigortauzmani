@@ -118,6 +118,7 @@ export default function TaleplerTable() {
         { key: "vergi_no", label: "Vergi No" },
         { key: "phone", label: "Telefon" },
         { key: "birth_date", label: "Doğum Tarihi" },
+        { key: "il", label: "İl" },
         { key: "plate", label: "Plaka" },
         { key: "gosterilen_prim", label: "Gösterilen Prim" },
         { key: "contact_pref", label: "İletişim Tercihi" },
@@ -400,6 +401,7 @@ function TalepRow({
               <DetailItem label="Vergi No" value={talep.vergi_no} />
               <DetailItem label="Doğum Tarihi" value={formatDate(talep.birth_date)} />
               <DetailItem label="Sigortalanacak Kişi" value={talep.insured_for} />
+              {talep.il ? <DetailItem label="İl" value={talep.il} /> : null}
               <DetailItem label="Plaka" value={talep.plate} />
               <DetailItem label="Belge Seri No" value={talep.document_serial} />
               <DetailItem label="Motor No" value={talep.motor_no} />

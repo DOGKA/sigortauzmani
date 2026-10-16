@@ -95,13 +95,13 @@
   font-size: 15px;
   font-weight: 700;
   color: var(--brand-600);
-  background: rgba(45, 126, 245, 0.08);
+  background: transparent;
   border: 1px solid rgba(45, 126, 245, 0.22);
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
 .footer__phone:hover {
-  background: rgba(45, 126, 245, 0.14);
+  border-color: rgba(45, 126, 245, 0.4);
   transform: translateY(-2px);
 }
 
@@ -154,6 +154,11 @@
   padding: 0 8px;
   font-size: 13px;
   color: var(--ink-400);
+}
+
+.footer__legal {
+  font-weight: 600;
+  color: var(--ink-500);
 }
 
 .footer__credits {

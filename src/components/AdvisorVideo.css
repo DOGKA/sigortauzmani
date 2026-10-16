@@ -69,7 +69,7 @@
   padding: 16px 20px;
   border-radius: 16px;
   border-top-left-radius: 4px;
-  background: linear-gradient(150deg, rgba(227, 237, 253, 0.95), rgba(227, 237, 253, 0.6));
+  background: var(--surface);
   border: 1px solid rgba(45, 126, 245, 0.25);
   min-height: 140px;
 }
@@ -81,7 +81,7 @@
   top: 14px;
   width: 12px;
   height: 12px;
-  background: rgba(227, 237, 253, 0.95);
+  background: var(--surface);
   border-left: 1px solid rgba(45, 126, 245, 0.25);
   border-bottom: 1px solid rgba(45, 126, 245, 0.25);
   transform: rotate(45deg);
@@ -91,36 +91,68 @@
   font-size: 14px;
   line-height: 1.7;
   color: var(--ink-700);
+  text-wrap: pretty;
+}
+
+.advisor__sound {
+  gap: 6px;
+}
+
+.advisor__sound-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
 }
 
 @media (max-width: 640px) {
+  /* Sohbet satırı: küçük video solda, mesaj sağda; böylece form ilk ekranda
+     görünüyor. */
   .advisor {
-    gap: 14px;
+    gap: 12px;
+    margin-bottom: 22px;
   }
 
   .advisor__media {
-    width: 84px;
+    width: auto;
     gap: 6px;
   }
 
   .advisor__video-wrap {
-    width: 84px;
-    height: 84px;
-    border-radius: 22px;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border-width: 2px;
+    box-shadow: 0 8px 18px -8px rgba(27, 102, 230, 0.55);
   }
 
   .advisor__sound {
-    font-size: 9px;
-    min-height: 24px;
-    padding: 4px 6px;
+    width: auto;
+    min-height: 0;
+    padding: 4px 8px;
+    gap: 4px;
+    font-size: 10.5px;
+    white-space: nowrap;
+  }
+
+  .advisor__sound-icon {
+    width: 12px;
+    height: 12px;
   }
 
   .advisor__bubble {
-    min-height: 84px;
+    min-height: 0;
     padding: 12px 14px;
+    border-radius: 18px;
+    border-top-left-radius: 6px;
+  }
+
+  .advisor__bubble::before {
+    top: 16px;
   }
 
   .advisor__bubble-text {
-    font-size: 12.5px;
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: var(--ink-900);
   }
 }

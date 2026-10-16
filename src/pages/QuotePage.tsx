@@ -1,10 +1,15 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { ILLER } from "../data/iller";
 import { getProduct } from "../data/products";
+import { getProductGuide } from "../data/productGuides";
 import { useInternalProductSlug, useLocale, useT } from "../lib/i18n/context";
 import { localizedProduct } from "../lib/i18n/products";
 import { productIcons } from "../data/productIcons";
 import AdvisorVideo from "../components/AdvisorVideo";
+import AktifInceleyenler from "./quote/AktifInceleyenler";
+import GuvenSeridi from "./quote/GuvenSeridi";
+import UrunRehberi from "./quote/UrunRehberi";
 import QuoteKvkkNotu from "../components/QuoteKvkkNotu";
 import SaglikAcikRiza from "../components/SaglikAcikRiza";
 import TalepBasariEkrani from "../components/TalepBasariEkrani";
@@ -14,7 +19,7 @@ import { smsDogrulamaGerekli } from "../data/smsDogrulama";
 import { getQuoteKvkkGovde, QUOTE_KVKK_SURUM } from "../data/quoteKvkk";
 import { ROBOTS_NOINDEX, pageOgImageUrl } from "../lib/seo/config";
 import { productServiceNode } from "../lib/seo/nodes/product";
-import { pageGraph } from "../lib/seo/schema";
+import { faqSchema, pageGraph } from "../lib/seo/schema";
 import { useJsonLd } from "../lib/seo/useJsonLd";
 import { useSeo } from "../lib/seo/useSeo";
 import {
@@ -56,6 +61,7 @@ export default function QuotePage() {
   const [kimlikNo, setKimlikNo] = useState("");
   const [phone, setPhone] = useState("");
   const [birthDate, setBirthDate] = useState("");
+  const [il, setIl] = useState("");
   const [hasPlate, setHasPlate] = useState(true);
   const [plate, setPlate] = useState("");
   const [documentSerial, setDocumentSerial] = useState("");
@@ -83,6 +89,7 @@ export default function QuotePage() {
     });
 
   const productPath = product ? quoteHref(product.slug) : "";
+  const rehber = product && locale === "tr" ? getProductGuide(product.slug) : undefined;
 
   useSeo(
     product
@@ -101,11 +108,15 @@ export default function QuotePage() {
           path: productPath,
           name: product.seoTitle,
           description: product.metaDescription,
+          dateModified: rehber?.guncelleme,
           breadcrumb: [
             { name: t.quote.home, path: href("home") },
             { name: product.title },
           ],
-          extra: [productServiceNode(product, productPath)],
+          extra: [
+            productServiceNode(product, productPath),
+            rehber ? faqSchema(rehber.faq, productPath) : null,
+          ],
         })
       : null,
   );
@@ -129,10 +140,19 @@ export default function QuotePage() {
   // numarası gerçek kişiye ait olduğu için kayıtta "şahıs" sayılıyor.
   const kisiTipi = kisiTipiCikar(kimlikNo);
   const entityType = kisiTipi === "sirket" ? "sirket" : "sahis";
-  /** Vergi kimlik numarası girildiyse doğum tarihi sorulmuyor. */
-  const showBirthDate = entityType !== "sirket";
-  const nextStep = () => setStep((s) => Math.min(s + 1, TOTAL_STEPS));
   const smsGerekli = smsDogrulamaGerekli(product.slug);
+  /**
+   * Vergi kimlik numarası girildiyse doğum tarihi sorulmuyor. SMS
+   * doğrulamalı ürünlerde de sorulmuyor: sunucu telefon doğrulandıktan sonra
+   * kimlik numarasından okuyup talep kaydına yazıyor.
+   */
+  const showBirthDate = entityType !== "sirket" && !smsGerekli;
+  /** Doğum tarihi kalkınca ikinci adımda sorulacak alan kalmayabiliyor. */
+  const totalSteps =
+    isVehicleProduct || isHealthProduct || showBirthDate || entityType === "sirket"
+      ? TOTAL_STEPS
+      : 1;
+  const nextStep = () => setStep((s) => Math.min(s + 1, totalSteps));
 
   /** Telefonun alındığı adımda, sonraki adıma geçmeden SMS kodu. */
   const telefonOnayli = async (): Promise<boolean> => {
@@ -181,8 +201,7 @@ export default function QuotePage() {
 
   const validateStep2 = () => {
     const next: Record<string, string> = {};
-    // Vergi kimlik numarası girildiyse doğum tarihi alanı zaten gizli.
-    if (entityType !== "sirket" && !birthDate) {
+    if (showBirthDate && !birthDate) {
       next.birthDate = t.quote.birthError;
     }
     if (isVehicleProduct) {
@@ -196,8 +215,9 @@ export default function QuotePage() {
                       } else if (!isValidChassisNo(chassisNo)) {
                         next.chassisNo = t.quote.chassisError;
       }
-    } else if (isHealthProduct && !isValidMobilePhone(phone)) {
-      next.phone = t.quote.phoneError;
+    } else if (isHealthProduct) {
+      if (!il) next.il = t.quote.provinceError;
+      if (!isValidMobilePhone(phone)) next.phone = t.quote.phoneError;
     }
     setErrors(next);
     return Object.keys(next).length === 0;
@@ -218,6 +238,7 @@ export default function QuotePage() {
       vergi_no: entityType === "sirket" ? kimlikNo || null : null,
       phone: phone || null,
       birth_date: birthDate || null,
+      il: isHealthProduct ? il || null : null,
       plate: isVehicleProduct && hasPlate ? plate || null : null,
       document_serial:
         isVehicleProduct && hasPlate ? documentSerial || null : null,
@@ -247,6 +268,7 @@ export default function QuotePage() {
     setKimlikNo("");
     setPhone("");
     setBirthDate("");
+    setIl("");
     setHasPlate(true);
     setPlate("");
     setDocumentSerial("");
@@ -285,16 +307,10 @@ export default function QuotePage() {
               />
             ) : (
               <>
-                <AdvisorVideo
-                  replayKey={step}
-                  videoSrc={step === 2 ? SECOND_STEP_VIDEO : undefined}
-                  transcript={step === 2 ? t.quote.advisorNext : undefined}
-                />
-
                 <div className="quote__steps">
                   <div className="quote__steps-head">
                     <span className="quote__step-title">
-                      {step === 1 ? t.quote.identity : t.quote.details}
+                      {step === 1 ? t.quote.identityStep : t.quote.detailsStep}
                     </span>
                     {step > 1 && (
                       <button
@@ -314,9 +330,12 @@ export default function QuotePage() {
                         {t.quote.back}
                       </button>
                     )}
+                    <span className="quote__step-count">
+                      {step} / {totalSteps}
+                    </span>
                   </div>
                   <div className="quote__steps-dots" aria-hidden="true">
-                    {Array.from({ length: TOTAL_STEPS }, (_, i) => (
+                    {Array.from({ length: totalSteps }, (_, i) => (
                       <span
                         key={i}
                         className={`quote__step-dot ${i + 1 <= step ? "quote__step-dot--active" : ""}`}
@@ -325,6 +344,12 @@ export default function QuotePage() {
                   </div>
                 </div>
 
+                <AdvisorVideo
+                  replayKey={step}
+                  videoSrc={step === 2 ? SECOND_STEP_VIDEO : undefined}
+                  transcript={step === 2 ? t.quote.advisorNext : undefined}
+                />
+
                 {step === 1 && (
                   <form
                     className="quote__form"
@@ -332,6 +357,10 @@ export default function QuotePage() {
                       e.preventDefault();
                       if (!validateStep1()) return;
                       if (usesIdentityPhoneStep && !(await telefonOnayli())) return;
+                      if (totalSteps === 1) {
+                        await completeQuote();
+                        return;
+                      }
                       nextStep();
                     }}
                     noValidate
@@ -404,13 +433,23 @@ export default function QuotePage() {
                       />
                     ) : null}
 
+                    {totalSteps === 1 && errors.submit && (
+                      <span className="quote__error">{errors.submit}</span>
+                    )}
+
                     <button
                       type="submit"
                       className="quote__submit"
                       disabled={gonderiliyor}
                     >
-                      {gonderiliyor ? t.quote.loading : t.quote.continueEt}
+                      {gonderiliyor
+                        ? t.quote.loading
+                        : totalSteps === 1
+                          ? t.quote.seeQuotes
+                          : t.quote.continueEt}
                     </button>
+
+                    <GuvenSeridi />
                   </form>
                 )}
 
@@ -602,6 +641,27 @@ export default function QuotePage() {
                           </label>
                         )}
                         <label className="quote__field">
+                          <span>{t.quote.province}</span>
+                          <select
+                            className={`quote__input quote__select ${errors.il ? "quote__input--error" : ""}`}
+                            value={il}
+                            onChange={(event) => {
+                              setIl(event.target.value);
+                              clearError("il");
+                            }}
+                          >
+                            <option value="">{t.flow.select}</option>
+                            {ILLER.map((ad) => (
+                              <option key={ad} value={ad}>
+                                {ad}
+                              </option>
+                            ))}
+                          </select>
+                          {errors.il && (
+                            <span className="quote__error">{errors.il}</span>
+                          )}
+                        </label>
+                        <label className="quote__field">
                           <span>{t.quote.phone}</span>
                           <input
                             type="tel"
@@ -674,6 +734,8 @@ export default function QuotePage() {
             </ul>
           </div>
         </div>
+
+        {rehber ? <UrunRehberi rehber={rehber} /> : null}
       </div>
 
       {serialHelpOpen && (
@@ -754,6 +816,8 @@ export default function QuotePage() {
           </div>
         </div>
       )}
+
+      {!completed ? <AktifInceleyenler productSlug={product.slug} /> : null}
     </section>
   );
 }

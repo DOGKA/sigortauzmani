@@ -1,0 +1,63 @@
+/* Modallardan (z-index 60) ve çerez bandından (80) altta kalmalı. */
+.aktif-inceleyenler {
+  position: fixed;
+  left: 20px;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  z-index: 50;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: calc(100vw - 40px);
+  padding: 10px 14px;
+  color: var(--ink-700);
+  background: #fff;
+  border: 1px solid #dfe6f2;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px -8px rgb(16 28 48 / 22%);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(calc(-100% - 28px));
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s ease;
+}
+
+.aktif-inceleyenler--gorunur {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.aktif-inceleyenler__ikon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  color: var(--brand-500);
+  stroke-width: 1.9;
+}
+
+/* Mobilde altta yapışık "Devam et" butonu var; bildirim üst menünün
+   (73px, sticky) altına alınıyor. */
+@media (max-width: 760px) {
+  .aktif-inceleyenler {
+    top: 85px;
+    bottom: auto;
+    left: 12px;
+    max-width: calc(100vw - 24px);
+    padding: 9px 12px;
+    font-size: 12px;
+  }
+
+  body:has(.fiyat__kampanya-sayac) .aktif-inceleyenler {
+    top: 128px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aktif-inceleyenler {
+    transform: none;
+    transition: opacity 0.3s ease;
+  }
+}

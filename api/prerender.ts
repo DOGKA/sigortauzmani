@@ -23,6 +23,7 @@ import {
 } from "../src/data/comparisons";
 import { HOME_FAQ_ITEMS } from "../src/data/faq";
 import { getProduct, products } from "../src/data/products";
+import { getProductGuide, type GuideTable, type ProductGuide } from "../src/data/productGuides";
 import { LOCALES, LOCALE_META } from "../src/lib/i18n/locales";
 import {
   isTrOnlyPage,
@@ -148,6 +149,54 @@ function faqHtml(entries: { question: string; answer: string }[]): string {
   return `<section><h2>Sıkça sorulan sorular</h2>\n${items}\n</section>`;
 }
 
+function guideTableHtml(table: GuideTable): string {
+  const head = table.head.map((cell) => `<th scope="col">${escapeHtml(cell)}</th>`).join("");
+  const rows = table.rows
+    .map(
+      ([label, ...cells]) =>
+        `<tr><th scope="row">${escapeHtml(label)}</th>${cells
+          .map((cell) => `<td>${escapeHtml(cell)}</td>`)
+          .join("")}</tr>`,
+    )
+    .join("\n");
+  return `<table>\n<caption>${escapeHtml(table.caption)}</caption>\n<thead><tr>${head}</tr></thead>\n<tbody>\n${rows}\n</tbody>\n</table>`;
+}
+
+function guideHtml(guide: ProductGuide): string {
+  const sections = guide.sections
+    .map((section) =>
+      [
+        `<section><h3>${escapeHtml(section.heading)}</h3>`,
+        paragraphs(section.paragraphs),
+        section.bullets ? bulletList(section.bullets) : "",
+        section.table ? guideTableHtml(section.table) : "",
+        section.note ? `<p>${escapeHtml(section.note)}</p>` : "",
+        `</section>`,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+    )
+    .join("\n");
+  const faq = guide.faq
+    .map(
+      (entry) =>
+        `<section><h4>${escapeHtml(entry.question)}</h4><p>${escapeHtml(entry.answer)}</p></section>`,
+    )
+    .join("\n");
+
+  return `<section>
+<h2>${escapeHtml(guide.heading)}</h2>
+<p>Son güncelleme: <time datetime="${escapeHtml(guide.guncelleme)}">${escapeHtml(guide.guncelleme)}</time></p>
+<p>${escapeHtml(guide.summary)}</p>
+${sections}
+<section><h3>${escapeHtml(guide.faqHeading)}</h3>
+${faq}
+</section>
+${linkList(guide.related.map((link) => ({ name: link.label, path: link.path })))}
+<p>Kaynak: <a href="${escapeHtml(guide.kaynak.path)}">${escapeHtml(guide.kaynak.label)}</a></p>
+</section>`;
+}
+
 function staticSectionsHtml(page: StaticPageSeo): string {
   return (page.sections ?? [])
     .map((section) => {
@@ -227,6 +276,7 @@ function renderQuote(slug: string): RenderedPage | null {
 
   const path = ROUTES.quote(product.slug);
   const breadcrumb = [HOME_CRUMB, { name: product.title }];
+  const guide = getProductGuide(product.slug);
 
   return {
     path,
@@ -241,13 +291,18 @@ function renderQuote(slug: string): RenderedPage | null {
       `<p>Bu sayfadaki form üzerinden plaka, kimlik veya konut bilgilerinizi ileterek ${escapeHtml(
         product.serviceType,
       )} için ücretsiz teklif talebi oluşturabilirsiniz.</p>`,
-    ].join("\n"),
+      guide ? guideHtml(guide) : "",
+    ]
+      .filter(Boolean)
+      .join("\n"),
+    modifiedTime: guide?.guncelleme,
     jsonLd: pageGraph({
       path,
       name: product.seoTitle,
       description: product.metaDescription,
+      dateModified: guide?.guncelleme,
       breadcrumb,
-      extra: [productServiceNode(product)],
+      extra: [productServiceNode(product), guide ? faqSchema(guide.faq, path) : null],
     }),
   };
 }

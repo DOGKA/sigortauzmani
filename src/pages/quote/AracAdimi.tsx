@@ -255,6 +255,9 @@ export default function AracAdimi({
           // kişi sayıp doğum tarihi istiyor; kuruluş tarihini de kabul etmiyor.
           ...(kimlik.entityType === "sirket" ? { KimlikTipi: 1 as const } : {}),
           ...(kimlik.birthDate ? { Dogumtarihi: kimlik.birthDate } : {}),
+          // Doğum tarihini sunucu ekliyor; telefon yalnızca SMS doğrulamasının
+          // kontrolü için, IO'ya gitmeden düşürülüyor.
+          Cep: kimlik.phone.replace(/\D/g, ""),
         },
         Arac: {
           Plaka: durum.plaka.replace(/\s/g, "").toUpperCase(),

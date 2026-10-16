@@ -129,11 +129,13 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 
+/* Teklif akışındaki mobil ilerleme göstergesiyle aynı: adım adı, "1 / 2"
+   ve tam genişlikte segmentli çubuk. */
 .quote__steps {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 18px;
+  margin-bottom: 20px;
 }
 
 .quote__steps-head {
@@ -143,21 +145,28 @@
 }
 
 .quote__step-title {
-  font-size: 14px;
+  margin-right: auto;
+  font-size: 15px;
   font-weight: 700;
-  color: var(--ink-900);
-  letter-spacing: -0.01em;
+  color: var(--brand-700);
+}
+
+.quote__step-count {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-400);
+  font-variant-numeric: tabular-nums;
 }
 
 .quote__steps-dots {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
 }
 
 .quote__step-dot {
-  width: 22px;
-  height: 5px;
+  height: 4px;
   border-radius: 999px;
   background: rgba(16, 28, 48, 0.12);
   transition: background 0.3s;
@@ -203,8 +212,22 @@
   grid-column: 1 / -1;
 }
 
-.quote__select {
+/* `.quote__input` sonra tanımlanıyor ve `background` kısaltmasıyla oku silerdi. */
+.quote__input.quote__select {
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 44px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  background-size: 16px;
+}
+
+[dir="rtl"] .quote__input.quote__select {
+  padding-right: 16px;
+  padding-left: 44px;
+  background-position: left 16px center;
 }
 
 .quote__input {
@@ -489,8 +512,13 @@
 /* Form iki sütunlu bir grid; kendi satırını almayan blok yanındaki
    hücreye yapışıp komşusunun boyuna geriliyor. */
 .quote__form > .quote__submit,
-.quote__form > .saglik-kvkk {
+.quote__form > .saglik-kvkk,
+.quote__form > .guven {
   grid-column: 1 / -1;
+}
+
+.quote__form > .guven {
+  margin-top: 6px;
 }
 
 .quote__submit:hover {

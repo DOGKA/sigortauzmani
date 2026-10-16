@@ -310,12 +310,6 @@
   color: var(--ink-900);
 }
 
-.mobile-menu__link-text small {
-  font-size: 11.5px;
-  font-weight: 400;
-  color: var(--ink-400);
-}
-
 .mobile-menu__chevron {
   flex-shrink: 0;
   color: rgba(16, 28, 48, 0.22);

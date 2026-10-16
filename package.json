@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "db:local": "postgrest db.local/postgrest.conf",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "legal:seed": "node scripts/generate-legal-seed-sql.mjs",

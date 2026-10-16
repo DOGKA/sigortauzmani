@@ -71,7 +71,11 @@ export interface FlowMessages {
     authorization: string;
     none: string;
     best: string;
-    pdf: string;
+    viewQuote: string;
+    campaignPrice: string;
+    priceAdvantage: string;
+    campaignLast: string;
+    campaignExpired: string;
     quoteTime: string;
     buy: string;
     request: string;
@@ -82,6 +86,38 @@ export interface FlowMessages {
     disclaimer: string;
     cash: string;
     installments: string;
+    /** Bu teklifte fiyat veren şirket sayısı; `{n}` ile. */
+    fromCompanies: string;
+    /** Tüm fiyatlar gelince açılan öne çıkanlar modalı. */
+    featuredTitle: string;
+    /** `{n}` ile şirket sayısı. */
+    featuredLead: string;
+    bestNote: string;
+    recommended: string;
+    recommendedNote: string;
+    popular: string;
+    popularNote: string;
+    showAll: string;
+    showFeatured: string;
+  };
+  /** Veritabanı sayıları ve sistem öncesi başlangıç değerinden oluşan güven şeridi. */
+  stats: {
+    label: string;
+    atBrand: string;
+    quotes: string;
+    policies: string;
+    reviews: string;
+    reviewCount: string;
+    registeredSub: string;
+    authorizedSub: string;
+    freeSub: string;
+    authorizedValue: string;
+    authorizedLabel: string;
+    freeValue: string;
+    freeLabel: string;
+    noFeeValue: string;
+    noFeeLabel: string;
+    viewingNow: string;
   };
   pay: {
     title: string;
@@ -92,6 +128,9 @@ export interface FlowMessages {
     leadInternal: string;
     bullet1: string;
     bullet2: string;
+    securePayment: string;
+    sslEncryption: string;
+    secure3D: string;
     link: string;
     openPage: string;
     goToPay: string;
@@ -122,6 +161,11 @@ export interface FlowMessages {
     ucdCheck: string;
     ucdNotYet: string;
     ucdTimeout: string;
+    /** Payten ile ödeme öncesi kart doğrulaması. */
+    paytenTitle: string;
+    paytenLead: string;
+    paytenFail: string;
+    paytenBack: string;
   };
 }
 
@@ -136,7 +180,7 @@ const TR: FlowMessages = {
     "Size en uygun teklifler fiyat sırasıyla listeleniyor.",
   ],
   preparingNot:
-    "Teklifler geldikçe aşağıdaki listeye eklenir. Bu işlem genellikle bir dakikadan kısa sürer; sayfada kalmanız yeterli.",
+    "İşlem tamamlanana kadar lütfen sayfayı kapatmayın veya yenilemeyin.",
   select: "Seçin",
   vehicleTitle: "Araç bilgileri",
   daskTitle: "Bina bilgileri",
@@ -199,7 +243,11 @@ const TR: FlowMessages = {
       "{n} şirket fiyatı için sigorta şirketinin ayrıca onayı gerekiyor, bu yüzden burada listelenmiyor. Bu teklifleri isterseniz ekibimiz sizin için takip edebilir.",
     none: "Bu üründe teklif gelmedi.",
     best: "En uygun",
-    pdf: "Teklif PDF'i",
+    viewQuote: "Teklifi Görüntüle",
+    campaignPrice: "Kampanyalı fiyat",
+    priceAdvantage: "{n} kazanç",
+    campaignLast: "Kampanyalı Fiyat İçin Son",
+    campaignExpired: "Kampanya süresi doldu",
     quoteTime: "Teklif zamanı",
     buy: "Satın al",
     request: "Teklif iste",
@@ -212,6 +260,34 @@ const TR: FlowMessages = {
       "Listelenen tutarlar sigorta şirketlerinden gelen tekliflerdir ve poliçe değildir. Sigorta şirketi, poliçeleştirme sırasında yaptığı son kontrole göre teklifi güncelleyebilir veya kabul etmeyebilir.",
     cash: "Peşin",
     installments: "{n} Taksit",
+    fromCompanies: "{n} sigorta şirketinden fiyat alındı.",
+    featuredTitle: "Sizin için öne çıkan teklifler",
+    featuredLead: "{n} sigorta şirketinden gelen fiyatlar arasından seçildi.",
+    bestNote: "Gelen teklifler arasında en düşük fiyat",
+    recommended: "Önerilen",
+    recommendedNote: "Sigorta Uzmanı'nın önerdiği şirket",
+    popular: "En popüler",
+    popularNote: "Son 3 ayda sitemizde en çok tercih edilen şirket",
+    showAll: "Tüm teklifleri gör",
+    showFeatured: "Öne çıkanları göster",
+  },
+  stats: {
+    label: "Bugüne kadar Sigorta Uzmanı",
+    atBrand: "Sigorta Uzmanı'nda",
+    quotes: "{n} teklif hazırladı",
+    policies: "{n} poliçe düzenledi",
+    reviews: "{n} (1.251 İnceleme)",
+    reviewCount: "1.251 inceleme",
+    registeredSub: "Levha No: {n}",
+    authorizedSub: "Poliçeyi sigorta şirketi düzenler",
+    freeSub: "Ek ücret alınmaz",
+    authorizedValue: "Yetkili",
+    authorizedLabel: "Sigorta Acentesi",
+    freeValue: "Ücretsiz",
+    freeLabel: "Teklif",
+    noFeeValue: "Ek Ücret",
+    noFeeLabel: "Alınmaz",
+    viewingNow: "Şu anda bu ürünü {n} kişi inceliyor",
   },
   pay: {
     title: "Ödeme",
@@ -223,6 +299,9 @@ const TR: FlowMessages = {
     leadInternal: "Ödemeyi {company} üzerinden tamamlayacaksınız.",
     bullet1: "Kart bilgilerinizi sonraki ekranda girersiniz.",
     bullet2: "Kart numaranız ve CVV burada saklanmaz.",
+    securePayment: "Güvenli Ödeme",
+    sslEncryption: "256 Bit SSL",
+    secure3D: "3D Secure",
     link: "Bağlantı",
     openPage: "Ödeme sayfasını aç",
     goToPay: "Ödemeye geç",
@@ -255,6 +334,11 @@ const TR: FlowMessages = {
       "Poliçe henüz kesilmedi. Banka ekranındaki işlemi tamamladıysanız birkaç saniye sonra tekrar deneyin.",
     ucdTimeout:
       "Poliçe kontrolü zaman aşımına uğradı. Ödemeniz tamamlandıysa poliçeniz ekibimiz tarafından size iletilecek; lütfen tekrar ödeme yapmadan bizi arayın.",
+    paytenTitle: "Kart doğrulama",
+    paytenLead:
+      "Bankanızın 3D Secure ekranında telefonunuza gelen şifreyi girin. Doğrulama tamamlanınca prim sigorta şirketi tarafından kartınızdan tahsil edilir.",
+    paytenFail: "Kartınız doğrulanamadı. Bilgilerinizi kontrol edip tekrar deneyin.",
+    paytenBack: "Kart bilgilerine dön",
     msgs: [
       "Ödeme talebiniz sigorta şirketine iletiliyor.",
       "Kart bilgileriniz sanal POS altyapısında doğrulanıyor.",
@@ -274,7 +358,7 @@ const EN: FlowMessages = {
     "The best quotes are being listed by price.",
   ],
   preparingNot:
-    "Quotes are added to the list below as they arrive. This usually takes under a minute; stay on the page.",
+    "Please do not close or refresh the page until the process is complete.",
   select: "Select",
   vehicleTitle: "Vehicle details",
   daskTitle: "Building details",
@@ -337,7 +421,11 @@ const EN: FlowMessages = {
       "{n} insurer prices need extra company approval, so they are not listed here. Our team can follow those quotes if you want.",
     none: "No quote arrived for this product.",
     best: "Best value",
-    pdf: "Quote PDF",
+    viewQuote: "View Quote",
+    campaignPrice: "Campaign price",
+    priceAdvantage: "{n} savings",
+    campaignLast: "Campaign Price Ends In",
+    campaignExpired: "Campaign expired",
     quoteTime: "Quote time",
     buy: "Buy",
     request: "Request quote",
@@ -350,6 +438,34 @@ const EN: FlowMessages = {
       "Listed amounts are quotes from insurers, not policies. The insurer may update or decline the quote after its final check at issuance.",
     cash: "In full",
     installments: "{n} instalments",
+    fromCompanies: "Prices received from {n} insurers.",
+    featuredTitle: "Featured quotes for you",
+    featuredLead: "Selected from prices received from {n} insurers.",
+    bestNote: "Lowest price among the quotes received",
+    recommended: "Recommended",
+    recommendedNote: "Insurer recommended by Sigorta Uzmanı",
+    popular: "Most popular",
+    popularNote: "Most chosen insurer on our site in the last 3 months",
+    showAll: "See all quotes",
+    showFeatured: "Show featured",
+  },
+  stats: {
+    label: "Sigorta Uzmanı to date",
+    atBrand: "At Sigorta Uzmanı",
+    quotes: "{n} quotes prepared",
+    policies: "{n} policies issued",
+    reviews: "{n} (1,251 reviews)",
+    reviewCount: "1,251 reviews",
+    registeredSub: "Registry No: {n}",
+    authorizedSub: "Policies are issued by the insurer",
+    freeSub: "No extra fees",
+    authorizedValue: "Licensed",
+    authorizedLabel: "Insurance Agency",
+    freeValue: "Free",
+    freeLabel: "Quote",
+    noFeeValue: "No Extra",
+    noFeeLabel: "Fees",
+    viewingNow: "{n} people are viewing this product now",
   },
   pay: {
     title: "Payment",
@@ -361,6 +477,9 @@ const EN: FlowMessages = {
     leadInternal: "You will complete payment through {company}.",
     bullet1: "You enter card details on the next screen.",
     bullet2: "Your card number and CVV are not stored here.",
+    securePayment: "Secure Payment",
+    sslEncryption: "256-bit SSL",
+    secure3D: "3D Secure",
     link: "Link",
     openPage: "Open payment page",
     goToPay: "Continue to payment",
@@ -393,6 +512,11 @@ const EN: FlowMessages = {
       "The policy has not been issued yet. If you completed the bank step, try again in a few seconds.",
     ucdTimeout:
       "Policy check timed out. If your payment went through, our team will send your policy; please call us instead of paying again.",
+    paytenTitle: "Card verification",
+    paytenLead:
+      "Enter the code your bank sent to your phone on the 3D Secure screen. Once verified, the insurer collects the premium from your card.",
+    paytenFail: "Your card could not be verified. Please check your details and try again.",
+    paytenBack: "Back to card details",
     msgs: [
       "Your payment request is being sent to the insurer.",
       "Your card details are being verified on the virtual POS.",
@@ -412,7 +536,7 @@ const AR: FlowMessages = {
     "تُدرج أنسب العروض حسب السعر.",
   ],
   preparingNot:
-    "تُضاف العروض إلى القائمة أدناه فور وصولها. يستغرق ذلك عادة أقل من دقيقة؛ ابقوا في الصفحة.",
+    "يرجى عدم إغلاق الصفحة أو تحديثها حتى تكتمل العملية.",
   select: "اختروا",
   vehicleTitle: "بيانات المركبة",
   daskTitle: "بيانات المبنى",
@@ -475,7 +599,11 @@ const AR: FlowMessages = {
       "تحتاج أسعار {n} شركات إلى موافقة إضافية من شركة التأمين لذلك لا تُدرج هنا. يمكن لفريقنا متابعة تلك العروض إن رغبتم.",
     none: "لم يصل عرض لهذا المنتج.",
     best: "الأنسب",
-    pdf: "ملف العرض PDF",
+    viewQuote: "عرض العرض",
+    campaignPrice: "سعر الحملة",
+    priceAdvantage: "توفير {n}",
+    campaignLast: "الوقت المتبقي لسعر الحملة",
+    campaignExpired: "انتهت الحملة",
     quoteTime: "وقت العرض",
     buy: "اشتروا",
     request: "اطلبوا عرضاً",
@@ -488,6 +616,34 @@ const AR: FlowMessages = {
       "المبالغ المدرجة عروض من شركات التأمين وليست وثائق. قد تحدّث الشركة العرض أو ترفضه بعد الفحص النهائي عند الإصدار.",
     cash: "نقداً",
     installments: "{n} أقساط",
+    fromCompanies: "تم استلام الأسعار من {n} شركات تأمين.",
+    featuredTitle: "العروض المميزة لك",
+    featuredLead: "تم اختيارها من بين الأسعار الواردة من {n} شركات تأمين.",
+    bestNote: "أقل سعر بين العروض الواردة",
+    recommended: "موصى به",
+    recommendedNote: "الشركة التي توصي بها Sigorta Uzmanı",
+    popular: "الأكثر شعبية",
+    popularNote: "الشركة الأكثر اختيارًا على موقعنا خلال آخر 3 أشهر",
+    showAll: "عرض جميع العروض",
+    showFeatured: "عرض العروض المميزة",
+  },
+  stats: {
+    label: "Sigorta Uzmanı حتى اليوم",
+    atBrand: "في Sigorta Uzmanı",
+    quotes: "تم إعداد {n} عرض",
+    policies: "تم إصدار {n} وثيقة",
+    reviews: "{n} (1,251 مراجعة)",
+    reviewCount: "1,251 مراجعة",
+    registeredSub: "رقم السجل: {n}",
+    authorizedSub: "تصدر شركة التأمين الوثيقة",
+    freeSub: "بدون رسوم إضافية",
+    authorizedValue: "مرخّصة",
+    authorizedLabel: "وكالة تأمين",
+    freeValue: "مجاني",
+    freeLabel: "عرض السعر",
+    noFeeValue: "بدون رسوم",
+    noFeeLabel: "إضافية",
+    viewingNow: "{n} أشخاص يشاهدون هذا المنتج الآن",
   },
   pay: {
     title: "الدفع",
@@ -499,6 +655,9 @@ const AR: FlowMessages = {
     leadInternal: "ستكملون الدفع عبر {company}.",
     bullet1: "تُدخلون بيانات البطاقة في الشاشة التالية.",
     bullet2: "لا يُحفظ رقم البطاقة ورمز CVV هنا.",
+    securePayment: "دفع آمن",
+    sslEncryption: "تشفير SSL ‏256 بت",
+    secure3D: "دفع آمن ثلاثي الأبعاد",
     link: "الرابط",
     openPage: "افتحوا صفحة الدفع",
     goToPay: "انتقلوا إلى الدفع",
@@ -531,6 +690,11 @@ const AR: FlowMessages = {
       "لم تصدر الوثيقة بعد. إذا أكملتم خطوة البنك فحاولوا مرة أخرى بعد بضع ثوانٍ.",
     ucdTimeout:
       "انتهت مهلة التحقق من الوثيقة. إذا تم الدفع فسيرسل فريقنا وثيقتكم؛ يرجى الاتصال بنا بدلاً من الدفع مرة أخرى.",
+    paytenTitle: "التحقق من البطاقة",
+    paytenLead:
+      "أدخلوا الرمز الذي أرسله البنك إلى هاتفكم في شاشة 3D Secure. بعد التحقق تحصّل شركة التأمين القسط من بطاقتكم.",
+    paytenFail: "تعذر التحقق من بطاقتكم. تحققوا من البيانات وحاولوا مرة أخرى.",
+    paytenBack: "العودة إلى بيانات البطاقة",
     msgs: [
       "يُرسل طلب الدفع إلى شركة التأمين.",
       "يتم التحقق من بيانات البطاقة في نقطة البيع الافتراضية.",
@@ -550,7 +714,7 @@ const FA: FlowMessages = {
     "مناسب‌ترین پیشنهادها به ترتیب قیمت فهرست می‌شود.",
   ],
   preparingNot:
-    "پیشنهادها به‌محض رسیدن به فهرست زیر اضافه می‌شوند. معمولاً کمتر از یک دقیقه طول می‌کشد؛ در صفحه بمانید.",
+    "لطفاً تا پایان فرایند صفحه را نبندید یا تازه‌سازی نکنید.",
   select: "انتخاب کنید",
   vehicleTitle: "اطلاعات خودرو",
   daskTitle: "اطلاعات ساختمان",
@@ -613,7 +777,11 @@ const FA: FlowMessages = {
       "قیمت {n} شرکت نیاز به تأیید جداگانه بیمه دارد و اینجا فهرست نشده است. در صورت تمایل تیم ما می‌تواند آن پیشنهادها را پیگیری کند.",
     none: "برای این محصول پیشنهادی نرسید.",
     best: "به‌صرفه‌ترین",
-    pdf: "PDF پیشنهاد",
+    viewQuote: "مشاهده پیشنهاد",
+    campaignPrice: "قیمت کمپین",
+    priceAdvantage: "{n} صرفه‌جویی",
+    campaignLast: "زمان باقی‌مانده قیمت کمپین",
+    campaignExpired: "کمپین به پایان رسید",
     quoteTime: "زمان پیشنهاد",
     buy: "خرید",
     request: "درخواست پیشنهاد",
@@ -626,6 +794,34 @@ const FA: FlowMessages = {
       "مبالغ فهرست‌شده پیشنهاد شرکت‌های بیمه است نه بیمه‌نامه. شرکت ممکن است پس از کنترل نهایی در صدور، پیشنهاد را به‌روز یا رد کند.",
     cash: "نقدی",
     installments: "{n} قسط",
+    fromCompanies: "قیمت از {n} شرکت بیمه دریافت شد.",
+    featuredTitle: "پیشنهادهای برجسته برای شما",
+    featuredLead: "از میان قیمت‌های دریافتی از {n} شرکت بیمه انتخاب شد.",
+    bestNote: "کمترین قیمت در میان پیشنهادهای دریافتی",
+    recommended: "پیشنهادی",
+    recommendedNote: "شرکتی که Sigorta Uzmanı پیشنهاد می‌کند",
+    popular: "محبوب‌ترین",
+    popularNote: "پرانتخاب‌ترین شرکت در سایت ما در ۳ ماه گذشته",
+    showAll: "مشاهده همه پیشنهادها",
+    showFeatured: "نمایش پیشنهادهای برجسته",
+  },
+  stats: {
+    label: "Sigorta Uzmanı تا امروز",
+    atBrand: "در Sigorta Uzmanı",
+    quotes: "{n} پیشنهاد آماده شد",
+    policies: "{n} بیمه‌نامه صادر شد",
+    reviews: "{n} (۱٬۲۵۱ نظر)",
+    reviewCount: "۱٬۲۵۱ نظر",
+    registeredSub: "شماره ثبت: {n}",
+    authorizedSub: "بیمه‌نامه را شرکت بیمه صادر می‌کند",
+    freeSub: "بدون هزینه اضافی",
+    authorizedValue: "مجاز",
+    authorizedLabel: "نمایندگی بیمه",
+    freeValue: "رایگان",
+    freeLabel: "پیشنهاد",
+    noFeeValue: "بدون هزینه",
+    noFeeLabel: "اضافی",
+    viewingNow: "اکنون {n} نفر این محصول را مشاهده می‌کنند",
   },
   pay: {
     title: "پرداخت",
@@ -637,6 +833,9 @@ const FA: FlowMessages = {
     leadInternal: "پرداخت را از طریق {company} کامل می‌کنید.",
     bullet1: "اطلاعات کارت را در صفحه بعد وارد می‌کنید.",
     bullet2: "شماره کارت و CVV اینجا ذخیره نمی‌شود.",
+    securePayment: "پرداخت امن",
+    sslEncryption: "رمزنگاری SSL‏ ۲۵۶ بیتی",
+    secure3D: "پرداخت امن سه‌بعدی",
     link: "پیوند",
     openPage: "باز کردن صفحه پرداخت",
     goToPay: "ادامه به پرداخت",
@@ -669,6 +868,11 @@ const FA: FlowMessages = {
       "بیمه‌نامه هنوز صادر نشده است. اگر مرحله بانک را تکمیل کرده‌اید، چند ثانیه دیگر دوباره تلاش کنید.",
     ucdTimeout:
       "زمان بررسی بیمه‌نامه به پایان رسید. اگر پرداخت انجام شده باشد تیم ما بیمه‌نامه را ارسال می‌کند؛ لطفاً به جای پرداخت مجدد با ما تماس بگیرید.",
+    paytenTitle: "تأیید کارت",
+    paytenLead:
+      "رمزی را که بانک به تلفن شما فرستاده در صفحه 3D Secure وارد کنید. پس از تأیید، شرکت بیمه حق بیمه را از کارت شما دریافت می‌کند.",
+    paytenFail: "کارت شما تأیید نشد. اطلاعات را بررسی کرده و دوباره تلاش کنید.",
+    paytenBack: "بازگشت به اطلاعات کارت",
     msgs: [
       "درخواست پرداخت به شرکت بیمه ارسال می‌شود.",
       "اطلاعات کارت در POS مجازی تأیید می‌شود.",

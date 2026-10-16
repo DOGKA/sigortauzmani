@@ -9,6 +9,8 @@
  * Kaynak: IO API Dokümantasyonu, "Sigorta Şirketi Kodları".
  */
 
+import { AKTIF_SIRKET_KODLARI as AKTIF_LISTE } from "../../../shared/sirketler";
+
 export const SIRKET_ADLARI: Record<string, string> = {
   "000": "Tramer",
   "002": "Eureko Sigorta",
@@ -107,25 +109,7 @@ export function sirketAdi(kod: string | number | null | undefined): string {
  * dışı satır sunucuda düşürülüyor: ekrana, satın almaya, PDF'e ve fiyat
  * kaydına ulaşmıyor.
  */
-const AKTIF_SIRKET_KODLARI = new Set([
-  "004", // Aksigorta
-  "005", // Gulf Sigorta (katalogda GIG)
-  "007", // Anadolu Sigorta
-  "009", // Ankara Sigorta
-  "017", // Unico Sigorta
-  "018", // Zurich Sigorta
-  "025", // Referans Sigorta
-  "045", // Allianz Sigorta
-  "050", // Mapfre Sigorta
-  "051", // Türk Nippon Sigorta
-  "057", // Bereket Sigorta
-  "061", // Sompo Sigorta
-  "093", // Neova Sigorta
-  "106", // Orient Sigorta
-  "110", // Quick Sigorta
-  "116", // Türkiye Sigorta
-  "126", // Hepiyi Sigorta
-]);
+const AKTIF_SIRKET_KODLARI = new Set(AKTIF_LISTE);
 
 export function sirketGizli(
   kod: string | number | null | undefined,

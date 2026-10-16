@@ -7,6 +7,7 @@ import {
   type LegalLocale,
   type SiteSettings,
 } from "../../shared/site-settings";
+import { AKTIF_SIRKETLER } from "../../shared/sirketler";
 
 type Tab = "notifications" | "analytics" | "legal" | "company" | "products";
 type LegalVersion = {
@@ -30,7 +31,7 @@ const TABS: { id: Tab; label: string; description: string }[] = [
   { id: "analytics", label: "Analitik", description: "GA4 veya Google Tag Manager" },
   { id: "legal", label: "Yasal Belgeler", description: "Diller, taslaklar ve yayımlanan sürümler" },
   { id: "company", label: "Kurumsal Bilgiler", description: "İletişim ve yasal şirket bilgileri" },
-  { id: "products", label: "Ürün ve Akış", description: "Ürün görünürlüğü ve bakım modu" },
+  { id: "products", label: "Ürün ve Akış", description: "Ürün görünürlüğü, önerilen şirketler ve bakım modu" },
 ];
 
 const PRODUCT_NAMES: Record<string, string> = {
@@ -341,10 +342,16 @@ function Company({ settings, setSettings }: PanelProps) {
 
 function Products({ settings, setSettings }: PanelProps) {
   const enabled = new Set(settings.products.enabledSlugs);
+  const onerilen = new Set(settings.products.onerilenSirketler ?? []);
   function toggle(slug: string) {
     const next = new Set(enabled);
     if (next.has(slug)) next.delete(slug); else next.add(slug);
-    setSettings((current) => ({ ...current, products: { enabledSlugs: [...next] } }));
+    setSettings((current) => ({ ...current, products: { ...current.products, enabledSlugs: [...next] } }));
+  }
+  function toggleOnerilen(kod: string) {
+    const next = new Set(onerilen);
+    if (next.has(kod)) next.delete(kod); else next.add(kod);
+    setSettings((current) => ({ ...current, products: { ...current.products, onerilenSirketler: [...next] } }));
   }
   const maintenance = (patch: Partial<SiteSettings["maintenance"]>) =>
     setSettings((current) => ({ ...current, maintenance: { ...current.maintenance, ...patch } }));
@@ -357,6 +364,20 @@ function Products({ settings, setSettings }: PanelProps) {
             {PRODUCT_NAMES[slug]}
           </label>
         ))}
+      </div>
+      <div className="border-t border-slate-100 pt-5">
+        <p className="text-sm font-semibold text-slate-800">Önerilen sigorta şirketleri</p>
+        <p className="mt-1 text-xs leading-5 text-slate-400">
+          Teklif ekranında seçili şirketlerden fiyat gelirse en uygun olanı &quot;Önerilen&quot; etiketiyle öne çıkarılır.
+        </p>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          {AKTIF_SIRKETLER.map((sirket) => (
+            <label key={sirket.kod} className="flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700">
+              <input type="checkbox" checked={onerilen.has(sirket.kod)} onChange={() => toggleOnerilen(sirket.kod)} className="h-4 w-4 accent-sky-600" />
+              {sirket.ad}
+            </label>
+          ))}
+        </div>
       </div>
       <div className="border-t border-slate-100 pt-5">
         <Switch checked={settings.maintenance.enabled} onChange={(value) => maintenance({ enabled: value })} label="Bakım modu" description="Yasal sayfalar ve iletişim açık kalır; diğer sayfalarda bakım mesajı gösterilir." />

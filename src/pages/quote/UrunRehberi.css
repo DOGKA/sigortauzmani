@@ -1,0 +1,308 @@
+.rehber {
+  margin-top: 56px;
+  padding-top: 40px;
+  border-top: 1px solid #e3e8f2;
+  color: var(--ink-700);
+}
+
+.rehber__ust {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 16px;
+  margin-bottom: 16px;
+}
+
+.rehber__baslik {
+  font-size: 24px;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--ink-900);
+}
+
+.rehber__guncel {
+  font-size: 13px;
+  color: var(--ink-400);
+}
+
+.rehber__ozet {
+  margin-bottom: 8px;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--ink-700);
+}
+
+.rehber__bolum {
+  margin-top: 36px;
+}
+
+.rehber__alt-baslik {
+  margin-bottom: 12px;
+  font-size: 18px;
+  line-height: 1.35;
+  color: var(--ink-900);
+}
+
+.rehber__metin {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.rehber__metin + .rehber__metin {
+  margin-top: 12px;
+}
+
+.rehber__liste {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+  padding: 0;
+  list-style: none;
+}
+
+.rehber__liste li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.rehber__liste li::before {
+  content: "";
+  position: absolute;
+  top: 0.62em;
+  left: 2px;
+  width: 7px;
+  height: 7px;
+  border: 1.5px solid var(--brand-500);
+  border-radius: 50%;
+}
+
+.rehber__tablo-kap {
+  margin-top: 18px;
+  overflow-x: auto;
+  border: 1px solid #e3e8f2;
+  border-radius: 12px;
+}
+
+.rehber__tablo {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.rehber__tablo caption {
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-500);
+  text-align: left;
+  border-bottom: 1px solid #e3e8f2;
+}
+
+.rehber__tablo th,
+.rehber__tablo td {
+  padding: 12px 16px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.rehber__tablo thead th {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-500);
+  white-space: nowrap;
+  border-bottom: 1px solid #e3e8f2;
+}
+
+.rehber__tablo tbody th {
+  font-weight: 600;
+  color: var(--ink-900);
+}
+
+.rehber__tablo td {
+  color: var(--ink-700);
+  white-space: nowrap;
+}
+
+.rehber__tablo tbody tr + tr {
+  border-top: 1px solid #eef2f8;
+}
+
+.rehber__not {
+  margin-top: 10px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-500);
+}
+
+.rehber__sss {
+  border-top: 1px solid #e3e8f2;
+}
+
+.rehber__soru {
+  border-bottom: 1px solid #e3e8f2;
+}
+
+.rehber__soru summary {
+  position: relative;
+  padding: 16px 36px 16px 0;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink-900);
+  list-style: none;
+  cursor: pointer;
+}
+
+.rehber__soru summary::-webkit-details-marker {
+  display: none;
+}
+
+.rehber__soru summary::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--ink-400);
+  border-bottom: 2px solid var(--ink-400);
+  transform: translateY(-70%) rotate(45deg);
+  transition: transform 0.2s ease;
+}
+
+.rehber__soru[open] summary::after {
+  transform: translateY(-30%) rotate(-135deg);
+}
+
+.rehber__soru summary:hover {
+  color: var(--brand-700);
+}
+
+.rehber__soru p {
+  padding: 0 36px 18px 0;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.rehber__ilgili {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 32px;
+}
+
+.rehber__ilgili a {
+  padding: 8px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--brand-700);
+  border: 1px solid #d5e0f5;
+  border-radius: 999px;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.rehber__ilgili a:hover {
+  color: var(--brand-600);
+  border-color: var(--brand-400);
+}
+
+.rehber__kaynak {
+  margin-top: 20px;
+  font-size: 12.5px;
+  color: var(--ink-400);
+}
+
+.rehber__kaynak a {
+  color: var(--ink-500);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+  .rehber {
+    margin-top: 40px;
+    padding-top: 28px;
+  }
+
+  .rehber__baslik {
+    font-size: 21px;
+  }
+
+  .rehber__ozet {
+    font-size: 15px;
+  }
+
+  .rehber__bolum {
+    margin-top: 28px;
+  }
+
+  .rehber__alt-baslik {
+    font-size: 17px;
+  }
+
+  /* Beş sütun dar ekrana sığmıyor; her araç grubu kendi kartına dönüşüyor. */
+  .rehber__tablo-kap {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .rehber__tablo caption {
+    display: block;
+    width: 100%;
+    padding: 0 0 10px;
+    border-bottom: 0;
+  }
+
+  .rehber__tablo thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  .rehber__tablo,
+  .rehber__tablo tbody,
+  .rehber__tablo tr,
+  .rehber__tablo th,
+  .rehber__tablo td {
+    display: block;
+  }
+
+  .rehber__tablo tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  .rehber__tablo tbody tr {
+    padding: 4px 14px;
+    border: 1px solid #e3e8f2;
+    border-radius: 12px;
+  }
+
+  .rehber__tablo tbody tr + tr {
+    border-top: 1px solid #e3e8f2;
+  }
+
+  .rehber__tablo tbody th {
+    padding: 10px 0 8px;
+    border-bottom: 1px solid #eef2f8;
+  }
+
+  .rehber__tablo td {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 7px 0;
+  }
+
+  .rehber__tablo td::before {
+    content: attr(data-etiket);
+    color: var(--ink-500);
+  }
+}
