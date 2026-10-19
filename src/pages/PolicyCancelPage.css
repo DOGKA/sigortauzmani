@@ -98,17 +98,12 @@
   font-size: 14px;
   font-weight: 600;
   color: var(--ink-700);
-  transition: color 0.15s, background-color 0.15s;
+  transition: color 0.15s;
 }
 
-.iptal__side-nav button:hover {
-  background: rgba(45, 126, 245, 0.06);
-  color: var(--brand-600);
-}
-
+.iptal__side-nav button:hover,
 .iptal__side-nav button.is-active {
   color: var(--brand-600);
-  background: rgba(45, 126, 245, 0.1);
 }
 
 .iptal__side-nav button span {
@@ -148,12 +143,10 @@
   font-size: 13px;
   font-weight: 650;
   color: var(--ink-400);
-  background: rgba(16, 28, 48, 0.04);
 }
 
 .iptal__step.is-active {
   color: var(--brand-700);
-  background: var(--brand-100);
 }
 
 .iptal__step.is-done {
