@@ -1,38 +1,9 @@
 .quote {
-  position: relative;
-  overflow: hidden;
   min-height: calc(100vh - 72px);
-  padding: 40px 24px 80px;
+  padding: 32px 20px 72px;
+  background: var(--surface);
 }
 
-.quote__bg {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.quote__blob {
-  position: absolute;
-  border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.5;
-}
-
-.quote__blob--1 {
-  width: 520px;
-  height: 520px;
-  top: -200px;
-  right: -160px;
-  background: radial-gradient(circle, rgba(45, 126, 245, 0.3), transparent 70%);
-}
-
-.quote__blob--2 {
-  width: 480px;
-  height: 480px;
-  bottom: -240px;
-  left: -140px;
-  background: radial-gradient(circle, rgba(111, 165, 248, 0.25), transparent 70%);
-}
 
 .quote__inner {
   position: relative;
@@ -58,8 +29,8 @@
 }
 
 .quote__layout {
-  margin-top: 48px;
-  max-width: 940px;
+  margin-top: 24px;
+  max-width: 880px;
   margin-right: auto;
   margin-left: auto;
 }
@@ -116,18 +87,6 @@
   -webkit-mask-repeat: no-repeat;
 }
 
-/* --- form card (glass) --- */
-.quote__form-card {
-  padding: 28px;
-  border-radius: 24px;
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(18px) saturate(150%);
-  -webkit-backdrop-filter: blur(18px) saturate(150%);
-  box-shadow:
-    0 16px 48px -16px rgba(16, 28, 48, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.95);
-}
 
 /* Teklif akışındaki mobil ilerleme göstergesiyle aynı: adım adı, "1 / 2"
    ve tam genişlikte segmentli çubuk. */
@@ -197,6 +156,14 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
+}
+
+.quote__kart {
+  padding: 28px;
+  background: #fff;
+  border: 1px solid #e5eaf5;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgb(16 28 48 / 5%);
 }
 
 .quote__field {
@@ -511,8 +478,7 @@
 /* Form iki sütunlu bir grid; kendi satırını almayan blok yanındaki
    hücreye yapışıp komşusunun boyuna geriliyor. */
 .quote__form > .quote__submit,
-.quote__form > .saglik-kvkk,
-.quote__form > .guven {
+.quote__form > .saglik-kvkk {
   grid-column: 1 / -1;
 }
 
@@ -520,8 +486,8 @@
   justify-self: end;
 }
 
-.quote__form > .guven {
-  margin-top: 6px;
+.quote__form-card > .guven {
+  margin-top: 14px;
 }
 
 .quote__submit:hover:not(:disabled) {
@@ -1139,12 +1105,15 @@
     padding-left: 16px;
   }
 
-  .quote__form-card {
-    padding: 20px;
-  }
-
   .quote__form {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .quote__kart {
+    padding: 0;
+    background: none;
+    border: 0;
+    box-shadow: none;
   }
 
   .quote__form > .quote__submit {

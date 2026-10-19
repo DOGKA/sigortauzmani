@@ -20,23 +20,15 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid rgba(16, 28, 48, 0.12);
-  background: #fff
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%234a5872' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E")
-    no-repeat right 10px center;
-  padding: 7px 28px 7px 10px;
+  border: 0;
+  background: none;
+  padding: 7px 10px;
   border-radius: 10px;
   font: inherit;
-  font-size: 13px;
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   color: var(--ink-700);
-  min-width: 84px;
   cursor: pointer;
-}
-
-html[dir="rtl"] .lang-switch__select {
-  background-position: left 10px center;
-  padding: 7px 10px 7px 28px;
 }
 
 .lang-switch__flag {
@@ -45,6 +37,10 @@ html[dir="rtl"] .lang-switch__select {
   font-weight: 400;
   font-style: normal;
   line-height: 1;
+}
+
+.lang-switch__select .lang-switch__flag {
+  font-size: 18px;
 }
 
 .lang-switch__menu {

@@ -1,6 +1,15 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
+import {
+  BookA,
+  Headset,
+  MapPinned,
+  Newspaper,
+  Scale,
+  UsersRound,
+  type LucideIcon,
+} from "lucide-react";
 import { products } from "../data/products";
 import { useSiteSettings } from "../lib/settings/context";
 import { useLocale, useT } from "../lib/i18n/context";
@@ -28,75 +37,14 @@ export default function MobileMenu({ id, open, onClose }: MobileMenuProps) {
   const exploreLinks: {
     to: string;
     label: string;
-    icon: ReactNode;
+    icon: LucideIcon;
   }[] = [
-    {
-      to: href("about"),
-      label: t.nav.about,
-      icon: (
-        <>
-          <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-          <circle cx="9" cy="7" r="4" />
-          <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-        </>
-      ),
-    },
-    ...(locale === "tr"
-      ? [
-          {
-            to: href("blog"),
-            label: t.nav.blog,
-            icon: (
-              <>
-                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
-              </>
-            ),
-          },
-        ]
-      : []),
-    {
-      to: href("comparisonHub"),
-      label: t.nav.compare,
-      icon: (
-        <>
-          <path d="M6 20V10" />
-          <path d="M12 20V4" />
-          <path d="M18 20v-6" />
-        </>
-      ),
-    },
-    {
-      to: href("riskMap"),
-      label: t.footer.riskMap,
-      icon: (
-        <>
-          <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" />
-          <circle cx="12" cy="10" r="3" />
-        </>
-      ),
-    },
-    {
-      to: href("glossary"),
-      label: t.footer.glossary,
-      icon: (
-        <>
-          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
-        </>
-      ),
-    },
-    {
-      to: href("contact"),
-      label: t.contact.reachUs,
-      icon: (
-        <>
-          <rect x="3" y="5" width="18" height="14" rx="2" />
-          <path d="m3 7 9 6 9-6" />
-        </>
-      ),
-    },
+    { to: href("about"), label: t.nav.about, icon: UsersRound },
+    ...(locale === "tr" ? [{ to: href("blog"), label: t.nav.blog, icon: Newspaper }] : []),
+    { to: href("comparisonHub"), label: t.nav.compare, icon: Scale },
+    { to: href("riskMap"), label: t.footer.riskMap, icon: MapPinned },
+    { to: href("glossary"), label: t.footer.glossary, icon: BookA },
+    { to: href("contact"), label: t.contact.reachUs, icon: Headset },
   ];
 
   useEffect(() => {
@@ -209,18 +157,7 @@ export default function MobileMenu({ id, open, onClose }: MobileMenuProps) {
               <li key={link.to} style={{ "--i": index + 3 } as React.CSSProperties}>
                 <Link to={link.to} onClick={onClose}>
                   <span className="mobile-menu__link-icon" aria-hidden="true">
-                    <svg
-                      width="17"
-                      height="17"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.8"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    >
-                      {link.icon}
-                    </svg>
+                    <link.icon size={22} strokeWidth={1.8} />
                   </span>
                   <span className="mobile-menu__link-text">
                     {link.label}

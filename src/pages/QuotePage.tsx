@@ -285,11 +285,6 @@ export default function QuotePage() {
 
   return (
     <section className="quote">
-      <div className="quote__bg" aria-hidden="true">
-        <div className="quote__blob quote__blob--1" />
-        <div className="quote__blob quote__blob--2" />
-      </div>
-
       <div className="quote__inner">
         <nav className="quote__breadcrumb">
           <Link to={href("home")}>{t.quote.home}</Link>
@@ -352,7 +347,7 @@ export default function QuotePage() {
 
                 {step === 1 && (
                   <form
-                    className="quote__form"
+                    className="quote__form quote__kart"
                     onSubmit={async (e) => {
                       e.preventDefault();
                       if (!validateStep1()) return;
@@ -448,14 +443,14 @@ export default function QuotePage() {
                           ? t.quote.seeQuotes
                           : t.quote.continueEt}
                     </button>
-
-                    <GuvenSeridi />
                   </form>
                 )}
 
+                {step === 1 && <GuvenSeridi />}
+
                 {step === 2 && (
                   <form
-                    className="quote__form"
+                    className="quote__form quote__kart"
                     onSubmit={async (e) => {
                       e.preventDefault();
                       if (!validateStep2()) return;
