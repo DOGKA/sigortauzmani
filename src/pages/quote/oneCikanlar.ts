@@ -1,3 +1,4 @@
+import { normalizeSirketKodu } from "../../lib/io/sirketler";
 import type { SirketTeklifi } from "../../lib/io/types";
 
 export type Etiket = "best" | "recommended" | "popular";
@@ -11,13 +12,28 @@ export function teklifAnahtari(bransNo: number, sirket: SirketTeklifi): string {
   return `${bransNo}-${sirket.Id}-${sirket.TeklifNo}`;
 }
 
+function kodKumesi(kodlar: ReadonlySet<string>): Set<string> {
+  return new Set(
+    [...kodlar].map((kod) => normalizeSirketKodu(kod)).filter(Boolean),
+  );
+}
+
+/** Panelde işaretlenen şirket kodu mu? IO bazen dolgusuz ("4") döner. */
+export function onerilenSirket(
+  sirketKodu: string,
+  onerilenKodlar: ReadonlySet<string>,
+): boolean {
+  const kume = kodKumesi(onerilenKodlar);
+  return kume.size > 0 && kume.has(normalizeSirketKodu(sirketKodu));
+}
+
 /**
- * Branşın öne çıkan teklifleri: en uygun, önerilen (panelden seçilen
- * şirketlerin en ucuzu) ve en popüler (son 90 günde en çok satılan şirketin
- * en ucuzu). Panelde seçim yoksa veya seçilen şirket fiyat vermediyse
- * önerilen, en uygundan sonraki en ucuz tekliftir. Aynı teklif birden çok
+ * Branşın öne çıkan teklifleri: en uygun, önerilen ve en popüler (son 90
+ * günde en çok satılan şirketin en ucuzu). Önerilen, panelde işaretlenen
+ * şirketlerden fiyatı gelenlerin en ucuzudur. İşaret yoksa veya işaretli
+ * şirket fiyat vermediyse önerilen kart çıkmaz. Aynı teklif birden çok
  * ölçüte uyarsa tek kartta etiketleri birleşir; bu yüzden 1 ile 3 arası
- * kart döner.
+ * kart döner. Listedeki diğer işaretli şirketler ayrıca "Önerilen" alır.
  */
 export function oneCikanlar(
   bransNo: number,
@@ -27,11 +43,10 @@ export function oneCikanlar(
 ): OneCikan[] {
   const sirali = [...sirketler].sort((a, b) => a.Prim - b.Prim);
   const enUygun = sirali[0];
-  const onerilen =
-    sirali.find((s) => onerilenKodlar.has(s.SirketKodu)) ??
-    sirali.find((s) => s !== enUygun);
-  const populer = populerKod
-    ? sirali.find((s) => s.SirketKodu === populerKod)
+  const onerilen = sirali.find((s) => onerilenSirket(s.SirketKodu, onerilenKodlar));
+  const populerNormal = populerKod ? normalizeSirketKodu(populerKod) : "";
+  const populer = populerNormal
+    ? sirali.find((s) => normalizeSirketKodu(s.SirketKodu) === populerNormal)
     : undefined;
   const adaylar: [Etiket, SirketTeklifi | undefined][] = [
     ["best", enUygun],

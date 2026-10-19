@@ -31,7 +31,7 @@ import IlerlemePaneli from "./IlerlemePaneli";
 import { kalanSure } from "./KampanyaSayaci";
 import { BRANS_ADLARI, type BransSonucu } from "./flowState";
 import { useTeklifIstatistik } from "./istatistik";
-import { oneCikanlar, teklifAnahtari, type Etiket } from "./oneCikanlar";
+import { oneCikanlar, onerilenSirket, teklifAnahtari, type Etiket } from "./oneCikanlar";
 import TeklifKarti from "./TeklifKarti";
 import "./FiyatListesi.css";
 
@@ -128,11 +128,18 @@ export default function FiyatListesi({
     const harita = new Map<string, Etiket[]>();
     sonuclar.forEach((sonuc, i) => {
       for (const oc of oneCikanlarBransa[i]) {
-        harita.set(teklifAnahtari(sonuc.bransNo, oc.teklif), oc.etiketler);
+        harita.set(teklifAnahtari(sonuc.bransNo, oc.teklif), [...oc.etiketler]);
+      }
+      for (const sirket of sonuc.sirketler) {
+        if (!onerilenSirket(sirket.SirketKodu, onerilenKodlar)) continue;
+        const anahtar = teklifAnahtari(sonuc.bransNo, sirket);
+        const mevcut = harita.get(anahtar) ?? [];
+        if (mevcut.includes("recommended")) continue;
+        harita.set(anahtar, [...mevcut, "recommended"]);
       }
     });
     return harita;
-  }, [sonuclar, oneCikanlarBransa]);
+  }, [sonuclar, oneCikanlarBransa, onerilenKodlar]);
 
   const hepsiTamam = sonuclar.every((sonuc) => sonuc.tamamlandi);
   const toplamTeklif = sonuclar.reduce(

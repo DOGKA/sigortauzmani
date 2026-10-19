@@ -348,10 +348,16 @@ function Products({ settings, setSettings }: PanelProps) {
     if (next.has(slug)) next.delete(slug); else next.add(slug);
     setSettings((current) => ({ ...current, products: { ...current.products, enabledSlugs: [...next] } }));
   }
+  function setOnerilen(kodlar: string[]) {
+    setSettings((current) => ({
+      ...current,
+      products: { ...current.products, onerilenSirketler: kodlar },
+    }));
+  }
   function toggleOnerilen(kod: string) {
     const next = new Set(onerilen);
     if (next.has(kod)) next.delete(kod); else next.add(kod);
-    setSettings((current) => ({ ...current, products: { ...current.products, onerilenSirketler: [...next] } }));
+    setOnerilen([...next]);
   }
   const maintenance = (patch: Partial<SiteSettings["maintenance"]>) =>
     setSettings((current) => ({ ...current, maintenance: { ...current.maintenance, ...patch } }));
@@ -368,8 +374,24 @@ function Products({ settings, setSettings }: PanelProps) {
       <div className="border-t border-slate-100 pt-5">
         <p className="text-sm font-semibold text-slate-800">Önerilen sigorta şirketleri</p>
         <p className="mt-1 text-xs leading-5 text-slate-400">
-          Teklif ekranında seçili şirketlerden fiyat gelirse en uygun olanı &quot;Önerilen&quot; etiketiyle öne çıkarılır.
+          İşaretlediğiniz şirketler teklif listesinde &quot;Önerilen&quot; olur. Birden fazlasından fiyat gelirse en uygun olanı öne çıkarılır. Değişiklik Kaydet ile yayımlanır.
         </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => setOnerilen(AKTIF_SIRKETLER.map((sirket) => sirket.kod))}
+            className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+          >
+            Tümünü işaretle
+          </button>
+          <button
+            type="button"
+            onClick={() => setOnerilen([])}
+            className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+          >
+            Seçimi kaldır
+          </button>
+        </div>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {AKTIF_SIRKETLER.map((sirket) => (
             <label key={sirket.kod} className="flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700">
