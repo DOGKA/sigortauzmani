@@ -68,9 +68,12 @@ export function slugify(text: string): string {
 
 export const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
-/** Sitenin kökü; `/sb` kapısı sitenin kendi adresinde çalışır. */
+/**
+ * Sitenin kökü. Canlıda panel kendi alan adından konuştuğu için
+ * `NEXT_PUBLIC_SITE_URL` gerekir; yerelde `/sb` kapısı sitenin adresinde.
+ */
 export function siteOrigin(): string {
-  const raw = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  const raw = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "";
   try {
     return new URL(raw).origin;
   } catch {

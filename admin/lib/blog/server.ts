@@ -4,6 +4,7 @@ import { supabaseServerUrl } from "@/lib/supabase/url";
 import {
   BLOG_STATUSES,
   SLUG_PATTERN,
+  siteOrigin,
   type BlogPostInput,
   type BlogStatus,
 } from "./shared";
@@ -12,10 +13,11 @@ const BUCKET = "blog";
 export const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
 const IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 
-function publicBase(): string {
+/** Kapının yolu (`/sb`); site ve panel alan adlarında aynı. */
+function gatewayPath(): string {
   const raw = process.env.NEXT_PUBLIC_SUPABASE_URL;
   if (!raw) throw new Error("NEXT_PUBLIC_SUPABASE_URL tanımlı değil.");
-  return raw.replace(/\/+$/, "");
+  return new URL(raw).pathname.replace(/\/+$/, "");
 }
 
 async function putObject(objectPath: string, data: Buffer, type: string): Promise<void> {
@@ -55,7 +57,7 @@ export async function storeContentImage(input: Buffer): Promise<string> {
     .toBuffer();
   const objectPath = `icerik/${newId()}.webp`;
   await putObject(objectPath, data, "image/webp");
-  return `${publicBase()}/storage/v1/object/public/${BUCKET}/${objectPath}`;
+  return `${siteOrigin()}${gatewayPath()}/storage/v1/object/public/${BUCKET}/${objectPath}`;
 }
 
 /**
@@ -64,7 +66,6 @@ export async function storeContentImage(input: Buffer): Promise<string> {
  */
 export async function storeCover(input: Buffer): Promise<string> {
   const id = newId();
-  const base = new URL(publicBase()).pathname.replace(/\/+$/, "");
   for (const width of [1600, 800]) {
     const data = await sharp(input)
       .rotate()
@@ -73,7 +74,7 @@ export async function storeCover(input: Buffer): Promise<string> {
       .toBuffer();
     await putObject(`kapak/${id}-${width}.webp`, data, "image/webp");
   }
-  return `${base}/storage/v1/object/public/${BUCKET}/kapak/${id}-1600.webp`;
+  return `${gatewayPath()}/storage/v1/object/public/${BUCKET}/kapak/${id}-1600.webp`;
 }
 
 /* ---- Kapak üretimi (scripts/blog-gorselleri-uret.mjs ile aynı yönerge) ---- */
