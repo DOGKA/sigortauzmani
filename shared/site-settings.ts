@@ -1,3 +1,7 @@
+import { AKTIF_SIRKET_KODLARI } from "./sirketler";
+
+const AKTIF_SIRKET_KODU = new Set<string>(AKTIF_SIRKET_KODLARI);
+
 export const SETTING_KEYS = [
   "company",
   "analytics",
@@ -33,8 +37,13 @@ export interface AnalyticsSettings {
 
 export interface ProductSettings {
   enabledSlugs: string[];
-  /** Teklif ekranında "Önerilen" etiketi alacak şirket kodları ("050" gibi). */
+  /**
+   * Eski tek liste. Ürün bazlı harita yokken her ürüne uygulanır.
+   * Yeni kayıtlar haritayı esas alır.
+   */
   onerilenSirketler: string[];
+  /** Ürün slug'ı → o üründe "Önerilen" olabilecek şirket kodları. */
+  onerilenSirketlerBySlug: Record<string, string[]>;
 }
 
 export interface MaintenanceSettings {
@@ -74,6 +83,55 @@ export const ALL_PRODUCT_SLUGS = [
   "konut",
 ] as const;
 
+export type ProductSlug = (typeof ALL_PRODUCT_SLUGS)[number];
+
+function sirketKodlari(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return [
+    ...new Set(
+      value.filter(
+        (kod): kod is string => typeof kod === "string" && AKTIF_SIRKET_KODU.has(kod),
+      ),
+    ),
+  ];
+}
+
+/**
+ * Ürün ayarını tek şekle getirir. Eski `onerilenSirketler` dizisi, haritası
+ * olmayan ürünlere uygulanır. Haritada dizisi olan ürün kendi listesini korur.
+ */
+export function normalizeProductSettings(input: unknown): ProductSettings {
+  const products =
+    input && typeof input === "object" ? (input as Record<string, unknown>) : {};
+  const enabledSlugs = Array.isArray(products.enabledSlugs)
+    ? products.enabledSlugs.filter(
+        (slug): slug is string =>
+          typeof slug === "string" &&
+          (ALL_PRODUCT_SLUGS as readonly string[]).includes(slug),
+      )
+    : [...ALL_PRODUCT_SLUGS];
+  const global = sirketKodlari(products.onerilenSirketler);
+  const rawMap = products.onerilenSirketlerBySlug;
+  const map =
+    rawMap && typeof rawMap === "object" ? (rawMap as Record<string, unknown>) : null;
+  const onerilenSirketlerBySlug: Record<string, string[]> = {};
+  for (const slug of ALL_PRODUCT_SLUGS) {
+    onerilenSirketlerBySlug[slug] =
+      map && Array.isArray(map[slug]) ? sirketKodlari(map[slug]) : [...global];
+  }
+  return {
+    enabledSlugs: [...new Set(enabledSlugs)],
+    onerilenSirketler: global,
+    onerilenSirketlerBySlug,
+  };
+}
+
+/** Teklif ekranı bu ürün için işaretli şirket kodlarını okur. */
+export function onerilenKodlarFor(products: ProductSettings, slug: string): string[] {
+  const ozel = products.onerilenSirketlerBySlug?.[slug];
+  return Array.isArray(ozel) ? ozel : products.onerilenSirketler;
+}
+
 export const DEFAULT_SITE_SETTINGS: SiteSettings = {
   company: {
     legalName: "GROSS SİGORTA ARACILIK HİZMETLERİ LİMİTED ŞİRKETİ",
@@ -94,7 +152,7 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
     ga4MeasurementId: "",
     gtmContainerId: "",
   },
-  products: { enabledSlugs: [...ALL_PRODUCT_SLUGS], onerilenSirketler: [] },
+  products: normalizeProductSettings({ enabledSlugs: [...ALL_PRODUCT_SLUGS] }),
   maintenance: {
     enabled: false,
     title: "Kısa bir bakımdayız",
@@ -118,13 +176,7 @@ export function mergePublicSettings(value: unknown): PublicSiteSettings {
   return {
     company: { ...DEFAULT_SITE_SETTINGS.company, ...input.company },
     analytics: { ...DEFAULT_SITE_SETTINGS.analytics, ...input.analytics },
-    products: {
-      ...DEFAULT_SITE_SETTINGS.products,
-      ...input.products,
-      onerilenSirketler: Array.isArray(input.products?.onerilenSirketler)
-        ? input.products.onerilenSirketler.filter((kod) => typeof kod === "string")
-        : [],
-    },
+    products: normalizeProductSettings(input.products),
     maintenance: {
       ...DEFAULT_SITE_SETTINGS.maintenance,
       ...input.maintenance,

@@ -7,7 +7,6 @@ import BlogToc from "../components/blog/BlogToc";
 import BlogReadingProgress from "../components/blog/BlogReadingProgress";
 import BlogPostNav from "../components/blog/BlogPostNav";
 import BlogPostRow from "../components/blog/BlogPostRow";
-import BlogPopularList from "../components/blog/BlogPopularList";
 import {
   fetchBlogCards,
   fetchBlogPost,
@@ -15,6 +14,7 @@ import {
   type BlogCard,
   type BlogPostDetail,
 } from "../lib/blog/api";
+import { blogCover } from "../lib/blog/cover";
 import {
   calculateReadingTime,
   createExcerpt,
@@ -187,6 +187,7 @@ export default function BlogPostPage() {
   const readingTime = calculateReadingTime(post.content);
   const pageUrl = absoluteUrl(ROUTES.blogPost(post.slug));
   const shareUrl = absoluteUrl(`/api/share?slug=${encodeURIComponent(post.slug)}`);
+  const cover = blogCover(post.featuredImage);
 
   return (
     <>
@@ -202,6 +203,20 @@ export default function BlogPostPage() {
               viewCount={post.viewCount}
               author={post.authorName ?? undefined}
             />
+
+            {cover && (
+              <img
+                className="blog-article__cover"
+                src={cover.src}
+                srcSet={cover.srcSet}
+                sizes="(max-width: 960px) 100vw, 900px"
+                width={1600}
+                height={900}
+                alt=""
+                fetchPriority="high"
+                decoding="async"
+              />
+            )}
 
             {/* İçindekiler rayı gövdeyle aynı satırda: masaüstünde metnin
                 başladığı hizada, mobilde başlığın hemen altında görünür. */}
@@ -232,22 +247,12 @@ export default function BlogPostPage() {
                     publishedAt={related.publishedAt}
                     category={related.category}
                     readingTime={related.readingTime}
+                    featuredImage={related.featuredImage}
                   />
                 ))}
               </div>
             </section>
           )}
-
-          <BlogPopularList
-            posts={cards.map((card) => ({
-              slug: card.slug,
-              title: card.title,
-              category: card.category,
-              viewCount: card.viewCount,
-            }))}
-            excludeSlug={post.slug}
-            className="blog-detail__popular"
-          />
         </div>
       </main>
 

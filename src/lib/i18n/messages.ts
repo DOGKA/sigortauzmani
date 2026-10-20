@@ -76,6 +76,15 @@ export interface UiMessages {
     items: { question: string; answer: string }[];
   };
   partners: { eyebrow: string; title: string; lead: string };
+  homeBlog: {
+    eyebrow: string;
+    title: string;
+    lead: string;
+    recent: string;
+    popular: string;
+    all: string;
+    minutes: string;
+  };
   slider: {
     eyebrow: string;
     title: string;
@@ -331,6 +340,15 @@ const TR: UiMessages = {
     eyebrow: "Güçlü iş ortaklıkları",
     title: "30'a Yakın Sigorta Şirketinden Teklif Al",
     lead: "Entegrasyon bulunan sigorta şirketlerinden gelen fiyat ve teminat seçeneklerini tek ekranda karşılaştırın; ihtiyacınıza uygun teklifi seçin.",
+  },
+  homeBlog: {
+    eyebrow: "Blog",
+    title: "Sigorta Rehberi",
+    lead: "Trafik, kasko, sağlık ve konut sigortalarında doğru kararı vermenize yardımcı olacak yazılar.",
+    recent: "En yeni",
+    popular: "En popüler",
+    all: "Tüm yazılar",
+    minutes: "dk okuma",
   },
   slider: {
     eyebrow: "Sizin için seçtik",
@@ -665,6 +683,15 @@ const EN: UiMessages = {
     title: "Quotes from nearly 30 insurers",
     lead: "Compare live prices and covers from integrated insurers on one screen and pick the offer that fits.",
   },
+  homeBlog: {
+    eyebrow: "Blog",
+    title: "Insurance Guide",
+    lead: "Articles (in Turkish) to help you choose the right motor, health and home insurance.",
+    recent: "Latest",
+    popular: "Most read",
+    all: "All articles",
+    minutes: "min read",
+  },
   slider: {
     eyebrow: "Picked for you",
     title: "With you at every moment",
@@ -996,6 +1023,15 @@ const AR: UiMessages = {
     title: "عروض من نحو 30 شركة تأمين",
     lead: "قارن الأسعار والتغطيات من الشركات المتكاملة في شاشة واحدة واختر العرض المناسب.",
   },
+  homeBlog: {
+    eyebrow: "المدونة",
+    title: "دليل التأمين",
+    lead: "مقالات (باللغة التركية) تساعدك على اختيار تأمين السيارة والصحة والمنزل المناسب.",
+    recent: "الأحدث",
+    popular: "الأكثر قراءة",
+    all: "كل المقالات",
+    minutes: "دقائق قراءة",
+  },
   slider: {
     eyebrow: "اخترنا لكم",
     title: "معكم في كل لحظة",
@@ -1325,6 +1361,15 @@ const FA: UiMessages = {
     eyebrow: "همکاری‌های قوی",
     title: "پیشنهاد از نزدیک به ۳۰ شرکت بیمه",
     lead: "قیمت و پوشش شرکت‌های یکپارچه را در یک صفحه مقایسه کنید و پیشنهاد مناسب را انتخاب کنید.",
+  },
+  homeBlog: {
+    eyebrow: "وبلاگ",
+    title: "راهنمای بیمه",
+    lead: "مقاله‌هایی (به زبان ترکی) برای انتخاب درست بیمه خودرو، درمان و منزل.",
+    recent: "جدیدترین",
+    popular: "پربازدیدترین",
+    all: "همه مقاله‌ها",
+    minutes: "دقیقه مطالعه",
   },
   slider: {
     eyebrow: "برای شما انتخاب کردیم",

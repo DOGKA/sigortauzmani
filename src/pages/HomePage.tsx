@@ -1,6 +1,7 @@
 import Hero from "../components/Hero";
 import InsuranceSlider from "../components/InsuranceSlider";
 import Partners from "../components/Partners";
+import HomeBlog from "../components/HomeBlog";
 import Faq from "../components/Faq";
 import { faqSchema, itemListSchema } from "../lib/seo/schema";
 import { useStaticPageSeo } from "../lib/seo/useStaticPageSeo";
@@ -33,6 +34,7 @@ export default function HomePage() {
       <Hero />
       <InsuranceSlider />
       <Partners />
+      <HomeBlog />
       <Faq />
     </main>
   );

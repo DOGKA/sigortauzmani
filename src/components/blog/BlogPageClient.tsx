@@ -17,6 +17,7 @@ interface BlogPost {
   category: string | null;
   readingTime: number;
   viewCount: number;
+  featuredImage: string | null;
 }
 
 interface BlogPageClientProps {
@@ -190,6 +191,7 @@ export default function BlogPageClient({
       title: post.title,
       category: post.category,
       viewCount: post.viewCount,
+      featuredImage: post.featuredImage,
     }));
   }, [posts, activeCategory]);
 
@@ -247,6 +249,7 @@ export default function BlogPageClient({
                   publishedAt={featuredPost.publishedAt}
                   category={featuredPost.category}
                   readingTime={featuredPost.readingTime}
+                  featuredImage={featuredPost.featuredImage}
                   viewCount={featuredPost.viewCount}
                   variant="featured"
                   flag={featuredLabel}
@@ -264,6 +267,7 @@ export default function BlogPageClient({
                   publishedAt={post.publishedAt}
                   category={post.category}
                   readingTime={post.readingTime}
+                  featuredImage={post.featuredImage}
                   viewCount={post.viewCount}
                   query={query}
                 />

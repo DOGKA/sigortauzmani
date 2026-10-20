@@ -15,7 +15,7 @@
 
 import { CATEGORY_MAP, FINAL_CATEGORIES } from "./blog-category-map.mjs";
 
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL ?? "https://kxjtmrbphoxvzwppcmzx.supabase.co";
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL ?? "http://localhost:5173/sb";
 const SUPABASE_KEY =
   process.env.SUPABASE_SERVICE_ROLE_KEY ??
   process.env.VITE_SUPABASE_ANON_KEY ??

@@ -25,13 +25,14 @@ import { formatDateTime, interpolate } from "../../lib/i18n/format";
 import type { Locale } from "../../lib/i18n/locales";
 import { satinAlinabilirSirket } from "../../lib/io/satinAlFiltre";
 import type { SirketTeklifi } from "../../lib/io/types";
+import { onerilenKodlarFor } from "../../../shared/site-settings";
 import { useSiteSettings } from "../../lib/settings/context";
 import BilgiNotu from "./BilgiNotu";
 import IlerlemePaneli from "./IlerlemePaneli";
 import { kalanSure } from "./KampanyaSayaci";
 import { BRANS_ADLARI, type BransSonucu } from "./flowState";
 import { useTeklifIstatistik } from "./istatistik";
-import { oneCikanlar, onerilenSirket, teklifAnahtari, type Etiket } from "./oneCikanlar";
+import { oneCikanlar, teklifAnahtari, type Etiket } from "./oneCikanlar";
 import TeklifKarti from "./TeklifKarti";
 import "./FiyatListesi.css";
 
@@ -51,6 +52,8 @@ const KAMPANYA_SURESI_MS = 5 * 60 * 1000;
 
 interface Props {
   sonuclar: BransSonucu[];
+  /** Açık teklifin ürünü. Ek kasko satırı kendi önerilen listesini kullanır. */
+  productSlug: string;
   /** Teklif PDF'i oturuma karşı doğrulandığı için gerekli; yoksa gizlenir. */
   oturumId: string | null;
   /** Kısa süreli trafikte anında satın alınabilir şirket listesi farklı. */
@@ -71,8 +74,14 @@ interface Props {
   onKampanyaBitis: (bitis: number) => void;
 }
 
+function onerilenSlug(productSlug: string, sonuc: BransSonucu, index: number): string {
+  if (index > 0 && sonuc.bransNo === 1) return "kasko";
+  return productSlug;
+}
+
 export default function FiyatListesi({
   sonuclar,
+  productSlug,
   oturumId,
   kisaSureli,
   onSatinAl,
@@ -106,40 +115,33 @@ export default function FiyatListesi({
   const [kampanyaBitis, setKampanyaBitis] = useState<number | null>(null);
   const [simdi, setSimdi] = useState(() => Date.now());
 
-  const onerilenKodlar = useMemo(
-    () => new Set(settings.products.onerilenSirketler),
-    [settings.products.onerilenSirketler],
-  );
-
   const oneCikanlarBransa = useMemo(
     () =>
-      sonuclar.map((sonuc) =>
+      sonuclar.map((sonuc, index) =>
         oneCikanlar(
           sonuc.bransNo,
           sonuc.sirketler,
-          onerilenKodlar,
+          new Set(
+            onerilenKodlarFor(
+              settings.products,
+              onerilenSlug(productSlug, sonuc, index),
+            ),
+          ),
           istatistik?.populer[String(sonuc.bransNo)],
         ),
       ),
-    [sonuclar, onerilenKodlar, istatistik],
+    [sonuclar, productSlug, settings.products, istatistik],
   );
 
   const etiketHaritasi = useMemo(() => {
     const harita = new Map<string, Etiket[]>();
     sonuclar.forEach((sonuc, i) => {
       for (const oc of oneCikanlarBransa[i]) {
-        harita.set(teklifAnahtari(sonuc.bransNo, oc.teklif), [...oc.etiketler]);
-      }
-      for (const sirket of sonuc.sirketler) {
-        if (!onerilenSirket(sirket.SirketKodu, onerilenKodlar)) continue;
-        const anahtar = teklifAnahtari(sonuc.bransNo, sirket);
-        const mevcut = harita.get(anahtar) ?? [];
-        if (mevcut.includes("recommended")) continue;
-        harita.set(anahtar, [...mevcut, "recommended"]);
+        harita.set(teklifAnahtari(sonuc.bransNo, oc.teklif), oc.etiketler);
       }
     });
     return harita;
-  }, [sonuclar, oneCikanlarBransa, onerilenKodlar]);
+  }, [sonuclar, oneCikanlarBransa]);
 
   const hepsiTamam = sonuclar.every((sonuc) => sonuc.tamamlandi);
   const toplamTeklif = sonuclar.reduce(

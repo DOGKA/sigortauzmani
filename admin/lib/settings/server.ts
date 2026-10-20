@@ -5,6 +5,7 @@ import { supabaseServerUrl } from "@/lib/supabase/url";
 import {
   DEFAULT_SITE_SETTINGS,
   SETTING_KEYS,
+  normalizeProductSettings,
   type SettingKey,
   type SiteSettings,
 } from "../../../shared/site-settings";
@@ -55,6 +56,10 @@ export async function readSettings(): Promise<SiteSettings> {
   for (const row of data ?? []) {
     if (!SETTING_KEYS.includes(row.key as SettingKey)) continue;
     const key = row.key as SettingKey;
+    if (key === "products") {
+      settings.products = normalizeProductSettings(row.value);
+      continue;
+    }
     Object.assign(settings[key], row.value);
   }
   return settings;

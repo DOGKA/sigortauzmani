@@ -1,0 +1,99 @@
+.blog-editor__content {
+  min-height: 520px;
+  padding: 20px 24px;
+  outline: none;
+  font-size: 15px;
+  line-height: 1.75;
+  color: #1e293b;
+}
+
+.blog-editor__content > * + * {
+  margin-top: 0.9em;
+}
+
+.blog-editor__content h2 {
+  margin-top: 1.6em;
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.3;
+  color: #0f172a;
+}
+
+.blog-editor__content h3 {
+  margin-top: 1.3em;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.blog-editor__content h4 {
+  font-weight: 700;
+}
+
+.blog-editor__content ul,
+.blog-editor__content ol {
+  padding-left: 1.4em;
+}
+
+.blog-editor__content ul {
+  list-style: disc;
+}
+
+.blog-editor__content ol {
+  list-style: decimal;
+}
+
+.blog-editor__content li + li {
+  margin-top: 0.3em;
+}
+
+.blog-editor__content li > p,
+.blog-editor__content td > p,
+.blog-editor__content th > p {
+  margin: 0;
+}
+
+.blog-editor__content a {
+  color: #0284c7;
+  text-decoration: underline;
+}
+
+.blog-editor__content blockquote {
+  border-left: 3px solid #bae6fd;
+  padding-left: 1em;
+  color: #475569;
+}
+
+.blog-editor__content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+.blog-editor__content img.ProseMirror-selectednode {
+  outline: 3px solid #38bdf8;
+}
+
+.blog-editor__content table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 14px;
+}
+
+.blog-editor__content th,
+.blog-editor__content td {
+  border: 1px solid #e2e8f0;
+  padding: 8px 10px;
+  vertical-align: top;
+}
+
+.blog-editor__content th {
+  background: #f8fafc;
+  font-weight: 600;
+  text-align: left;
+}
+
+.blog-editor__content .selectedCell {
+  background: #e0f2fe;
+}

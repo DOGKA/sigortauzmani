@@ -39,3 +39,6 @@ admin/out
 *.njsproj
 *.sln
 *.sw?
+
+# Üretilen blog görselleri (yayına alınmadan önce)
+blog-gorselleri/

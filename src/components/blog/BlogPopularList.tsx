@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import { Eye, TrendingUp } from "lucide-react";
+import { blogCover } from "../../lib/blog/cover";
 
 export interface PopularPost {
   slug: string;
   title: string;
   category: string | null;
   viewCount: number;
+  featuredImage?: string | null;
 }
 
 interface BlogPopularListProps {
@@ -37,25 +39,39 @@ export default function BlogPopularList({
         {heading}
       </h2>
       <ol className="blog-popular__list">
-        {ranked.map((post, index) => (
-          <li key={post.slug}>
-            <Link to={`/blog/${post.slug}`} className="blog-popular__item">
-              <span className="blog-popular__rank">{index + 1}</span>
-              <span className="blog-popular__body">
-                <span className="blog-popular__title">{post.title}</span>
-                <span className="blog-popular__meta">
-                  {post.category && (
-                    <span className="blog-popular__category">{post.category}</span>
-                  )}
-                  <span className="blog-popular__views">
-                    <Eye aria-hidden="true" />
-                    {post.viewCount.toLocaleString("tr-TR")} görüntülenme
+        {ranked.map((post, index) => {
+          const cover = blogCover(post.featuredImage);
+          return (
+            <li key={post.slug}>
+              <Link to={`/blog/${post.slug}`} className="blog-popular__item">
+                <span className="blog-popular__rank">{index + 1}</span>
+                {cover && (
+                  <img
+                    className="blog-popular__thumb"
+                    src={cover.src}
+                    width={800}
+                    height={450}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                  />
+                )}
+                <span className="blog-popular__body">
+                  <span className="blog-popular__title">{post.title}</span>
+                  <span className="blog-popular__meta">
+                    {post.category && (
+                      <span className="blog-popular__category">{post.category}</span>
+                    )}
+                    <span className="blog-popular__views">
+                      <Eye aria-hidden="true" />
+                      {post.viewCount.toLocaleString("tr-TR")} görüntülenme
+                    </span>
                   </span>
                 </span>
-              </span>
-            </Link>
-          </li>
-        ))}
+              </Link>
+            </li>
+          );
+        })}
       </ol>
     </section>
   );

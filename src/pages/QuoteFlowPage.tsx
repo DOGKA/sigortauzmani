@@ -773,6 +773,7 @@ export default function QuoteFlowPage() {
         {!geriDonus && adim === "fiyatlar" ? (
           <FiyatListesi
             sonuclar={sonuclar}
+            productSlug={product.slug}
             oturumId={oturumId}
             kisaSureli={gereksinim.kisaSureli}
             onSatinAl={satinAlKontrol}

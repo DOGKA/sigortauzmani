@@ -28,12 +28,11 @@ export function onerilenSirket(
 }
 
 /**
- * Branşın öne çıkan teklifleri: en uygun, önerilen ve en popüler (son 90
- * günde en çok satılan şirketin en ucuzu). Önerilen, panelde işaretlenen
- * şirketlerden fiyatı gelenlerin en ucuzudur. İşaret yoksa veya işaretli
- * şirket fiyat vermediyse önerilen kart çıkmaz. Aynı teklif birden çok
- * ölçüte uyarsa tek kartta etiketleri birleşir; bu yüzden 1 ile 3 arası
- * kart döner. Listedeki diğer işaretli şirketler ayrıca "Önerilen" alır.
+ * Branşın öne çıkan teklifleri: en ucuz, önerilen ve en popüler (son 90
+ * günde en çok satılan şirketin en ucuzu). En ucuz her zaman en düşük
+ * fiyattır. Önerilen, panelde işaretlenen şirketlerden en ucuz olmayanların
+ * en düşük fiyatıdır; ikisi aynı şirkete düşmez. İşaret yoksa veya işaretli
+ * şirketlerden ayrı fiyat gelmezse önerilen kart çıkmaz.
  */
 export function oneCikanlar(
   bransNo: number,
@@ -43,7 +42,12 @@ export function oneCikanlar(
 ): OneCikan[] {
   const sirali = [...sirketler].sort((a, b) => a.Prim - b.Prim);
   const enUygun = sirali[0];
-  const onerilen = sirali.find((s) => onerilenSirket(s.SirketKodu, onerilenKodlar));
+  const enUygunKod = enUygun ? normalizeSirketKodu(enUygun.SirketKodu) : "";
+  const onerilen = sirali.find(
+    (s) =>
+      normalizeSirketKodu(s.SirketKodu) !== enUygunKod &&
+      onerilenSirket(s.SirketKodu, onerilenKodlar),
+  );
   const populerNormal = populerKod ? normalizeSirketKodu(populerKod) : "";
   const populer = populerNormal
     ? sirali.find((s) => normalizeSirketKodu(s.SirketKodu) === populerNormal)

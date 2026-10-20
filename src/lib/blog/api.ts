@@ -10,6 +10,7 @@ export interface BlogCard {
   viewCount: number;
   publishedAt: string;
   readingTime: number;
+  featuredImage: string | null;
 }
 
 export interface BlogPostDetail {
@@ -28,6 +29,7 @@ export interface BlogPostDetail {
   /** SEO açıklaması; yoksa `excerpt`e düşülür. */
   metaDescription: string | null;
   tags: string[];
+  featuredImage: string | null;
 }
 
 interface BlogCardRow {
@@ -39,6 +41,7 @@ interface BlogCardRow {
   view_count: number;
   published_at: string | null;
   reading_time: number | null;
+  featured_image: string | null;
 }
 
 interface BlogPostRowData {
@@ -55,6 +58,7 @@ interface BlogPostRowData {
   meta_title: string | null;
   meta_description: string | null;
   tags: string[] | null;
+  featured_image: string | null;
 }
 
 function toCard(row: BlogCardRow): BlogCard {
@@ -67,6 +71,7 @@ function toCard(row: BlogCardRow): BlogCard {
     viewCount: row.view_count ?? 0,
     publishedAt: row.published_at ?? new Date().toISOString(),
     readingTime: row.reading_time ?? 1,
+    featuredImage: row.featured_image,
   };
 }
 
@@ -76,7 +81,7 @@ export async function fetchBlogCards(): Promise<BlogCard[]> {
 
   const { data, error } = await client
     .from("blog_post_cards")
-    .select("id, slug, title, excerpt, category, view_count, published_at, reading_time")
+    .select("id, slug, title, excerpt, category, view_count, published_at, reading_time, featured_image")
     .order("published_at", { ascending: false, nullsFirst: false });
 
   if (error) throw error;
@@ -90,7 +95,7 @@ export async function fetchBlogPost(slug: string): Promise<BlogPostDetail | null
   const { data, error } = await client
     .from("blog_posts")
     .select(
-      "id, slug, title, content, excerpt, category, view_count, published_at, updated_at, author_name, meta_title, meta_description, tags",
+      "id, slug, title, content, excerpt, category, view_count, published_at, updated_at, author_name, meta_title, meta_description, tags, featured_image",
     )
     .eq("slug", slug)
     .eq("status", "PUBLISHED")
@@ -117,6 +122,7 @@ export async function fetchBlogPost(slug: string): Promise<BlogPostDetail | null
     metaTitle: row.meta_title,
     metaDescription: row.meta_description,
     tags: row.tags ?? [],
+    featuredImage: row.featured_image,
   };
 }
 

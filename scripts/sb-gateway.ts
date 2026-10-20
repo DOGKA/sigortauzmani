@@ -11,7 +11,9 @@ import path from "node:path";
 import { compare } from "bcryptjs";
 import { Pool } from "pg";
 
-const BUCKETS = new Set(["iptal-belgeleri", "iletisim-belgeleri"]);
+const BUCKETS = new Set(["iptal-belgeleri", "iletisim-belgeleri", "blog"]);
+/** İmzasız okunabilen klasörler; ziyaretçi yükleyemez, yalnızca panel yazar. */
+const PUBLIC_BUCKETS = new Set(["blog"]);
 const POSTGREST = process.env.POSTGREST_URL ?? "http://127.0.0.1:3002";
 
 let pool: Pool | null = null;
@@ -248,6 +250,23 @@ async function handleStorage(req: IncomingMessage, res: ServerResponse, pathname
   const payload = tokenUser ? readJwt(tokenUser) : null;
   const role = typeof payload?.role === "string" ? payload.role : "";
 
+  const publicObject = rest.match(/^object\/public\/([^/]+)\/(.+)$/);
+  if ((req.method === "GET" || req.method === "HEAD") && publicObject) {
+    const bucket = publicObject[1];
+    const file = PUBLIC_BUCKETS.has(bucket) ? safePath(bucket, publicObject[2].split("?")[0]) : null;
+    const data = file ? await readFile(file).catch(() => null) : null;
+    if (!file || !data) {
+      json(res, 404, { message: "Dosya bulunamadı.", msg: "Dosya bulunamadı." });
+      return;
+    }
+    res.statusCode = 200;
+    res.setHeader("content-type", contentType(file));
+    res.setHeader("cache-control", "public, max-age=31536000, immutable");
+    res.setHeader("x-content-type-options", "nosniff");
+    res.end(req.method === "HEAD" ? undefined : data);
+    return;
+  }
+
   const signed = rest.match(/^object\/sign\/([^/]+)\/(.+)$/);
   if (req.method === "GET" && signed) {
     const bucket = signed[1];
@@ -314,6 +333,10 @@ async function handleStorage(req: IncomingMessage, res: ServerResponse, pathname
       return;
     }
     const bucket = upload[1];
+    if (PUBLIC_BUCKETS.has(bucket) && role !== "authenticated" && role !== "service_role") {
+      json(res, 401, { message: "Oturum geçersiz.", msg: "Oturum geçersiz." });
+      return;
+    }
     const objectPath = upload[2];
     const file = safePath(bucket, objectPath);
     if (!file) {
@@ -365,6 +388,7 @@ function contentType(file: string): string {
   if (ext === ".png") return "image/png";
   if (ext === ".webp") return "image/webp";
   if (ext === ".jpg" || ext === ".jpeg") return "image/jpeg";
+  if (ext === ".gif") return "image/gif";
   return "application/octet-stream";
 }
 

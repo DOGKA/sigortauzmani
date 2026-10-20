@@ -342,22 +342,29 @@ function Company({ settings, setSettings }: PanelProps) {
 
 function Products({ settings, setSettings }: PanelProps) {
   const enabled = new Set(settings.products.enabledSlugs);
-  const onerilen = new Set(settings.products.onerilenSirketler ?? []);
+  const [acikUrun, setAcikUrun] = useState<string>(ALL_PRODUCT_SLUGS[0]);
+  const harita = settings.products.onerilenSirketlerBySlug ?? {};
   function toggle(slug: string) {
     const next = new Set(enabled);
     if (next.has(slug)) next.delete(slug); else next.add(slug);
     setSettings((current) => ({ ...current, products: { ...current.products, enabledSlugs: [...next] } }));
   }
-  function setOnerilen(kodlar: string[]) {
+  function setUrunOnerilen(slug: string, kodlar: string[]) {
     setSettings((current) => ({
       ...current,
-      products: { ...current.products, onerilenSirketler: kodlar },
+      products: {
+        ...current.products,
+        onerilenSirketlerBySlug: {
+          ...current.products.onerilenSirketlerBySlug,
+          [slug]: kodlar,
+        },
+      },
     }));
   }
-  function toggleOnerilen(kod: string) {
-    const next = new Set(onerilen);
+  function toggleUrunOnerilen(slug: string, kod: string) {
+    const next = new Set(harita[slug] ?? []);
     if (next.has(kod)) next.delete(kod); else next.add(kod);
-    setOnerilen([...next]);
+    setUrunOnerilen(slug, [...next]);
   }
   const maintenance = (patch: Partial<SiteSettings["maintenance"]>) =>
     setSettings((current) => ({ ...current, maintenance: { ...current.maintenance, ...patch } }));
@@ -374,31 +381,61 @@ function Products({ settings, setSettings }: PanelProps) {
       <div className="border-t border-slate-100 pt-5">
         <p className="text-sm font-semibold text-slate-800">Önerilen sigorta şirketleri</p>
         <p className="mt-1 text-xs leading-5 text-slate-400">
-          İşaretlediğiniz şirketler teklif listesinde &quot;Önerilen&quot; olur. Birden fazlasından fiyat gelirse en uygun olanı öne çıkarılır. Değişiklik Kaydet ile yayımlanır.
+          Her ürünün listesi ayrıdır. En ucuz teklif her zaman en düşük fiyattır ve bu listeden bağımsızdır. İşaretlediğiniz şirketlerden, en ucuz olmayanların en uygun olanı ayrı kartta &quot;Önerilen&quot; olur. Değişiklik Kaydet ile yayımlanır.
         </p>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <button
-            type="button"
-            onClick={() => setOnerilen(AKTIF_SIRKETLER.map((sirket) => sirket.kod))}
-            className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
-          >
-            Tümünü işaretle
-          </button>
-          <button
-            type="button"
-            onClick={() => setOnerilen([])}
-            className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
-          >
-            Seçimi kaldır
-          </button>
-        </div>
-        <div className="mt-3 grid gap-2 sm:grid-cols-2">
-          {AKTIF_SIRKETLER.map((sirket) => (
-            <label key={sirket.kod} className="flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700">
-              <input type="checkbox" checked={onerilen.has(sirket.kod)} onChange={() => toggleOnerilen(sirket.kod)} className="h-4 w-4 accent-sky-600" />
-              {sirket.ad}
-            </label>
-          ))}
+        <div className="mt-3 space-y-2">
+          {ALL_PRODUCT_SLUGS.map((slug) => {
+            const secili = new Set(harita[slug] ?? []);
+            const acik = acikUrun === slug;
+            return (
+              <div key={slug} className="rounded-xl border border-slate-200">
+                <button
+                  type="button"
+                  onClick={() => setAcikUrun(acik ? "" : slug)}
+                  className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+                  aria-expanded={acik}
+                >
+                  <span className="text-sm font-semibold text-slate-800">{PRODUCT_NAMES[slug]}</span>
+                  <span className="text-xs text-slate-400">
+                    {secili.size} şirket {acik ? "▴" : "▾"}
+                  </span>
+                </button>
+                {acik ? (
+                  <div className="border-t border-slate-100 px-4 py-3">
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setUrunOnerilen(slug, AKTIF_SIRKETLER.map((sirket) => sirket.kod))}
+                        className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+                      >
+                        Tümünü işaretle
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setUrunOnerilen(slug, [])}
+                        className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+                      >
+                        Seçimi kaldır
+                      </button>
+                    </div>
+                    <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                      {AKTIF_SIRKETLER.map((sirket) => (
+                        <label key={sirket.kod} className="flex items-center gap-3 rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-700">
+                          <input
+                            type="checkbox"
+                            checked={secili.has(sirket.kod)}
+                            onChange={() => toggleUrunOnerilen(slug, sirket.kod)}
+                            className="h-4 w-4 accent-sky-600"
+                          />
+                          {sirket.ad}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+            );
+          })}
         </div>
       </div>
       <div className="border-t border-slate-100 pt-5">
