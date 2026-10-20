@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { assertImage, generateCover, storeCover } from "@/lib/blog/server";
 import { jsonHandler, requireUser } from "@/lib/settings/server";
 
+export const maxDuration = 180;
+
 /**
  * JSON gövde: başlık ve içerikten Gemini ile kapak üretir.
  * Form gövdesi: seçilen dosyayı kapak olarak kaydeder.

@@ -10,7 +10,8 @@ import {
 } from "./shared";
 
 const BUCKET = "blog";
-export const MAX_UPLOAD_BYTES = 8 * 1024 * 1024;
+/** Gemini 2K kapaklar ~3.5 MB; yükleme ve nginx ile aynı tavan. */
+export const MAX_UPLOAD_BYTES = 20 * 1024 * 1024;
 const IMAGE_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 
 /** Kapının yolu (`/sb`); site ve panel alan adlarında aynı. */
@@ -42,7 +43,7 @@ function newId(): string {
 
 export function assertImage(file: File): void {
   if (!IMAGE_TYPES.has(file.type)) throw new Error("Yalnızca JPG, PNG, WebP veya GIF yüklenebilir.");
-  if (file.size > MAX_UPLOAD_BYTES) throw new Error("Görsel en fazla 8 MB olabilir.");
+  if (file.size > MAX_UPLOAD_BYTES) throw new Error("Görsel en fazla 20 MB olabilir.");
 }
 
 /**

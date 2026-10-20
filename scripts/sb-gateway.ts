@@ -344,8 +344,8 @@ async function handleStorage(req: IncomingMessage, res: ServerResponse, pathname
       return;
     }
     const data = await readRaw(req);
-    if (data.length > 10 * 1024 * 1024) {
-      json(res, 413, { message: "Dosya boyutu en fazla 10 MB olabilir.", msg: "Dosya boyutu en fazla 10 MB olabilir." });
+    if (data.length > 20 * 1024 * 1024) {
+      json(res, 413, { message: "Dosya boyutu en fazla 20 MB olabilir.", msg: "Dosya boyutu en fazla 20 MB olabilir." });
       return;
     }
     await mkdir(path.dirname(file), { recursive: true });
