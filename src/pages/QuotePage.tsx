@@ -398,11 +398,12 @@ export default function QuotePage() {
                     </label>
 
                     {usesIdentityPhoneStep ? (
-                      <div className="quote__field">
+                      <label className="quote__field">
+                        <span>{t.quote.phone}</span>
                         <input
                           type="tel"
                           className={`quote__input ${errors.phone ? "quote__input--error" : ""}`}
-                          placeholder={`${t.quote.phone} (05XX XXX XX XX)`}
+                          placeholder="05XX XXX XX XX"
                           value={phone}
                           onChange={(event) => {
                             setPhone(formatPhoneInput(event.target.value));
@@ -412,7 +413,7 @@ export default function QuotePage() {
                         {errors.phone && (
                           <span className="quote__error">{errors.phone}</span>
                         )}
-                      </div>
+                      </label>
                     ) : null}
 
                     <QuoteKvkkNotu productSlug={product.slug} variant="quote" />
