@@ -25,6 +25,43 @@ function inlineEntryCss(): Plugin {
 }
 
 /**
+ * `public/blog/kapak` kapak dosyaları için duruyor; nginx bu yüzden `/blog/`
+ * yolunu dizin sanıp 403 döndürür. Liste rotası SPA'ya düşmeli, kapaklar
+ * `/blog/kapak/*` olarak kalır.
+ */
+function spaBlogIndex(): Plugin {
+  const rewrite = (req: { url?: string }) => {
+    const path = (req.url ?? "").split("?")[0];
+    if (path === "/blog" || path === "/blog/") req.url = "/index.html";
+  };
+  return {
+    name: "spa-blog-index",
+    enforce: "post",
+    configureServer(server) {
+      server.middlewares.use((req, _res, next) => {
+        rewrite(req);
+        next();
+      });
+    },
+    configurePreviewServer(server) {
+      server.middlewares.use((req, _res, next) => {
+        rewrite(req);
+        next();
+      });
+    },
+    generateBundle(_, bundle) {
+      const html = bundle["index.html"];
+      if (!html || html.type !== "asset") return;
+      this.emitFile({
+        type: "asset",
+        fileName: "blog/index.html",
+        source: html.source,
+      });
+    },
+  };
+}
+
+/**
  * `npm run dev` varsayılan olarak `api/` fonksiyonlarını Vite içinde
  * çalıştırır (kök `.env`'deki IO token'ı ile). Canlı siteye proxy için:
  * `VITE_IO_PROXY_TARGET=https://sigortauzmani.vercel.app npm run dev`
@@ -44,6 +81,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       inlineEntryCss(),
+      spaBlogIndex(),
       ...(proxyTarget ? [] : [localApiPlugin()]),
     ],
     build: {
