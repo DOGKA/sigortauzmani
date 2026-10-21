@@ -29,6 +29,10 @@ const EMPTY: BlogPostInput = {
 
 const input =
   "w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-sky-400 focus:ring-3 focus:ring-sky-100";
+const SELECT_CHEVRON =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2394a3b8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E\")";
+const select =
+  "w-full appearance-none rounded-xl border border-slate-200 bg-white bg-[length:16px_16px] bg-[position:right_14px_center] bg-no-repeat py-2.5 pl-3.5 pr-11 text-sm outline-none transition focus:border-sky-400 focus:ring-3 focus:ring-sky-100";
 const label = "mb-1.5 block text-sm font-medium text-slate-700";
 const card = "rounded-2xl border border-slate-200 bg-white p-5";
 const ghostButton =
@@ -178,7 +182,8 @@ export default function BlogEditor({ id }: { id?: string }) {
               <select
                 value={form.category ?? ""}
                 onChange={(event) => update({ category: event.target.value || null })}
-                className={input}
+                className={select}
+                style={{ backgroundImage: SELECT_CHEVRON }}
               >
                 <option value="">Kategori seçin</option>
                 {categories.map((name) => (
@@ -221,10 +226,8 @@ export default function BlogEditor({ id }: { id?: string }) {
           <div className="flex items-center justify-between">
             <span className="text-sm font-semibold text-slate-800">Yayın</span>
             <span
-              className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ring-1 ring-inset ${
-                published
-                  ? "bg-emerald-50 text-emerald-700 ring-emerald-200"
-                  : "bg-amber-50 text-amber-700 ring-amber-200"
+              className={`text-xs ${
+                saved?.status === "DRAFT" || !saved ? "text-amber-600" : "text-slate-400"
               }`}
             >
               {saved ? BLOG_STATUS_LABEL[saved.status] : "Taslak"}
@@ -450,10 +453,6 @@ function CoverCard({
           if (file) void upload(file);
         }}
       />
-      <p className="text-xs leading-5 text-slate-400">
-        Üretim başlık, kategori ve içerik metninden yapılır; görsel başına yaklaşık 0,13 $. Seçilen kapak
-        yazıyı kaydedince yayına girer.
-      </p>
     </div>
   );
 }

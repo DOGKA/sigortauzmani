@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
-import { Eye, TrendingUp } from "lucide-react";
+import { Clock, Eye, TrendingUp } from "lucide-react";
 import { blogCover } from "../../lib/blog/cover";
+import type { BlogSort } from "./BlogFilterBar";
 
 export interface PopularPost {
   slug: string;
@@ -8,11 +9,13 @@ export interface PopularPost {
   category: string | null;
   viewCount: number;
   featuredImage?: string | null;
+  publishedAt?: string;
 }
 
 interface BlogPopularListProps {
   posts: PopularPost[];
   heading?: string;
+  sort?: BlogSort;
   limit?: number;
   excludeSlug?: string;
   className?: string;
@@ -20,23 +23,32 @@ interface BlogPopularListProps {
 
 export default function BlogPopularList({
   posts,
-  heading = "En Çok Okunanlar",
+  heading,
+  sort = "popular",
   limit = 5,
   excludeSlug,
   className = "",
 }: BlogPopularListProps) {
   const ranked = [...posts]
-    .filter((post) => post.slug !== excludeSlug && post.viewCount > 0)
-    .sort((a, b) => b.viewCount - a.viewCount)
+    .filter((post) => post.slug !== excludeSlug)
+    .filter((post) => sort === "recent" || post.viewCount > 0)
+    .sort((a, b) =>
+      sort === "recent"
+        ? Date.parse(b.publishedAt ?? "") - Date.parse(a.publishedAt ?? "")
+        : b.viewCount - a.viewCount,
+    )
     .slice(0, limit);
 
   if (ranked.length === 0) return null;
 
+  const title = heading ?? (sort === "recent" ? "En yeni" : "En çok okunanlar");
+  const Icon = sort === "recent" ? Clock : TrendingUp;
+
   return (
     <section className={`blog-popular ${className}`.trim()}>
       <h2 className="blog-popular__heading">
-        <TrendingUp aria-hidden="true" />
-        {heading}
+        <Icon aria-hidden="true" />
+        {title}
       </h2>
       <ol className="blog-popular__list">
         {ranked.map((post, index) => {

@@ -12,9 +12,9 @@ import {
 } from "@/lib/blog/shared";
 
 const STATUS_STYLE: Record<BlogStatus, string> = {
-  PUBLISHED: "bg-emerald-50 text-emerald-700 ring-emerald-200",
-  DRAFT: "bg-amber-50 text-amber-700 ring-amber-200",
-  ARCHIVED: "bg-slate-100 text-slate-500 ring-slate-200",
+  PUBLISHED: "text-slate-400",
+  DRAFT: "text-amber-600",
+  ARCHIVED: "text-slate-400",
 };
 
 const FILTERS: { value: BlogStatus | "ALL"; label: string }[] = [
@@ -25,6 +25,9 @@ const FILTERS: { value: BlogStatus | "ALL"; label: string }[] = [
 ];
 
 const DATE = new Intl.DateTimeFormat("tr-TR", { day: "numeric", month: "short", year: "numeric" });
+
+const SELECT_CHEVRON =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='none' stroke='%2394a3b8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m4 6 4 4 4-4'/%3E%3C/svg%3E\")";
 
 function fold(value: string): string {
   return value.toLocaleLowerCase("tr-TR").normalize("NFD").replace(/[\u0300-\u036f]/g, "");
@@ -133,7 +136,8 @@ export default function BlogListe() {
         <select
           value={category}
           onChange={(event) => setCategory(event.target.value)}
-          className="rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm"
+          className="appearance-none rounded-xl border border-slate-200 bg-white bg-[length:16px_16px] bg-[position:right_14px_center] bg-no-repeat py-2.5 pl-3.5 pr-11 text-sm"
+          style={{ backgroundImage: SELECT_CHEVRON }}
         >
           <option value="">Tüm kategoriler</option>
           {BLOG_CATEGORIES.map((name) => (
@@ -195,9 +199,7 @@ export default function BlogListe() {
                       {post.title}
                     </Link>
                     <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-400">
-                      <span
-                        className={`rounded-full px-2 py-0.5 font-semibold ring-1 ring-inset ${STATUS_STYLE[post.status]}`}
-                      >
+                      <span className={STATUS_STYLE[post.status]}>
                         {BLOG_STATUS_LABEL[post.status]}
                       </span>
                       {post.category && <span>{post.category}</span>}

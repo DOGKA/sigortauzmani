@@ -180,7 +180,7 @@ export default function BlogPageClient({
     listRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [currentPage]);
 
-  // En çok okunanlar da seçili kategoriyi izler; arama terimi burayı etkilemez.
+  // Sağ liste, sıralama ve seçili kategoriyi izler; arama terimi burayı etkilemez.
   const popularPosts = useMemo(() => {
     const scope = activeCategory
       ? posts.filter((post) => post.category === activeCategory)
@@ -192,6 +192,7 @@ export default function BlogPageClient({
       category: post.category,
       viewCount: post.viewCount,
       featuredImage: post.featuredImage,
+      publishedAt: post.publishedAt,
     }));
   }, [posts, activeCategory]);
 
@@ -212,7 +213,7 @@ export default function BlogPageClient({
           resultCount={filteredPosts.length}
         />
 
-        <BlogPopularList posts={popularPosts} className="blog-index__popular" />
+        <BlogPopularList posts={popularPosts} sort={sort} className="blog-index__popular" />
       </aside>
 
       <div className="blog-index__list" ref={listRef}>
