@@ -80,18 +80,94 @@ export async function storeCover(input: Buffer): Promise<string> {
 
 /* ---- Kapak üretimi (scripts/blog-gorselleri-uret.mjs ile aynı yönerge) ---- */
 
-const KATEGORI_SAHNE: Record<string, string> = {
-  "Araç Sigortaları":
-    "on the road, at a parking spot, a minor collision on a city street, a repair garage, a car wash, a rainy or snowy road, a car interior",
-  "Sağlık Sigortaları":
-    "a modern hospital corridor, a doctor's consultation room, a pharmacy counter, a physiotherapy session, a family at a paediatric check-up, an active healthy moment outdoors",
-  "Konut ve DASK":
-    "an apartment building facade, a living room, a kitchen with water damage, a balcony, a neighbourhood street after rain, a building under renovation",
-  "Seyahat Sigortaları":
-    "an airport terminal, a boarding gate, a hotel room, luggage at a carousel, a European old-town street, a mountain or beach destination",
-  "Sigorta Rehberi":
-    "the real-life moment behind the topic: at home with family, outside a shop, on the street, at a service counter, in a car",
+const KATEGORI_SAHNE: Record<string, string[]> = {
+  "Araç Sigortaları": [
+    "two cars stopped after a minor fender-bender at a city intersection",
+    "a car being lifted onto a tow truck on a highway shoulder",
+    "a mechanic inspecting a dented bumper in a bright repair workshop",
+    "a car parked on a tree-lined residential street with a scratch on its door",
+    "a driver handing over keys at a dealership forecourt",
+    "a cracked windscreen being replaced by a technician",
+    "a car driving along a coastal road",
+    "an electric car charging at a public charging station",
+    "a family loading luggage into a car before a road trip",
+    "a car on a mountain road after fresh snow, under clear sky",
+    "a multi-storey car park with a single car in focus",
+    "a hail-dented car roof in a driveway",
+  ],
+  "Sağlık Sigortaları": [
+    "a doctor talking with a patient in a bright consultation room",
+    "a nurse checking on a patient in a modern hospital room",
+    "a physiotherapist guiding a knee exercise",
+    "a parent holding a newborn in a maternity ward",
+    "a paediatrician examining a smiling child",
+    "a pharmacist handing medicine across a counter",
+    "an older couple walking in a park",
+    "a dentist at work in a clean clinic",
+    "a runner stretching on a riverside path",
+    "an ambulance parked at a hospital entrance",
+    "a lab technician handling blood sample tubes",
+  ],
+  "Konut ve DASK": [
+    "a living room with a water stain spreading across the ceiling",
+    "a plumber fixing a leaking pipe under a kitchen sink",
+    "an apartment building facade with balconies and plants",
+    "a family carrying moving boxes into a new home",
+    "a cracked wall being inspected by an engineer in a hard hat",
+    "a cosy living room with sunlight through large windows",
+    "a detached house with a garden after a storm, a fallen branch on the lawn",
+    "a building under renovation with scaffolding",
+    "keys being handed over at the door of a flat",
+    "a quiet residential street after rain",
+    "a smoke detector on a bright kitchen ceiling",
+  ],
+  "Seyahat Sigortaları": [
+    "a traveller waiting at an airport gate with a large window view of planes",
+    "a suitcase going around an empty baggage carousel",
+    "a couple walking with luggage through an old-town street",
+    "a hiker on a mountain trail with a wide valley behind",
+    "a beach resort promenade in the morning",
+    "a traveller at a hotel reception desk",
+    "a train platform with a high-speed train arriving",
+    "a student with a backpack outside a university building abroad",
+    "a family at a ski resort",
+    "a traveller being helped by a doctor in a foreign clinic",
+    "a ferry crossing a bright blue sea",
+  ],
+  "Sigorta Rehberi": [
+    "a small business owner opening the shutter of their shop",
+    "a family in their kitchen on a weekday morning",
+    "two people shaking hands outside an office building",
+    "a craftsman working in a sunny workshop",
+    "a farmer walking through a green field",
+    "a young couple on their new apartment balcony",
+    "a café owner arranging tables on a terrace",
+    "a busy pedestrian street seen from above",
+    "an older man gardening in his backyard",
+    "a delivery van parked outside a warehouse",
+  ],
 };
+
+const GENEL_SAHNE = [
+  "an everyday moment related to the topic, in a city street",
+  "an everyday moment related to the topic, at home",
+  "an everyday moment related to the topic, in a workplace",
+];
+
+const ORTAMLAR = [
+  "a Western European city",
+  "a Mediterranean coastal town",
+  "a Scandinavian town",
+  "a North American suburb",
+  "a modern East Asian city",
+  "a Latin American city",
+  "a contemporary Middle Eastern city",
+  "a Central European old town",
+  "an Australian coastal city",
+  "a countryside village",
+  "a large international metropolis",
+  "a present-day Turkish city",
+];
 
 const KISILER = [
   "a young woman in her late twenties",
@@ -104,6 +180,10 @@ const KISILER = [
   "an elderly woman with her adult daughter",
   "a man in his forties",
   "a young professional woman in her thirties",
+  "a group of friends in their twenties",
+  "a father with a teenage son",
+  "a middle-aged couple",
+  "a professional at work (mechanic, nurse, engineer or similar)",
 ];
 
 const CEKIMLER = [
@@ -113,6 +193,19 @@ const CEKIMLER = [
   "over-the-shoulder shot",
   "street-level view with depth and perspective",
   "high-angle view from a balcony or window",
+  "low-angle shot looking slightly up",
+  "candid documentary-style shot",
+  "aerial drone view",
+  "shot through a doorway or window frame",
+];
+
+const MEVSIMLER = [
+  "spring, fresh green leaves",
+  "bright summer day",
+  "early autumn with a few coloured leaves",
+  "crisp clear winter day",
+  "late morning",
+  "midday",
 ];
 
 function sec<T>(liste: T[], anahtar: string, tuz: number): T {
@@ -141,22 +234,24 @@ export interface CoverRequest {
 }
 
 export function coverPrompt({ title, content, category, attempt }: CoverRequest): string {
-  const sahne = (category && KATEGORI_SAHNE[category]) ?? "an everyday situation related to insurance";
+  const sahneler = (category && KATEGORI_SAHNE[category]) || GENEL_SAHNE;
   const ozet = plainText(content).slice(0, 700);
   const anahtar = `${title}#${attempt}`;
   return [
-    "Create a cover photo for a Turkish insurance blog article.",
+    "Create a cover photo for an insurance blog article.",
     `Article title (Turkish): "${title}"`,
     `Article summary (Turkish): "${ozet}"`,
-    `Category: ${category ?? "Sigorta"}. Possible settings: ${sahne}.`,
+    `Category: ${category ?? "Sigorta"}.`,
     "Show the specific real-life situation this article is about, as it happens, so a reader instantly connects the image to the title.",
+    `Suggested scene: ${sec(sahneler, anahtar, 3)}. Use it if it fits the article; otherwise choose a different scene that clearly matches the title.`,
+    `Location: ${sec(ORTAMLAR, anahtar, 5)}. Time: ${sec(MEVSIMLER, anahtar, 11)}.`,
     `Subject: ${sec(KISILER, anahtar, 7)}. Framing: ${sec(CEKIMLER, anahtar, 13)}.`,
     "Avoid the cliché of someone sitting at a desk or table reading papers, holding documents or looking at a laptop or phone. No paperwork in the frame.",
     "Style: realistic editorial photography, soft depth of field, clean composition with some empty space.",
     "Lighting: always bright and clearly lit. Use clean daylight outdoors, or even neutral indoor light. The main subject must be easy to see, not lost in shadow.",
     "Do not make the scene gloomy, dark, grey, overcast or pessimistic, even when the topic is an accident, damage or a claim. Keep the situation recognizable and the mood open.",
     "Colour: natural and neutral, with at most a hint of sky blue. Do not apply a yellow, amber, sepia, golden-hour or warm tungsten colour grade.",
-    "People, places and vehicles should look like present-day Turkey.",
+    "People, places and vehicles should look contemporary and international, with a natural mix of backgrounds. Do not add landmarks or national symbols that tie the image to one country.",
     "Do not include any text, letters, numbers, logos, flags, watermarks, licence plates or brand names. No charts, no UI screenshots, no collage.",
     "Keep shop signs, storefronts, information boards and screens out of frame, or so blurred that nothing is legible. Cars are generic unbadged models with no grille emblem, and their plates are blank or hidden. Aircraft have a plain white livery without airline markings. Uniforms have no lettering.",
   ].join("\n");

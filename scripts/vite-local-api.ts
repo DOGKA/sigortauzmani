@@ -4,7 +4,7 @@
  * (ENOTFOUND) tarayıcı 502 görüyordu. Bu eklenti aynı handler'ları Vite
  * sürecinde yükler; `IO_*` ve `SESSION_SECRET` kök `.env`'den okunur.
  *
- * Canlıya proxy için: `VITE_IO_PROXY_TARGET=https://sigortauzmani.vercel.app`
+ * Canlıya proxy için: `VITE_IO_PROXY_TARGET=https://sigortauzmani.net`
  */
 
 import { existsSync, readdirSync } from "node:fs";

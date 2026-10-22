@@ -63,8 +63,9 @@ function spaBlogIndex(): Plugin {
 
 /**
  * `npm run dev` varsayılan olarak `api/` fonksiyonlarını Vite içinde
- * çalıştırır (kök `.env`'deki IO token'ı ile). Canlı siteye proxy için:
- * `VITE_IO_PROXY_TARGET=https://sigortauzmani.vercel.app npm run dev`
+ * çalıştırır (kök `.env`'deki IO token'ı ile). İsteğe bağlı: yerel arayüzü
+ * canlı `/api`ye bağlamak için
+ * `VITE_IO_PROXY_TARGET=https://sigortauzmani.net npm run dev`
  *
  * Canlı `Set-Cookie` Secure bayrağı taşıyor; HTTP localhost'ta tarayıcı o
  * çerezi saklamaz. Proxy kullanıldığında Secure düşürülür.
